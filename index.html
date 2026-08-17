@@ -1804,30 +1804,27 @@
     .letter-filter-bar {
       display: flex;
       align-items: center;
-      gap: 3px;
-      padding: 4px 16px;
+      gap: 6px;
+      padding: 6px 12px;
       border-bottom: 0.5px solid #eee;
       background: #fafafa;
       flex-shrink: 0;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-    .letter-filter-bar::-webkit-scrollbar {
-      display: none;
     }
     .letter-filter-tab {
-      padding: 3px 6px;
-      border-radius: 8px;
-      font-size: 12px;
+      flex: 1;
+      padding: 5px 4px;
+      border-radius: 14px;
+      font-size: 11px;
       border: 1px solid #ddd;
       background: #fff;
       color: #666;
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 2px;
       white-space: nowrap;
-      flex-shrink: 0;
+      min-width: 0;
     }
     .letter-filter-tab.active {
       background: #9b8ec4;
@@ -1836,6 +1833,8 @@
     }
     .letter-filter-tab svg {
       flex-shrink: 0;
+      width: 11px;
+      height: 11px;
     }
     .letter-search-bar {
       display: flex;
@@ -2137,23 +2136,28 @@
 
     /* 排序按钮 */
     .letter-sort-btn {
-      background: none;
-      border: 1px solid #e0e0e0;
+      flex: 1;
+      background: #fff;
+      border: 1px solid #ddd;
       border-radius: 14px;
-      padding: 4px 10px;
-      font-size: 12px;
+      padding: 5px 4px;
+      font-size: 11px;
       color: #666;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 4px;
-      flex-shrink: 0;
-      margin-left: 8px;
+      justify-content: center;
+      gap: 2px;
+      min-width: 0;
       -webkit-appearance: none;
       -webkit-tap-highlight-color: transparent;
     }
     .letter-sort-btn:active {
       background: #f0f0f0;
+    }
+    .letter-sort-btn svg {
+      width: 11px;
+      height: 11px;
     }
 
     /* 排序下拉菜单 */
@@ -3319,18 +3323,22 @@
 
     /* --- 统计仪表盘 --- */
     .stats-btn {
-      background: none;
-      border: none;
+      flex: 1;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 14px;
       cursor: pointer;
-      padding: 4px 8px;
-      color: #555;
+      padding: 5px 4px;
+      color: #666;
+      font-size: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-shrink: 0;
+      gap: 2px;
+      min-width: 0;
     }
-    .stats-btn:active { opacity: 0.6; }
-    .stats-btn svg { display: block; }
+    .stats-btn:active { background: #f0f0f0; }
+    .stats-btn svg { display: block; width: 11px; height: 11px; }
 
     .stats-panel {
       display: none;
@@ -6631,11 +6639,12 @@
           </button>
 
                     <button id="letterStatsBtn" class="stats-btn" title="统计">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            统计
           </button>
           <button id="letterSortBtn" class="letter-sort-btn" title="排序">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-            <span class="sort-label">时间↓</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+            <span class="sort-label">排序</span>
           </button>
         </div>
         <!-- 批量操作顶部栏 -->
@@ -12653,8 +12662,8 @@ patText2 = patText2.replace(/你/g, '我');
         const btn = document.getElementById('letterSortBtn');
         if (!btn) return;
         const label = {
-          'time_desc': '时间↓',
-          'time_asc': '时间↑',
+          'time_desc': '倒序',
+          'time_asc': '正序',
           'contact': '联系人',
           'unread': '未读优先'
         }[letterSort] || '排序';
