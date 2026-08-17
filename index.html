@@ -6408,6 +6408,88 @@
   margin-right: 36px;
 }
 
+.diary-category-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  background: #ffffff;
+  border-bottom: 0.5px solid #e0e0e0;
+  flex-shrink: 0;
+}
+.diary-category-bar::-webkit-scrollbar { display: none; }
+.diary-cat-tab {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #666;
+  background: #f0ecf7;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: all 0.2s;
+}
+.diary-cat-tab.active {
+  background: #9b8ec4;
+  color: #fff;
+  font-weight: 500;
+}
+.diary-cat-tab.cat-add {
+  background: transparent;
+  border: 1px dashed #c4b8e0;
+  color: #9b8ec4;
+  font-size: 14px;
+  padding: 4px 10px;
+}
+.diary-cat-tab .cat-close {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.6;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.diary-cat-tab .cat-close:hover { opacity: 1; }
+.diary-cat-tab.active .cat-close { opacity: 0.8; }
+
+.diary-category-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.diary-category-select label {
+  font-size: 13px;
+  color: #666;
+  flex-shrink: 0;
+}
+.diary-category-select select {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #e0d8f0;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #333;
+  background: #faf8ff;
+  outline: none;
+}
+
+.diary-cat-badge {
+  display: inline-block;
+  font-size: 11px;
+  color: #9b8ec4;
+  background: #f0ecf7;
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-bottom: 6px;
+}
+
 .diary-scroll {
   flex: 1;
   overflow-y: auto;
@@ -7681,6 +7763,7 @@
       </button>
       <span class="diary-title">日记</span>
     </div>
+    <div class="diary-category-bar" id="diaryCategoryBar"></div>
     <div class="diary-scroll" id="diaryScroll">
       <div class="diary-feed" id="diaryFeed">
         <div class="diary-empty" id="diaryEmpty">
@@ -7701,6 +7784,10 @@
     <div class="diary-overlay" id="diaryWriteOverlay">
       <div class="diary-modal">
         <h3>写日记</h3>
+        <div class="diary-category-select">
+          <label>分类：</label>
+          <select id="diaryWriteCategory"></select>
+        </div>
         <textarea class="diary-modal-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
         <div class="diary-image-upload-area">
           <button type="button" class="diary-image-upload-btn" id="diaryWriteUploadBtn">
@@ -7720,6 +7807,10 @@
     <div class="diary-overlay" id="diaryEditOverlay">
       <div class="diary-modal">
         <h3>编辑日记</h3>
+        <div class="diary-category-select">
+          <label>分类：</label>
+          <select id="diaryEditCategory"></select>
+        </div>
         <textarea class="diary-modal-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
         <div class="diary-image-upload-area">
           <button type="button" class="diary-image-upload-btn" id="diaryEditUploadBtn">
@@ -14752,6 +14843,139 @@ patText2 = patText2.replace(/你/g, '我');
 
 
       // ===== 日记模块 =====
+      // 分类管理
+      var _diaryCurrentCategory = 'all';
+      function getDiaryCategories() {
+        try {
+          var cats = JSON.parse(localStorage.getItem('diaryCategories') || 'null');
+          if (!cats || !Array.isArray(cats) || cats.length === 0) cats = ['生活'];
+          return cats;
+        } catch(e) { return ['生活']; }
+      }
+      function saveDiaryCategories(cats) {
+        try { localStorage.setItem('diaryCategories', JSON.stringify(cats)); } catch(e) {}
+      }
+      function renderCategoryTabs() {
+        var bar = document.getElementById('diaryCategoryBar');
+        if (!bar) return;
+        var cats = getDiaryCategories();
+        var html = '<button class="diary-cat-tab' + (_diaryCurrentCategory === 'all' ? ' active' : '') + '" data-cat="all">全部</button>';
+        cats.forEach(function(cat) {
+          var isActive = _diaryCurrentCategory === cat;
+          html += '<button class="diary-cat-tab' + (isActive ? ' active' : '') + '" data-cat="' + escapeDiaryHtml(cat) + '">' + escapeDiaryHtml(cat) + '<span class="cat-close" data-del-cat="' + escapeDiaryHtml(cat) + '">&times;</span></button>';
+        });
+        html += '<button class="diary-cat-tab cat-add" id="diaryCatAddBtn">+</button>';
+        bar.innerHTML = html;
+        // Bind tab clicks
+        bar.querySelectorAll('.diary-cat-tab:not(.cat-add)').forEach(function(tab) {
+          tab.addEventListener('click', function(e) {
+            if (e.target.classList.contains('cat-close')) return;
+            _diaryCurrentCategory = this.dataset.cat;
+            renderCategoryTabs();
+            renderDiary();
+          });
+        });
+        // Bind close buttons
+        bar.querySelectorAll('.cat-close').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var catName = this.dataset.delCat;
+            var cats = getDiaryCategories();
+            if (cats.length <= 1) { if (typeof showToast === 'function') showToast('至少保留一个分类'); return; }
+            if (!confirm('删除分类"' + catName + '"？该分类下的日记将归入"生活"。')) return;
+            cats = cats.filter(function(c) { return c !== catName; });
+            saveDiaryCategories(cats);
+            // Move entries from deleted category to '生活'
+            if (cats.indexOf('生活') === -1) cats.unshift('生活');
+            saveDiaryCategories(cats);
+            var entries = getDiaryEntries();
+            entries.forEach(function(en) { if (en.category === catName) en.category = '生活'; });
+            saveDiaryEntries(entries);
+            if (_diaryCurrentCategory === catName) _diaryCurrentCategory = 'all';
+            renderCategoryTabs();
+            renderDiary();
+          });
+        });
+        // Bind add button
+        var addBtn = document.getElementById('diaryCatAddBtn');
+        if (addBtn) {
+          addBtn.addEventListener('click', function() {
+            var name = prompt('输入新分类名称：');
+            if (!name || !name.trim()) return;
+            name = name.trim();
+            var cats = getDiaryCategories();
+            if (cats.indexOf(name) >= 0) { if (typeof showToast === 'function') showToast('分类已存在'); return; }
+            cats.push(name);
+            saveDiaryCategories(cats);
+            renderCategoryTabs();
+          });
+        }
+      }
+      function populateCategorySelect(selectId, selectedCat) {
+        var sel = document.getElementById(selectId);
+        if (!sel) return;
+        var cats = getDiaryCategories();
+        sel.innerHTML = '';
+        cats.forEach(function(cat) {
+          var opt = document.createElement('option');
+          opt.value = cat;
+          opt.textContent = cat;
+          if (cat === selectedCat) opt.selected = true;
+          sel.appendChild(opt);
+        });
+      }
+      // Long press to rename category
+      (function() {
+        var _lpTimer = null;
+        var _lpTarget = null;
+        document.addEventListener('touchstart', function(e) {
+          var tab = e.target.closest('.diary-cat-tab:not(.cat-add)');
+          if (!tab || e.target.classList.contains('cat-close')) return;
+          _lpTarget = tab;
+          _lpTimer = setTimeout(function() {
+            var oldName = _lpTarget.dataset.cat;
+            if (oldName === 'all') return;
+            var newName = prompt('重命名分类"' + oldName + '"：', oldName);
+            if (!newName || !newName.trim() || newName.trim() === oldName) return;
+            newName = newName.trim();
+            var cats = getDiaryCategories();
+            if (cats.indexOf(newName) >= 0) { if (typeof showToast === 'function') showToast('分类已存在'); return; }
+            var idx = cats.indexOf(oldName);
+            if (idx >= 0) cats[idx] = newName;
+            saveDiaryCategories(cats);
+            var entries = getDiaryEntries();
+            entries.forEach(function(en) { if (en.category === oldName) en.category = newName; });
+            saveDiaryEntries(entries);
+            if (_diaryCurrentCategory === oldName) _diaryCurrentCategory = newName;
+            renderCategoryTabs();
+            renderDiary();
+          }, 600);
+        }, {passive: true});
+        document.addEventListener('touchend', function() { clearTimeout(_lpTimer); }, {passive: true});
+        document.addEventListener('touchmove', function() { clearTimeout(_lpTimer); }, {passive: true});
+        // Desktop: double-click to rename
+        document.addEventListener('dblclick', function(e) {
+          var tab = e.target.closest('.diary-cat-tab:not(.cat-add)');
+          if (!tab || e.target.classList.contains('cat-close')) return;
+          var oldName = tab.dataset.cat;
+          if (oldName === 'all') return;
+          var newName = prompt('重命名分类"' + oldName + '"：', oldName);
+          if (!newName || !newName.trim() || newName.trim() === oldName) return;
+          newName = newName.trim();
+          var cats = getDiaryCategories();
+          if (cats.indexOf(newName) >= 0) { if (typeof showToast === 'function') showToast('分类已存在'); return; }
+          var idx = cats.indexOf(oldName);
+          if (idx >= 0) cats[idx] = newName;
+          saveDiaryCategories(cats);
+          var entries = getDiaryEntries();
+          entries.forEach(function(en) { if (en.category === oldName) en.category = newName; });
+          saveDiaryEntries(entries);
+          if (_diaryCurrentCategory === oldName) _diaryCurrentCategory = newName;
+          renderCategoryTabs();
+          renderDiary();
+        });
+      })();
+
       var diaryPage = document.getElementById('diaryPage');
       var diaryBackBtn = document.getElementById('diaryBackBtn');
       var diaryFeed = document.getElementById('diaryFeed');
@@ -14915,6 +15139,9 @@ patText2 = patText2.replace(/你/g, '我');
       function renderDiary() {
         if (!diaryFeed) return;
         var entries = getDiaryEntries();
+        if (_diaryCurrentCategory && _diaryCurrentCategory !== 'all') {
+          entries = entries.filter(function(e) { return e.category === _diaryCurrentCategory; });
+        }
         diaryFeed.innerHTML = '';
 
         if (entries.length === 0) {
@@ -14930,6 +15157,8 @@ patText2 = patText2.replace(/你/g, '我');
         sorted.forEach(function(entry) {
           var item = document.createElement('div');
           item.className = 'diary-item';
+
+          var catBadge = (entry.category && entry.category !== '生活') ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
 
           var isPrivate = entry.visibility === 'private';
           var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
@@ -14969,6 +15198,7 @@ patText2 = patText2.replace(/你/g, '我');
           
 
           item.innerHTML =
+            catBadge +
             visibilityHtml +
             '<div class="diary-text">' + escapedText + '</div>' +
             imageHtml +
@@ -15000,6 +15230,7 @@ patText2 = patText2.replace(/你/g, '我');
         });
 
         bindDiaryEvents();
+        renderCategoryTabs();
       }
 
       window._openDiaryImage = function(src) {
@@ -15122,6 +15353,7 @@ patText2 = patText2.replace(/你/g, '我');
         diaryWriteTextarea.value = '';
         _diaryPendingImages = [];
         renderWriteImagePreview();
+        populateCategorySelect('diaryWriteCategory', _diaryCurrentCategory !== 'all' ? _diaryCurrentCategory : '生活');
         diaryWriteOverlay.classList.add('show');
         setTimeout(function() { diaryWriteTextarea.focus(); }, 100);
       });
@@ -15137,6 +15369,7 @@ patText2 = patText2.replace(/你/g, '我');
           return;
         }
         var entries = getDiaryEntries();
+        var selCat = document.getElementById('diaryWriteCategory');
         var entry = {
           id: Date.now(),
           title: text.substring(0, 20),
@@ -15146,7 +15379,8 @@ patText2 = patText2.replace(/你/g, '我');
           images: _diaryPendingImages.slice(),
           likes: [],
           comments: [],
-          visibility: 'private'
+          visibility: 'private',
+          category: selCat ? selCat.value : '生活'
         };
         entries.unshift(entry);
         saveDiaryEntries(entries);
@@ -15165,6 +15399,7 @@ patText2 = patText2.replace(/你/g, '我');
         diaryEditTextarea.value = entry.content || '';
         _diaryEditPendingImages = (entry.images || []).slice();
         renderEditImagePreview();
+        populateCategorySelect('diaryEditCategory', entry.category || '生活');
         diaryEditOverlay.classList.add('show');
         setTimeout(function() { diaryEditTextarea.focus(); }, 100);
       }
@@ -15188,6 +15423,8 @@ patText2 = patText2.replace(/你/g, '我');
           entry.content = text;
           entry.title = text.substring(0, 20);
           entry.images = _diaryEditPendingImages.slice();
+          var editCat = document.getElementById('diaryEditCategory');
+          if (editCat) entry.category = editCat.value;
           saveDiaryEntries(entries);
           _syncDiaryToMoments(entry);
         }
