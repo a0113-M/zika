@@ -6822,6 +6822,7 @@
                 <path d="M12 11v5" />
                 <path d="M9 13l3 3 3-3" />
               </svg></span><span class="item-text">数据</span></div>
+          <div class="sidebar-menu-item" data-action="clearcache" style="color:#e74c3c;"><span class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></span><span class="item-text">清除缓存</span></div>
         </div>
         <div class="sidebar-close" id="sidebarClose">← 收起</div>
       </div>
@@ -7106,7 +7107,7 @@
   </div>
 
   <script>
-    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}d.textContent="JS错误: "+msg+" @line "+line;return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}d.textContent="资源错误: "+(e.message||e.filename);});})();
+    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
     // ===== 键盘跟随（适用于原生浏览器） =====
     (function () {
       const chatView = document.querySelector('.chat-view');
@@ -7978,7 +7979,7 @@
           type: 'chat'
         };
         diaryEntries.unshift(entry);
-        localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries));
+        try { localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries)); } catch(e) {}
 
         // 关闭选择模式
         exitSelectMode();
@@ -9180,6 +9181,14 @@
             openLetterModule();
             return;
           }
+          if (action === 'clearcache') {
+            sidebarOverlay.classList.remove('show');
+            if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) {
+              localStorage.clear();
+              location.reload();
+            }
+            return;
+          }
           const info = featureMap[action];
           if (!info) return;
           document.getElementById('featureTitle').textContent = info.title;
@@ -9873,7 +9882,7 @@
         e.stopPropagation();
         const isMerged = mergeIndicator.textContent === '✓';
         mergeIndicator.textContent = isMerged ? '○' : '✓';
-        localStorage.setItem(`merge_${currentCardName}`, !isMerged);
+        try { localStorage.setItem(`merge_${currentCardName}`, !isMerged); } catch(e) {}
         showToast(!isMerged ? `「${currentCardName}」已与「文字」合并` : `「${currentCardName}」已取消合并`);
       });
 
@@ -13023,7 +13032,7 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         saveLetters();
-        localStorage.setItem('anonymousLettersInited', 'true');
+        try { localStorage.setItem('anonymousLettersInited', 'true'); } catch(e) {}
       }
 
       // 获取所有匿名信件
