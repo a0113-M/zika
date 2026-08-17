@@ -9318,6 +9318,23 @@
       var momentsImagePicker = document.getElementById('momentsImagePicker');
       var momentsPostCancel = document.getElementById('momentsPostCancel');
       var momentsPostPublish = document.getElementById('momentsPostPublish');
+      var momentsUserAvatar = document.getElementById('momentsUserAvatar');
+      
+      // Initialize momentsUserAvatar with user's avatar
+      function updateMomentsUserAvatar() {
+        if (userProfile.avatarImage) {
+          momentsUserAvatar.innerHTML = '';
+          momentsUserAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;overflow:hidden;';
+          const img = document.createElement('img');
+          img.src = userProfile.avatarImage;
+          img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          momentsUserAvatar.appendChild(img);
+        } else {
+          momentsUserAvatar.innerHTML = userProfile.avatar || '我';
+          momentsUserAvatar.style.cssText = '';
+        }
+      }
+      updateMomentsUserAvatar();
 
       function updateImagePicker() {
         momentsImagePicker.innerHTML = '';
@@ -9527,6 +9544,7 @@
         moments.push({
           id: Date.now(),
           author: userName,
+          avatarImage: userProfile.avatarImage || null,
           text: text,
           images: images,
           likes: [],
@@ -9818,6 +9836,15 @@
         reader.onload = function (ev) {
           const imageData = ev.target.result;
           userProfile.avatarImage = imageData;
+          // Update all existing moments with new avatar
+          moments.forEach(function(m) {
+            if (m.author === userProfile.name || m.author === '我') {
+              m.avatarImage = imageData;
+            }
+          });
+          saveMoments();
+          renderMoments();
+          updateMomentsUserAvatar();
           profileAvatarImg.src = imageData;
           profileAvatarImg.style.display = 'block';
           profileAvatarText.style.display = 'none';
@@ -9854,7 +9881,9 @@
         if (!userProfile.avatarImage) {
           document.getElementById('userAvatar').innerHTML = userProfile.avatar;
           document.getElementById('sideAvatar').innerHTML = userProfile.avatar;
-          document.getElementById('momentsUserAvatar').innerHTML = userProfile.avatar;
+          updateMomentsUserAvatar();
+        } else {
+          updateMomentsUserAvatar();
         }
         document.getElementById('sideName').innerHTML = `${userProfile.name}<small>点击头像设置个人信息</small>`;
         showToast('个人信息已更新！');
