@@ -7268,6 +7268,102 @@
 }
 .diary-modal-confirm:active { opacity: 0.85; }
 
+
+/* ===== 待办优先级 & 联系人 ===== */
+.todo-prio-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.todo-prio-dot:active { transform: scale(1.5); }
+.todo-prio-dot[data-p="0"] { background: #d8d0e8; }
+.todo-prio-dot[data-p="1"] { background: #5cb85c; }
+.todo-prio-dot[data-p="2"] { background: #f0a030; }
+.todo-prio-dot[data-p="3"] { background: #e55a5a; }
+.todo-prio-dot[data-p="4"] { background: #7b5ea7; box-shadow: 0 0 4px rgba(123,94,167,0.4); }
+
+.todo-contact-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #9b8ec4;
+  background: #f0ecfa;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+.todo-contact-tag svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* 添加栏下方的选项行 */
+.todo-add-options {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 12px;
+  background: #fff;
+  border-top: 0.5px solid #ede7f6;
+}
+.todo-prio-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.todo-prio-selector .psel-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.todo-prio-selector .psel-dot.active {
+  border-color: #9b8ec4;
+  transform: scale(1.2);
+  box-shadow: 0 0 0 2px rgba(155,142,196,0.2);
+}
+.todo-prio-selector .psel-dot[data-p="0"] { background: #d8d0e8; }
+.todo-prio-selector .psel-dot[data-p="1"] { background: #5cb85c; }
+.todo-prio-selector .psel-dot[data-p="2"] { background: #f0a030; }
+.todo-prio-selector .psel-dot[data-p="3"] { background: #e55a5a; }
+.todo-prio-selector .psel-dot[data-p="4"] { background: #7b5ea7; }
+.todo-prio-label {
+  font-size: 11px;
+  color: #aaa;
+  margin-right: 2px;
+  flex-shrink: 0;
+}
+
+.todo-contact-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+.todo-contact-input-wrap svg {
+  width: 14px;
+  height: 14px;
+  color: #9b8ec4;
+  flex-shrink: 0;
+}
+.todo-contact-input-wrap input {
+  width: 90px;
+  padding: 4px 8px;
+  border: 1.5px solid #e0d8f0;
+  border-radius: 10px;
+  font-size: 12px;
+  color: #666;
+  outline: none;
+  background: #faf8ff;
+}
+.todo-contact-input-wrap input:focus { border-color: #9b8ec4; }
+.todo-contact-input-wrap input::placeholder { color: #c4b8d8; }
 </style>
 </head>
 
@@ -16143,9 +16239,10 @@ patText2 = patText2.replace(/你/g, '我');
 
 
 
-      // ===== 待办模块 =====
+      // ===== 待办模块（含优先级&联系人）=====
       (function() {
         var _todoFilter = 'all';
+        var _selectedPrio = 0;
 
         function getTodos() {
           try { return JSON.parse(localStorage.getItem('todos') || '[]'); } catch(e) { return []; }
@@ -16162,6 +16259,8 @@ patText2 = patText2.replace(/你/g, '我');
           var h = d.getHours(), m = d.getMinutes();
           return M + '月' + D + '日 ' + (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
         }
+        var PRIORITY_NAMES = ['无', '低', '中', '高', '紧急'];
+
         function renderTodoList() {
           var todos = getTodos();
           var filtered;
@@ -16172,7 +16271,6 @@ patText2 = patText2.replace(/你/g, '我');
           var empty = document.getElementById('todoEmpty');
           var countEl = document.getElementById('todoCount');
           if (!list) return;
-          // Count
           var pending = todos.filter(function(t) { return !t.done; }).length;
           countEl.textContent = pending + ' 项未完成';
           if (filtered.length === 0) {
@@ -16183,25 +16281,53 @@ patText2 = patText2.replace(/你/g, '我');
           empty.style.display = 'none';
           var html = '';
           filtered.forEach(function(t) {
+            var prio = (t.priority || 0);
             html += '<div class="todo-item' + (t.done ? ' completed' : '') + '" data-todo-id="' + t.id + '">';
+            // Priority dot (clickable to cycle)
+            html += '<div class="todo-prio-dot" data-p="' + prio + '" data-prio-toggle="' + t.id + '" title="' + PRIORITY_NAMES[prio] + '"></div>';
+            // Checkbox
             html += '<div class="todo-checkbox' + (t.done ? ' checked' : '') + '" data-toggle-todo="' + t.id + '"></div>';
+            // Content
             html += '<div class="todo-content">';
             html += '<div class="todo-text" data-edit-todo="' + t.id + '">' + escapeTodoHtml(t.text) + '</div>';
+            // Contact tag
+            if (t.reminderContact) {
+              html += '<div class="todo-contact-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' + escapeTodoHtml(t.reminderContact) + '</div>';
+            }
             html += '<div class="todo-date">' + formatDate(t.createdAt) + '</div>';
             html += '</div>';
+            // Delete
             html += '<button class="todo-del-btn" data-del-todo="' + t.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>';
             html += '</div>';
           });
           list.innerHTML = html;
-          // Bind events
           bindTodoEvents();
         }
+
         function escapeTodoHtml(s) {
           return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
+
         function bindTodoEvents() {
           var list = document.getElementById('todoList');
           if (!list) return;
+
+          // Priority dot toggle (cycle: 0->1->2->3->4->0)
+          list.querySelectorAll('[data-prio-toggle]').forEach(function(dot) {
+            dot.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var id = this.dataset.prioToggle;
+              var todos = getTodos();
+              var t = todos.find(function(x) { return x.id === id; });
+              if (t) {
+                var cur = t.priority || 0;
+                t.priority = (cur + 1) % 5;
+                saveTodos(todos);
+                renderTodoList();
+              }
+            });
+          });
+
           // Toggle done
           list.querySelectorAll('[data-toggle-todo]').forEach(function(cb) {
             cb.addEventListener('click', function(e) {
@@ -16212,6 +16338,7 @@ patText2 = patText2.replace(/你/g, '我');
               if (t) { t.done = !t.done; saveTodos(todos); renderTodoList(); }
             });
           });
+
           // Delete
           list.querySelectorAll('[data-del-todo]').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
@@ -16222,6 +16349,7 @@ patText2 = patText2.replace(/你/g, '我');
               renderTodoList();
             });
           });
+
           // Edit (tap text)
           list.querySelectorAll('[data-edit-todo]').forEach(function(span) {
             span.addEventListener('click', function(e) {
@@ -16255,23 +16383,44 @@ patText2 = patText2.replace(/你/g, '我');
             });
           });
         }
+
         // Add todo
         function addTodo() {
           var input = document.getElementById('todoAddInput');
           if (!input) return;
           var text = input.value.trim();
           if (!text) return;
+          var contactInput = document.getElementById('todoContactInput');
+          var contact = contactInput ? contactInput.value.trim() : '';
           var todos = getTodos();
           todos.unshift({
             id: genId(),
             text: text,
             done: false,
+            priority: _selectedPrio,
+            reminderContact: contact || undefined,
             createdAt: Date.now()
           });
           saveTodos(todos);
           input.value = '';
+          if (contactInput) contactInput.value = '';
+          // Reset priority selector to default (0)
+          _selectedPrio = 0;
+          updatePrioSelectorUI();
           renderTodoList();
         }
+
+        // Priority selector UI
+        function updatePrioSelectorUI() {
+          var sel = document.getElementById('todoPrioSelector');
+          if (!sel) return;
+          sel.querySelectorAll('.psel-dot').forEach(function(dot) {
+            var p = parseInt(dot.dataset.p);
+            if (p === _selectedPrio) dot.classList.add('active');
+            else dot.classList.remove('active');
+          });
+        }
+
         // Back button
         var backBtn = document.getElementById('todoBackBtn');
         if (backBtn) backBtn.addEventListener('click', function() {
@@ -16285,6 +16434,18 @@ patText2 = patText2.replace(/你/g, '我');
         if (addInput) addInput.addEventListener('keydown', function(e) {
           if (e.key === 'Enter') { e.preventDefault(); addTodo(); }
         });
+
+        // Priority selector dots
+        var prioSel = document.getElementById('todoPrioSelector');
+        if (prioSel) {
+          prioSel.querySelectorAll('.psel-dot').forEach(function(dot) {
+            dot.addEventListener('click', function() {
+              _selectedPrio = parseInt(this.dataset.p);
+              updatePrioSelectorUI();
+            });
+          });
+        }
+
         // Filter bar
         var filterBar = document.getElementById('todoFilterBar');
         if (filterBar) {
@@ -16297,6 +16458,7 @@ patText2 = patText2.replace(/你/g, '我');
             });
           });
         }
+
         // Expose
         window.renderTodoList = renderTodoList;
       })();
