@@ -11153,7 +11153,7 @@ patText2 = patText2.replace(/你/g, '我');
         const currentVal = select.value;
         // 收集有信件的联系人
         const senders = new Set();
-        letterList.forEach(l => { if (l.from) senders.add(l.from); });
+        letterList.filter(l => !l.anonymous).forEach(l => { if (l.from) senders.add(l.from); });
         // 保留第一个"全部联系人"选项
         select.innerHTML = '<option value="">全部联系人</option>';
         Array.from(senders).sort().forEach(name => {
@@ -11171,6 +11171,8 @@ patText2 = patText2.replace(/你/g, '我');
       // 获取筛选后的信件列表
       function getFilteredList() {
         let list = [...letterList];
+        // 过滤匿名信箱的信件
+        list = list.filter(l => !l.anonymous);
         if (letterFilter === 'fav') {
           list = list.filter(l => l.favorite);
         } else if (letterFilter === 'inbox') {
@@ -11242,15 +11244,16 @@ patText2 = patText2.replace(/你/g, '我');
         // 更新排序按钮显示
         updateSortButton();
 
-        // 更新筛选按钮内的统计数字
-        const inboxTotal = letterList.filter(l => !l.isOutgoing).length;
-        const outboxTotal = letterList.filter(l => l.isOutgoing).length;
-        const pendingTotal = letterList.filter(l => {
+        // 更新筛选按钮内的统计数字（排除匿名信）
+        const nonAnonList = letterList.filter(l => !l.anonymous);
+        const inboxTotal = nonAnonList.filter(l => !l.isOutgoing).length;
+        const outboxTotal = nonAnonList.filter(l => l.isOutgoing).length;
+        const pendingTotal = nonAnonList.filter(l => {
           if (l.isOutgoing) return l.replyScheduled && !(l.replyReceived);
           const hasReplied = l.replies && l.replies.length > 0;
           return !hasReplied && !l.userReplied;
         }).length;
-        const favTotal = letterList.filter(l => l.favorite).length;
+        const favTotal = nonAnonList.filter(l => l.favorite).length;
         const tabInbox = document.getElementById('tabCountInbox');
         const tabOutbox = document.getElementById('tabCountOutbox');
         const tabPending = document.getElementById('tabCountPending');
@@ -12068,11 +12071,12 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
       function renderStatsPanel() {
-        // 总览
-        const inboxTotal = letterList.filter(l => !l.isOutgoing).length;
-        const outboxTotal = letterList.filter(l => l.isOutgoing).length;
-        const favTotal = letterList.filter(l => l.favorite).length;
-        const pendingTotal = letterList.filter(l => {
+        // 总览（排除匿名信）
+        const nonAnonList = letterList.filter(l => !l.anonymous);
+        const inboxTotal = nonAnonList.filter(l => !l.isOutgoing).length;
+        const outboxTotal = nonAnonList.filter(l => l.isOutgoing).length;
+        const favTotal = nonAnonList.filter(l => l.favorite).length;
+        const pendingTotal = nonAnonList.filter(l => {
           if (l.isOutgoing) return l.replyScheduled && !l.replyReceived;
           const hasReplied = l.replies && l.replies.length > 0;
           return !hasReplied && !l.userReplied;
@@ -12111,7 +12115,7 @@ patText2 = patText2.replace(/你/g, '我');
           });
         }
 
-        letterList.forEach(l => {
+        letterList.filter(l => !l.anonymous).forEach(l => {
           if (!l.timestamp) return;
           const d = new Date(l.timestamp);
           const m = months.find(mo => mo.year === d.getFullYear() && mo.month === d.getMonth());
@@ -12187,7 +12191,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 按联系人统计通信数量（收到+寄出）
         const contactStats = {};
-        letterList.forEach(l => {
+        letterList.filter(l => !l.anonymous).forEach(l => {
           const name = l.from || '未知';
           if (!contactStats[name]) contactStats[name] = { name, count: 0, received: 0, sent: 0 };
           contactStats[name].count++;
@@ -12223,7 +12227,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 统计收到字卡的类型
         const typeCount = {};
-        letterList.forEach(l => {
+        letterList.filter(l => !l.anonymous).forEach(l => {
           if (l.isOutgoing) return;
           (l.words || []).forEach(w => {
             const cat = w.category || '其他';
@@ -12283,7 +12287,7 @@ patText2 = patText2.replace(/你/g, '我');
         if (!body) return;
 
         // 过滤该联系人的所有信件
-        const contactLetters = letterList.filter(l => l.from === contactName);
+        const contactLetters = letterList.filter(l => l.from === contactName && !l.anonymous);
         const received = contactLetters.filter(l => !l.isOutgoing).length;
         const sent = contactLetters.filter(l => l.isOutgoing).length;
         const total = contactLetters.length;
