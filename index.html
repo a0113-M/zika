@@ -7106,6 +7106,7 @@
   </div>
 
   <script>
+    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}d.textContent="JS错误: "+msg+" @line "+line;return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}d.textContent="资源错误: "+(e.message||e.filename);});})();
     // ===== 键盘跟随（适用于原生浏览器） =====
     (function () {
       const chatView = document.querySelector('.chat-view');
@@ -13772,6 +13773,7 @@ patText2 = patText2.replace(/你/g, '我');
 
     })();
 
+    (function(){var d=document.getElementById("js-debug");if(d){d.style.background="#0f0";d.textContent="JS加载完成 ✓ 无错误";}})();
   </script>
 </body>
 
