@@ -6822,7 +6822,6 @@
                 <path d="M12 11v5" />
                 <path d="M9 13l3 3 3-3" />
               </svg></span><span class="item-text">数据</span></div>
-          <div class="sidebar-menu-item" data-action="clearcache" style="color:#e74c3c;"><span class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></span><span class="item-text">清除缓存</span></div>
         </div>
         <div class="sidebar-close" id="sidebarClose">← 收起</div>
       </div>
@@ -6857,6 +6856,7 @@
       <div class="feature-content" id="featureContent">
         <div class="big-icon" id="featureIcon">📬</div>
         <div id="featureDesc">功能开发中...</div>
+        <div id="featureClearCache" style="display:none;margin-top:20px;text-align:center;"><button style="padding:10px 24px;border-radius:10px;border:1px solid #e74c3c;background:transparent;color:#e74c3c;font-size:14px;cursor:pointer;" id="featureClearCacheBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>清除缓存</button></div>
       </div>
     </div>
 
@@ -9181,14 +9181,6 @@
             openLetterModule();
             return;
           }
-          if (action === 'clearcache') {
-            sidebarOverlay.classList.remove('show');
-            if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) {
-              localStorage.clear();
-              location.reload();
-            }
-            return;
-          }
           const info = featureMap[action];
           if (!info) return;
           document.getElementById('featureTitle').textContent = info.title;
@@ -9197,6 +9189,7 @@
           document.getElementById('featureDesc').style.whiteSpace = 'pre-line';
           document.getElementById('featureDesc').style.textAlign = 'center';
           document.getElementById('featureDesc').style.lineHeight = '1.8';
+          document.getElementById('featureClearCache').style.display = (action === 'data') ? 'block' : 'none';
           document.getElementById('featurePage').classList.add('show');
           sidebarOverlay.classList.remove('show');
         });
@@ -9656,6 +9649,7 @@
       document.getElementById('sideAvatar').addEventListener('click', function (e) { e.stopPropagation(); openProfileModal(); });
       document.getElementById('sideName').addEventListener('click', function (e) { e.stopPropagation(); openProfileModal(); });
       document.getElementById('featureBack').addEventListener('click', function () { document.getElementById('featurePage').classList.remove('show'); });
+      document.getElementById('featureClearCacheBtn').addEventListener('click', function () { if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) { localStorage.clear(); location.reload(); } });
 
       // ----- Toast -----
       let toastTimer = null;
