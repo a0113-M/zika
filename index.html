@@ -6496,14 +6496,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding-top: 8px;
   border-top: 0.5px solid #f0eaf6;
 }
-.diary-action-left {
-  display: flex;
-  gap: 16px;
-  align-items: center;
-}
+
 .diary-like-btn, .diary-comment-toggle {
   display: flex;
   align-items: center;
@@ -6523,51 +6520,17 @@
   font-size: 12px;
   color: #aaa;
 }
-.diary-action-btn {
-  background: #f0eaf6;
+.diary-edit-btn, .diary-delete-btn {
+  background: none;
   border: none;
-  border-radius: 6px;
-  padding: 5px 8px;
+  color: #999;
   cursor: pointer;
+  padding: 4px 6px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #7b6eb4;
-  position: relative;
 }
-.diary-action-btn:active { background: #e8ddf5; }
-.diary-action-btn svg { width: 16px; height: 16px; display: block; }
-
-/* 弹出菜单 */
-.diary-menu-popup {
-  position: absolute;
-  top: auto;
-  bottom: 100%;
-  right: 0;
-  margin-bottom: 4px;
-  background: #4a4a4a;
-  border-radius: 8px;
-  padding: 0;
-  display: none;
-  min-width: 120px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  z-index: 50;
-  overflow: hidden;
-}
-.diary-menu-popup.show { display: block; }
-.diary-menu-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 9px 14px;
-  font-size: 13px;
-  color: #fff;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.diary-menu-item:active { background: #5a5a5a; }
-.diary-menu-item svg { width: 14px; height: 14px; flex-shrink: 0; }
-.diary-menu-item.danger { color: #ff6b6b; }
+.diary-edit-btn svg, .diary-delete-btn svg { width: 15px; height: 15px; }
+.diary-delete-btn { color: #e07070; }
 
 /* 评论区域 */
 .diary-comment-area {
@@ -14986,34 +14949,30 @@ patText2 = patText2.replace(/你/g, '我');
 
           var timeStr = formatDiaryTime(entry.date);
 
-          var menuHtml = '<button class="diary-action-btn" data-diary-id="' + entry.id + '">' +
-            '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>' +
-            '<div class="diary-menu-popup" data-menu-id="' + entry.id + '">' +
-            '<div class="diary-menu-item" data-action="like" data-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>点赞</div>' +
-            '<div class="diary-menu-item" data-action="edit" data-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>编辑</div>' +
-            '<div class="diary-menu-item" data-action="comment" data-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>评论</div>' +
-            '<div class="diary-menu-item danger" data-action="delete" data-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>删除</div>' +
-            '</div></button>';
+          
 
           item.innerHTML =
             '<div class="diary-card-top">' + avatarHtml +
             '<span class="diary-author">' + escapeDiaryHtml(userInfo.name) + '</span>' + typeBadge + '</div>' +
             '<div class="diary-text">' + escapedText + '</div>' +
             imageHtml +
-            '<div class="diary-action-bar">' +
-            '<div class="diary-action-left">' +
-            '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
+            '\u003cdiv class="diary-action-bar"\u003e' +
+'<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
             '<svg viewBox="0 0 24 24" fill="' + (isLiked ? '#e88ec4' : 'none') + '" stroke="' + (isLiked ? '#e88ec4' : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
             (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
             '</button>' +
             '<button class="diary-comment-toggle" data-comment-id="' + entry.id + '">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
             (commentCount > 0 ? '<span>' + commentCount + '</span>' : '') +
-            '</button>' +
-            '</div>' +
-            '<span class="diary-time">' + timeStr + '</span>' +
-            menuHtml +
-            '</div>' +
+            '</button>'
+            '\u003cspan class="diary-time"\u003e' + timeStr + '\u003c/span\u003e' +
+            '\u003cbutton class="diary-edit-btn" data-edit-id="' + entry.id + '"\u003e' +
+            '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"\u003e\u003cpath d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/\u003e\u003cpath d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/\u003e\u003c/svg\u003e' +
+            '\u003c/button\u003e' +
+            '\u003cbutton class="diary-delete-btn" data-delete-id="' + entry.id + '"\u003e' +
+            '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"\u003e\u003cpolyline points="3 6 5 6 21 6"/\u003e\u003cpath d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/\u003e\u003c/svg\u003e' +
+            '\u003c/button\u003e' +
+            '\u003c/div\u003e' + +
             '<div class="diary-comment-area" id="diaryCommentArea-' + entry.id + '">' +
             commentListHtml +
             '<div class="diary-comment-input-wrap">' +
@@ -15033,31 +14992,9 @@ patText2 = patText2.replace(/你/g, '我');
       };
 
       function bindDiaryEvents() {
-        var actionBtns = diaryFeed.querySelectorAll('.diary-action-btn');
-        actionBtns.forEach(function(btn) {
-          btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            var menu = this.querySelector('.diary-menu-popup');
-            var allMenus = diaryFeed.querySelectorAll('.diary-menu-popup.show');
-            allMenus.forEach(function(m) { if (m !== menu) m.classList.remove('show'); });
-            menu.classList.toggle('show');
-          });
-        });
 
-        var menuItems = diaryFeed.querySelectorAll('.diary-menu-item');
-        menuItems.forEach(function(mi) {
-          mi.addEventListener('click', function(e) {
-            e.stopPropagation();
-            var action = this.dataset.action;
-            var id = parseInt(this.dataset.id);
-            var allMenus = diaryFeed.querySelectorAll('.diary-menu-popup.show');
-            allMenus.forEach(function(m) { m.classList.remove('show'); });
-            if (action === 'like') { toggleDiaryLike(id); }
-            else if (action === 'edit') { openDiaryEdit(id); }
-            else if (action === 'comment') { toggleCommentArea(id); }
-            else if (action === 'delete') { openDiaryDelete(id); }
-          });
-        });
+
+
 
         var likeBtns = diaryFeed.querySelectorAll('.diary-like-btn');
         likeBtns.forEach(function(btn) {
@@ -15085,12 +15022,23 @@ patText2 = patText2.replace(/你/g, '我');
             if (e.key === 'Enter') { sendDiaryComment(parseInt(this.dataset.commentInputId)); }
           });
         });
+
+        var editBtns = diaryFeed.querySelectorAll('.diary-edit-btn');
+        editBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            openDiaryEdit(parseInt(this.dataset.editId));
+          });
+        });
+
+        var deleteBtns = diaryFeed.querySelectorAll('.diary-delete-btn');
+        deleteBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            openDiaryDelete(parseInt(this.dataset.deleteId));
+          });
+        });
       }
 
-      document.addEventListener('click', function() {
-        if (!diaryFeed) return;
-        diaryFeed.querySelectorAll('.diary-menu-popup.show').forEach(function(m) { m.classList.remove('show'); });
-      });
+
 
       function toggleDiaryLike(id) {
         var entries = getDiaryEntries();
