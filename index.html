@@ -6371,6 +6371,217 @@
     }
 
 /* ===== 日记页面样式 ===== */
+/* ===== 待办模块 CSS ===== */
+.todo-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #f5f0ff;
+}
+.todo-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px 8px;
+  background: #fff;
+  border-bottom: 0.5px solid #ede7f6;
+}
+.todo-header-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+}
+.todo-header-count {
+  margin-left: 8px;
+  font-size: 12px;
+  color: #9b8ec4;
+  background: #f0ecf7;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.todo-filter-bar {
+  display: flex;
+  gap: 0;
+  background: #fff;
+  border-bottom: 0.5px solid #ede7f6;
+  padding: 0 16px;
+}
+.todo-filter-btn {
+  flex: none;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: #888;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+.todo-filter-btn.active {
+  color: #9b8ec4;
+  font-weight: 600;
+}
+.todo-filter-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: #9b8ec4;
+  border-radius: 1px;
+}
+.todo-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 0;
+}
+.todo-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #bbb;
+  font-size: 14px;
+}
+.todo-empty svg {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 12px;
+  opacity: 0.4;
+  color: #9b8ec4;
+}
+.todo-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  margin: 4px 12px;
+  background: #fff;
+  border-radius: 10px;
+  gap: 10px;
+  transition: all 0.2s;
+}
+.todo-item:active { background: #faf8ff; }
+.todo-checkbox {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #d4c8e8;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+  transition: all 0.2s;
+}
+.todo-checkbox.checked {
+  background: #9b8ec4;
+  border-color: #9b8ec4;
+}
+.todo-checkbox.checked::after {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+}
+.todo-content {
+  flex: 1;
+  min-width: 0;
+}
+.todo-text {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+  word-break: break-word;
+  transition: all 0.2s;
+}
+.todo-item.completed .todo-text {
+  color: #bbb;
+  text-decoration: line-through;
+}
+.todo-date {
+  font-size: 11px;
+  color: #bbb;
+  margin-top: 4px;
+}
+.todo-del-btn {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #ccc;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.todo-item:active .todo-del-btn,
+.todo-item:hover .todo-del-btn { opacity: 1; }
+.todo-del-btn svg { width: 16px; height: 16px; }
+.todo-del-btn:active { background: #fff5f5; color: #e55a5a; }
+/* Edit input */
+.todo-edit-input {
+  width: 100%;
+  padding: 4px 0;
+  border: none;
+  border-bottom: 1.5px solid #9b8ec4;
+  font-size: 14px;
+  color: #333;
+  background: transparent;
+  outline: none;
+}
+/* Add area */
+.todo-add-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+  gap: 8px;
+  background: #fff;
+  border-top: 0.5px solid #ede7f6;
+}
+.todo-add-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid #e8e0f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  background: #faf8ff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.todo-add-input:focus { border-color: #9b8ec4; }
+.todo-add-input::placeholder { color: #c4b8d8; }
+.todo-add-btn {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #9b8ec4, #b8a9d4);
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.todo-add-btn:active { transform: scale(0.95); }
+
+
 .diary-page {
   position: absolute;
   top: 0; left: 0;
@@ -7128,10 +7339,44 @@
         </div>
       </div>
 
+
+      <!-- 待办视图 -->
+      <div id="todoView" class="todo-view hidden">
+        <div class="todo-header">
+          <span class="todo-header-title">待办</span>
+          <span class="todo-header-count" id="todoCount">0 项</span>
+        </div>
+        <div class="todo-filter-bar" id="todoFilterBar">
+          <button class="todo-filter-btn active" data-filter="all">全部</button>
+          <button class="todo-filter-btn" data-filter="pending">未完成</button>
+          <button class="todo-filter-btn" data-filter="done">已完成</button>
+        </div>
+        <div class="todo-scroll" id="todoScroll">
+          <div class="todo-empty" id="todoEmpty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"/>
+              <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+            </svg>
+            <div>暂无待办事项</div>
+          </div>
+          <div id="todoList"></div>
+        </div>
+        <div class="todo-add-bar">
+          <input type="text" class="todo-add-input" id="todoAddInput" placeholder="添加新待办...">
+          <button class="todo-add-btn" id="todoAddBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"/>
+              <line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
       <!-- 底部导航 -->
       <div class="bottom-nav">
         <button class="nav-item active" data-view="card">首页</button>
         <button class="nav-item" data-view="moments">朋友圈</button>
+        <button class="nav-item" data-view="todo">待办</button>
       </div>
     </div>
 
@@ -10128,8 +10373,11 @@
           cardView.classList.add('hidden');
           phoneView.classList.add('hidden');
           if (momentsView) momentsView.classList.add('hidden');
+          var todoView = document.getElementById('todoView');
+          if (todoView) todoView.classList.add('hidden');
           if (view === 'card') { cardView.classList.remove('hidden'); }
           else if (view === 'moments') { if (momentsView) momentsView.classList.remove('hidden'); }
+          else if (view === 'todo') { if (todoView) todoView.classList.remove('hidden'); if (typeof renderTodoList === 'function') renderTodoList(); }
           else if (view === 'phone') { phoneView.classList.remove('hidden'); }
           addMenu.classList.remove('show');
           closeModal();
@@ -15870,6 +16118,159 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
 
+
+
+      // ===== 待办模块 =====
+      (function() {
+        var _todoFilter = 'all';
+
+        function getTodos() {
+          try { return JSON.parse(localStorage.getItem('todos') || '[]'); } catch(e) { return []; }
+        }
+        function saveTodos(arr) {
+          localStorage.setItem('todos', JSON.stringify(arr));
+        }
+        function genId() {
+          return 'todo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+        }
+        function formatDate(ts) {
+          var d = new Date(ts);
+          var M = d.getMonth() + 1, D = d.getDate();
+          var h = d.getHours(), m = d.getMinutes();
+          return M + '月' + D + '日 ' + (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+        }
+        function renderTodoList() {
+          var todos = getTodos();
+          var filtered;
+          if (_todoFilter === 'pending') filtered = todos.filter(function(t) { return !t.done; });
+          else if (_todoFilter === 'done') filtered = todos.filter(function(t) { return t.done; });
+          else filtered = todos;
+          var list = document.getElementById('todoList');
+          var empty = document.getElementById('todoEmpty');
+          var countEl = document.getElementById('todoCount');
+          if (!list) return;
+          // Count
+          var pending = todos.filter(function(t) { return !t.done; }).length;
+          countEl.textContent = pending + ' 项未完成';
+          if (filtered.length === 0) {
+            empty.style.display = '';
+            list.innerHTML = '';
+            return;
+          }
+          empty.style.display = 'none';
+          var html = '';
+          filtered.forEach(function(t) {
+            html += '<div class="todo-item' + (t.done ? ' completed' : '') + '" data-todo-id="' + t.id + '">';
+            html += '<div class="todo-checkbox' + (t.done ? ' checked' : '') + '" data-toggle-todo="' + t.id + '"></div>';
+            html += '<div class="todo-content">';
+            html += '<div class="todo-text" data-edit-todo="' + t.id + '">' + escapeTodoHtml(t.text) + '</div>';
+            html += '<div class="todo-date">' + formatDate(t.createdAt) + '</div>';
+            html += '</div>';
+            html += '<button class="todo-del-btn" data-del-todo="' + t.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>';
+            html += '</div>';
+          });
+          list.innerHTML = html;
+          // Bind events
+          bindTodoEvents();
+        }
+        function escapeTodoHtml(s) {
+          return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+        function bindTodoEvents() {
+          var list = document.getElementById('todoList');
+          if (!list) return;
+          // Toggle done
+          list.querySelectorAll('[data-toggle-todo]').forEach(function(cb) {
+            cb.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var id = this.dataset.toggleTodo;
+              var todos = getTodos();
+              var t = todos.find(function(x) { return x.id === id; });
+              if (t) { t.done = !t.done; saveTodos(todos); renderTodoList(); }
+            });
+          });
+          // Delete
+          list.querySelectorAll('[data-del-todo]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var id = this.dataset.delTodo;
+              var todos = getTodos().filter(function(x) { return x.id !== id; });
+              saveTodos(todos);
+              renderTodoList();
+            });
+          });
+          // Edit (tap text)
+          list.querySelectorAll('[data-edit-todo]').forEach(function(span) {
+            span.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var id = this.dataset.editTodo;
+              if (this.querySelector('.todo-edit-input')) return;
+              var oldText = this.textContent;
+              var input = document.createElement('input');
+              input.className = 'todo-edit-input';
+              input.value = oldText;
+              this.textContent = '';
+              this.appendChild(input);
+              input.focus();
+              input.select();
+              function doSave() {
+                var newText = input.value.trim();
+                if (!newText || newText === oldText) {
+                  this.textContent = oldText;
+                  return;
+                }
+                var todos = getTodos();
+                var t = todos.find(function(x) { return x.id === id; });
+                if (t) { t.text = newText; saveTodos(todos); }
+                renderTodoList();
+              }
+              input.addEventListener('blur', doSave);
+              input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+                if (e.key === 'Escape') { input.value = oldText; input.blur(); }
+              });
+            });
+          });
+        }
+        // Add todo
+        function addTodo() {
+          var input = document.getElementById('todoAddInput');
+          if (!input) return;
+          var text = input.value.trim();
+          if (!text) return;
+          var todos = getTodos();
+          todos.unshift({
+            id: genId(),
+            text: text,
+            done: false,
+            createdAt: Date.now()
+          });
+          saveTodos(todos);
+          input.value = '';
+          renderTodoList();
+        }
+        // Init
+        var addBtn = document.getElementById('todoAddBtn');
+        if (addBtn) addBtn.addEventListener('click', addTodo);
+        var addInput = document.getElementById('todoAddInput');
+        if (addInput) addInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') { e.preventDefault(); addTodo(); }
+        });
+        // Filter bar
+        var filterBar = document.getElementById('todoFilterBar');
+        if (filterBar) {
+          filterBar.querySelectorAll('.todo-filter-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              filterBar.querySelectorAll('.todo-filter-btn').forEach(function(b) { b.classList.remove('active'); });
+              this.classList.add('active');
+              _todoFilter = this.dataset.filter;
+              renderTodoList();
+            });
+          });
+        }
+        // Expose
+        window.renderTodoList = renderTodoList;
+      })();
 
     })();
 
