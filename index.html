@@ -12717,7 +12717,7 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
       // 排序按钮：点击直接切换时间正序/倒序
-      document.getElementById('letterSortBtn').addEventListener('click', function(e) {
+      var sortBtn = document.getElementById('letterSortBtn'); if (sortBtn) sortBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         if (batchMode) return;
         if (letterSort === 'time_asc') {
@@ -12728,7 +12728,7 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
       // 批量：全选/取消全选
-      document.getElementById('batchSelectAllBtn').addEventListener('click', function(e) {
+      var batchAllBtn = document.getElementById('batchSelectAllBtn'); if (batchAllBtn) batchAllBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         const total = getFilteredList().length;
         const selected = batchSelected.size;
@@ -12740,13 +12740,13 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
       // 批量：标已读
-      document.getElementById('batchMarkReadBtn').addEventListener('click', function(e) {
+      var batchReadBtn = document.getElementById('batchMarkReadBtn'); if (batchReadBtn) batchReadBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         batchMarkRead(true);
       });
 
       // 批量：收藏
-      document.getElementById('batchFavBtn').addEventListener('click', function(e) {
+      var batchFavBtn = document.getElementById('batchFavBtn'); if (batchFavBtn) batchFavBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         // 如果全部已收藏则取消，否则设为收藏
         const allFav = Array.from(batchSelected).every(id => {
@@ -12757,7 +12757,7 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
       // 批量：置顶
-      document.getElementById('batchPinBtn').addEventListener('click', function(e) {
+      var batchPinBtn = document.getElementById('batchPinBtn'); if (batchPinBtn) batchPinBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         const allPinned = Array.from(batchSelected).every(id => {
           const l = letterList.find(x => x.id === id);
@@ -12767,13 +12767,13 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
       // 批量：删除
-      document.getElementById('batchDeleteBtn').addEventListener('click', function(e) {
+      var batchDelBtn = document.getElementById('batchDeleteBtn'); if (batchDelBtn) batchDelBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         batchDelete();
       });
 
       // 批量：完成
-      document.getElementById('batchDoneBtn').addEventListener('click', function(e) {
+      var batchDoneBtn = document.getElementById('batchDoneBtn'); if (batchDoneBtn) batchDoneBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         exitBatchMode();
       });
@@ -12807,7 +12807,7 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
       // 清除筛选按钮
-      document.getElementById('letterSearchClearFilter').addEventListener('click', function(e) {
+      var clearFilterBtn = document.getElementById('letterSearchClearFilter'); if (clearFilterBtn) clearFilterBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         letterSearchContact = '';
         letterSearchDate = '';
@@ -12841,7 +12841,7 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
       // 联系人按钮点击
-      document.getElementById('letterSearchContactBtn').addEventListener('click', function(e) {
+      var searchContactBtn = document.getElementById('letterSearchContactBtn'); if (searchContactBtn) searchContactBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         const popup = document.getElementById('letterSearchContactPopup');
         const timePopup = document.getElementById('letterSearchTimePopup');
@@ -12933,7 +12933,7 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
       // 时间按钮点击 — 直接弹出日历
-      document.getElementById('letterSearchTimeBtn').addEventListener('click', function(e) {
+      var searchTimeBtn = document.getElementById('letterSearchTimeBtn'); if (searchTimeBtn) searchTimeBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         const popup = document.getElementById('letterSearchTimePopup');
         if (popup.style.display === 'none') {
@@ -12944,21 +12944,21 @@ patText2 = patText2.replace(/你/g, '我');
       });
 
       // 上月
-      document.getElementById('calPrevMonth').addEventListener('click', function(e) {
+      var calPrevBtn = document.getElementById('calPrevMonth'); if (calPrevBtn) calPrevBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         calViewMonth--;
         if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
         renderCalendar();
       });
       // 下月
-      document.getElementById('calNextMonth').addEventListener('click', function(e) {
+      var calNextBtn = document.getElementById('calNextMonth'); if (calNextBtn) calNextBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         calViewMonth++;
         if (calViewMonth > 11) { calViewMonth = 0; calViewYear++; }
         renderCalendar();
       });
       // 取消
-      document.getElementById('calCancel').addEventListener('click', function(e) {
+      var calCancelBtn = document.getElementById('calCancel'); if (calCancelBtn) calCancelBtn.addEventListener('click', function(e) {
         e.stopPropagation();
         document.getElementById('letterSearchTimePopup').style.display = 'none';
       });
