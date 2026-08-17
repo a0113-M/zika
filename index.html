@@ -7291,7 +7291,7 @@
 
 /* Priority popup */
 .todo-prio-overlay {
-  position: fixed;
+  position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.3);
   z-index: 9999;
@@ -7361,10 +7361,35 @@
   color: #9b8ec4;
   font-weight: 600;
 }
+.todo-prio-contact-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 10px 14px;
+  background: #faf8ff;
+  border-radius: 10px;
+}
+.todo-prio-contact-icon {
+  width: 16px;
+  height: 16px;
+  color: #9b8ec4;
+  flex-shrink: 0;
+}
+.todo-prio-contact-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: #555;
+  outline: none;
+}
+.todo-prio-contact-input::placeholder { color: #c4b8d8; }
+
 .todo-prio-actions {
   display: flex;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 16px;
   padding-top: 12px;
   border-top: 0.5px solid #f0ecf7;
 }
@@ -8141,6 +8166,43 @@
     </div>
 
     <!-- 侧边栏 -->
+    <!-- 优先级弹窗 -->
+    <div class="todo-prio-overlay" id="todoPrioOverlay">
+      <div class="todo-prio-popup">
+        <div class="todo-prio-popup-title">设置重要等级</div>
+        <div class="todo-prio-options" id="todoPrioOptions">
+          <div class="todo-prio-option" data-set-prio="0">
+            <div class="pop-dot" data-p="0"></div>
+            <span class="pop-label">无</span>
+          </div>
+          <div class="todo-prio-option" data-set-prio="1">
+            <div class="pop-dot" data-p="1"></div>
+            <span class="pop-label">低</span>
+          </div>
+          <div class="todo-prio-option" data-set-prio="2">
+            <div class="pop-dot" data-p="2"></div>
+            <span class="pop-label">中</span>
+          </div>
+          <div class="todo-prio-option" data-set-prio="3">
+            <div class="pop-dot" data-p="3"></div>
+            <span class="pop-label">高</span>
+          </div>
+          <div class="todo-prio-option" data-set-prio="4">
+            <div class="pop-dot" data-p="4"></div>
+            <span class="pop-label">紧急</span>
+          </div>
+        </div>
+        <div class="todo-prio-contact-row">
+          <svg class="todo-prio-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input type="text" class="todo-prio-contact-input" id="todoPrioContactInput" placeholder="联系人提醒（可选）">
+        </div>
+        <div class="todo-prio-actions">
+          <button class="todo-prio-btn todo-prio-btn-cancel" id="todoPrioCancel">取消</button>
+          <button class="todo-prio-btn todo-prio-btn-confirm" id="todoPrioConfirm">确定</button>
+        </div>
+      </div>
+    </div>
+
     <div class="sidebar-overlay" id="sidebarOverlay">
       <div class="sidebar-bg" id="sidebarBg"></div>
       <div class="sidebar" id="sidebar">
@@ -16487,6 +16549,7 @@ patText2 = patText2.replace(/你/g, '我');
           var todos = getTodos();
           var t = todos.find(function(x) { return x.id === todoId; });
           var cur = t ? (t.priority || 0) : 0;
+          var contact = t ? (t.reminderContact || '') : '';
           var overlay = document.getElementById('todoPrioOverlay');
           if (!overlay) return;
           overlay.querySelectorAll('.todo-prio-option').forEach(function(opt) {
@@ -16494,18 +16557,32 @@ patText2 = patText2.replace(/你/g, '我');
             if (p === cur) opt.classList.add('selected');
             else opt.classList.remove('selected');
           });
+          // Pre-fill contact input
+          var ci = document.getElementById('todoPrioContactInput');
+          if (ci) ci.value = contact;
           overlay.classList.add('show');
         }
         function closePrioPopup() {
           var overlay = document.getElementById('todoPrioOverlay');
           if (overlay) overlay.classList.remove('show');
+          var ci = document.getElementById('todoPrioContactInput');
+          if (ci) ci.value = '';
           _prioTargetId = null;
         }
         function applyPrio(p) {
           if (!_prioTargetId) return;
           var todos = getTodos();
           var t = todos.find(function(x) { return x.id === _prioTargetId; });
-          if (t) { t.priority = p; saveTodos(todos); }
+          if (t) {
+            t.priority = p;
+            // Also save contact from popup input
+            var ci = document.getElementById('todoPrioContactInput');
+            if (ci) {
+              var contact = ci.value.trim();
+              t.reminderContact = contact || undefined;
+            }
+            saveTodos(todos);
+          }
           closePrioPopup();
           renderTodoList();
         }
@@ -16619,41 +16696,10 @@ patText2 = patText2.replace(/你/g, '我');
     })();
 
     (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor="#9b8ec4";d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
+</script>
 
-        </script>
+    <!-- 优先级弹窗 -->
 
-
-    <div class="todo-prio-overlay" id="todoPrioOverlay">
-      <div class="todo-prio-popup">
-        <div class="todo-prio-popup-title">设置重要等级</div>
-        <div class="todo-prio-options" id="todoPrioOptions">
-          <div class="todo-prio-option" data-set-prio="0">
-            <div class="pop-dot" data-p="0"></div>
-            <span class="pop-label">无</span>
-          </div>
-          <div class="todo-prio-option" data-set-prio="1">
-            <div class="pop-dot" data-p="1"></div>
-            <span class="pop-label">低</span>
-          </div>
-          <div class="todo-prio-option" data-set-prio="2">
-            <div class="pop-dot" data-p="2"></div>
-            <span class="pop-label">中</span>
-          </div>
-          <div class="todo-prio-option" data-set-prio="3">
-            <div class="pop-dot" data-p="3"></div>
-            <span class="pop-label">高</span>
-          </div>
-          <div class="todo-prio-option" data-set-prio="4">
-            <div class="pop-dot" data-p="4"></div>
-            <span class="pop-label">紧急</span>
-          </div>
-        </div>
-        <div class="todo-prio-actions">
-          <button class="todo-prio-btn todo-prio-btn-cancel" id="todoPrioCancel">取消</button>
-          <button class="todo-prio-btn todo-prio-btn-confirm" id="todoPrioConfirm">确定</button>
-        </div>
-      </div>
-    </div>
 </body>
 
 </html>
