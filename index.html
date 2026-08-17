@@ -14964,7 +14964,7 @@ patText2 = patText2.replace(/你/g, '我');
             '<button class="diary-comment-toggle" data-comment-id="' + entry.id + '">' +
             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
             (commentCount > 0 ? '<span>' + commentCount + '</span>' : '') +
-            '</button>'
+            '</button>' +
             '\u003cspan class="diary-time"\u003e' + timeStr + '\u003c/span\u003e' +
             '\u003cbutton class="diary-edit-btn" data-edit-id="' + entry.id + '"\u003e' +
             '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"\u003e\u003cpath d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/\u003e\u003cpath d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/\u003e\u003c/svg\u003e' +
@@ -14972,7 +14972,7 @@ patText2 = patText2.replace(/你/g, '我');
             '\u003cbutton class="diary-delete-btn" data-delete-id="' + entry.id + '"\u003e' +
             '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"\u003e\u003cpolyline points="3 6 5 6 21 6"/\u003e\u003cpath d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/\u003e\u003c/svg\u003e' +
             '\u003c/button\u003e' +
-            '\u003c/div\u003e' + +
+            '\u003c/div\u003e' +
             '<div class="diary-comment-area" id="diaryCommentArea-' + entry.id + '">' +
             commentListHtml +
             '<div class="diary-comment-input-wrap">' +
