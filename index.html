@@ -5831,13 +5831,19 @@
   display: grid;
   gap: 4px;
   margin-bottom: 8px;
-  max-width: 260px;
+  max-width: 280px;
 }
 
-.moment-images.grid-1 { grid-template-columns: 1fr; max-width: 180px; }
-.moment-images.grid-2 { grid-template-columns: 1fr 1fr; max-width: 180px; }
-.moment-images.grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-.moment-images.grid-4 { grid-template-columns: 1fr 1fr; }
+/* 微信风格九宫格布局 */
+.moment-images.grid-1 { grid-template-columns: 1fr; max-width: 200px; }
+.moment-images.grid-2 { grid-template-columns: 1fr 1fr; max-width: 200px; }
+.moment-images.grid-3 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.moment-images.grid-4 { grid-template-columns: 1fr 1fr; max-width: 200px; }
+.moment-images.grid-5 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.moment-images.grid-6 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.moment-images.grid-7 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.moment-images.grid-8 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.moment-images.grid-9 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
 
 .moment-images img {
   width: 100%;
@@ -5845,6 +5851,7 @@
   object-fit: cover;
   border-radius: 6px;
   background: #f0eaf6;
+  cursor: pointer;
 }
 
 .moment-footer {
@@ -6312,15 +6319,7 @@
           <div class="moments-post-panel">
             <h3>发朋友圈</h3>
             <textarea class="moments-textarea" id="momentsTextarea" placeholder="这一刻的想法..."></textarea>
-            <div class="moments-image-picker" id="momentsImagePicker">
-              <label class="moments-image-add" id="momentsImageAdd">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="12" y1="5" x2="12" y2="19"/>
-                  <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                <input type="file" accept="image/*" multiple id="momentsFileInput" style="display:none">
-              </label>
-            </div>
+            <div class="moments-image-picker" id="momentsImagePicker"></div>
             <div class="moments-post-actions">
               <button class="moments-btn-cancel" id="momentsPostCancel">取消</button>
               <button class="moments-btn-publish" id="momentsPostPublish">发布</button>
@@ -9317,13 +9316,36 @@
       var momentsPostOverlay = document.getElementById('momentsPostOverlay');
       var momentsTextarea = document.getElementById('momentsTextarea');
       var momentsImagePicker = document.getElementById('momentsImagePicker');
-      var momentsImageAdd = document.getElementById('momentsImageAdd');
-      var momentsFileInput = document.getElementById('momentsFileInput');
       var momentsPostCancel = document.getElementById('momentsPostCancel');
       var momentsPostPublish = document.getElementById('momentsPostPublish');
 
       function updateImagePicker() {
         momentsImagePicker.innerHTML = '';
+        if (momentsPendingImages.length === 0 && momentsImagePicker.children.length === 0) {
+          // Initial state: show add button
+          var addBtn = document.createElement('label');
+          addBtn.className = 'moments-image-add';
+          addBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+          var fi = document.createElement('input');
+          fi.type = 'file';
+          fi.accept = 'image/*';
+          fi.multiple = true;
+          fi.style.display = 'none';
+          addBtn.appendChild(fi);
+          momentsImagePicker.appendChild(addBtn);
+          fi.addEventListener('change', function() {
+            Array.from(this.files).forEach(function(file) {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                momentsPendingImages.push({ src: e.target.result });
+                updateImagePicker();
+              };
+              reader.readAsDataURL(file);
+            });
+            this.value = '';
+          });
+          return;
+        }
         momentsPendingImages.forEach(function(item, i) {
           var wrap = document.createElement('div');
           wrap.style.cssText = 'position:relative;display:inline-block;width:60px;height:60px;margin:4px;';
@@ -9342,7 +9364,7 @@
           wrap.appendChild(del);
           momentsImagePicker.appendChild(wrap);
         });
-        // Re-add the add button
+        // Add button for more images
         var addBtn = document.createElement('label');
         addBtn.className = 'moments-image-add';
         addBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
@@ -9350,13 +9372,11 @@
         fi.type = 'file';
         fi.accept = 'image/*';
         fi.multiple = true;
-        fi.id = 'momentsFileInput';
         fi.style.display = 'none';
         addBtn.appendChild(fi);
         momentsImagePicker.appendChild(addBtn);
         fi.addEventListener('change', function() {
-          var files = this.files;
-          Array.from(files).forEach(function(file) {
+          Array.from(this.files).forEach(function(file) {
             var reader = new FileReader();
             reader.onload = function(e) {
               momentsPendingImages.push({ src: e.target.result });
@@ -9368,19 +9388,7 @@
         });
       }
 
-      // Initial file input binding
-      momentsFileInput.addEventListener('change', function() {
-        var files = this.files;
-        Array.from(files).forEach(function(file) {
-          var reader = new FileReader();
-          reader.onload = function(e) {
-            momentsPendingImages.push({ src: e.target.result });
-            updateImagePicker();
-          };
-          reader.readAsDataURL(file);
-        });
-        this.value = '';
-      });
+
 
       // FAB button
       momentsFab.addEventListener('click', function() {
@@ -9392,6 +9400,9 @@
       });
 
       // Cancel
+      // Initialize image picker on load
+      updateImagePicker();
+
       momentsPostCancel.addEventListener('click', function() {
         momentsPostOverlay.classList.remove('show');
       });
@@ -9435,7 +9446,7 @@
           // Images
           var imagesHtml = '';
           if (m.images && m.images.length > 0) {
-            var gridClass = 'grid-' + Math.min(m.images.length, 4);
+            var gridClass = 'grid-' + Math.min(m.images.length, 9);
             imagesHtml = '<div class="moment-images ' + gridClass + '">';
             m.images.slice(0, 9).forEach(function(img) {
               imagesHtml += '<img src="' + img + '">';
