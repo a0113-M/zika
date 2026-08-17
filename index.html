@@ -6714,6 +6714,26 @@
   color: #fff;
 }
 .diary-cat-del-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
+.diary-cat-del-subtitle {
+  margin: -8px 0 16px;
+  font-size: 13px;
+  color: #999;
+  text-align: center;
+}
+.diary-cat-del-all {
+  display: block;
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1.5px solid #e0d8ee;
+  background: #fff;
+  color: #e55a5a;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.diary-cat-del-all:active { background: #fff5f5; }
 
 .diary-cat-tab.cat-add {
   background: transparent;
@@ -8015,10 +8035,23 @@
       <div class="diary-cat-del-box">
         <h4>删除分类</h4>
         <p id="diaryCatDelMsg"></p>
+        <p class="diary-cat-del-subtitle" id="diaryCatDelSub"></p>
         <div class="diary-cat-del-cats" id="diaryCatDelCats"></div>
         <div class="diary-cat-del-actions">
           <button class="diary-cat-del-cancel" id="diaryCatDelCancel">取消</button>
           <button class="diary-cat-del-confirm" id="diaryCatDelConfirm" disabled>确认删除</button>
+        </div>
+        <button class="diary-cat-del-all" id="diaryCatDelAll">全部删除</button>
+      </div>
+    </div>
+    <!-- Second confirmation for delete all -->
+    <div class="diary-cat-del-overlay" id="diaryCatDelAllOverlay">
+      <div class="diary-cat-del-box">
+        <h4>全部删除</h4>
+        <p id="diaryCatDelAllMsg"></p>
+        <div class="diary-cat-del-actions" style="margin-top:20px;">
+          <button class="diary-cat-del-cancel" id="diaryCatDelAllCancel">取消</button>
+          <button class="diary-cat-del-confirm" id="diaryCatDelAllConfirm" style="background:#e55a5a;">确认全部删除</button>
         </div>
       </div>
     </div>
@@ -15220,6 +15253,7 @@ patText2 = patText2.replace(/你/g, '我');
             var _pendingDelCat = catName;
             var _selectedTarget = '';
             msg.textContent = '确定删除分类"' + catName + '"吗？';
+            document.getElementById('diaryCatDelSub').textContent = '该分类的数据将移入';
             var otherCats = cats.filter(function(c) { return c !== catName; });
             catsDiv.innerHTML = '';
             otherCats.forEach(function(c) {
@@ -15266,6 +15300,37 @@ patText2 = patText2.replace(/你/g, '我');
             confirmBtn.addEventListener('click', onConfirm);
             cancelBtn.addEventListener('click', onCancel);
             overlay.addEventListener('click', onOutside);
+            // Bind "全部删除" button
+            var delAllBtn = document.getElementById('diaryCatDelAll');
+            var allOverlay = document.getElementById('diaryCatDelAllOverlay');
+            var allMsg = document.getElementById('diaryCatDelAllMsg');
+            var onDelAll = function() {
+              allMsg.textContent = '确定要删除分类"' + _pendingDelCat + '"下的所有日记吗？此操作不可恢复。';
+              allOverlay.classList.add('show');
+            };
+            var onAllCancel = function() { allOverlay.classList.remove('show'); };
+            var onAllConfirm = function() {
+              // Delete all entries in this category
+              var entries = getDiaryEntries();
+              entries = entries.filter(function(en) { return en.category !== _pendingDelCat; });
+              saveDiaryEntries(entries);
+              // Remove the category
+              var cats2 = getDiaryCategories();
+              cats2 = cats2.filter(function(c) { return c !== _pendingDelCat; });
+              saveDiaryCategories(cats2);
+              if (_diaryCurrentCategory === _pendingDelCat) _diaryCurrentCategory = 'all';
+              allOverlay.classList.remove('show');
+              overlay.classList.remove('show');
+              renderCatManageList();
+              renderCategoryTabs();
+              renderDiary();
+              if (typeof showToast === 'function') showToast('已删除分类及其全部日记');
+              cleanup();
+            };
+            delAllBtn.addEventListener('click', onDelAll);
+            document.getElementById('diaryCatDelAllCancel').addEventListener('click', onAllCancel);
+            document.getElementById('diaryCatDelAllConfirm').addEventListener('click', onAllConfirm);
+            allOverlay.addEventListener('click', function(e) { if (e.target === allOverlay) onAllCancel(); });
           });
         });
       }
