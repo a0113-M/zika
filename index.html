@@ -6475,21 +6475,26 @@
 /* 图片网格 */
 .diary-image-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
+  gap: 3px;
   margin-bottom: 10px;
-  border-radius: 8px;
-  overflow: hidden;
 }
+.diary-image-grid.grid-1 { grid-template-columns: 1fr; max-width: 200px; }
+.diary-image-grid.grid-2 { grid-template-columns: 1fr 1fr; max-width: 200px; }
+.diary-image-grid.grid-3 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.diary-image-grid.grid-4 { grid-template-columns: 1fr 1fr; max-width: 200px; }
+.diary-image-grid.grid-5 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.diary-image-grid.grid-6 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.diary-image-grid.grid-7 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.diary-image-grid.grid-8 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
+.diary-image-grid.grid-9 { grid-template-columns: 1fr 1fr 1fr; max-width: 280px; }
 .diary-image-grid img {
   width: 100%;
   aspect-ratio: 1;
   object-fit: cover;
+  border-radius: 4px;
+  background: #f0eaf6;
   cursor: pointer;
 }
-.diary-image-grid.img-single { grid-template-columns: 1fr; }
-.diary-image-grid.img-single img { max-height: 240px; width: auto; }
-.diary-image-grid.img-4 { grid-template-columns: repeat(2, 1fr); }
 
 /* 操作栏 */
 .diary-action-bar {
@@ -7716,10 +7721,10 @@
         <h3>写日记</h3>
         <textarea class="diary-modal-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
         <div class="diary-image-upload-area">
-          <label class="diary-image-upload-btn" for="diaryWriteImageInput">
+          <button type="button" class="diary-image-upload-btn" id="diaryWriteUploadBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             添加图片
-          </label>
+          </button>
           <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="display:none">
           <div class="diary-image-preview" id="diaryWriteImagePreview"></div>
         </div>
@@ -7735,10 +7740,10 @@
         <h3>编辑日记</h3>
         <textarea class="diary-modal-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
         <div class="diary-image-upload-area">
-          <label class="diary-image-upload-btn" for="diaryEditImageInput">
+          <button type="button" class="diary-image-upload-btn" id="diaryEditUploadBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
             添加图片
-          </label>
+          </button>
           <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="display:none">
           <div class="diary-image-preview" id="diaryEditImagePreview"></div>
         </div>
@@ -14865,6 +14870,10 @@ patText2 = patText2.replace(/你/g, '我');
         renderEditImagePreview();
       };
 
+      var diaryWriteUploadBtn = document.getElementById('diaryWriteUploadBtn');
+      if (diaryWriteUploadBtn && diaryWriteImageInput) {
+        diaryWriteUploadBtn.addEventListener('click', function() { diaryWriteImageInput.click(); });
+      }
       if (diaryWriteImageInput) {
         diaryWriteImageInput.addEventListener('change', function(e) {
           var files = Array.from(e.target.files);
@@ -14875,6 +14884,10 @@ patText2 = patText2.replace(/你/g, '我');
           });
           e.target.value = '';
         });
+      }
+      var diaryEditUploadBtn = document.getElementById('diaryEditUploadBtn');
+      if (diaryEditUploadBtn && diaryEditImageInput) {
+        diaryEditUploadBtn.addEventListener('click', function() { diaryEditImageInput.click(); });
       }
       if (diaryEditImageInput) {
         diaryEditImageInput.addEventListener('change', function(e) {
@@ -14922,9 +14935,7 @@ patText2 = patText2.replace(/你/g, '我');
           var imageHtml = '';
           var images = entry.images || [];
           if (images.length > 0) {
-            var gridClass = 'diary-image-grid';
-            if (images.length === 1) gridClass += ' img-single';
-            else if (images.length === 4) gridClass += ' img-4';
+            var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
             imageHtml = '<div class="' + gridClass + '">';
             images.forEach(function(img) {
               imageHtml += '<img src="' + img + '" onclick="window._openDiaryImage(this.src)">';
