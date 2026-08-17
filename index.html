@@ -9835,6 +9835,14 @@
           topImg.src = imageData;
           topImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
           userAvatar.appendChild(topImg);
+          
+          const momentsUserAvatar = document.getElementById('momentsUserAvatar');
+          momentsUserAvatar.innerHTML = '';
+          momentsUserAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:#9b8ec4;overflow:hidden;';
+          const momentsImg = document.createElement('img');
+          momentsImg.src = imageData;
+          momentsImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+          momentsUserAvatar.appendChild(momentsImg);
         };
         reader.readAsDataURL(file);
         this.value = '';
@@ -9846,6 +9854,7 @@
         if (!userProfile.avatarImage) {
           document.getElementById('userAvatar').innerHTML = userProfile.avatar;
           document.getElementById('sideAvatar').innerHTML = userProfile.avatar;
+          document.getElementById('momentsUserAvatar').innerHTML = userProfile.avatar;
         }
         document.getElementById('sideName').innerHTML = `${userProfile.name}<small>点击头像设置个人信息</small>`;
         showToast('个人信息已更新！');
