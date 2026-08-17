@@ -6284,8 +6284,12 @@
 
   
     /* === 设置页面样式 === */
-    .settings-body {
+    .feature-content.settings-body {
+      display: block;
+      align-items: stretch;
+      justify-content: flex-start;
       padding: 16px;
+      background: #f8f6fc;
     }
     .settings-section {
       background: #fff;
@@ -14273,13 +14277,13 @@ patText2 = patText2.replace(/你/g, '我');
 
       <!-- 设置页面 -->
       <div class="feature-page" id="settingsPage">
-        <div class="feature-page-header">
-          <button class="feature-page-back" id="settingsBackBtn">
+        <div class="feature-header">
+          <button class="feature-back" id="settingsBackBtn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
           </button>
-          <span class="feature-page-title">设置</span>
+          <span class="feature-title">设置</span>
         </div>
-        <div class="feature-page-body settings-body">
+        <div class="feature-content settings-body">
           <div class="settings-section">
             <div class="settings-section-title">概率事件</div>
             <div class="settings-item">
