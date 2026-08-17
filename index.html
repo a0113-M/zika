@@ -14273,7 +14273,6 @@ patText2 = patText2.replace(/你/g, '我');
     })();
 
     (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor="#9b8ec4";d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
-</script>
 
         <!-- 设置页面 -->
       <div class="feature-page" id="settingsPage">
@@ -14292,7 +14291,7 @@ patText2 = patText2.replace(/你/g, '我');
                 <span class="settings-item-hint">联系人自动给你发信的概率</span>
               </div>
               <div class="settings-prob-control">
-                <input type="range" id="settingLetterProb" min="0" max="20" step="1" value="5" class="settings-range">
+                <input type="range" id="settingLetterProb" min="0" max="100" step="1" value="5" class="settings-range">
                 <span class="settings-prob-value" id="settingLetterProbVal">5%</span>
               </div>
             </div>
@@ -14302,7 +14301,7 @@ patText2 = patText2.replace(/你/g, '我');
                 <span class="settings-item-hint">联系人自动发朋友圈的概率</span>
               </div>
               <div class="settings-prob-control">
-                <input type="range" id="settingMomentProb" min="0" max="20" step="1" value="5" class="settings-range">
+                <input type="range" id="settingMomentProb" min="0" max="100" step="1" value="5" class="settings-range">
                 <span class="settings-prob-value" id="settingMomentProbVal">5%</span>
               </div>
             </div>
@@ -14312,7 +14311,7 @@ patText2 = patText2.replace(/你/g, '我');
                 <span class="settings-item-hint">匿名信箱收到新信的概率</span>
               </div>
               <div class="settings-prob-control">
-                <input type="range" id="settingAnonProb" min="0" max="20" step="1" value="3" class="settings-range">
+                <input type="range" id="settingAnonProb" min="0" max="100" step="1" value="3" class="settings-range">
                 <span class="settings-prob-value" id="settingAnonProbVal">3%</span>
               </div>
             </div>
@@ -14335,6 +14334,9 @@ patText2 = patText2.replace(/你/g, '我');
       </div>
 
   
+
+
+</script>
 
 </body>
 
