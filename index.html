@@ -7615,10 +7615,12 @@
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
         }
         chatView.classList.add('show');
+        var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
         renderMessages(contactId);
       }
       function closeChat() {
         chatView.classList.remove('show');
+        var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='';
         currentChatId = null;
         refreshList();
       }
