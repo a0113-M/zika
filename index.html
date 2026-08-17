@@ -7116,20 +7116,21 @@
 
       let kbHeight = 0;
       let inputFocused = false;
-      let baseVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      // maxVH 始终记录无键盘时的最大可视高度
+      let maxVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
       function getVH() {
         return window.visualViewport ? window.visualViewport.height : window.innerHeight;
       }
 
-      function measure() {
-        const d = baseVH - getVH();
-        return d > 40 ? Math.round(d) : 0;
-      }
-
       function apply() {
-        // 让 .phone 高度始终等于当前可视高度，键盘弹起时自动缩小
-        if (phone) phone.style.height = getVH() + 'px';
+        var curVH = getVH();
+        // 更新最大高度（键盘收起时 curVH 最大）
+        if (curVH > maxVH) maxVH = curVH;
+
+        // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
+        var targetH = inputFocused ? curVH : maxVH;
+        if (phone) phone.style.height = targetH + 'px';
 
         if (kbHeight > 0) {
           bw.style.position = 'fixed';
@@ -7149,10 +7150,11 @@
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
           inputFocused = true;
-          kbHeight = measure() || Math.round(baseVH * 0.28);
+          var curVH = getVH();
+          kbHeight = (maxVH - curVH > 40) ? Math.round(maxVH - curVH) : Math.round(maxVH * 0.28);
           apply();
-          setTimeout(function() { if (inputFocused) { kbHeight = measure(); apply(); } }, 300);
-          setTimeout(function() { if (inputFocused) { kbHeight = measure(); apply(); } }, 600);
+          setTimeout(function() { if (inputFocused) { var v = getVH(); kbHeight = (maxVH - v > 40) ? Math.round(maxVH - v) : kbHeight; apply(); } }, 300);
+          setTimeout(function() { if (inputFocused) { var v = getVH(); kbHeight = (maxVH - v > 40) ? Math.round(maxVH - v) : kbHeight; apply(); } }, 600);
         }
       });
 
@@ -7162,24 +7164,28 @@
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
-            apply();
+            // 等浏览器恢复视口后再应用
+            setTimeout(apply, 100);
+            setTimeout(apply, 400);
           }
-        }, 250);
+        }, 100);
       });
 
       if (window.visualViewport) {
         window.visualViewport.addEventListener('resize', function() {
-          var actual = measure();
+          var curVH = getVH();
+          if (curVH > maxVH) maxVH = curVH;
           if (inputFocused) {
-            kbHeight = actual > 0 ? actual : Math.round(baseVH * 0.28);
+            var d = maxVH - curVH;
+            kbHeight = d > 40 ? Math.round(d) : kbHeight;
           } else {
-            kbHeight = actual > 0 ? actual : 0;
+            kbHeight = 0;
           }
           apply();
         });
       }
 
-      // 初始化：立即设置 phone 高度为当前可视高度
+      // 初始化
       apply();
     })();
 
