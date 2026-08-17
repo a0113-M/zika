@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>字卡 · v12测试版</title>
+  <title>字卡 · 小手机</title>
   <style>
     /* --- 全局重置 & 基础 --- */
     * {
@@ -279,7 +279,6 @@
       border: none;
       font-weight: 500;
       letter-spacing: 0.3px;
-      white-space: nowrap;
     }
 
     .nav-item.active {
@@ -5822,33 +5821,29 @@
   border-radius: 10px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   z-index: 100;
-  display: none;
-  flex-direction: row;
-  align-items: stretch;
+  min-width: 110px;
   overflow: hidden;
+  display: none;
 }
 
 .moment-menu-popup.show {
-  display: flex;
+  display: block;
 }
 
 .moment-menu-popup .moment-menu-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 10px 14px;
-  font-size: 12px;
+  gap: 6px;
+  padding: 10px 16px;
+  font-size: 13px;
   color: #333;
   cursor: pointer;
-  border-right: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
   transition: background 0.15s;
-  min-width: 50px;
 }
 
 .moment-menu-popup .moment-menu-item:last-child {
-  border-right: none;
+  border-bottom: none;
 }
 
 .moment-menu-popup .moment-menu-item:active {
@@ -13743,7 +13738,7 @@ patText2 = patText2.replace(/你/g, '我');
         } catch(e) {}
       }, 30000);
 
-      // 联系人自动发朋友圈（每小时5%概率，从字卡随机选1-20条拼接）
+      // 联系人自动发朋友圈（每小时5%概率，从聊天记录抽1-20条拼接）
       function contactPostMoments() {
         try {
           var lastCheck = parseInt(localStorage.getItem('contactMomentsCheckTime') || '0');
@@ -13755,28 +13750,17 @@ patText2 = patText2.replace(/你/g, '我');
           var nonGroupContacts = contacts.filter(function(c) { return !c.isGroup; });
           if (nonGroupContacts.length === 0) return;
           var contact = nonGroupContacts[Math.floor(Math.random() * nonGroupContacts.length)];
-          // 收集所有字卡
-          var allCards = [];
-          if (typeof cardData !== 'undefined') {
-            Object.keys(cardData.general || {}).forEach(function(cat) {
-              (cardData.general[cat] || []).forEach(function(card) {
-                if (card.name) allCards.push(card.name);
-              });
-            });
-            Object.keys(cardData.role || {}).forEach(function(cat) {
-              (cardData.role[cat] || []).forEach(function(card) {
-                if (card.name) allCards.push(card.name);
-              });
-            });
-          }
-          if (allCards.length === 0) return;
-          // 随机选1-20条字卡
-          var count = Math.min(allCards.length, Math.floor(Math.random() * 20) + 1);
-          var shuffled = allCards.slice().sort(function() { return Math.random() - 0.5; });
+          var msgs = chatHistories[contact.id];
+          if (!msgs || msgs.length === 0) return;
+          var count = Math.min(msgs.length, Math.floor(Math.random() * 20) + 1);
+          var shuffled = msgs.slice().sort(function() { return Math.random() - 0.5; });
           var selected = shuffled.slice(0, count);
-          var text = selected.join(' ');
+          var textParts = selected.map(function(m) {
+            var prefix = (m.from === 'me') ? '我' : contact.name;
+            return prefix + '：' + (m.text || '[图片]');
+          });
           moments.push({
-            id: Date.now(), author: contact.name, text: text,
+            id: Date.now(), author: contact.name, text: textParts.join('\n'),
             images: [], likes: [], comments: [], time: Date.now(), isContactPost: true
           });
           saveMoments();
