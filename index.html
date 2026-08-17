@@ -5818,15 +5818,17 @@
   bottom: 100%;
   right: 0;
   margin-bottom: 4px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.97);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(155,142,196,0.2);
   z-index: 100;
   display: none;
   flex-direction: row;
   align-items: center;
-  padding: 6px 8px;
-  gap: 4px;
+  padding: 3px 5px;
+  gap: 2px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 
@@ -5837,12 +5839,12 @@
 .moment-menu-popup .moment-menu-item {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 6px 10px;
-  font-size: 12px;
-  color: #333;
+  gap: 3px;
+  padding: 4px 7px;
+  font-size: 11px;
+  color: #555;
   cursor: pointer;
-  border-radius: 6px;
+  border-radius: 5px;
   transition: background 0.15s;
   white-space: nowrap;
 }
@@ -5855,8 +5857,8 @@
 
 
 .moment-menu-popup .moment-menu-item svg {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  height: 13px;
   flex-shrink: 0;
 }
 
@@ -7111,7 +7113,7 @@
   </div>
 
   <script>
-    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:0;left:0;right:0;background:#ff0;z-index:99999;padding:8px;font-size:12px;color:#000;word-break:break-all;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
+    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
     // ===== 键盘跟随（适用于原生浏览器） =====
     (function () {
       const chatView = document.querySelector('.chat-view');
@@ -13780,7 +13782,7 @@ patText2 = patText2.replace(/你/g, '我');
 
     })();
 
-    (function(){var d=document.getElementById("js-debug");if(d){d.style.background="#0f0";d.textContent="JS加载完成 ✓ 无错误";}})();
+    (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor="#9b8ec4";d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
   </script>
 </body>
 
