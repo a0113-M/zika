@@ -1813,7 +1813,7 @@
     .letter-filter-tab {
       flex: 1;
       padding: 5px 4px;
-      border-radius: 14px;
+      border-radius: 10px;
       font-size: 11px;
       border: 1px solid #ddd;
       background: #fff;
@@ -2111,18 +2111,23 @@
     }
     /* 置顶样式 */
     .letter-item.pinned {
-      background: #fff8e1;
-      border-left: 3px solid #f9a825;
+      background: #f5f0ff;
+      border-left: 3px solid #9b8ec4;
       padding-left: 13px;
     }
     .letter-item.pinned:active {
-      background: #ffecb3;
+      background: #ece4ff;
     }
     .letter-pin-icon {
       display: inline-flex;
       align-items: center;
-      margin-left: 6px;
+      margin-left: 4px;
       vertical-align: middle;
+      opacity: 0.7;
+    }
+    .letter-pin-icon svg {
+      width: 12px;
+      height: 12px;
     }
 
     /* 分组标题 */
@@ -2139,7 +2144,7 @@
       flex: 1;
       background: #fff;
       border: 1px solid #ddd;
-      border-radius: 14px;
+      border-radius: 10px;
       padding: 5px 4px;
       font-size: 11px;
       color: #666;
@@ -2198,35 +2203,46 @@
     .batch-action-bar {
       display: none;
       align-items: center;
-      padding: 8px 12px;
-      background: #fff;
-      border-bottom: 0.5px solid #e0e0e0;
-      gap: 8px;
+      padding: 10px 12px;
+      background: #f5f0ff;
+      border-bottom: 0.5px solid #e0d8f0;
+      gap: 6px;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
     .batch-active .batch-action-bar {
       display: flex;
     }
     .batch-btn {
-      background: none;
-      border: none;
-      padding: 6px 10px;
-      font-size: 13px;
-      color: #555;
+      background: #fff;
+      border: 1px solid #d4c8e8;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: #6b5a7a;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 10px;
       -webkit-appearance: none;
       -webkit-tap-highlight-color: transparent;
+      transition: all 0.2s;
     }
     .batch-btn:active {
-      background: #f0f0f0;
+      background: #ece4ff;
     }
     .batch-delete-btn {
-      color: #f44336;
+      color: #e88ec4;
+      border-color: #f0d0e8;
+    }
+    .batch-delete-btn:active {
+      background: #fdf2f8;
     }
     .batch-done-btn {
-      color: #9b8ec4;
+      background: #9b8ec4;
+      color: #fff;
+      border-color: #9b8ec4;
       font-weight: 500;
+    }
+    .batch-done-btn:active {
+      background: #8a7db5;
     }
 
     /* 批量模式底部栏 */
@@ -2245,7 +2261,8 @@
     }
     .batch-count {
       font-weight: 500;
-      color: #333;
+      color: #6b5a7a;
+      font-size: 12px;
     }
 
     /* 批量模式列表项 */
@@ -2253,10 +2270,10 @@
       padding-left: 12px;
     }
     .letter-item.selected {
-      background: #f3eef8;
+      background: #f0e8f8;
     }
     .letter-item.selected.pinned {
-      background: #fff3e0;
+      background: #ece4ff;
     }
 
     /* 勾选框 */
@@ -3326,7 +3343,7 @@
       flex: 1;
       background: #fff;
       border: 1px solid #ddd;
-      border-radius: 14px;
+      border-radius: 10px;
       cursor: pointer;
       padding: 5px 4px;
       color: #666;
@@ -6643,8 +6660,8 @@
             统计
           </button>
           <button id="letterSortBtn" class="letter-sort-btn" title="排序">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
-            <span class="sort-label">排序</span>
+            <span class="sort-icon" id="sortIcon"></span>
+            <span class="sort-label" id="sortLabel">排序</span>
           </button>
         </div>
         <!-- 批量操作顶部栏 -->
@@ -11359,7 +11376,7 @@ patText2 = patText2.replace(/你/g, '我');
           if (letter.pinned) {
             const pinIcon = document.createElement('span');
             pinIcon.className = 'letter-pin-icon';
-            pinIcon.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#e65100" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>';
+            pinIcon.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#9b8ec4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>';
             fromEl.appendChild(pinIcon);
           }
 
@@ -11447,7 +11464,7 @@ patText2 = patText2.replace(/你/g, '我');
         const letter = letterList.find(l => l.id === currentLetterId);
         if (btn && letter) {
           const svg = btn.querySelector('svg');
-          if (svg) svg.style.stroke = letter.pinned ? '#e65100' : '#999';
+          if (svg) svg.style.stroke = letter.pinned ? '#9b8ec4' : '#999';
           const text = btn.childNodes[btn.childNodes.length - 1];
           if (text && text.nodeType === 3) text.textContent = letter.pinned ? ' 取消置顶' : ' 置顶';
         }
@@ -12661,13 +12678,25 @@ patText2 = patText2.replace(/你/g, '我');
       function updateSortButton() {
         const btn = document.getElementById('letterSortBtn');
         if (!btn) return;
-        const label = {
+        const iconEl = document.getElementById('sortIcon');
+        const labelEl = document.getElementById('sortLabel');
+        const labelMap = {
           'time_desc': '倒序',
           'time_asc': '正序',
           'contact': '联系人',
           'unread': '未读优先'
-        }[letterSort] || '排序';
-        btn.querySelector('.sort-label').textContent = label;
+        };
+        labelEl.textContent = labelMap[letterSort] || '排序';
+        // Update icon based on sort direction
+        if (iconEl) {
+          if (letterSort === 'time_asc') {
+            iconEl.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>';
+          } else if (letterSort === 'time_desc') {
+            iconEl.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>';
+          } else {
+            iconEl.innerHTML = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>';
+          }
+        }
       }
 
       function loadSortPreference() {
