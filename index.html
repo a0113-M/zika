@@ -42,11 +42,12 @@
       border-radius: 0;
       box-shadow: none;
       background: #ffffff;
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
       display: flex;
       flex-direction: column;
       position: relative;
-      height: 100dvh;
+      height: 100%;
     }
 
     .app-container {
@@ -538,7 +539,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100dvh;
+      height: 100%;
       z-index: 200;
     }
 
@@ -7107,24 +7108,29 @@
 
   <script>
     (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
-    // ===== 键盘跟随（适用于原生浏览器） =====
+    // ===== 键盘跟随 + 视口适配 =====
     (function () {
+      const phone = document.querySelector('.phone');
       const bw = document.querySelector('.chat-bottom-wrapper');
       if (!bw) return;
 
       let kbHeight = 0;
       let inputFocused = false;
-      const baseVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      let baseVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+      function getVH() {
+        return window.visualViewport ? window.visualViewport.height : window.innerHeight;
+      }
 
       function measure() {
-        if (window.visualViewport) {
-          const d = baseVH - window.visualViewport.height;
-          return d > 40 ? Math.round(d) : 0;
-        }
-        return 0;
+        const d = baseVH - getVH();
+        return d > 40 ? Math.round(d) : 0;
       }
 
       function apply() {
+        // 让 .phone 高度始终等于当前可视高度，键盘弹起时自动缩小
+        if (phone) phone.style.height = getVH() + 'px';
+
         if (kbHeight > 0) {
           bw.style.position = 'fixed';
           bw.style.bottom = kbHeight + 'px';
@@ -7172,6 +7178,9 @@
           apply();
         });
       }
+
+      // 初始化：立即设置 phone 高度为当前可视高度
+      apply();
     })();
 
     (function () {
