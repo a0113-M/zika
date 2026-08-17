@@ -9322,6 +9322,15 @@
       
       // Initialize momentsUserAvatar with user's avatar
       function updateMomentsUserAvatar() {
+        // Sync avatarImage for all existing moments
+        if (userProfile.avatarImage) {
+          for (var i = 0; i < moments.length; i++) {
+            if (!moments[i].avatarImage) {
+              moments[i].avatarImage = userProfile.avatarImage;
+            }
+          }
+          localStorage.setItem('moments', JSON.stringify(moments));
+        }
         if (userProfile.avatarImage) {
           momentsUserAvatar.innerHTML = '';
           momentsUserAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;overflow:hidden;';
