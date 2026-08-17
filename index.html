@@ -14788,6 +14788,35 @@ patText2 = patText2.replace(/你/g, '我');
         try { localStorage.setItem('diaryEntries', JSON.stringify(entries)); } catch(e) {}
       }
 
+      // === 日记同步到朋友圈 ===
+      function _syncDiaryToMoments(entry) {
+        var userInfo = getDiaryUserInfo();
+        // Remove existing moment for this diary entry
+        moments = moments.filter(function(m) { return !(m.source === 'diary' && m.diaryId === entry.id); });
+        if (entry.visibility === 'public') {
+          moments.push({
+            id: Date.now() + Math.floor(Math.random() * 1000),
+            author: userInfo.name,
+            avatarImage: userInfo.avatarImage || null,
+            text: entry.content || '',
+            images: (entry.images || []).slice(),
+            likes: (entry.likes || []).slice(),
+            comments: (entry.comments || []).slice(),
+            time: new Date(entry.date).getTime(),
+            source: 'diary',
+            diaryId: entry.id
+          });
+        }
+        saveMoments();
+        renderMoments();
+      }
+
+      function _removeDiaryFromMoments(diaryId) {
+        moments = moments.filter(function(m) { return !(m.source === 'diary' && m.diaryId === diaryId); });
+        saveMoments();
+        renderMoments();
+      }
+
       function formatDiaryTime(dateStr) {
         var d = new Date(dateStr);
         var now = new Date();
@@ -15052,8 +15081,9 @@ patText2 = patText2.replace(/你/g, '我');
         if (!entry) return;
         entry.visibility = entry.visibility === 'private' ? 'public' : 'private';
         saveDiaryEntries(entries);
+        _syncDiaryToMoments(entry);
         renderDiary();
-        if (typeof showToast === 'function') showToast(entry.visibility === 'private' ? '已设为私密' : '已设为公开');
+        if (typeof showToast === 'function') showToast(entry.visibility === 'private' ? '已设为私密' : '已设为公开，已同步到朋友圈');
       }
 
       function toggleCommentArea(id) {
@@ -15120,10 +15150,11 @@ patText2 = patText2.replace(/你/g, '我');
         };
         entries.unshift(entry);
         saveDiaryEntries(entries);
+        if (entry.visibility === 'public') { _syncDiaryToMoments(entry); }
         diaryWriteOverlay.classList.remove('show');
         _diaryPendingImages = [];
         renderDiary();
-        if (typeof showToast === 'function') showToast('日记已发布');
+        if (typeof showToast === 'function') showToast(entry.visibility === 'public' ? '日记已发布，已同步到朋友圈' : '日记已发布');
       });
 
       function openDiaryEdit(id) {
@@ -15158,6 +15189,7 @@ patText2 = patText2.replace(/你/g, '我');
           entry.title = text.substring(0, 20);
           entry.images = _diaryEditPendingImages.slice();
           saveDiaryEntries(entries);
+          _syncDiaryToMoments(entry);
         }
         diaryEditOverlay.classList.remove('show');
         _diaryEditId = null;
@@ -15178,6 +15210,7 @@ patText2 = patText2.replace(/你/g, '我');
 
       diaryDeleteConfirm.addEventListener('click', function() {
         if (_diaryDeleteId === null) return;
+        _removeDiaryFromMoments(_diaryDeleteId);
         var entries = getDiaryEntries();
         entries = entries.filter(function(e) { return e.id !== _diaryDeleteId; });
         saveDiaryEntries(entries);
