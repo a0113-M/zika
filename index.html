@@ -406,6 +406,83 @@
     .modal-actions .btn-confirm:active {
       background: #8a7db3;
     }
+    /* --- 动态编辑弹窗 --- */
+    .moment-edit-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 500;
+    }
+    .moment-edit-overlay.show { display: flex; }
+    .moment-edit-box {
+      width: 88%; max-width: 340px; background: #fff;
+      border-radius: 18px; padding: 24px 20px 20px;
+      box-shadow: 0 20px 40px rgba(46,42,66,0.4);
+      animation: popUp 0.2s ease;
+    }
+    .moment-edit-box h3 {
+      font-size: 17px; font-weight: 600; margin-bottom: 14px;
+      text-align: center; color: #1a1a1a;
+    }
+    .moment-edit-box textarea {
+      width: 100%; min-height: 90px; padding: 12px;
+      border: 1.5px solid #d8d4e4; border-radius: 12px;
+      font-size: 14px; resize: vertical; outline: none;
+      background: #faf8ff; color: #333;
+      box-sizing: border-box; font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .moment-edit-box textarea:focus { border-color: #9b8ec4; }
+    .moment-edit-btns {
+      display: flex; gap: 12px; margin-top: 16px;
+    }
+    .moment-edit-btns button {
+      flex: 1; padding: 10px 0; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 500; cursor: pointer; transition: 0.15s;
+    }
+    .moment-edit-btns .btn-mcancel {
+      background: #f0f0f0; color: #333;
+    }
+    .moment-edit-btns .btn-mcancel:active { background: #ddd; }
+    .moment-edit-btns .btn-msave {
+      background: #9b8ec4; color: #fff;
+    }
+    .moment-edit-btns .btn-msave:active { background: #8a7db3; }
+
+    /* --- 动态删除确认弹窗 --- */
+    .moment-del-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 500;
+    }
+    .moment-del-overlay.show { display: flex; }
+    .moment-del-box {
+      width: 82%; max-width: 300px; background: #fff;
+      border-radius: 18px; padding: 28px 22px 22px;
+      box-shadow: 0 20px 40px rgba(46,42,66,0.4);
+      animation: popUp 0.2s ease; text-align: center;
+    }
+    .moment-del-box p {
+      font-size: 15px; color: #333; margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .moment-del-btns {
+      display: flex; gap: 12px;
+    }
+    .moment-del-btns button {
+      flex: 1; padding: 10px 0; border: none; border-radius: 12px;
+      font-size: 15px; font-weight: 500; cursor: pointer; transition: 0.15s;
+    }
+    .moment-del-btns .btn-mdcancel {
+      background: #f0f0f0; color: #333;
+    }
+    .moment-del-btns .btn-mdcancel:active { background: #ddd; }
+    .moment-del-btns .btn-mdel {
+      background: #e74c3c; color: #fff;
+    }
+    .moment-del-btns .btn-mdel:active { background: #c0392b; }
+
 
     /* --- 占位视图 --- */
     .phone-view {
@@ -6279,7 +6356,30 @@
       </div>
     </div>
 
-    <!-- 聊天界面 -->
+
+    <!-- 动态编辑弹窗 -->
+    <div class="moment-edit-overlay" id="momentEditOverlay">
+      <div class="moment-edit-box">
+        <h3>编辑动态</h3>
+        <textarea id="momentEditText" placeholder="输入动态内容"></textarea>
+        <div class="moment-edit-btns">
+          <button class="btn-mcancel" id="momentEditCancel">取消</button>
+          <button class="btn-msave" id="momentEditSave">保存</button>
+        </div>
+      </div>
+    </div>
+    <!-- 动态删除确认弹窗 -->
+    <div class="moment-del-overlay" id="momentDelOverlay">
+      <div class="moment-del-box">
+        <p>确定要删除这条动态吗？</p>
+        <div class="moment-del-btns">
+          <button class="btn-mdcancel" id="momentDelCancel">取消</button>
+          <button class="btn-mdel" id="momentDelConfirm">删除</button>
+        </div>
+      </div>
+    </div>
+
+        <!-- 聊天界面 -->
     <div class="chat-view" id="chatView">
       <div class="chat-header">
         <button class="chat-back" id="chatBack"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -9487,21 +9587,58 @@
               return;
             }
             if (action === 'edit') {
-              var newText = prompt('编辑动态内容：', moment.text || '');
-              if (newText !== null) {
-                moment.text = newText.trim();
-                saveMoments();
-                renderMoments();
+              var editOverlay = document.getElementById('momentEditOverlay');
+              var editText = document.getElementById('momentEditText');
+              var editSaveBtn = document.getElementById('momentEditSave');
+              var editCancelBtn = document.getElementById('momentEditCancel');
+              editText.value = moment.text || '';
+              editOverlay.classList.add('show');
+              setTimeout(function() { editText.focus(); }, 100);
+              function doEditSave() {
+                var nt = editText.value.trim();
+                if (nt) {
+                  moment.text = nt;
+                  saveMoments();
+                  renderMoments();
+                }
+                editOverlay.classList.remove('show');
+                cleanup();
               }
+              function cleanup() {
+                editSaveBtn.removeEventListener('click', doEditSave);
+                editCancelBtn.removeEventListener('click', doEditCancel);
+              }
+              function doEditCancel() {
+                editOverlay.classList.remove('show');
+                cleanup();
+              }
+              editSaveBtn.addEventListener('click', doEditSave);
+              editCancelBtn.addEventListener('click', doEditCancel);
               return;
             }
             if (action === 'delete') {
-              if (confirm('确定要删除这条动态吗？')) {
+              var delOverlay = document.getElementById('momentDelOverlay');
+              var delConfirmBtn = document.getElementById('momentDelConfirm');
+              var delCancelBtn = document.getElementById('momentDelCancel');
+              delOverlay.classList.add('show');
+              function doDelConfirm() {
                 var idx2 = moments.indexOf(moment);
                 if (idx2 >= 0) moments.splice(idx2, 1);
                 saveMoments();
                 renderMoments();
+                delOverlay.classList.remove('show');
+                cleanupDel();
               }
+              function doDelCancel() {
+                delOverlay.classList.remove('show');
+                cleanupDel();
+              }
+              function cleanupDel() {
+                delConfirmBtn.removeEventListener('click', doDelConfirm);
+                delCancelBtn.removeEventListener('click', doDelCancel);
+              }
+              delConfirmBtn.addEventListener('click', doDelConfirm);
+              delCancelBtn.addEventListener('click', doDelCancel);
               return;
             }
           }
