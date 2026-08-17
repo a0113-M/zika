@@ -415,7 +415,7 @@
     }
     .moment-edit-overlay.show { display: flex; }
     .moment-edit-box {
-      width: 88%; max-width: 340px; background: #fff;
+      width: 90%; max-width: 380px; background: #fff;
       border-radius: 18px; padding: 24px 20px 20px;
       box-shadow: 0 20px 40px rgba(46,42,66,0.4);
       animation: popUp 0.2s ease;
@@ -6362,6 +6362,7 @@
       <div class="moment-edit-box">
         <h3>编辑动态</h3>
         <textarea id="momentEditText" placeholder="输入动态内容"></textarea>
+        <div class="moments-image-picker" id="editImagePicker" style="margin-top:10px;"></div>
         <div class="moment-edit-btns">
           <button class="btn-mcancel" id="momentEditCancel">取消</button>
           <button class="btn-msave" id="momentEditSave">保存</button>
@@ -9591,16 +9592,64 @@
               var editText = document.getElementById('momentEditText');
               var editSaveBtn = document.getElementById('momentEditSave');
               var editCancelBtn = document.getElementById('momentEditCancel');
+              var editImagePicker = document.getElementById('editImagePicker');
+              // Initialize edit images from current moment
+              var editImages = (moment.images || []).slice();
               editText.value = moment.text || '';
+              renderEditImages();
               editOverlay.classList.add('show');
               setTimeout(function() { editText.focus(); }, 100);
+
+              function renderEditImages() {
+                editImagePicker.innerHTML = '';
+                editImages.forEach(function(src, i) {
+                  var wrap = document.createElement('div');
+                  wrap.style.cssText = 'position:relative;display:inline-block;width:64px;height:64px;margin:4px;';
+                  var img = document.createElement('img');
+                  img.src = src;
+                  img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid #e8ddf5;';
+                  wrap.appendChild(img);
+                  var del = document.createElement('button');
+                  del.textContent = '\u00d7';
+                  del.style.cssText = 'position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,0.5);color:#fff;border:none;font-size:14px;line-height:20px;text-align:center;cursor:pointer;z-index:1;';
+                  del.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    editImages.splice(i, 1);
+                    renderEditImages();
+                  });
+                  wrap.appendChild(del);
+                  editImagePicker.appendChild(wrap);
+                });
+                // Add button for new images
+                var addBtn = document.createElement('label');
+                addBtn.className = 'moments-image-add';
+                addBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+                var fi = document.createElement('input');
+                fi.type = 'file';
+                fi.accept = 'image/*';
+                fi.multiple = true;
+                fi.style.display = 'none';
+                addBtn.appendChild(fi);
+                editImagePicker.appendChild(addBtn);
+                fi.addEventListener('change', function() {
+                  Array.from(this.files).forEach(function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                      editImages.push(e.target.result);
+                      renderEditImages();
+                    };
+                    reader.readAsDataURL(file);
+                  });
+                  this.value = '';
+                });
+              }
+
               function doEditSave() {
                 var nt = editText.value.trim();
-                if (nt) {
-                  moment.text = nt;
-                  saveMoments();
-                  renderMoments();
-                }
+                moment.text = nt;
+                moment.images = editImages.slice();
+                saveMoments();
+                renderMoments();
                 editOverlay.classList.remove('show');
                 cleanup();
               }
