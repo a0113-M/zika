@@ -46,8 +46,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
-      /* JS 控制高度，初始 100vh */
-      height: 100vh;
+      height: 100dvh;
     }
 
     .app-container {
@@ -539,7 +538,7 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 100vh;
+      height: 100dvh;
       z-index: 200;
     }
 
@@ -7110,17 +7109,12 @@
     (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
     // ===== 键盘跟随（适用于原生浏览器） =====
     (function () {
-      const chatView = document.querySelector('.chat-view');
       const bw = document.querySelector('.chat-bottom-wrapper');
-      if (!chatView || !bw) return;
+      if (!bw) return;
 
-      // 基准可视高度（无键盘时）
-      const baseVH = window.visualViewport
-        ? window.visualViewport.height
-        : window.innerHeight;
-
-      let kbHeight = 0;       // 当前记录的键盘高度
+      let kbHeight = 0;
       let inputFocused = false;
+      const baseVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
       function measure() {
         if (window.visualViewport) {
@@ -7137,14 +7131,12 @@
           bw.style.left = '0';
           bw.style.right = '0';
           bw.style.zIndex = '1000';
-          chatView.style.height = (baseVH - kbHeight) + 'px';
         } else {
           bw.style.position = 'relative';
           bw.style.bottom = 'auto';
           bw.style.left = 'auto';
           bw.style.right = 'auto';
           bw.style.zIndex = 'auto';
-          chatView.style.height = baseVH + 'px';
         }
       }
 
