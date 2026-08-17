@@ -6764,6 +6764,10 @@
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
                 置顶
               </button>
+              <button class="letter-header-btn" id="letterAnnViewBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/><path d="M15 5l3 3"/></svg>
+                批注
+              </button>
               <button class="letter-header-btn btn-highlight" id="letterReplyViewBtn">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3a7bd5" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                 回信
@@ -12827,6 +12831,20 @@ patText2 = patText2.replace(/你/g, '我');
         });
       }
 
+      // 详情页批注按钮
+      if (document.getElementById('letterAnnViewBtn')) {
+        document.getElementById('letterAnnViewBtn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleAnnotationMode();
+          const btn = document.getElementById('letterAnnViewBtn');
+          const svg = btn ? btn.querySelector('svg') : null;
+          if (svg) {
+            svg.setAttribute('stroke', annotationMode ? '#9b8ec4' : '#999');
+            svg.setAttribute('fill', annotationMode ? '#9b8ec4' : 'none');
+          }
+        });
+      }
+
       // 联系人筛选已移除
 
       // 更新搜索框内前缀显示
@@ -13058,20 +13076,24 @@ patText2 = patText2.replace(/你/g, '我');
         closeLetterDetail();
       });
       // 标注模式 - 添加批注按钮
-      document.getElementById('annAddBtn').addEventListener('click', function() {
-        openBatchAnnotationModal();
-      });
+      if (document.getElementById('annAddBtn')) {
+        document.getElementById('annAddBtn').addEventListener('click', function() {
+          openBatchAnnotationModal();
+        });
+      }
 
       // 标注模式 - 完成按钮
-      document.getElementById('annDoneBtn').addEventListener('click', function() {
-        annotationMode = false;
-        selectedWordIndices.clear();
-        document.getElementById('annotationModeHint').classList.remove('active');
-        document.getElementById('annotationActionBar').style.display = 'none';
+      if (document.getElementById('annDoneBtn')) {
+        document.getElementById('annDoneBtn').addEventListener('click', function() {
+          annotationMode = false;
+          selectedWordIndices.clear();
+          document.getElementById('annotationModeHint').classList.remove('active');
+          document.getElementById('annotationActionBar').style.display = 'none';
 
-        document.getElementById('letterDetailBody').style.paddingBottom = '';
-        if (currentLetterId) openLetterDetail(currentLetterId);
-      });
+          document.getElementById('letterDetailBody').style.paddingBottom = '';
+          if (currentLetterId) openLetterDetail(currentLetterId);
+        });
+      }
 
       // 回信弹窗取消
       document.getElementById('letterReplyCancel').addEventListener('click', function() {
