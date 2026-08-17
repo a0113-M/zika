@@ -6629,9 +6629,7 @@
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
             收藏<span class="letter-filter-tab-count" id="tabCountFav"></span>
           </button>
-          <select id="letterContactFilter" class="letter-contact-select">
-            <option value="">全部联系人</option>
-          </select>
+
                     <button id="letterStatsBtn" class="stats-btn" title="统计">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
           </button>
@@ -6650,13 +6648,7 @@
           <span style="flex:1;"></span>
           <button class="batch-btn batch-done-btn" id="batchDoneBtn">完成</button>
         </div>
-        <!-- 排序下拉菜单 -->
-        <div class="sort-dropdown" id="sortDropdown">
-          <div class="sort-option" data-sort="time_desc">时间倒序（最新）</div>
-          <div class="sort-option" data-sort="time_asc">时间正序（最早）</div>
-          <div class="sort-option" data-sort="contact">按联系人分组</div>
-          <div class="sort-option" data-sort="unread">未读优先</div>
-        </div>
+
         <!-- 搜索栏 -->
         <div class="letter-search-bar" id="letterSearchBar">
           <div class="letter-search-input-row">
@@ -11106,7 +11098,7 @@ patText2 = patText2.replace(/你/g, '我');
         migrateLetterThemes();
         initAnonymousLetters();
         saveLetters();
-        populateContactFilter();
+        // populateContactFilter removed
         initComposeThemeSelector();
         loadSortPreference();
         renderLetterList();
@@ -11147,26 +11139,7 @@ patText2 = patText2.replace(/你/g, '我');
         renderLetterList();
       }
 
-      // 填充联系人筛选下拉框
-      function populateContactFilter() {
-        const select = document.getElementById('letterContactFilter');
-        const currentVal = select.value;
-        // 收集有信件的联系人
-        const senders = new Set();
-        letterList.filter(l => !l.anonymous).forEach(l => { if (l.from) senders.add(l.from); });
-        // 保留第一个"全部联系人"选项
-        select.innerHTML = '<option value="">全部联系人</option>';
-        Array.from(senders).sort().forEach(name => {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          select.appendChild(opt);
-        });
-        // 恢复之前的选择
-        if (currentVal && senders.has(currentVal)) {
-          select.value = currentVal;
-        }
-      }
+      // populateContactFilter removed - contact filter removed
 
       // 获取筛选后的信件列表
       function getFilteredList() {
@@ -11384,7 +11357,7 @@ patText2 = patText2.replace(/你/g, '我');
           const timeEl = document.createElement('div');
           timeEl.className = 'letter-time';
           const d = new Date(letter.timestamp);
-          timeEl.textContent = (d.getMonth() + 1) + '/' + d.getDate();
+          timeEl.textContent = (d.getMonth()+1) + '/' + d.getDate() + ' ' + String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
 
           // 收藏星标
           const favWrap = document.createElement('div');
@@ -12601,7 +12574,7 @@ patText2 = patText2.replace(/你/g, '我');
           saveLetters();
           overlay.remove();
           exitBatchMode();
-          populateContactFilter();
+          // populateContactFilter removed
           showToast('已删除 ' + count + ' 封信件');
         });
         document.getElementById('letterModule').appendChild(overlay);
@@ -12743,33 +12716,15 @@ patText2 = patText2.replace(/你/g, '我');
         });
       });
 
-      // 排序按钮
+      // 排序按钮：点击直接切换时间正序/倒序
       document.getElementById('letterSortBtn').addEventListener('click', function(e) {
         e.stopPropagation();
         if (batchMode) return;
-        const dropdown = document.getElementById('sortDropdown');
-        const show = !dropdown.classList.contains('show');
-        // 更新 active 状态
-        dropdown.querySelectorAll('.sort-option').forEach(opt => {
-          opt.classList.toggle('active', opt.dataset.sort === letterSort);
-        });
-        dropdown.classList.toggle('show', show);
-      });
-
-      // 排序选项点击
-      document.querySelectorAll('.sort-option').forEach(opt => {
-        opt.addEventListener('click', function(e) {
-          e.stopPropagation();
-          const mode = this.dataset.sort;
-          setSortMode(mode);
-          document.getElementById('sortDropdown').classList.remove('show');
-        });
-      });
-
-      // 点击空白关闭排序下拉
-      document.addEventListener('click', function() {
-        const dropdown = document.getElementById('sortDropdown');
-        if (dropdown) dropdown.classList.remove('show');
+        if (letterSort === 'time_asc') {
+          setSortMode('time_desc');
+        } else {
+          setSortMode('time_asc');
+        }
       });
 
       // 批量：全选/取消全选
@@ -13157,7 +13112,7 @@ patText2 = patText2.replace(/你/g, '我');
         if (letter) {
           letterList.unshift(letter);
           saveLetters();
-          populateContactFilter();
+          // populateContactFilter removed
           renderLetterList();
           showToast('收到新信件');
         }
