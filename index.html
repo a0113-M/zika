@@ -1029,21 +1029,16 @@
 
     /* --- 聊天工具栏 --- */
     .chat-toolbar {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      display: none;
       background: #f7f7f7;
       position: relative;
-      display: flex;
       flex-direction: column;
     }
 
     .chat-toolbar.open {
-      max-height: none;
+      display: flex;
       height: calc(35vh);
       padding: 10px 12px 10px 12px;
-      display: flex;
-      flex-direction: column;
       overflow: hidden;
       justify-content: flex-start;
     }
