@@ -6613,6 +6613,108 @@
   cursor: pointer;
 }
 
+/* Inline rename input */
+.cat-name-input {
+  flex: 1;
+  padding: 4px 8px;
+  border: 1.5px solid #9b8ec4;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  outline: none;
+}
+.cat-name-input:focus { border-color: #7c6fae; }
+.cat-rename-save {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #9b8ec4;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+/* Delete confirmation overlay */
+.diary-cat-del-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10002;
+}
+.diary-cat-del-overlay.show { display: flex; }
+.diary-cat-del-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  width: 85%;
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+.diary-cat-del-box h4 {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+}
+.diary-cat-del-box p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}
+.diary-cat-del-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.diary-cat-del-cat-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #e0d8ee;
+  background: #fff;
+  color: #555;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.diary-cat-del-cat-btn.selected {
+  border-color: #9b8ec4;
+  background: #9b8ec4;
+  color: #fff;
+}
+.diary-cat-del-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.diary-cat-del-actions button {
+  flex: 1;
+  max-width: 120px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.diary-cat-del-cancel {
+  background: #f0ecf7;
+  color: #9b8ec4;
+}
+.diary-cat-del-confirm {
+  background: #9b8ec4;
+  color: #fff;
+}
+.diary-cat-del-confirm:disabled { opacity: 0.4; cursor: not-allowed; }
+
 .diary-cat-tab.cat-add {
   background: transparent;
   border: 1px dashed #c4b8e0;
@@ -7905,6 +8007,19 @@
           <button id="diaryCatAddConfirm">添加</button>
         </div>
         <button class="diary-cat-manage-close" id="diaryCatManageClose">完成</button>
+      </div>
+    </div>
+
+    <!-- Delete confirmation overlay -->
+    <div class="diary-cat-del-overlay" id="diaryCatDelOverlay">
+      <div class="diary-cat-del-box">
+        <h4>删除分类</h4>
+        <p id="diaryCatDelMsg"></p>
+        <div class="diary-cat-del-cats" id="diaryCatDelCats"></div>
+        <div class="diary-cat-del-actions">
+          <button class="diary-cat-del-cancel" id="diaryCatDelCancel">取消</button>
+          <button class="diary-cat-del-confirm" id="diaryCatDelConfirm" disabled>确认删除</button>
+        </div>
       </div>
     </div>
     <div class="diary-scroll" id="diaryScroll">
@@ -15051,44 +15166,106 @@ patText2 = patText2.replace(/你/g, '我');
           html += '</span></li>';
         });
         list.innerHTML = html;
-        // Bind rename
+        // Bind rename - inline edit
         list.querySelectorAll('[data-rename-cat]').forEach(function(btn) {
           btn.addEventListener('click', function() {
+            var item = this.closest('.diary-cat-manage-item');
+            var nameSpan = item.querySelector('.cat-name');
             var oldName = this.dataset.renameCat;
-            var newName = prompt('重命名分类"' + oldName + '"：', oldName);
-            if (!newName || !newName.trim() || newName.trim() === oldName) return;
-            newName = newName.trim();
-            var cats = getDiaryCategories();
-            if (cats.indexOf(newName) >= 0) { if (typeof showToast === 'function') showToast('分类已存在'); return; }
-            var idx = cats.indexOf(oldName);
-            if (idx >= 0) cats[idx] = newName;
-            saveDiaryCategories(cats);
-            var entries = getDiaryEntries();
-            entries.forEach(function(en) { if (en.category === oldName) en.category = newName; });
-            saveDiaryEntries(entries);
-            if (_diaryCurrentCategory === oldName) _diaryCurrentCategory = newName;
-            renderCatManageList();
-            renderCategoryTabs();
-            renderDiary();
+            if (item.querySelector('.cat-name-input')) return;
+            var input = document.createElement('input');
+            input.className = 'cat-name-input';
+            input.value = oldName;
+            nameSpan.replaceWith(input);
+            var saveBtn = document.createElement('button');
+            saveBtn.className = 'cat-rename-save';
+            saveBtn.textContent = '保存';
+            this.replaceWith(saveBtn);
+            input.focus();
+            input.select();
+            function doRename() {
+              var newName = input.value.trim();
+              if (!newName || newName === oldName) { renderCatManageList(); return; }
+              var cats = getDiaryCategories();
+              if (cats.indexOf(newName) >= 0) { if (typeof showToast === 'function') showToast('分类已存在'); renderCatManageList(); return; }
+              var idx = cats.indexOf(oldName);
+              if (idx >= 0) cats[idx] = newName;
+              saveDiaryCategories(cats);
+              var entries = getDiaryEntries();
+              entries.forEach(function(en) { if (en.category === oldName) en.category = newName; });
+              saveDiaryEntries(entries);
+              if (_diaryCurrentCategory === oldName) _diaryCurrentCategory = newName;
+              renderCatManageList();
+              renderCategoryTabs();
+              renderDiary();
+              if (typeof showToast === 'function') showToast('已重命名为"' + newName + '"');
+            }
+            saveBtn.addEventListener('click', doRename);
+            input.addEventListener('keydown', function(e) {
+              if (e.key === 'Enter') { e.preventDefault(); doRename(); }
+              if (e.key === 'Escape') { renderCatManageList(); }
+            });
           });
         });
-        // Bind delete
+        // Bind delete - custom overlay
         list.querySelectorAll('[data-del-cat]').forEach(function(btn) {
           btn.addEventListener('click', function() {
             var catName = this.dataset.delCat;
             var cats = getDiaryCategories();
             if (cats.length <= 1) { if (typeof showToast === 'function') showToast('至少保留一个分类'); return; }
-            if (!confirm('删除分类"' + catName + '"？该分类下的日记将归入"生活"。')) return;
-            cats = cats.filter(function(c) { return c !== catName; });
-            if (cats.indexOf('生活') === -1) cats.unshift('生活');
-            saveDiaryCategories(cats);
-            var entries = getDiaryEntries();
-            entries.forEach(function(en) { if (en.category === catName) en.category = '生活'; });
-            saveDiaryEntries(entries);
-            if (_diaryCurrentCategory === catName) _diaryCurrentCategory = 'all';
-            renderCatManageList();
-            renderCategoryTabs();
-            renderDiary();
+            var overlay = document.getElementById('diaryCatDelOverlay');
+            var msg = document.getElementById('diaryCatDelMsg');
+            var catsDiv = document.getElementById('diaryCatDelCats');
+            var confirmBtn = document.getElementById('diaryCatDelConfirm');
+            var _pendingDelCat = catName;
+            var _selectedTarget = '';
+            msg.textContent = '确定删除分类"' + catName + '"吗？';
+            var otherCats = cats.filter(function(c) { return c !== catName; });
+            catsDiv.innerHTML = '';
+            otherCats.forEach(function(c) {
+              var b = document.createElement('button');
+              b.className = 'diary-cat-del-cat-btn';
+              b.textContent = c;
+              b.addEventListener('click', function() {
+                catsDiv.querySelectorAll('.diary-cat-del-cat-btn').forEach(function(x) { x.classList.remove('selected'); });
+                b.classList.add('selected');
+                _selectedTarget = c;
+                confirmBtn.disabled = false;
+              });
+              catsDiv.appendChild(b);
+            });
+            confirmBtn.disabled = true;
+            overlay.classList.add('show');
+            var cancelBtn = document.getElementById('diaryCatDelCancel');
+            var onConfirm = function() {
+              if (!_selectedTarget) return;
+              var cats2 = getDiaryCategories();
+              cats2 = cats2.filter(function(c) { return c !== _pendingDelCat; });
+              saveDiaryCategories(cats2);
+              var entries = getDiaryEntries();
+              entries.forEach(function(en) { if (en.category === _pendingDelCat) en.category = _selectedTarget; });
+              saveDiaryEntries(entries);
+              if (_diaryCurrentCategory === _pendingDelCat) _diaryCurrentCategory = 'all';
+              overlay.classList.remove('show');
+              renderCatManageList();
+              renderCategoryTabs();
+              renderDiary();
+              if (typeof showToast === 'function') showToast('已删除分类，日记移入"' + _selectedTarget + '"');
+              cleanup();
+            };
+            var onCancel = function() {
+              overlay.classList.remove('show');
+              cleanup();
+            };
+            var cleanup = function() {
+              confirmBtn.removeEventListener('click', onConfirm);
+              cancelBtn.removeEventListener('click', onCancel);
+              overlay.removeEventListener('click', onOutside);
+            };
+            var onOutside = function(e) { if (e.target === overlay) onCancel(); };
+            confirmBtn.addEventListener('click', onConfirm);
+            cancelBtn.addEventListener('click', onCancel);
+            overlay.addEventListener('click', onOutside);
           });
         });
       }
