@@ -1394,36 +1394,48 @@
       justify-content: center;
     }
     .letter-header-btn {
-      height: 32px;
-      padding: 0 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(0,0,0,0.08);
+      height: 34px;
+      padding: 0 14px;
+      border-radius: 17px;
+      border: 1px solid rgba(155,142,196,0.25);
       background: #fff;
       font-size: 13px;
-      color: #555;
+      color: #666;
       cursor: pointer;
       display: flex;
       align-items: center;
+      justify-content: center;
       gap: 4px;
       flex-shrink: 0;
-      transition: all 0.15s;
+      transition: all 0.2s ease;
       font-weight: 500;
+      white-space: nowrap;
     }
     .letter-header-btn:active {
-      background: #f5f5f5;
+      background: #f0e8f8;
       transform: scale(0.96);
     }
+    .letter-header-btn.btn-active {
+      background: #f5f0ff;
+      border-color: rgba(155,142,196,0.4);
+      color: #7b6fa6;
+    }
+    .letter-header-btn.btn-active svg {
+      stroke: #9b8ec4;
+    }
     .letter-header-btn.btn-highlight {
-      background: #3a7bd5;
-      border-color: #3a7bd5;
+      background: linear-gradient(135deg, #9b8ec4 0%, #b8a9d9 100%);
+      border-color: #9b8ec4;
       color: #fff;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(155,142,196,0.3);
     }
     .letter-header-btn.btn-highlight svg {
       stroke: #fff;
     }
     .letter-header-btn.btn-highlight:active {
-      background: #2e6bc0;
+      background: linear-gradient(135deg, #8a7db5 0%, #a898cc 100%);
+      box-shadow: 0 1px 4px rgba(155,142,196,0.2);
     }
     .letter-detail-body {
       flex: 1;
@@ -11475,8 +11487,8 @@ patText2 = patText2.replace(/你/g, '我');
         if (btn && letter) {
           const svg = btn.querySelector('svg');
           if (svg) svg.style.stroke = letter.pinned ? '#9b8ec4' : '#999';
-          const text = btn.childNodes[btn.childNodes.length - 1];
-          if (text && text.nodeType === 3) text.textContent = letter.pinned ? ' 取消置顶' : ' 置顶';
+          // 文字始终显示"置顶"，只通过图标颜色区分状态
+          btn.classList.toggle('btn-active', letter.pinned);
         }
       }
 
@@ -11745,7 +11757,8 @@ patText2 = patText2.replace(/你/g, '我');
         const btn = document.getElementById('letterFavViewBtn');
         const fillColor = isFav ? '#9b8ec4' : 'none';
         const strokeColor = isFav ? '#9b8ec4' : '#ccc';
-        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="${fillColor}" stroke="${strokeColor}" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>收藏`;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="'+fillColor+'" stroke="'+strokeColor+'" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>收藏';
+        btn.classList.toggle('btn-active', isFav);
       }
 
       // === 字卡批注功能 ===
@@ -12843,11 +12856,7 @@ patText2 = patText2.replace(/你/g, '我');
           e.stopPropagation();
           toggleAnnotationMode();
           const btn = document.getElementById('letterAnnViewBtn');
-          const svg = btn ? btn.querySelector('svg') : null;
-          if (svg) {
-            svg.setAttribute('stroke', annotationMode ? '#9b8ec4' : '#999');
-            svg.setAttribute('fill', annotationMode ? '#9b8ec4' : 'none');
-          }
+          btn.classList.toggle('btn-active', annotationMode);
         });
       }
 
