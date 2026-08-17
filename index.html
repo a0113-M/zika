@@ -1380,12 +1380,18 @@
     .letter-detail-back-btn:active {
       background: rgba(0,0,0,0.05);
     }
-    .letter-detail-header-actions {
+    .letter-detail-actions-row {
       display: flex;
       align-items: center;
+      padding: 8px 16px 10px;
+      background: #fff;
       gap: 8px;
-      margin-left: auto;
       flex-shrink: 0;
+      border-bottom: 0.5px solid rgba(0,0,0,0.06);
+    }
+    .letter-detail-actions-row .letter-header-btn {
+      flex: 1;
+      justify-content: center;
     }
     .letter-header-btn {
       height: 32px;
@@ -6755,24 +6761,24 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
             </button>
             <span class="letter-title" id="letterDetailTitle">信件内容</span>
-            <div class="letter-detail-header-actions">
-              <button class="letter-header-btn" id="letterFavViewBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
-                收藏
-              </button>
-              <button class="letter-header-btn" id="letterPinViewBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
-                置顶
-              </button>
-              <button class="letter-header-btn" id="letterAnnViewBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/><path d="M15 5l3 3"/></svg>
-                批注
-              </button>
-              <button class="letter-header-btn btn-highlight" id="letterReplyViewBtn">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3a7bd5" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                回信
-              </button>
-            </div>
+          </div>
+          <div class="letter-detail-actions-row">
+            <button class="letter-header-btn" id="letterFavViewBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>
+              收藏
+            </button>
+            <button class="letter-header-btn" id="letterPinViewBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>
+              置顶
+            </button>
+            <button class="letter-header-btn" id="letterAnnViewBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/><path d="M15 5l3 3"/></svg>
+              批注
+            </button>
+            <button class="letter-header-btn btn-highlight" id="letterReplyViewBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3a7bd5" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              回信
+            </button>
           </div>
           <div class="letter-detail-body" id="letterDetailBody">
             <div class="annotation-mode-hint" id="annotationModeHint">点击字卡进行选择，可多选后统一添加批注</div>
