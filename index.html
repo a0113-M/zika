@@ -6425,43 +6425,25 @@
   position: relative;
 }
 
-.diary-avatar {
-  width: 40px; height: 40px;
+.diary-card-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+.diary-visibility-btn {
+  background: none;
+  border: 1px solid #e8ddf5;
   border-radius: 10px;
-  background: linear-gradient(135deg, #b8a9d9, #9b8ec4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.diary-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-.diary-card-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.diary-author {
-  font-size: 15px;
-  font-weight: 600;
-  color: #7b6eb4;
-}
-
-.diary-type-badge {
-  display: inline-block;
+  padding: 3px 8px;
   font-size: 11px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: #f0eaf6;
   color: #9b8ec4;
-  margin-left: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
+.diary-visibility-btn svg { width: 12px; height: 12px; }
+.diary-visibility-btn.private { color: #ccc; border-color: #eee; }
 
 .diary-text {
   font-size: 14px;
@@ -14920,13 +14902,8 @@ patText2 = patText2.replace(/你/g, '我');
           var item = document.createElement('div');
           item.className = 'diary-item';
 
-          var avatarHtml;
-          if (userInfo.avatarImage) {
-            avatarHtml = '<div class="diary-avatar"><img src="' + userInfo.avatarImage + '"></div>';
-          } else {
-            avatarHtml = '<div class="diary-avatar">' + (userInfo.name.charAt(0) || '我') + '</div>';
-          }
-          var typeBadge = entry.type === 'chat' ? '<span class="diary-type-badge">聊天记录</span>' : '';
+          var isPrivate = entry.visibility === 'private';
+          var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
 
           var displayText = entry.content || '';
           if (displayText.length > 500) displayText = displayText.substring(0, 500) + '...';
@@ -14963,8 +14940,7 @@ patText2 = patText2.replace(/你/g, '我');
           
 
           item.innerHTML =
-            '<div class="diary-card-top">' + avatarHtml +
-            '<span class="diary-author">' + escapeDiaryHtml(userInfo.name) + '</span>' + typeBadge + '</div>' +
+            visibilityHtml +
             '<div class="diary-text">' + escapedText + '</div>' +
             imageHtml +
             '\u003cdiv class="diary-action-bar"\u003e' +
@@ -15047,6 +15023,13 @@ patText2 = patText2.replace(/你/g, '我');
             openDiaryDelete(parseInt(this.dataset.deleteId));
           });
         });
+
+        var visBtns = diaryFeed.querySelectorAll('.diary-visibility-btn');
+        visBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            toggleDiaryVisibility(parseInt(this.dataset.visId));
+          });
+        });
       }
 
 
@@ -15061,6 +15044,16 @@ patText2 = patText2.replace(/你/g, '我');
         else { entry.likes.push('me'); }
         saveDiaryEntries(entries);
         renderDiary();
+      }
+
+      function toggleDiaryVisibility(id) {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === id; });
+        if (!entry) return;
+        entry.visibility = entry.visibility === 'private' ? 'public' : 'private';
+        saveDiaryEntries(entries);
+        renderDiary();
+        if (typeof showToast === 'function') showToast(entry.visibility === 'private' ? '已设为私密' : '已设为公开');
       }
 
       function toggleCommentArea(id) {
@@ -15122,7 +15115,8 @@ patText2 = patText2.replace(/你/g, '我');
           type: 'diary',
           images: _diaryPendingImages.slice(),
           likes: [],
-          comments: []
+          comments: [],
+          visibility: 'public'
         };
         entries.unshift(entry);
         saveDiaryEntries(entries);
