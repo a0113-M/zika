@@ -7182,6 +7182,7 @@
     })();
 
     (function () {
+      let userProfile = { name: "我", avatar: "我", avatarImage: null };
       // ----- 数据 -----
       let contacts = [
         { id: 1, name: '1', isGroup: false, lastMsg: '你好', time: '刚刚' },
@@ -9579,7 +9580,6 @@
       // Initial render
       renderMoments();
 
-      let userProfile = { name: '我', avatar: '我', avatarImage: null };
       const profileModal = document.getElementById('profileModal');
       const profileNameInput = document.getElementById('profileNameInput');
       const profileAvatarText = document.getElementById('profileAvatarText');
