@@ -9894,6 +9894,18 @@
                   <span class="settings-prob-value" id="contactVoiceCardProbVal">10%</span>
                 </div>
               </div>
+              <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
+              <div class="settings-section-title" style="font-size:13px;margin-top:12px;">专用字卡使用概率</div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">专用字卡概率</span>
+                  <span class="settings-item-hint">该联系人使用专用字卡的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactExclusiveCardProb" min="0" max="100" step="1" value="0" class="settings-range">
+                  <span class="settings-prob-value" id="contactExclusiveCardProbVal">0%</span>
+                </div>
+              </div>
             </div>
             <div class="settings-item">
               <div class="settings-item-left">
@@ -12272,7 +12284,7 @@
 
       function loadContactProbSliders(contactId) {
         var settings = getContactProbSettings();
-        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
+        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0 };
         
         var contact = contacts.find(function(c) { return c.id === contactId; });
         if (contact) {
@@ -12305,12 +12317,14 @@
         if (ecp) { ecp.value = cs.emojiCardProb || 30; document.getElementById('contactEmojiCardProbVal').textContent = (cs.emojiCardProb || 30) + '%'; }
         if (icp) { icp.value = cs.imageCardProb || 20; document.getElementById('contactImageCardProbVal').textContent = (cs.imageCardProb || 20) + '%'; }
         if (voc) { voc.value = cs.voiceCardProb || 10; document.getElementById('contactVoiceCardProbVal').textContent = (cs.voiceCardProb || 10) + '%'; }
+        var ecp2 = document.getElementById('contactExclusiveCardProb');
+        if (ecp2) { ecp2.value = cs.exclusiveCardProb || 0; document.getElementById('contactExclusiveCardProbVal').textContent = (cs.exclusiveCardProb || 0) + '%'; }
         
         document.getElementById('contactProbSlidersSection').style.display = 'block';
       }
 
       // 联系人概率滑块事件
-      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb'].forEach(function(id) {
+      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb','contactExclusiveCardProb'].forEach(function(id) {
         var slider = document.getElementById(id);
         var display = document.getElementById(id + 'Val');
         if (slider && display) {
@@ -12319,8 +12333,8 @@
             display.textContent = val + '%';
             if (!currentContactProbId) return;
             var settings = getContactProbSettings();
-            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
-            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb' };
+            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0 };
+            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb', contactExclusiveCardProb: 'exclusiveCardProb' };
             settings[currentContactProbId][keyMap[id]] = val;
             saveContactProbSettings(settings);
           });
