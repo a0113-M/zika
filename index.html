@@ -6417,6 +6417,22 @@
   padding: 2px 8px;
   border-radius: 10px;
 }
+.todo-header-btn {
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  color: #9b8ec4;
+  background: #f0ecf7;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.todo-header-btn:active { background: #e8e0f2; }
+.todo-header-btn svg { flex-shrink: 0; }
 .todo-filter-bar {
   display: flex;
   gap: 0;
@@ -8387,15 +8403,16 @@
       </button>
       <span class="todo-header-title">待办</span>
       <span class="todo-header-count" id="todoCount">0 项</span>
+      <button class="todo-header-btn" id="reminderCardsEntryBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M8 14h4"/></svg>
+        <span>提醒字卡</span>
+      </button>
     </div>
     <div class="todo-filter-bar" id="todoFilterBar" style="position:relative;">
       <button class="todo-filter-btn active" data-filter="all">全部</button>
       <button class="todo-filter-btn" data-filter="pending">未完成</button>
       <button class="todo-filter-btn" data-filter="done">已完成</button>
-      <button class="reminder-cards-entry" id="reminderCardsEntryBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M8 14h4"/></svg>
-        <span>提醒字卡</span>
-      </button>
+
     </div>
     <div class="todo-scroll" id="todoScroll">
       <div class="todo-empty" id="todoEmpty">
@@ -8975,7 +8992,7 @@
         <button class="reminder-cards-header-back" id="reminderCardsBackBtn">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
         </button>
-        <span class="reminder-cards-header-title">待办提醒字卡</span>
+        <span class="reminder-cards-header-title">待办字卡管理</span>
       </div>
       <div class="reminder-cards-body" id="reminderCardsBody"></div>
     </div>
@@ -17428,7 +17445,15 @@ patText2 = patText2.replace(/你/g, '我');
               var id = this.dataset.toggleTodo;
               var todos = getTodos();
               var t = todos.find(function(x) { return x.id === id; });
-              if (t) { t.done = !t.done; saveTodos(todos); renderTodoList(); }
+              if (t) {
+                var wasDone = t.done;
+                t.done = !t.done;
+                saveTodos(todos);
+                renderTodoList();
+                if (!wasDone && t.done) {
+                  showCelebrationCard(t);
+                }
+              }
             });
           });
 
@@ -17923,6 +17948,7 @@ patText2 = patText2.replace(/你/g, '我');
           try { data = JSON.parse(localStorage.getItem('reminderCards') || '{}'); } catch(e) { data = {}; }
           // 首次使用：通用字卡预设默认内容
           if (!data._general) data._general = {"0":[],"1":[],"2":[],"3":[],"4":[]};
+          if (!data._celebration) data._celebration = [];
           var _g = data._general;
           var _allEmpty = true;
           for (var _p = 0; _p <= 4; _p++) {
@@ -17934,6 +17960,22 @@ patText2 = patText2.replace(/你/g, '我');
             _g["2"] = ["这个待办需要处理了，别忘了哦~","温柔地提醒你，有件事还没做完呢~","该处理这个啦，一点一点来~","今天的待办清单里还有这个哦~","记得今天要处理这个待办哦~"];
             _g["3"] = ["这个比较重要，抽空优先处理一下吧~","很重要的一件事，别忘了今天处理哦~","温柔但认真地提醒你，这个该处理了~","这件事挺重要的，先处理它好不好~","别拖啦，这件重要的事先完成吧~"];
             _g["4"] = ["这件事真的很急，现在就去处理吧~","非常紧急的待办，先做这个好不好~","最最重要的事！现在就处理吧~","深呼吸，然后马上去完成这个待办~","很紧急哦，放下手头的事先处理这个吧~"];
+            saveReminderCards(data);
+          }
+          // Default celebration cards
+          if (!data._celebration || data._celebration.length === 0) {
+            data._celebration = [
+              "太棒啦！又完成了一项，你真厉害~",
+              "恭喜完成！继续保持这个节奏哦~",
+              "做得好！每完成一件都是进步~",
+              "完成啦！给自己鼓个掌吧~",
+              "又搞定一项，越来越厉害了~",
+              "好样的！待办清单又少了一项~",
+              "完成！你比想象中更优秀~",
+              "太厉害了，这个也搞定了~",
+              "漂亮！一件一件来，都在掌控中~",
+              "完成了一项！离目标又近了一步~"
+            ];
             saveReminderCards(data);
           }
           return data;
@@ -18059,7 +18101,20 @@ patText2 = patText2.replace(/你/g, '我');
           var allContacts = typeof window.getAllNonGroupContacts === 'function' ? window.getAllNonGroupContacts() : [];
           var chevronHtml = '<svg class="reminder-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
           var html = '';
-          // ---- General section (on top) ----
+          // ---- Celebration section (on top) ----
+          var celCards = data._celebration || [];
+          html += '<div class="reminder-cards-section">';
+          html += '<div class="reminder-cards-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成待办</div>';
+          if (celCards.length > 0) {
+            html += '<div class="reminder-card-list">';
+            celCards.forEach(function(card, idx) {
+              html += '<div class="reminder-card-item"><span class="reminder-card-item-text">' + escapeTodoHtml(card) + '</span><button class="reminder-card-delete" data-rc-del="_celebration" data-rc-prio="0" data-rc-idx="' + idx + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+            });
+            html += '</div>';
+          }
+          html += '<div class="reminder-card-add"><input class="reminder-card-add-input" data-rc-input="_celebration" data-rc-prio-input="0" placeholder="添加完成鼓励字卡..." /><button class="reminder-card-add-btn" data-rc-add="_celebration" data-rc-prio-add="0">添加</button></div>';
+          html += '</div>';
+          // ---- General section ----
           html += '<div class="reminder-cards-section">';
           html += '<div class="reminder-cards-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M8 14h4"/></svg>通用字卡</div>';
           html += _renderPrioGroups('_general', data._general || null, true);
@@ -18125,6 +18180,38 @@ patText2 = patText2.replace(/你/g, '我');
               }
             });
           });
+        }
+
+        // Show celebration card when a todo is completed
+        function showCelebrationCard(todo) {
+          var data = getReminderCards();
+          var cards = data._celebration || [];
+          if (cards.length === 0) return;
+          var cardText = cards[Math.floor(Math.random() * cards.length)];
+          // Toast
+          var existing = document.querySelector('.todo-reminder-toast');
+          if (existing) existing.remove();
+          var toast = document.createElement('div');
+          toast.className = 'todo-reminder-toast';
+          toast.innerHTML = '<div class="todo-reminder-toast-header" style="background:linear-gradient(135deg,#a8e6a3,#7bc67e);"><span class="todo-reminder-toast-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成啦</span><button class="todo-reminder-toast-close" id="toastCloseBtn"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div class="todo-reminder-toast-body"><div style="font-size:13px;color:#3a8a35;margin-bottom:4px;">' + escapeTodoHtml(cardText) + '</div><div class="todo-reminder-toast-text">' + escapeTodoHtml(todo.text) + '</div></div>';
+          document.body.appendChild(toast);
+          toast.querySelector('#toastCloseBtn').addEventListener('click', function() { toast.remove(); });
+          setTimeout(function() { if (toast.parentNode) toast.remove(); }, 8000);
+          // Inject into contact chat
+          var cid = todo.reminderContactId;
+          if (cid && typeof window.getContactById === 'function') {
+            var contact = window.getContactById(cid);
+            if (contact) {
+              var msgText = cardText + ' 「' + todo.text + '」完成啦~';
+              if (!chatHistories[cid]) chatHistories[cid] = [];
+              var now = new Date();
+              var timeStr = (now.getHours()<10?'0':'') + now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes();
+              chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isCelebration: true });
+              if (typeof currentChatId !== 'undefined' && currentChatId === cid && typeof renderMessages === 'function') {
+                renderMessages(cid);
+              }
+            }
+          }
         }
 
         // Toggle functions for collapse/expand
