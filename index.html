@@ -255,7 +255,7 @@
       width: 48px;
       height: 48px;
       border-radius: 6px;
-      background: #c7d1d9;
+      background: var(--primary-lighter);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -469,7 +469,7 @@
     }
 
     .modal-actions .btn-confirm:active {
-      background: #8a7db3;
+      background: var(--primary);
     }
     /* --- 动态编辑弹窗 --- */
     .moment-edit-overlay {
@@ -512,7 +512,7 @@
     .moment-edit-btns .btn-msave {
       background: var(--primary); color: #fff;
     }
-    .moment-edit-btns .btn-msave:active { background: #8a7db3; }
+    .moment-edit-btns .btn-msave:active { background: var(--primary); }
 
     /* --- 动态删除确认弹窗 --- */
     .moment-del-overlay {
@@ -910,7 +910,7 @@
     }
 
     .msg-right .msg-bubble {
-      background: #b8a9d9;
+      background: var(--primary-light);
       border-radius: 12px 4px 12px 12px;
     }
 
@@ -1477,13 +1477,13 @@
       white-space: nowrap;
     }
     .letter-header-btn:active {
-      background: #f0e8f8;
+      background: var(--bg-soft);
       transform: scale(0.96);
     }
     .letter-header-btn.btn-active {
       background: var(--bg-main);
-      border-color: rgba(155,142,196,0.4);
-      color: #7b6fa6;
+      border-color: var(--primary);
+      color: var(--primary);
     }
     .letter-header-btn.btn-active svg {
       stroke: var(--primary);
@@ -2353,7 +2353,7 @@
       padding-left: 12px;
     }
     .letter-item.selected {
-      background: #f0e8f8;
+      background: var(--bg-soft);
     }
     .letter-item.selected.pinned {
       background: #ece4ff;
@@ -2415,7 +2415,7 @@
       color: #fff;
     }
     .letter-reply-btn:active {
-      background: #8a7db3;
+      background: var(--primary);
     }
     .letter-delete-btn {
       background: #f5f5f5;
@@ -2478,7 +2478,7 @@
       cursor: pointer;
     }
     .letter-reply-modal-send:active {
-      background: #8a7db3;
+      background: var(--primary);
     }
     .letter-reply-modal-body {
       flex: 1;
@@ -2587,7 +2587,7 @@
       cursor: pointer;
     }
     .letter-compose-modal-send:active {
-      background: #8a7db3;
+      background: var(--primary);
     }
     .letter-compose-modal-body {
       flex: 1;
@@ -3815,7 +3815,7 @@
     }
     .chat-letter-bubble.outgoing {
       align-self: flex-end;
-      background: #b8a9d9;
+      background: var(--primary-light);
       color: #333;
       border-bottom-right-radius: 4px;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
@@ -5074,7 +5074,7 @@
     }
     
     .card-category-badge:hover {
-      background: #8a7db3;
+      background: var(--primary);
     }
 
     .card-detail-header .detail-menu-btn {
@@ -5771,7 +5771,7 @@
     }
 
     .chat-select-toolbar .select-actions .btn-export-selected:active {
-      background: #8a7db3;
+      background: var(--primary);
     }
 
     .chat-select-toolbar .select-actions .btn-cancel-select {
@@ -6424,7 +6424,7 @@
     .settings-prob-value {
       font-size: 14px;
       font-weight: 600;
-      color: #7b6fa6;
+      color: var(--primary);
       min-width: 36px;
       text-align: right;
     }
