@@ -17929,11 +17929,11 @@ patText2 = patText2.replace(/你/g, '我');
             if (_g[String(_p)] && _g[String(_p)].length > 0) { _allEmpty = false; break; }
           }
           if (_allEmpty) {
-            _g["0"] = ["嘿，该处理这个了~","记得看看这个待办哦","这个还没做完呢","有空处理一下这个吧","别忘了还有件事没做"];
-            _g["1"] = ["这个待办还在等你哦，不急但别忘了~","有空的时候处理一下吧~","提醒你一下，还有个小任务没完成哦","这个不急，但今天可以顺手做了","悄悄提醒，有个待办还没处理呢"];
-            _g["2"] = ["这个待办需要处理了，别忘了哦！","任务提醒：你有件事还没做完","该处理这个待办了，别拖延啦","提醒你，这个待办还没完成","别忘了这个待办，尽快处理哦"];
-            _g["3"] = ["紧急！这个待办赶紧处理！","很重要！请立即处理这个待办！","高优先级提醒，别再拖了！","这个很急，马上处理！","注意！这个待办已经不能再拖了"];
-            _g["4"] = ["十万火急！立即处理！！","非常紧急！现在就做！！","最高优先级！必须马上完成！！","刻不容缓！立刻处理这个待办！！","紧急警报！这个待办必须现在完成！！"];
+            _g["0"] = ["嘿，有空的时候看看这个吧~","别忘了还有一件小事等着你哦~","这个待办还在这里等你呢~","慢慢来，记得还有这件事哦~","轻悄悄地提醒你，有个待办还没处理呢~"];
+            _g["1"] = ["这件小事有空就处理一下吧~","不急的，但今天可以顺手做完哦~","温馨提示：有个小任务还在等你~","轻轻提醒你，还有一件事没完成呢~","慢慢来，别忘了这个小待办哦~"];
+            _g["2"] = ["这个待办需要处理了，别忘了哦~","温柔地提醒你，有件事还没做完呢~","该处理这个啦，一点一点来~","今天的待办清单里还有这个哦~","记得今天要处理这个待办哦~"];
+            _g["3"] = ["这个比较重要，抽空优先处理一下吧~","很重要的一件事，别忘了今天处理哦~","温柔但认真地提醒你，这个该处理了~","这件事挺重要的，先处理它好不好~","别拖啦，这件重要的事先完成吧~"];
+            _g["4"] = ["这件事真的很急，现在就去处理吧~","非常紧急的待办，先做这个好不好~","最最重要的事！现在就处理吧~","深呼吸，然后马上去完成这个待办~","很紧急哦，放下手头的事先处理这个吧~"];
             saveReminderCards(data);
           }
           return data;
@@ -18029,7 +18029,7 @@ patText2 = patText2.replace(/你/g, '我');
             }
             var chevronSvg = '<svg class="reminder-card-prio-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
             if (collapsible) {
-              html += '<div class="reminder-card-prio-group">';
+              html += '<div class="reminder-card-prio-group reminder-card-prio-collapsed">';
               html += '<div class="reminder-card-prio-title" onclick="_togglePrioCollapse(this)"><span class="reminder-card-prio-dot" style="background:' + _PRIO_COLORS[p] + ';"></span>' + _PRIO_LABELS[p] + ' (' + cards.length + ')' + chevronSvg + '</div>';
               html += '<div class="reminder-card-prio-collapse-content">';
             } else {
@@ -18135,6 +18135,7 @@ patText2 = patText2.replace(/你/g, '我');
           }
           if (card) card.classList.toggle('reminder-card-collapsed');
         }
+        window._toggleContactCollapse = _toggleContactCollapse;
 
         function _togglePrioCollapse(el) {
           var group = el.parentElement;
@@ -18143,6 +18144,7 @@ patText2 = patText2.replace(/你/g, '我');
           }
           if (group) group.classList.toggle('reminder-card-prio-collapsed');
         }
+        window._togglePrioCollapse = _togglePrioCollapse;
 
         // Back button for reminder cards view
         var rcBackBtn = document.getElementById('reminderCardsBackBtn');
