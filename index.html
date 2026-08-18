@@ -19485,6 +19485,11 @@ patText2 = patText2.replace(/你/g, '我');
         callMsgQueue = [];
         callChatMessages.innerHTML = '';
         updateControlUI();
+        // Restore toolbar after call ends
+        var tg = document.getElementById('toolbarGrid');
+        if (tg) tg.classList.remove('hidden');
+        var em = document.getElementById('emojiModule');
+        if (em) em.classList.remove('active');
       }
 
       function padTime(d) {
@@ -19538,21 +19543,38 @@ patText2 = patText2.replace(/你/g, '我');
         var delay = 8000 + Math.random() * 7000;
         callAutoMsgTimeout = setTimeout(function() {
           if (callState !== 'active') return;
-          var msg = callAutoMessages[Math.floor(Math.random() * callAutoMessages.length)];
-          addCallChatMessage('incoming', msg);
+          var cardText = getRandomCard();
+          addCallChatMessage('incoming', cardText);
           scheduleAutoMessage();
         }, delay);
         // First message sooner
         setTimeout(function() {
           if (callState !== 'active') return;
-          var msg = callAutoMessages[Math.floor(Math.random() * callAutoMessages.length)];
-          addCallChatMessage('incoming', msg);
+          var cardText = getRandomCard();
+          addCallChatMessage('incoming', cardText);
         }, 3000 + Math.random() * 2000);
       }
 
       function addCallChatMessage(type, text) {
         var msg = { type: type, text: text, time: Date.now() };
         callMsgQueue.push(msg);
+
+        // Sync incoming messages to main chat history
+        if (type === 'incoming' && currentChatId !== null && chatHistories[currentChatId]) {
+          var now = new Date();
+          var timeStr = padTime(now);
+          // Check if it's a card (textCard) or regular message
+          var cardData = null;
+          try { cardData = JSON.parse(text); } catch(e) {}
+          if (cardData && cardData.type) {
+            chatHistories[currentChatId].push({
+              text: text, from: 'them', time: timeStr, isCard: true, cardType: cardData.type
+            });
+          } else {
+            chatHistories[currentChatId].push({ text: text, from: 'them', time: timeStr });
+          }
+          if (currentChatId === callContactId) renderMessages(currentChatId);
+        }
 
         if (type === 'system') {
           var sysEl = document.createElement('div');
