@@ -9790,7 +9790,69 @@
                   <span class="settings-prob-value" id="contactSettingAnonProbVal">3%</span>
                 </div>
               </div>
-              <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
+                            <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
+              <div class="settings-section-title" style="font-size:13px;margin-top:12px;">互动概率</div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">回复朋友圈概率</span>
+                  <span class="settings-item-hint">该联系人回复你朋友圈的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingReplyMomentProb" min="0" max="100" step="1" value="5" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingReplyMomentProbVal">5%</span>
+                </div>
+              </div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">点赞朋友圈概率</span>
+                  <span class="settings-item-hint">该联系人给你朋友圈点赞的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingLikeMomentProb" min="0" max="100" step="1" value="10" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingLikeMomentProbVal">10%</span>
+                </div>
+              </div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">打电话概率</span>
+                  <span class="settings-item-hint">该联系人给你打电话的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingCallProb" min="0" max="100" step="1" value="3" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingCallProbVal">3%</span>
+                </div>
+              </div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">打视频概率</span>
+                  <span class="settings-item-hint">该联系人给你打视频的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingVideoCallProb" min="0" max="100" step="1" value="2" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingVideoCallProbVal">2%</span>
+                </div>
+              </div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">发表情包概率</span>
+                  <span class="settings-item-hint">该联系人发表情包的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingStickerProb" min="0" max="100" step="1" value="10" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingStickerProbVal">10%</span>
+                </div>
+              </div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">拍一拍概率</span>
+                  <span class="settings-item-hint">该联系人拍一拍你的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingPokeProb" min="0" max="100" step="1" value="5" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingPokeProbVal">5%</span>
+                </div>
+              </div>
+<div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
               <div class="settings-section-title" style="font-size:13px;margin-top:12px;">字卡类目使用概率</div>
               <div class="settings-item">
                 <div class="settings-item-left">
@@ -12210,7 +12272,7 @@
 
       function loadContactProbSliders(contactId) {
         var settings = getContactProbSettings();
-        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
+        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
         
         var contact = contacts.find(function(c) { return c.id === contactId; });
         if (contact) {
@@ -12220,23 +12282,35 @@
         var lp = document.getElementById('contactSettingLetterProb');
         var mp = document.getElementById('contactSettingMomentProb');
         var ap = document.getElementById('contactSettingAnonProb');
+        var rmp = document.getElementById('contactSettingReplyMomentProb');
+        var lmp = document.getElementById('contactSettingLikeMomentProb');
+        var cp = document.getElementById('contactSettingCallProb');
+        var vcp2 = document.getElementById('contactSettingVideoCallProb');
+        var sp = document.getElementById('contactSettingStickerProb');
+        var pp = document.getElementById('contactSettingPokeProb');
         var tcp = document.getElementById('contactTextCardProb');
         var ecp = document.getElementById('contactEmojiCardProb');
         var icp = document.getElementById('contactImageCardProb');
-        var vcp = document.getElementById('contactVoiceCardProb');
+        var voc = document.getElementById('contactVoiceCardProb');
         if (lp) { lp.value = cs.letterProb; document.getElementById('contactSettingLetterProbVal').textContent = cs.letterProb + '%'; }
         if (mp) { mp.value = cs.momentProb; document.getElementById('contactSettingMomentProbVal').textContent = cs.momentProb + '%'; }
         if (ap) { ap.value = cs.anonProb; document.getElementById('contactSettingAnonProbVal').textContent = cs.anonProb + '%'; }
+        if (rmp) { rmp.value = cs.replyMomentProb || 5; document.getElementById('contactSettingReplyMomentProbVal').textContent = (cs.replyMomentProb || 5) + '%'; }
+        if (lmp) { lmp.value = cs.likeMomentProb || 10; document.getElementById('contactSettingLikeMomentProbVal').textContent = (cs.likeMomentProb || 10) + '%'; }
+        if (cp) { cp.value = cs.callProb || 3; document.getElementById('contactSettingCallProbVal').textContent = (cs.callProb || 3) + '%'; }
+        if (vcp2) { vcp2.value = cs.videoCallProb || 2; document.getElementById('contactSettingVideoCallProbVal').textContent = (cs.videoCallProb || 2) + '%'; }
+        if (sp) { sp.value = cs.stickerProb || 10; document.getElementById('contactSettingStickerProbVal').textContent = (cs.stickerProb || 10) + '%'; }
+        if (pp) { pp.value = cs.pokeProb || 5; document.getElementById('contactSettingPokeProbVal').textContent = (cs.pokeProb || 5) + '%'; }
         if (tcp) { tcp.value = cs.textCardProb || 40; document.getElementById('contactTextCardProbVal').textContent = (cs.textCardProb || 40) + '%'; }
         if (ecp) { ecp.value = cs.emojiCardProb || 30; document.getElementById('contactEmojiCardProbVal').textContent = (cs.emojiCardProb || 30) + '%'; }
         if (icp) { icp.value = cs.imageCardProb || 20; document.getElementById('contactImageCardProbVal').textContent = (cs.imageCardProb || 20) + '%'; }
-        if (vcp) { vcp.value = cs.voiceCardProb || 10; document.getElementById('contactVoiceCardProbVal').textContent = (cs.voiceCardProb || 10) + '%'; }
+        if (voc) { voc.value = cs.voiceCardProb || 10; document.getElementById('contactVoiceCardProbVal').textContent = (cs.voiceCardProb || 10) + '%'; }
         
         document.getElementById('contactProbSlidersSection').style.display = 'block';
       }
 
       // 联系人概率滑块事件
-      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb'].forEach(function(id) {
+      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb'].forEach(function(id) {
         var slider = document.getElementById(id);
         var display = document.getElementById(id + 'Val');
         if (slider && display) {
@@ -12245,8 +12319,8 @@
             display.textContent = val + '%';
             if (!currentContactProbId) return;
             var settings = getContactProbSettings();
-            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
-            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb' };
+            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
+            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb' };
             settings[currentContactProbId][keyMap[id]] = val;
             saveContactProbSettings(settings);
           });
