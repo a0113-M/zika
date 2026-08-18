@@ -8565,7 +8565,7 @@
   padding: 12px 16px; padding-top: max(12px, env(safe-area-inset-top));
   z-index: 100;
 }
-.call-top-bar .top-bar-left { display: flex; align-items: center; gap: 10px; }
+.call-top-bar .top-bar-left { display: none; }
 .call-top-bar .top-bar-right { display: flex; align-items: center; gap: 10px; }
 .call-top-bar .call-hangup-mini {
   width: 36px; height: 36px; border-radius: 50%; border: none;
@@ -8703,7 +8703,9 @@
 }
 
 .call-controls {
-  display: none;
+  position: absolute; bottom: 40px; left: 0; right: 0;
+  display: flex; justify-content: center;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -8715,7 +8717,7 @@
 .call-hangup-btn svg { width: 20px; height: 20px; }
 
 .call-chat-area {
-  position: absolute; bottom: 40px; left: 0; right: 0;
+  position: absolute; top: 58%; left: 0; right: 0;
   display: flex; flex-direction: column;
   max-width: 380px; margin: 0 auto;
   padding: 0 16px;
