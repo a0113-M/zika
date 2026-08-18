@@ -7369,14 +7369,44 @@
   padding: 10px 14px;
   background: #faf8ff;
   border-radius: 10px;
+  cursor: pointer;
 }
+.todo-prio-contact-row:active { background: #ede7f6; }
 .todo-prio-contact-icon {
   width: 16px;
   height: 16px;
   color: #9b8ec4;
   flex-shrink: 0;
 }
-.todo-prio-contact-input {
+.todo-prio-contact-text {
+  flex: 1;
+  font-size: 13px;
+  color: #555;
+}
+.todo-prio-contact-text.placeholder { color: #c4b8d8; }
+.todo-prio-contact-arrow {
+  font-size: 12px;
+  color: #c4b8d8;
+  flex-shrink: 0;
+}
+
+/* 提醒时间行 */
+.todo-prio-reminder-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 14px;
+  background: #faf8ff;
+  border-radius: 10px;
+}
+.todo-prio-reminder-icon {
+  width: 16px;
+  height: 16px;
+  color: #9b8ec4;
+  flex-shrink: 0;
+}
+.todo-prio-reminder-input {
   flex: 1;
   border: none;
   background: transparent;
@@ -7384,7 +7414,135 @@
   color: #555;
   outline: none;
 }
-.todo-prio-contact-input::placeholder { color: #c4b8d8; }
+.todo-prio-reminder-input::placeholder { color: #c4b8d8; }
+
+/* 联系人选择弹窗 */
+.todo-contact-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 1000;
+}
+.todo-contact-overlay.show { display: flex; }
+.todo-contact-popup {
+  width: 92%;
+  max-height: 60%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 16px 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.25s ease;
+}
+.todo-contact-popup-title {
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  padding-bottom: 14px;
+  border-bottom: 0.5px solid #f0ecf7;
+  margin: 0 16px;
+}
+.todo-contact-list {
+  overflow-y: auto;
+  padding: 8px 0;
+  flex: 1;
+}
+.todo-contact-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.todo-contact-option:active,
+.todo-contact-option.selected { background: #f5f0ff; }
+.todo-contact-option-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #9b8ec4, #b8a9d4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+.todo-contact-option-name {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+}
+.todo-contact-option-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.todo-contact-option.selected .todo-contact-option-check {
+  border-color: #9b8ec4;
+  background: #9b8ec4;
+}
+.todo-contact-option.selected .todo-contact-option-check::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+.todo-contact-none {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-top: 0.5px solid #f0ecf7;
+  margin-top: 4px;
+}
+.todo-contact-none:active { background: #f5f0ff; }
+.todo-contact-none-name {
+  flex: 1;
+  font-size: 14px;
+  color: #999;
+}
+.todo-contact-none-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.todo-contact-none.selected .todo-contact-none-check {
+  border-color: #9b8ec4;
+  background: #9b8ec4;
+}
+.todo-contact-none.selected .todo-contact-none-check::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
 .todo-prio-actions {
   display: flex;
@@ -7427,6 +7585,20 @@
   flex-shrink: 0;
 }
 .todo-contact-tag svg { width: 12px; height: 12px; flex-shrink: 0; }
+.todo-reminder-time-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: #e88ec4;
+  background: #fdf0f7;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 5px;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.todo-reminder-time-tag svg { width: 12px; height: 12px; flex-shrink: 0; }
 
 /* 添加栏下方的选项行 */
 .todo-add-options {
@@ -8192,14 +8364,27 @@
             <span class="pop-label">紧急</span>
           </div>
         </div>
-        <div class="todo-prio-contact-row">
+        <div class="todo-prio-contact-row" id="todoPrioContactRow">
           <svg class="todo-prio-contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-          <input type="text" class="todo-prio-contact-input" id="todoPrioContactInput" placeholder="联系人提醒（可选）">
+          <span class="todo-prio-contact-text placeholder" id="todoPrioContactText">选择联系人（可选）</span>
+          <span class="todo-prio-contact-arrow">&#8250;</span>
+        </div>
+        <div class="todo-prio-reminder-row">
+          <svg class="todo-prio-reminder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <input type="datetime-local" class="todo-prio-reminder-input" id="todoPrioReminderInput" placeholder="提醒时间（可选）">
         </div>
         <div class="todo-prio-actions">
           <button class="todo-prio-btn todo-prio-btn-cancel" id="todoPrioCancel">取消</button>
           <button class="todo-prio-btn todo-prio-btn-confirm" id="todoPrioConfirm">确定</button>
         </div>
+      </div>
+    </div>
+
+    <!-- 联系人选择弹窗 -->
+    <div class="todo-contact-overlay" id="todoContactOverlay">
+      <div class="todo-contact-popup">
+        <div class="todo-contact-popup-title">选择联系人</div>
+        <div class="todo-contact-list" id="todoContactList"></div>
       </div>
     </div>
 
@@ -16454,8 +16639,21 @@ patText2 = patText2.replace(/你/g, '我');
             html += '<div class="todo-content">';
             html += '<div class="todo-text" data-edit-todo="' + t.id + '">' + escapeTodoHtml(t.text) + '</div>';
             // Contact tag
-            if (t.reminderContact) {
-              html += '<div class="todo-contact-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' + escapeTodoHtml(t.reminderContact) + '</div>';
+            var cId = t.reminderContactId || 0;
+            var cName = '';
+            if (cId > 0 && typeof getContactName === 'function') {
+              cName = getContactName(cId);
+            } else if (t.reminderContact && !t.reminderContactId) {
+              cName = t.reminderContact;
+            }
+            if (cName) {
+              html += '<div class="todo-contact-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' + escapeTodoHtml(cName) + '</div>';
+            }
+            // Reminder time tag
+            if (t.reminderTime) {
+              var rt = new Date(t.reminderTime);
+              var rtStr = (rt.getMonth()+1) + '/' + rt.getDate() + ' ' + (rt.getHours()<10?'0':'') + rt.getHours() + ':' + (rt.getMinutes()<10?'0':'') + rt.getMinutes();
+              html += '<div class="todo-reminder-time-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>' + rtStr + '</div>';
             }
             html += '<div class="todo-date">' + formatDate(t.createdAt) + '</div>';
             html += '</div>';
@@ -16549,7 +16747,6 @@ patText2 = patText2.replace(/你/g, '我');
           var todos = getTodos();
           var t = todos.find(function(x) { return x.id === todoId; });
           var cur = t ? (t.priority || 0) : 0;
-          var contact = t ? (t.reminderContact || '') : '';
           var overlay = document.getElementById('todoPrioOverlay');
           if (!overlay) return;
           overlay.querySelectorAll('.todo-prio-option').forEach(function(opt) {
@@ -16557,17 +16754,27 @@ patText2 = patText2.replace(/你/g, '我');
             if (p === cur) opt.classList.add('selected');
             else opt.classList.remove('selected');
           });
-          // Pre-fill contact input
-          var ci = document.getElementById('todoPrioContactInput');
-          if (ci) ci.value = contact;
+          // Set selected contact
+          _selectedContactId = t ? (t.reminderContactId || 0) : 0;
+          updateContactDisplay();
+          // Set reminder time
+          var ri = document.getElementById('todoPrioReminderInput');
+          if (ri) {
+            if (t && t.reminderTime) {
+              var rd = new Date(t.reminderTime);
+              var pad = function(n) { return n < 10 ? '0'+n : n; };
+              ri.value = rd.getFullYear() + '-' + pad(rd.getMonth()+1) + '-' + pad(rd.getDate()) + 'T' + pad(rd.getHours()) + ':' + pad(rd.getMinutes());
+            } else {
+              ri.value = '';
+            }
+          }
           overlay.classList.add('show');
         }
         function closePrioPopup() {
           var overlay = document.getElementById('todoPrioOverlay');
           if (overlay) overlay.classList.remove('show');
-          var ci = document.getElementById('todoPrioContactInput');
-          if (ci) ci.value = '';
           _prioTargetId = null;
+          _selectedContactId = 0;
         }
         function applyPrio(p) {
           if (!_prioTargetId) return;
@@ -16575,11 +16782,15 @@ patText2 = patText2.replace(/你/g, '我');
           var t = todos.find(function(x) { return x.id === _prioTargetId; });
           if (t) {
             t.priority = p;
-            // Also save contact from popup input
-            var ci = document.getElementById('todoPrioContactInput');
-            if (ci) {
-              var contact = ci.value.trim();
-              t.reminderContact = contact || undefined;
+            // Save contact ID
+            t.reminderContactId = _selectedContactId || 0;
+            t.reminderContact = _selectedContactId > 0 && typeof getContactName === 'function' ? getContactName(_selectedContactId) : undefined;
+            // Save reminder time
+            var ri = document.getElementById('todoPrioReminderInput');
+            if (ri && ri.value) {
+              t.reminderTime = new Date(ri.value).getTime();
+            } else {
+              t.reminderTime = undefined;
             }
             saveTodos(todos);
           }
@@ -16614,26 +16825,159 @@ patText2 = patText2.replace(/你/g, '我');
           });
         }
 
+        // ----- 联系人选择 -----
+        var _selectedContactId = 0;
+        function getContactName(id) {
+          if (typeof contacts !== 'undefined' && id > 0) {
+            var c = contacts.find(function(x) { return x.id === id; });
+            if (c) return c.name;
+          }
+          return '';
+        }
+        function getAllContacts() {
+          return typeof contacts !== 'undefined' ? contacts : [];
+        }
+        function updateContactDisplay() {
+          var el = document.getElementById('todoPrioContactText');
+          if (!el) return;
+          if (_selectedContactId > 0) {
+            el.textContent = getContactName(_selectedContactId);
+            el.classList.remove('placeholder');
+          } else {
+            el.textContent = '\u9009\u62e9\u8054\u7cfb\u4eba\uff08\u53ef\u9009\uff09';
+            el.classList.add('placeholder');
+          }
+        }
+        function openContactSelector() {
+          var overlay = document.getElementById('todoContactOverlay');
+          var list = document.getElementById('todoContactList');
+          if (!overlay || !list) return;
+          var allContacts = getAllContacts().filter(function(c) { return !c.isGroup; });
+          var html = '';
+          allContacts.forEach(function(c) {
+            var sel = c.id === _selectedContactId ? ' selected' : '';
+            html += '<div class="todo-contact-option' + sel + '" data-contact-id="' + c.id + '">';
+            html += '<div class="todo-contact-option-avatar">' + (c.name.charAt(0).toUpperCase() || '?') + '</div>';
+            html += '<div class="todo-contact-option-name">' + escapeTodoHtml(c.name) + '</div>';
+            html += '<div class="todo-contact-option-check"></div>';
+            html += '</div>';
+          });
+          // "None" option
+          var noneSel = _selectedContactId === 0 ? ' selected' : '';
+          html += '<div class="todo-contact-none' + noneSel + '" data-contact-id="0">';
+          html += '<div class="todo-contact-none-name">不提醒</div>';
+          html += '<div class="todo-contact-none-check"></div>';
+          html += '</div>';
+          list.innerHTML = html;
+          // Bind click
+          list.querySelectorAll('[data-contact-id]').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+              var cid = parseInt(this.dataset.contactId);
+              _selectedContactId = cid;
+              list.querySelectorAll('.todo-contact-option, .todo-contact-none').forEach(function(o) { o.classList.remove('selected'); });
+              this.classList.add('selected');
+              updateContactDisplay();
+              // Auto close after selection
+              setTimeout(function() { overlay.classList.remove('show'); }, 200);
+            });
+          });
+          overlay.classList.add('show');
+        }
+        function closeContactSelector() {
+          var overlay = document.getElementById('todoContactOverlay');
+          if (overlay) overlay.classList.remove('show');
+        }
+        // Bind contact row click
+        var contactRow = document.getElementById('todoPrioContactRow');
+        if (contactRow) contactRow.addEventListener('click', function(e) {
+          e.stopPropagation();
+          openContactSelector();
+        });
+        // Bind overlay click to close
+        var contactOverlay = document.getElementById('todoContactOverlay');
+        if (contactOverlay) {
+          contactOverlay.addEventListener('click', function(e) {
+            if (e.target === contactOverlay) closeContactSelector();
+          });
+        }
+
+        // ----- 提醒检查 -----
+        var _todoReminded = {}; // key: todoId + '_5min' / '_ontime'
+        function checkTodoReminders() {
+          var todos = getTodos();
+          var now = Date.now();
+          todos.forEach(function(t) {
+            if (t.done || !t.reminderTime || !t.reminderContactId) return;
+            var rt = t.reminderTime;
+            var key5 = t.id + '_5min';
+            var key0 = t.id + '_ontime';
+            // 5 min early
+            if (now >= rt - 5*60*1000 && now < rt && !_todoReminded[key5]) {
+              _todoReminded[key5] = true;
+              injectTodoReminder(t, true);
+            }
+            // On time
+            if (now >= rt && now < rt + 60*1000 && !_todoReminded[key0]) {
+              _todoReminded[key0] = true;
+              injectTodoReminder(t, false);
+            }
+          });
+        }
+        function injectTodoReminder(todo, isEarly) {
+          var cid = todo.reminderContactId;
+          if (!cid || typeof contacts === 'undefined') return;
+          var contact = contacts.find(function(c) { return c.id === cid; });
+          if (!contact) return;
+          var label = isEarly ? '\u23f0 5\u5206\u949f\u540e\u63d0\u9192\uff1a' : '\u23f0 \u5230\u65f6\u63d0\u9192\uff1a';
+          var msgText = label + todo.text;
+          if (!chatHistories[cid]) chatHistories[cid] = [];
+          var now = new Date();
+          var timeStr = (now.getHours()<10?'0':'') + now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes();
+          chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isReminder: true });
+          // If currently viewing this chat, re-render
+          if (typeof currentChatId !== 'undefined' && currentChatId === cid && typeof renderMessages === 'function') {
+            renderMessages(cid);
+          }
+        }
+        // Start reminder checker
+        setInterval(checkTodoReminders, 30000);
+        checkTodoReminders();
+
+        // ----- 数据迁移：旧版 reminderContact(string) -> reminderContactId(number) -----
+        (function() {
+          var todos = getTodos();
+          var changed = false;
+          todos.forEach(function(t) {
+            if (t.reminderContact && !t.reminderContactId && typeof contacts !== 'undefined') {
+              var c = contacts.find(function(x) { return x.name === t.reminderContact; });
+              if (c) {
+                t.reminderContactId = c.id;
+                changed = true;
+              }
+            }
+          });
+          if (changed) saveTodos(todos);
+        })();
+
         // Add todo
         function addTodo() {
           var input = document.getElementById('todoAddInput');
           if (!input) return;
           var text = input.value.trim();
           if (!text) return;
-          var contactInput = document.getElementById('todoContactInput');
-          var contact = contactInput ? contactInput.value.trim() : '';
           var todos = getTodos();
           todos.unshift({
             id: genId(),
             text: text,
             done: false,
             priority: _selectedPrio,
-            reminderContact: contact || undefined,
+            reminderContactId: 0,
+            reminderContact: undefined,
+            reminderTime: undefined,
             createdAt: Date.now()
           });
           saveTodos(todos);
           input.value = '';
-          if (contactInput) contactInput.value = '';
           // Reset priority selector to default (0)
           _selectedPrio = 0;
           updatePrioSelectorUI();
