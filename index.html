@@ -8610,11 +8610,11 @@
 }
 .call-voice-avatar {
   width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
-  background: linear-gradient(135deg, #b8860b, #ffd700, #daa520);
+  background: var(--primary);
   display: flex; align-items: center; justify-content: center;
   font-size: 40px; font-weight: 600; color: #fff; position: relative; z-index: 10;
-  box-shadow: 0 0 30px rgba(255,215,0,0.5), 0 0 60px rgba(255,215,0,0.2);
-  border: 2px solid rgba(255,215,0,0.6);
+  box-shadow: 0 0 20px rgba(255,215,0,0.35), 0 0 40px rgba(255,215,0,0.15);
+  border: 2px solid rgba(255,215,0,0.4);
 }
 .call-voice-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 @keyframes callAvatarGlow {
@@ -8680,9 +8680,9 @@
 }
 .call-video-avatar {
   width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
-  background: rgba(155,142,196,0.3); display: flex; align-items: center; justify-content: center;
-  font-size: 42px; font-weight: 600; color: rgba(255,255,255,0.8);
-  box-shadow: 0 0 60px rgba(155,142,196,0.3);
+  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-size: 42px; font-weight: 600; color: #fff;
+  box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,215,0,0.12);
   animation: callVideoFloat 4s ease-in-out infinite;
 }
 .call-video-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -19461,6 +19461,7 @@ patText2 = patText2.replace(/你/g, '我');
         callState = 'ringing';
         var initial = callContact.name.charAt(0).toUpperCase();
         callRingAvatar.textContent = initial;
+        callRingAvatar.style.background = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
         callRingName.textContent = callContact.name;
         callRingStatus.textContent = '\u6b63\u5728\u547c\u53eb...';
         callRinging.classList.add('active');
@@ -19475,10 +19476,13 @@ patText2 = patText2.replace(/你/g, '我');
         callRinging.classList.remove('active');
         callActiveView.classList.add('active');
         var initial = callContact.name.charAt(0).toUpperCase();
-      if (callActAvatar) callActAvatar.textContent = initial;
+        var avatarBg = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
+      if (callActAvatar) { callActAvatar.textContent = initial; callActAvatar.style.background = avatarBg; }
       if (callActName) callActName.textContent = callContact.name;
         callVoiceAvatar.textContent = initial;
+        callVoiceAvatar.style.background = avatarBg;
         callVideoAvatar.textContent = initial;
+        callVideoAvatar.style.background = avatarBg;
         updateCallVisual();
         startCallTimer();
         startRippleAnimation();
@@ -19727,6 +19731,7 @@ patText2 = patText2.replace(/你/g, '我');
         callMiniWindow.classList.add('active');
         var initial = callContact ? callContact.name.charAt(0).toUpperCase() : '?';
         cmwAvatar.textContent = initial;
+        if (callContact) cmwAvatar.style.background = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
         makeMiniWindowDraggable();
       }
 
