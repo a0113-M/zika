@@ -8849,7 +8849,7 @@
           <span class="letter-title">信件</span>
           <span style="flex:1;"></span>
 
-          <button id="letterComposeBtn" style="background:none;border:none;cursor:pointer;padding:6px 8px;color:#9b8ec4;font-size:13px;display:flex;align-items:center;gap:4px;">
+          <button id="letterComposeBtn" style="background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--primary);font-size:13px;display:flex;align-items:center;gap:4px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             写信
           </button>
@@ -9463,11 +9463,11 @@
         <input type="text" id="patCustomInput" placeholder="自定义拍一拍内容"
           style="width:100%; padding:10px 12px; border:1px solid #ddd; border-radius:10px; font-size:15px; box-sizing:border-box; margin-bottom:10px;" />
         <label style="display:flex; align-items:center; gap:8px; font-size:14px; color:#666; margin-bottom:12px; cursor:pointer;">
-          <input type="checkbox" id="patCustomSave" style="width:16px; height:16px; accent-color:#9b8ec4;" />
+          <input type="checkbox" id="patCustomSave" style="width:16px; height:16px; accent-color:var(--primary);" />
           加入拍一拍字卡
         </label>
         <button id="patCustomSend"
-          style="width:100%; padding:10px; border:none; border-radius:10px; background:#9b8ec4; color:#fff; font-size:15px; cursor:pointer;">发送</button>
+          style="width:100%; padding:10px; border:none; border-radius:10px; background:var(--primary); color:#fff; font-size:15px; cursor:pointer;">发送</button>
       </div>
       <!-- 字卡选项列表 -->
       <div id="patListView">
@@ -9496,7 +9496,7 @@
       </div>
       <!-- 标签栏 -->
       <div id="decisionTabs" style="display:flex; border-bottom:0.5px solid #eee; flex-shrink:0;">
-        <button class="dec-tab active" data-tab="yesno" style="flex:1; padding:10px 0; border:none; background:none; font-size:14px; color:#1a1a1a; cursor:pointer; border-bottom:2px solid #9b8ec4; font-weight:500;">是/否/半对</button>
+        <button class="dec-tab active" data-tab="yesno" style="flex:1; padding:10px 0; border:none; background:none; font-size:14px; color:#1a1a1a; cursor:pointer; border-bottom:2px solid var(--primary); font-weight:500;">是/否/半对</button>
         <button class="dec-tab" data-tab="custom" style="flex:1; padding:10px 0; border:none; background:none; font-size:14px; color:#999; cursor:pointer; border-bottom:2px solid transparent;">自定义选项</button>
         <button class="dec-tab" data-tab="history" style="flex:1; padding:10px 0; border:none; background:none; font-size:14px; color:#999; cursor:pointer; border-bottom:2px solid transparent;">历史记录</button>
       </div>
@@ -9509,7 +9509,7 @@
           <div style="margin-top:16px;">
             <div style="font-size:14px; color:#666; margin-bottom:8px; font-weight:500;">思考时间</div>
             <div style="display:flex; align-items:center; gap:10px;">
-              <input type="range" id="decThinkTime" min="1" max="15" value="5" style="flex:1; accent-color:#9b8ec4;" />
+              <input type="range" id="decThinkTime" min="1" max="15" value="5" style="flex:1; accent-color:var(--primary);" />
               <span id="decThinkTimeVal" style="font-size:14px; color:#333; min-width:36px;">5秒</span>
             </div>
           </div>
@@ -9523,7 +9523,7 @@
           <div style="margin-top:12px;">
             <div style="font-size:14px; color:#666; margin-bottom:8px; font-weight:500;">思考时间</div>
             <div style="display:flex; align-items:center; gap:10px;">
-              <input type="range" id="decCustomThinkTime" min="1" max="15" value="5" style="flex:1; accent-color:#9b8ec4;" />
+              <input type="range" id="decCustomThinkTime" min="1" max="15" value="5" style="flex:1; accent-color:var(--primary);" />
               <span id="decCustomThinkTimeVal" style="font-size:14px; color:#333; min-width:36px;">5秒</span>
             </div>
           </div>
@@ -9536,7 +9536,7 @@
       </div>
       <!-- 决定按钮 -->
       <div style="padding:12px 18px 18px; border-top:0.5px solid #eee; flex-shrink:0;">
-        <button id="decGoBtn" style="width:100%; padding:12px; border:none; border-radius:12px; background:#9b8ec4; color:#fff; font-size:16px; font-weight:500; cursor:pointer; transition:0.15s;">让他决定</button>
+        <button id="decGoBtn" style="width:100%; padding:12px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-size:16px; font-weight:500; cursor:pointer; transition:0.15s;">让他决定</button>
       </div>
     </div>
   </div>
@@ -9546,7 +9546,7 @@
     <div class="modal-box" style="width:290px; padding:28px 22px 22px; text-align:center;">
       <div id="decResultText" style="font-size:32px; font-weight:700; color:#1a1a1a; margin-bottom:8px; letter-spacing:2px;"></div>
       <div id="decResultQuestion" style="font-size:13px; color:#999; margin-bottom:18px;"></div>
-      <button id="decResultClose" style="padding:10px 32px; border:none; border-radius:10px; background:#9b8ec4; color:#fff; font-size:15px; cursor:pointer;">好的</button>
+      <button id="decResultClose" style="padding:10px 32px; border:none; border-radius:10px; background:var(--primary); color:#fff; font-size:15px; cursor:pointer;">好的</button>
     </div>
   </div>
 
@@ -9559,7 +9559,7 @@
         <input type="text" id="chatSearchInput" placeholder="输入关键词"
           style="flex:1; padding:10px 12px; border:1px solid #ddd; border-radius:10px; font-size:15px; outline:none; background:#f7f7f7;" />
         <button id="chatSearchGo"
-          style="padding:10px 16px; border:none; border-radius:10px; background:#9b8ec4; color:#fff; font-size:15px; cursor:pointer; white-space:nowrap;">搜索</button>
+          style="padding:10px 16px; border:none; border-radius:10px; background:var(--primary); color:#fff; font-size:15px; cursor:pointer; white-space:nowrap;">搜索</button>
       </div>
       <!-- 搜索结果区 -->
       <div id="chatSearchResults"
@@ -9774,7 +9774,7 @@
       <div class="theme-section-title">主题配色</div>
       <div class="theme-grid" id="themeGrid">
         <div class="theme-card" data-set-theme="purple">
-          <div class="theme-card-preview" style="background:linear-gradient(135deg,#9b8ec4,#e88ec4)"></div>
+          <div class="theme-card-preview" style="background:linear-gradient(135deg,var(--primary),var(--accent))"></div>
           <div class="theme-card-name">柔雾紫</div>
           <div class="theme-card-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         </div>
@@ -9826,7 +9826,7 @@
 </div>
 
 <script>
-    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid #e88ec4;border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
+    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
     // ===== 键盘跟随 + 视口适配 =====
     (function () {
       const phone = document.querySelector('.phone');
@@ -9972,7 +9972,7 @@
           const avatar = document.createElement('div');
           avatar.className = 'contact-avatar';
           avatar.textContent = item.name.charAt(0).toUpperCase() || '?';
-          avatar.style.background = item.isGroup ? '#9b9b9b' : '#7a9eb3';
+          avatar.style.background = item.isGroup ? '#9b9b9b' : getComputedStyle(document.documentElement).getPropertyValue('--primary');
           const info = document.createElement('div');
           info.className = 'contact-info';
           const nameDiv = document.createElement('div');
@@ -10849,7 +10849,7 @@
           // 截取文本，高亮关键词
           var snippet = item.text.length > 60 ? item.text.substring(0, 60) + '...' : item.text;
           var highlighted = snippet.replace(new RegExp(keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'),
-            '<span style="color:#9b8ec4; font-weight:600;">' + keyword + '</span>');
+            '<span style="color:var(--primary); font-weight:600;">' + keyword + '</span>');
           row.innerHTML = '<div style="font-size:13px; color:#888; margin-bottom:4px;">' + (item.sender || '') + '</div>' +
             '<div style="font-size:14px; color:#333; line-height:1.4;">' + highlighted + '</div>';
           row.addEventListener('click', function() {
@@ -10907,7 +10907,7 @@
               qLine.style.fontSize = '12px';
               const aLine = document.createElement('div');
               aLine.textContent = answerText;
-              aLine.style.color = '#9b8ec4';
+              aLine.style.color = getComputedStyle(document.documentElement).getPropertyValue('--primary');
               aLine.style.marginTop = '2px';
               bubble.appendChild(qLine);
               bubble.appendChild(aLine);
@@ -10938,10 +10938,10 @@
                 imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover;';
                 avatar.appendChild(imgEl);
                 avatar.style.background = 'transparent';
-              } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = '#9b8ec4'; }
+              } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary'); }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : '#7a9eb3'; }
+              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : getComputedStyle(document.documentElement).getPropertyValue('--primary'); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const img = document.createElement('img');
@@ -10970,10 +10970,10 @@
                 imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover;';
                 avatar.appendChild(imgEl);
                 avatar.style.background = 'transparent';
-              } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = '#9b8ec4'; }
+              } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary'); }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : '#7a9eb3'; }
+              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : getComputedStyle(document.documentElement).getPropertyValue('--primary'); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const videoWrap = document.createElement('div');
@@ -11027,12 +11027,12 @@
                 avatar.style.background = 'transparent';
                 avatar.style.overflow = 'hidden';
                 avatar.style.padding = '0';
-              } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = '#9b8ec4'; avatar.style.display = 'flex'; avatar.style.alignItems = 'center'; avatar.style.justifyContent = 'center'; }
+              } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary'); avatar.style.display = 'flex'; avatar.style.alignItems = 'center'; avatar.style.justifyContent = 'center'; }
             } else if (contact && contact.isGroup && senderName !== 'me' && senderName !== 'other') {
               const member = contacts.find(c => c.name === senderName);
-              if (member) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = '#7a9eb3'; }
+              if (member) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = getComputedStyle(document.documentElement).getPropertyValue('--primary'); }
               else { avatar.textContent = senderName.charAt(0).toUpperCase(); avatar.style.background = '#9b9b9b'; }
-            } else if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : '#7a9eb3'; }
+            } else if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : getComputedStyle(document.documentElement).getPropertyValue('--primary'); }
             else { avatar.textContent = '?'; avatar.style.background = '#999'; }
 
             const bubble = document.createElement('div');
@@ -11306,7 +11306,7 @@
     justify-content: space-between;
     padding: 4px 12px;
     background: rgba(155, 142, 196, 0.08);
-    border-left: 3px solid #9b8ec4;
+    border-left: 3px solid var(--primary);
     font-size: 13px;
     color: #555;
     gap: 10px;
@@ -12057,14 +12057,14 @@
               var chars = msg.text.replace(/\s+/g, '');
               if (chars.length > 0) {
                 for (var ci = 0; ci < chars.length; ci++) {
-                  words.push({ text: chars[ci], bgColor: '#f5f0ff', textColor: '#6b5b95' });
+                  words.push({ text: chars[ci], bgColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-main') || '#f5f0ff', textColor: getComputedStyle(document.documentElement).getPropertyValue('--primary') || '#6b5b95' });
                 }
               }
             }
             if (words.length === 0) {
               var sampleChars = '你好呀最近怎么样想你了';
               for (var i = 0; i < sampleChars.length; i++) {
-                words.push({ text: sampleChars[i], bgColor: '#f5f0ff', textColor: '#6b5b95' });
+                words.push({ text: sampleChars[i], bgColor: getComputedStyle(document.documentElement).getPropertyValue('--bg-main') || '#f5f0ff', textColor: getComputedStyle(document.documentElement).getPropertyValue('--primary') || '#6b5b95' });
               }
             }
             var newLetter = {
@@ -12646,14 +12646,14 @@
           profileAvatarText.style.display = 'none';
           const sideAvatar = document.getElementById('sideAvatar');
           sideAvatar.innerHTML = '';
-          sideAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#9b8ec4;overflow:hidden;';
+          sideAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:var(--primary);overflow:hidden;';
           const sideImg = document.createElement('img');
           sideImg.src = imageData;
           sideImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
           sideAvatar.appendChild(sideImg);
           const userAvatar = document.getElementById('userAvatar');
           userAvatar.innerHTML = '';
-          userAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:#9b8ec4;overflow:hidden;';
+          userAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--primary);overflow:hidden;';
           const topImg = document.createElement('img');
           topImg.src = imageData;
           topImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
@@ -12661,7 +12661,7 @@
           
           const momentsUserAvatar = document.getElementById('momentsUserAvatar');
           momentsUserAvatar.innerHTML = '';
-          momentsUserAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:#9b8ec4;overflow:hidden;';
+          momentsUserAvatar.style.cssText = 'display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:14px;background:var(--primary);overflow:hidden;';
           const momentsImg = document.createElement('img');
           momentsImg.src = imageData;
           momentsImg.style.cssText = 'width:100%;height:100%;object-fit:cover;';
@@ -13643,7 +13643,7 @@ patText2 = patText2.replace(/你/g, '我');
         var activeTab = document.querySelector('.dec-tab[data-tab="' + tab + '"]');
         activeTab.classList.add('active');
         activeTab.style.color = '#1a1a1a';
-        activeTab.style.borderBottomColor = '#9b8ec4';
+        activeTab.style.borderBottomColor = getComputedStyle(document.documentElement).getPropertyValue('--primary');
         activeTab.style.fontWeight = '500';
 
         decYesNoView.style.display = tab === 'yesno' ? '' : 'none';
@@ -14097,7 +14097,7 @@ patText2 = patText2.replace(/你/g, '我');
           avatar.className = 'letter-avatar';
           avatar.textContent = letter.from.charAt(0).toUpperCase();
           const contact = contacts.find(c => c.name === letter.from);
-          if (contact) avatar.style.background = contact.isGroup ? '#9b9b9b' : '#7a9eb3';
+          if (contact) avatar.style.background = contact.isGroup ? '#9b9b9b' : getComputedStyle(document.documentElement).getPropertyValue('--primary');
           if (letter.isOutgoing) {
             avatar.style.background = '#e0e0e0';
             avatar.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
@@ -14145,7 +14145,7 @@ patText2 = patText2.replace(/你/g, '我');
           if (letter.pinned) {
             const pinIcon = document.createElement('span');
             pinIcon.className = 'letter-pin-icon';
-            pinIcon.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="#9b8ec4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>';
+            pinIcon.innerHTML = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17v5"/><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"/></svg>';
             fromEl.appendChild(pinIcon);
           }
 
@@ -14233,7 +14233,7 @@ patText2 = patText2.replace(/你/g, '我');
         const letter = letterList.find(l => l.id === currentLetterId);
         if (btn && letter) {
           const svg = btn.querySelector('svg');
-          if (svg) svg.style.stroke = letter.pinned ? '#9b8ec4' : '#999';
+          if (svg) svg.style.stroke = letter.pinned ? getComputedStyle(document.documentElement).getPropertyValue('--primary') : '#999';
           // 文字始终显示"置顶"，只通过图标颜色区分状态
           btn.classList.toggle('btn-active', letter.pinned);
         }
@@ -14448,7 +14448,7 @@ patText2 = patText2.replace(/你/g, '我');
             // 联系人回信根据主题随机使用信纸配色
             var rTheme = reply.theme || 'simple';
             var themeColors = {
-              simple:   { bg: '#f3eef8', border: '#9b8ec4', header: '#9b8ec4' },
+              simple:   { bg: 'var(--bg-soft)', border: 'var(--primary)', header: 'var(--primary)' },
               vintage:  { bg: '#faf6ed', border: '#a89880', header: '#8b7765' },
               festival: { bg: '#fff5f5', border: '#e53935', header: '#c62828' },
               starry:   { bg: '#f0f4f8', border: '#5c6bc0', header: '#3f51b5' }
@@ -14502,8 +14502,8 @@ patText2 = patText2.replace(/你/g, '我');
 
       function updateDetailFavBtn(isFav) {
         const btn = document.getElementById('letterFavViewBtn');
-        const fillColor = isFav ? '#9b8ec4' : 'none';
-        const strokeColor = isFav ? '#9b8ec4' : '#ccc';
+        const fillColor = isFav ? getComputedStyle(document.documentElement).getPropertyValue('--primary') : 'none';
+        const strokeColor = isFav ? getComputedStyle(document.documentElement).getPropertyValue('--primary') : '#ccc';
         btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="'+fillColor+'" stroke="'+strokeColor+'" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>收藏';
         btn.classList.toggle('btn-active', isFav);
       }
@@ -15062,7 +15062,7 @@ patText2 = patText2.replace(/你/g, '我');
         const total = contactLetters.length;
 
         const contact = contacts.find(c => c.name === contactName);
-        const avatarColor = contact ? (contact.isGroup ? '#9b9b9b' : '#7a9eb3') : '#7a9eb3';
+        const avatarColor = contact ? (contact.isGroup ? '#9b9b9b' : getComputedStyle(document.documentElement).getPropertyValue('--primary')) : '#7a9eb3';
         const initial = contactName.charAt(0).toUpperCase();
 
         let html = '';
@@ -16679,7 +16679,7 @@ patText2 = patText2.replace(/你/g, '我');
           if (letter.isOutgoing) {
             iconDiv.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1976d2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
           } else {
-            iconDiv.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9b8ec4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
+            iconDiv.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>';
           }
           item.appendChild(iconDiv);
 
@@ -17279,7 +17279,7 @@ patText2 = patText2.replace(/你/g, '我');
             imageHtml +
             '\u003cdiv class="diary-action-bar"\u003e' +
 '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
-            '<svg viewBox="0 0 24 24" fill="' + (isLiked ? '#e88ec4' : 'none') + '" stroke="' + (isLiked ? '#e88ec4' : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
+            '<svg viewBox="0 0 24 24" fill="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'none') + '" stroke="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
             (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
             '</button>' +
             '<button class="diary-comment-toggle" data-comment-id="' + entry.id + '">' +
@@ -18286,7 +18286,7 @@ patText2 = patText2.replace(/你/g, '我');
           var view = document.getElementById('reminderCardsView');
           if (view) view.classList.remove('show');
         }
-        var _PRIO_COLORS = ['#d8d0e8','#5cb85c','#f0a030','#e55a5a','#7b5ea7'];
+        var _PRIO_COLORS = ['var(--primary-lighter)','#5cb85c','#f0a030','#e55a5a','#7b5ea7'];
         var _PRIO_LABELS = ['无','低','中','高','紧急'];
 
         function _renderPrioGroups(containerKey, cardsData, collapsible) {
@@ -18366,7 +18366,7 @@ patText2 = patText2.replace(/你/g, '我');
             // Per-contact celebration cards
             var cCelCards = (cData && cData._celebration) ? cData._celebration : [];
             html += '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #e0d8f0;">';
-            html += '<div style="font-size:12px;color:#9b8ec4;margin-bottom:4px;display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成鼓励 (' + cCelCards.length + ')</div>';
+            html += '<div style="font-size:12px;color:var(--primary);margin-bottom:4px;display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成鼓励 (' + cCelCards.length + ')</div>';
             if (cCelCards.length > 0) {
               html += '<div class="reminder-card-list">';
               cCelCards.forEach(function(card, idx) {
@@ -18662,7 +18662,7 @@ patText2 = patText2.replace(/你/g, '我');
 
     })();
 
-    (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor="#9b8ec4";d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
+    (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor=getComputedStyle(document.documentElement).getPropertyValue("--primary");d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
 
 
 // ===== Theme System =====
