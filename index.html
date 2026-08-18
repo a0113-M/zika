@@ -8496,7 +8496,7 @@
 .call-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 11000; display: none; flex-direction: column;
-  background: linear-gradient(180deg, #2d1f4e 0%, #1a1030 50%, #2d1f4e 100%);
+  background: linear-gradient(180deg, rgba(var(--primary-rgba), 0.85) 0%, rgba(var(--primary-rgba), 0.95) 50%, rgba(var(--primary-rgba), 0.85) 100%), linear-gradient(180deg, #1a1030 0%, #0d0a1a 50%, #1a1030 100%);
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
   padding-bottom: env(safe-area-inset-bottom);
