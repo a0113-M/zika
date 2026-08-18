@@ -7626,15 +7626,14 @@
   margin-bottom: 8px;
 }
 .todo-time-wheel {
-  height: 200px;
+  height: 280px;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
   width: 56px;
   position: relative;
-  padding: 80px 0;
-  box-sizing: border-box;
-  scroll-padding: 80px 0;
+  padding: 120px 0;
+  scroll-padding: 120px 0;
 }
 .todo-time-wheel::after {
   content: '';
@@ -7642,8 +7641,8 @@
   top: 50%;
   left: 0;
   right: 0;
-  height: 40px;
-  margin-top: -20px;
+  height: 56px;
+  margin-top: -28px;
   background: rgba(155,142,196,0.06);
   border-top: 1px solid rgba(155,142,196,0.15);
   border-bottom: 1px solid rgba(155,142,196,0.15);
@@ -7652,7 +7651,7 @@
 }
 .todo-time-wheel::-webkit-scrollbar { display: none; }
 .todo-time-slot {
-  height: 40px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7661,6 +7660,8 @@
   scroll-snap-align: center;
   cursor: pointer;
   transition: all 0.15s;
+  position: relative;
+  z-index: 1;
 }
 .todo-time-slot.selected {
   font-size: 22px;
@@ -17231,30 +17232,59 @@ patText2 = patText2.replace(/你/g, '我');
             mHtml += '<div class="todo-time-slot' + sel + '" data-m="' + m + '">' + (m < 10 ? '0'+m : m) + '</div>';
           }
           minWheel.innerHTML = mHtml;
-          // Scroll selected into view
+          // Scroll to selected
+          var slotH = 56;
+          var pad = 120;
           setTimeout(function() {
-            var hSel = hourWheel.querySelector('.todo-time-slot.selected');
-            if (hSel) hSel.scrollIntoView({ block: 'center' });
-            var mSel = minWheel.querySelector('.todo-time-slot.selected');
-            if (mSel) mSel.scrollIntoView({ block: 'center' });
+            hourWheel.scrollTop = pad + _selectedHour * slotH - pad;
+            minWheel.scrollTop = pad + _selectedMin * slotH - pad;
+            syncWheelSelection(hourWheel, 'h');
+            syncWheelSelection(minWheel, 'm');
           }, 50);
-          // Bind clicks
+          // Scroll-based selection (not click)
+          var _scrollTimers = {};
+          function onWheelScroll(wheel, type) {
+            clearTimeout(_scrollTimers[type]);
+            _scrollTimers[type] = setTimeout(function() {
+              syncWheelSelection(wheel, type);
+            }, 80);
+          }
+          hourWheel.addEventListener('scroll', function() { onWheelScroll(hourWheel, 'h'); });
+          minWheel.addEventListener('scroll', function() { onWheelScroll(minWheel, 'm'); });
+          // Click to scroll-to-center (not direct select)
           hourWheel.querySelectorAll('.todo-time-slot').forEach(function(el) {
             el.addEventListener('click', function() {
-              _selectedHour = parseInt(this.dataset.h);
-              hourWheel.querySelectorAll('.todo-time-slot').forEach(function(e) { e.classList.remove('selected'); });
-              this.classList.add('selected');
-              updateDateTimeDisplay();
+              var idx = parseInt(this.dataset.h);
+              hourWheel.scrollTo({ top: idx * slotH, behavior: 'smooth' });
+              setTimeout(function() { syncWheelSelection(hourWheel, 'h'); }, 400);
             });
           });
           minWheel.querySelectorAll('.todo-time-slot').forEach(function(el) {
             el.addEventListener('click', function() {
-              _selectedMin = parseInt(this.dataset.m);
-              minWheel.querySelectorAll('.todo-time-slot').forEach(function(e) { e.classList.remove('selected'); });
-              this.classList.add('selected');
-              updateDateTimeDisplay();
+              var idx = parseInt(this.dataset.m);
+              minWheel.scrollTo({ top: idx * slotH, behavior: 'smooth' });
+              setTimeout(function() { syncWheelSelection(minWheel, 'm'); }, 400);
             });
           });
+        }
+        function syncWheelSelection(wheel, type) {
+          var slotH = 56;
+          var pad = 120;
+          var centerPos = wheel.scrollTop + pad;
+          var idx = Math.round(centerPos / slotH);
+          var maxIdx = type === 'h' ? 23 : 59;
+          idx = Math.max(0, Math.min(idx, maxIdx));
+          if (type === 'h') {
+            if (_selectedHour === idx) return;
+            _selectedHour = idx;
+          } else {
+            if (_selectedMin === idx) return;
+            _selectedMin = idx;
+          }
+          wheel.querySelectorAll('.todo-time-slot').forEach(function(e) { e.classList.remove('selected'); });
+          var target = wheel.querySelector('[data-' + type + '="' + idx + '"]');
+          if (target) target.classList.add('selected');
+          updateDateTimeDisplay();
         }
 
         function openTimePicker() {
@@ -17348,7 +17378,7 @@ patText2 = patText2.replace(/你/g, '我');
           // "None" option
           var noneSel = _selectedContactId === 0 ? ' selected' : '';
           html += '<div class="todo-contact-none' + noneSel + '" data-contact-id="0">';
-          html += '<div class="todo-contact-none-name">不提醒</div>';
+          html += '<div class="todo-contact-none-name">不选择</div>';
           html += '<div class="todo-contact-none-check"></div>';
           html += '</div>';
           list.innerHTML = html;
