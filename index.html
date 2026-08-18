@@ -134,7 +134,7 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: #ffffff;
+      background: var(--bg-main);
       overflow: hidden;
     }
 
@@ -1392,7 +1392,7 @@
       display: none;
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: #f7f7f8;
+      background: var(--bg-main);
       z-index: 200;
       flex-direction: column;
     }
@@ -2877,7 +2877,7 @@
       left: -1px;
       right: -1px;
       height: 95px;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70' preserveAspectRatio='none'%3E%3Cpolygon points='0,0 100,0 50,60' fill='var(--primary)' stroke='var(--primary-light)' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 70' preserveAspectRatio='none'%3E%3Cpolygon points='0,0 100,0 50,60' fill='#5c4d7e' stroke='#d4b8e0' stroke-width='2.5' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-size: 100% 100%;
       z-index: 1;
     }
@@ -3252,7 +3252,7 @@
       position: absolute;
       bottom: 12px;
       right: 12px;
-      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
       color: #fff;
       font-size: 12px;
       font-weight: 500;
@@ -3328,7 +3328,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
     .toggle-switch input:checked + .toggle-slider {
-      background: linear-gradient(135deg, #7c3aed, #4f46e5);
+      background: linear-gradient(135deg, var(--primary), var(--accent));
     }
     .toggle-switch input:checked + .toggle-slider::before {
       transform: translateX(20px);
@@ -4039,7 +4039,7 @@
       display: flex;
       align-items: center;
       padding: 16px 16px 14px;
-      background: linear-gradient(135deg, #f3eef8 0%, #f5f0fa 60%, #ffffff 100%);
+      background: linear-gradient(135deg, var(--bg-soft) 0%, var(--bg-main) 60%, #ffffff 100%);
       border-bottom: 0.5px solid rgba(0,0,0,0.05);
       flex-shrink: 0;
       gap: 12px;
@@ -4325,7 +4325,7 @@
     .chat-letter-panel .clp-cal-day-detail {
       margin: 6px 14px 4px;
       padding: 10px 14px;
-      background: linear-gradient(135deg, #f5f0fa 0%, #f7f9fc 100%);
+      background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-soft) 100%);
       border: 1px solid rgba(155,142,196,0.12);
       border-radius: 12px;
       animation: clp-scale-in 0.2s ease;
@@ -7158,7 +7158,7 @@
   justify-content: space-between;
   gap: 8px;
   padding-top: 8px;
-  border-top: 0.5px solid #f0eaf6;
+  border-top: 0.5px solid var(--border-light);
 }
 
 .diary-like-btn, .diary-comment-toggle {
@@ -7197,7 +7197,7 @@
   display: none;
   margin-top: 10px;
   padding-top: 8px;
-  border-top: 0.5px solid #f0eaf6;
+  border-top: 0.5px solid var(--border-light);
 }
 .diary-comment-area.show { display: block; }
 .diary-comment-list {
@@ -8877,7 +8877,7 @@
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
       <!-- 信件列表视图 -->
-      <div id="letterListView" style="display:flex;flex-direction:column;height:100%;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;">
+      <div id="letterListView" style="display:flex;flex-direction:column;height:100%;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg-main);">
         <div class="letter-header">
           <button class="letter-back-btn" id="letterBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
           <span class="letter-title">信件</span>
@@ -10941,7 +10941,7 @@
             const decDiv = document.createElement('div');
             decDiv.style.cssText = 'text-align:center;padding:5px 0;';
             const bubble = document.createElement('div');
-            bubble.style.cssText = 'display:inline-block; padding:14px 22px; background:#f5f0fa; border:1px solid #e0d4f0; border-radius:10px; font-size:13px; color:#1a1a1a; min-width:65%; max-width:92%; word-break:break-word; line-height:1.3; box-shadow:0 2px 12px rgba(155,142,196,0.10);';
+            bubble.style.cssText = 'display:inline-block; padding:14px 22px; background:var(--bg-main); border:1px solid var(--border-light); border-radius:10px; font-size:13px; color:#1a1a1a; min-width:65%; max-width:92%; word-break:break-word; line-height:1.3; box-shadow:0 2px 12px rgba(155,142,196,0.10);';
             if (answerText) {
               const qLine = document.createElement('div');
               qLine.textContent = msg.text;
@@ -12474,7 +12474,7 @@
                   wrap.style.cssText = 'position:relative;display:inline-block;width:64px;height:64px;margin:4px;';
                   var img = document.createElement('img');
                   img.src = src;
-                  img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid #e8ddf5;';
+                  img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:8px;border:1px solid var(--border-light);';
                   wrap.appendChild(img);
                   var del = document.createElement('button');
                   del.textContent = '\u00d7';
@@ -14300,7 +14300,7 @@ patText2 = patText2.replace(/你/g, '我');
                 const titleEl = document.getElementById('letterDetailTitle');
         // 匿名信件始终显示为"神秘人"
         if (letter.anonymous && !letter.isOutgoing) {
-          titleEl.innerHTML = '<span style="color:#7c3aed;font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="#7c3aed" style="vertical-align:middle"><path d="M12 2L14.5 8.5L21 9.5L16 14.5L17.5 21L12 18L6.5 21L8 14.5L3 9.5L9.5 8.5Z"/></svg> 神秘人 <svg width="14" height="14" viewBox="0 0 24 24" fill="#7c3aed" style="vertical-align:middle"><path d="M12 2L14.5 8.5L21 9.5L16 14.5L17.5 21L12 18L6.5 21L8 14.5L3 9.5L9.5 8.5Z"/></svg></span> 的信件';
+          titleEl.innerHTML = '<span style="color:var(--primary);font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="var(--primary)" style="vertical-align:middle"><path d="M12 2L14.5 8.5L21 9.5L16 14.5L17.5 21L12 18L6.5 21L8 14.5L3 9.5L9.5 8.5Z"/></svg> 神秘人 <svg width="14" height="14" viewBox="0 0 24 24" fill="var(--primary)" style="vertical-align:middle"><path d="M12 2L14.5 8.5L21 9.5L16 14.5L17.5 21L12 18L6.5 21L8 14.5L3 9.5L9.5 8.5Z"/></svg></span> 的信件';
         } else if (letter.isOutgoing) {
           titleEl.innerHTML = '寄给 <span class="letter-detail-contact-name" style="color:#3a7bd5;cursor:pointer;" data-contact="' + letter.from + '">' + letter.from + '</span> 的信';
         } else {
@@ -14364,7 +14364,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 字卡分类颜色映射
         const catColors = {
-          '文字': ['#7b6ea8','#333'],
+          '文字': ['var(--primary)','#333'],
           '表情': ['#e65100','#e65100'],
           '图片': ['#1565c0','#1565c0'],
           '语音': ['#7b1fa2','#7b1fa2'],
@@ -15054,7 +15054,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         const maxCount = types[0][1];
         const typeColors = {
-          '文字': '#7b6ea8',
+          '文字': 'var(--primary)',
           '表情': '#e65100',
           '图片': '#1565c0',
           '语音': '#7b1fa2',
@@ -16186,7 +16186,7 @@ patText2 = patText2.replace(/你/g, '我');
 
           const fromEl = document.createElement('div');
           fromEl.className = 'mystery-letter-from';
-          fromEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c4a0c9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> 神秘来信';
+          fromEl.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--primary-lighter)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> 神秘来信';
           contentDiv.appendChild(fromEl);
 
           // 只显示前几个字 + 省略号（已移除）
