@@ -8605,56 +8605,50 @@
 .call-voice-avatar-glow {
   position: absolute; top: 50%; left: 50%; width: 200px; height: 200px;
   margin: -100px 0 0 -100px; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(circle, rgba(255,215,0,0.35) 0%, rgba(255,180,0,0.1) 40%, rgba(255,215,0,0) 70%);
+  background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, rgba(255,180,0,0.08) 40%, rgba(255,215,0,0) 70%);
   animation: callAvatarGlow 2.5s ease-in-out infinite;
 }
 .call-voice-avatar {
   width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
   background: linear-gradient(135deg, #b8860b, #ffd700, #daa520);
   display: flex; align-items: center; justify-content: center;
-  font-size: 40px; font-weight: 600; color: #fff; position: relative; z-index: 2;
-  box-shadow: 0 0 30px rgba(255,215,0,0.5), 0 0 60px rgba(255,215,0,0.2), inset 0 0 20px rgba(255,255,200,0.15);
-  border: 2.5px solid rgba(255,215,0,0.6);
+  font-size: 40px; font-weight: 600; color: #fff; position: relative; z-index: 10;
+  box-shadow: 0 0 30px rgba(255,215,0,0.5), 0 0 60px rgba(255,215,0,0.2);
+  border: 2px solid rgba(255,215,0,0.6);
 }
 .call-voice-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 @keyframes callAvatarGlow {
   0%, 100% { transform: scale(1); opacity: 0.5; }
   50% { transform: scale(1.4); opacity: 1; }
 }
-.call-ripple-ring {
-  position: absolute; top: 50%; left: 50%;
-  width: 120px; height: 120px;
-  margin: -60px 0 0 -60px;
+.call-ripple-field {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; overflow: hidden; z-index: 1;
+}
+.call-dynamic-ring {
+  position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  will-change: transform, opacity;
-  backface-visibility: hidden;
   opacity: 0;
+  will-change: transform, opacity;
+  animation: callRingAppear ease-out forwards;
 }
-.call-ripple-ring:nth-child(2) {
-  border: 1.5px solid rgba(255,215,0,0.6);
-  animation: callRippleExpand 3.5s ease-out infinite;
-  animation-delay: 0s;
+.call-dynamic-ring.ring-solid { border-style: solid; }
+.call-dynamic-ring.ring-dashed { border-style: dashed; }
+.call-dynamic-ring.ring-dotted { border-style: dotted; }
+.call-dynamic-ring.ring-double {
+  border-style: double;
+  box-shadow: inset 0 0 0 1px rgba(255,215,0,0.3);
 }
-.call-ripple-ring:nth-child(3) {
-  border: 1px dashed rgba(255,200,50,0.5);
-  animation: callRippleExpand 3.5s ease-out infinite;
-  animation-delay: 0.9s;
+.call-dynamic-ring.ring-glow {
+  border-style: solid;
+  box-shadow: 0 0 15px rgba(255,215,0,0.2);
 }
-.call-ripple-ring:nth-child(4) {
-  border: 2px solid rgba(255,215,0,0.4);
-  animation: callRippleExpand 3.5s ease-out infinite;
-  animation-delay: 1.8s;
-}
-.call-ripple-ring:nth-child(5) {
-  border: 0.8px dotted rgba(255,230,100,0.35);
-  animation: callRippleExpand 3.5s ease-out infinite;
-  animation-delay: 2.7s;
-}
-@keyframes callRippleExpand {
-  0% { transform: scale(1); opacity: 0.8; }
-  50% { opacity: 0.4; }
-  100% { transform: scale(7); opacity: 0; }
+@keyframes callRingAppear {
+  0% { transform: scale(0.3); opacity: 0; }
+  15% { opacity: var(--ring-opacity, 0.7); }
+  70% { opacity: calc(var(--ring-opacity, 0.7) * 0.5); }
+  100% { transform: scale(var(--ring-end-scale, 3)); opacity: 0; }
 }
 
 .call-voice-timer {
@@ -9254,12 +9248,9 @@
 
         <div class="call-main-area" id="callMainArea">
           <div class="call-voice-visual" id="callVoiceVisual">
+            <div class="call-ripple-field" id="callRippleField"></div>
             <div class="call-voice-avatar-wrap">
               <div class="call-voice-avatar-glow"></div>
-              <div class="call-ripple-ring"></div>
-              <div class="call-ripple-ring"></div>
-              <div class="call-ripple-ring"></div>
-              <div class="call-ripple-ring"></div>
               <div class="call-voice-avatar" id="callVoiceAvatar">?</div>
             </div>
             <div class="call-voice-timer" id="callVoiceTimer">00:00</div>
@@ -19477,6 +19468,7 @@ patText2 = patText2.replace(/你/g, '我');
         callVideoAvatar.textContent = initial;
         updateCallVisual();
         startCallTimer();
+        startRippleAnimation();
         scheduleAutoMessage();
         addCallChatMessage('system', '\u901a\u8bdd\u5df2\u5f00\u59cb');
         if (chatHistories[currentChatId]) {
@@ -19497,6 +19489,7 @@ patText2 = patText2.replace(/你/g, '我');
         callRinging.classList.remove('active');
         callActiveView.classList.remove('active');
         if (callTimerInterval) { clearInterval(callTimerInterval); callTimerInterval = null; }
+        stopRippleAnimation();
         if (callAutoMsgTimeout) { clearTimeout(callAutoMsgTimeout); callAutoMsgTimeout = null; }
         if (currentChatId !== null && chatHistories[currentChatId]) {
           var duration = callStartTime ? Math.floor((Date.now() - callStartTime) / 1000) : 0;
@@ -19527,6 +19520,46 @@ patText2 = patText2.replace(/你/g, '我');
 
       function padTime(d) {
         return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      }
+
+      var rippleInterval = null;
+      function spawnRing() {
+        var field = document.getElementById('callRippleField');
+        if (!field) return;
+        var ring = document.createElement('div');
+        var size = 30 + Math.random() * 100;
+        var left = Math.random() * 100;
+        var top = Math.random() * 100;
+        var dur = 2 + Math.random() * 3;
+        var opacity = 0.3 + Math.random() * 0.5;
+        var endScale = 2 + Math.random() * 4;
+        var borderWidth = 0.5 + Math.random() * 2.5;
+        var styles = ['ring-solid','ring-solid','ring-dashed','ring-dotted','ring-double','ring-glow'];
+        var styleClass = styles[Math.floor(Math.random() * styles.length)];
+        var colors = [
+          'rgba(255,215,0,'+opacity+')',
+          'rgba(255,200,50,'+opacity+')',
+          'rgba(212,168,83,'+opacity+')',
+          'rgba(255,230,100,'+opacity+')',
+          'rgba(255,180,0,'+opacity+')'
+        ];
+        var color = colors[Math.floor(Math.random() * colors.length)];
+        ring.className = 'call-dynamic-ring ' + styleClass;
+        ring.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+left+'%;top:'+top+'%;border-width:'+borderWidth+'px;border-color:'+color+';--ring-opacity:'+opacity+';--ring-end-scale:'+endScale+';animation-duration:'+dur+'s;';
+        field.appendChild(ring);
+        setTimeout(function() { if (ring.parentNode) ring.parentNode.removeChild(ring); }, dur * 1000 + 100);
+      }
+      function startRippleAnimation() {
+        stopRippleAnimation();
+        var field = document.getElementById('callRippleField');
+        if (field) field.innerHTML = '';
+        for (var i = 0; i < 6; i++) { setTimeout(spawnRing, i * 200); }
+        rippleInterval = setInterval(spawnRing, 400);
+      }
+      function stopRippleAnimation() {
+        if (rippleInterval) { clearInterval(rippleInterval); rippleInterval = null; }
+        var field = document.getElementById('callRippleField');
+        if (field) field.innerHTML = '';
       }
 
       function startCallTimer() {
