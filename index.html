@@ -7582,7 +7582,8 @@
   font-size: 28px;
   font-weight: 300;
   color: #ccc;
-  margin-bottom: 20px;
+  padding: 0 4px;
+  line-height: 1;
 }
 
 /* 联系人选择弹窗 */
@@ -9221,6 +9222,14 @@
         { id: 3, name: '12', isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [1, 2] }
       ];
       let nextId = 4;
+
+      // Expose contacts to todo module
+      window.getContactById = function(id) {
+        return contacts.find(function(c) { return c.id === id; });
+      };
+      window.getAllNonGroupContacts = function() {
+        return contacts.filter(function(c) { return !c.isGroup; });
+      };
       let currentModalMode = 'contact';
       let selectedGroupMemberIds = [];
 
