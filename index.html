@@ -18002,17 +18002,40 @@ patText2 = patText2.replace(/你/g, '我');
         }
         function addReminderCard(contactKey, prioKey, text) {
           var data = getReminderCards();
-          _ensureContactGroups(data, contactKey);
-          if (!data[contactKey][prioKey]) data[contactKey][prioKey] = [];
-          data[contactKey][prioKey].push(text);
+          if (contactKey === '_celebration') {
+            // General celebration cards: data._celebration is an array
+            if (!Array.isArray(data._celebration)) data._celebration = [];
+            data._celebration.push(text);
+          } else if (prioKey === '_celebration') {
+            // Per-contact celebration cards: data[contactKey]._celebration is an array
+            _ensureContactGroups(data, contactKey);
+            if (!Array.isArray(data[contactKey]._celebration)) data[contactKey]._celebration = [];
+            data[contactKey]._celebration.push(text);
+          } else {
+            _ensureContactGroups(data, contactKey);
+            if (!data[contactKey][prioKey]) data[contactKey][prioKey] = [];
+            data[contactKey][prioKey].push(text);
+          }
           saveReminderCards(data);
         }
         function deleteReminderCard(contactKey, prioKey, index) {
           var data = getReminderCards();
-          _ensureContactGroups(data, contactKey);
-          if (data[contactKey][prioKey] && data[contactKey][prioKey][index] !== undefined) {
-            data[contactKey][prioKey].splice(index, 1);
-            saveReminderCards(data);
+          if (contactKey === '_celebration') {
+            if (Array.isArray(data._celebration) && data._celebration[index] !== undefined) {
+              data._celebration.splice(index, 1);
+              saveReminderCards(data);
+            }
+          } else if (prioKey === '_celebration') {
+            if (data[contactKey] && Array.isArray(data[contactKey]._celebration) && data[contactKey]._celebration[index] !== undefined) {
+              data[contactKey]._celebration.splice(index, 1);
+              saveReminderCards(data);
+            }
+          } else {
+            _ensureContactGroups(data, contactKey);
+            if (data[contactKey][prioKey] && data[contactKey][prioKey][index] !== undefined) {
+              data[contactKey][prioKey].splice(index, 1);
+              saveReminderCards(data);
+            }
           }
         }
         function getRandomCard(contactId, priority) {
@@ -18153,6 +18176,8 @@ patText2 = patText2.replace(/你/g, '我');
           }
           html += '</div>';
           body.innerHTML = html;
+          // Apply saved collapse state
+          _applyCollapseState();
           // Bind events
           bindReminderCardsEvents();
         }
@@ -18167,7 +18192,9 @@ patText2 = patText2.replace(/你/g, '我');
               var prioKey = this.dataset.rcPrio;
               var idx = parseInt(this.dataset.rcIdx);
               deleteReminderCard(key, prioKey, idx);
+              _restoreCollapseState();
               renderReminderCards();
+              _saveCollapseState();
             });
           });
           // Add buttons
@@ -18181,7 +18208,9 @@ patText2 = patText2.replace(/你/g, '我');
               if (!text) return;
               addReminderCard(key, prioKey, text);
               input.value = '';
+              _restoreCollapseState();
               renderReminderCards();
+              _saveCollapseState();
             });
           });
           // Enter key for inputs
@@ -18239,6 +18268,54 @@ patText2 = patText2.replace(/你/g, '我');
           }
         }
 
+        // Collapse state management
+        var _collapseState = { contacts: {}, celebration: false };
+        function _saveCollapseState() {
+          var body = document.getElementById('reminderCardsBody');
+          if (!body) return;
+          body.querySelectorAll('.reminder-card-contact').forEach(function(card) {
+            var nameEl = card.querySelector('.reminder-card-contact-name');
+            if (!nameEl) return;
+            var name = nameEl.textContent.trim();
+            _collapseState.contacts[name] = !card.classList.contains('reminder-card-collapsed');
+          });
+          var celSection = body.querySelector('.reminder-cards-section');
+          if (celSection && celSection.querySelector('[onclick*="_toggleCelebrationCollapse"]')) {
+            _collapseState.celebration = !celSection.classList.contains('reminder-card-prio-collapsed');
+          }
+        }
+        function _restoreCollapseState() {
+          // Will be called before renderReminderCards, state is already saved
+        }
+        function _applyCollapseState() {
+          var body = document.getElementById('reminderCardsBody');
+          if (!body) return;
+          // Restore contact panels
+          body.querySelectorAll('.reminder-card-contact').forEach(function(card) {
+            var nameEl = card.querySelector('.reminder-card-contact-name');
+            if (!nameEl) return;
+            var name = nameEl.textContent.trim();
+            if (_collapseState.contacts[name]) {
+              card.classList.remove('reminder-card-collapsed');
+            } else {
+              card.classList.add('reminder-card-collapsed');
+            }
+          });
+          // Restore celebration section
+          var celSection = body.querySelector('.reminder-cards-section');
+          if (celSection && celSection.querySelector('[onclick*="_toggleCelebrationCollapse"]')) {
+            if (_collapseState.celebration) {
+              celSection.classList.remove('reminder-card-prio-collapsed');
+              var chevron = celSection.querySelector('.reminder-card-prio-chevron');
+              if (chevron) chevron.style.transform = 'rotate(0deg)';
+            } else {
+              celSection.classList.add('reminder-card-prio-collapsed');
+              var chevron = celSection.querySelector('.reminder-card-prio-chevron');
+              if (chevron) chevron.style.transform = 'rotate(-90deg)';
+            }
+          }
+        }
+
         // Toggle functions for collapse/expand
         function _toggleContactCollapse(el) {
           var card = el.parentElement;
@@ -18246,6 +18323,7 @@ patText2 = patText2.replace(/你/g, '我');
             card = card.parentElement;
           }
           if (card) card.classList.toggle('reminder-card-collapsed');
+          _saveCollapseState();
         }
         window._toggleContactCollapse = _toggleContactCollapse;
 
@@ -18264,6 +18342,7 @@ patText2 = patText2.replace(/你/g, '我');
           var isCollapsed = section.classList.contains('reminder-card-prio-collapsed');
           var chevron = el.querySelector('.reminder-card-prio-chevron');
           if (chevron) chevron.style.transform = isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)';
+          _saveCollapseState();
         }
         window._toggleCelebrationCollapse = _toggleCelebrationCollapse;
 
