@@ -18104,9 +18104,9 @@ patText2 = patText2.replace(/你/g, '我');
           var html = '';
           // ---- Celebration section (on top, collapsible, default collapsed) ----
           var celCards = data._celebration || [];
-          html += '<div class="reminder-cards-section">';
+          html += '<div class="reminder-cards-section reminder-card-prio-collapsed">';
           html += '<div class="reminder-cards-section-title" style="cursor:pointer;user-select:none;" onclick="_toggleCelebrationCollapse(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成待办 (' + celCards.length + ')<svg class="reminder-card-prio-chevron" style="transform:rotate(-90deg)" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
-          html += '<div class="reminder-card-prio-collapse-content reminder-card-prio-collapsed">';
+          html += '<div class="reminder-card-prio-collapse-content">';
           if (celCards.length > 0) {
             html += '<div class="reminder-card-list">';
             celCards.forEach(function(card, idx) {
@@ -18260,10 +18260,10 @@ patText2 = patText2.replace(/你/g, '我');
 
         function _toggleCelebrationCollapse(el) {
           var section = el.parentElement;
-          var collapseContent = section.querySelector('.reminder-card-prio-collapse-content');
-          if (collapseContent) collapseContent.classList.toggle('reminder-card-prio-collapsed');
+          section.classList.toggle('reminder-card-prio-collapsed');
+          var isCollapsed = section.classList.contains('reminder-card-prio-collapsed');
           var chevron = el.querySelector('.reminder-card-prio-chevron');
-          if (chevron) chevron.style.transform = collapseContent && collapseContent.classList.contains('reminder-card-prio-collapsed') ? 'rotate(-90deg)' : 'rotate(0deg)';
+          if (chevron) chevron.style.transform = isCollapsed ? 'rotate(-90deg)' : 'rotate(0deg)';
         }
         window._toggleCelebrationCollapse = _toggleCelebrationCollapse;
 
