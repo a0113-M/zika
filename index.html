@@ -8440,11 +8440,11 @@
 }
 .theme-bubble-other {
   background: var(--bg-card); color: var(--text-main); align-self: flex-start;
-  border-radius: 4px var(--bubble-radius) var(--bubble-radius) var(--bubble-radius);
+  border-radius: var(--bubble-radius);
 }
 .theme-bubble-self {
   background: var(--primary); color: #fff; align-self: flex-end;
-  border-radius: var(--bubble-radius-self) 4px var(--bubble-radius-self) var(--bubble-radius-self);
+  border-radius: var(--bubble-radius-self);
 }
 /* Custom font URL input */
 .theme-custom-row {
@@ -8478,7 +8478,7 @@
 
 /* Bubble radius from theme */
 .msg-bubble { border-radius: var(--bubble-radius) !important; }
-.msg-self .msg-bubble { border-radius: var(--bubble-radius-self) !important; }
+.msg-right .msg-bubble { border-radius: var(--bubble-radius-self) !important; }
 
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
