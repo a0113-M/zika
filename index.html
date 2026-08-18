@@ -8632,32 +8632,30 @@
   opacity: 0;
   will-change: transform, opacity;
   animation: callRingAppear ease-out forwards;
-  box-shadow:
-    inset 0 0 3px rgba(255,255,255,0.4),
-    0 0 4px rgba(255,255,255,0.2),
-    0 0 8px rgba(255,215,0,0.2),
-    0 0 14px rgba(255,200,50,0.1);
 }
-.call-dynamic-ring.ring-solid { border-style: solid; }
-.call-dynamic-ring.ring-dashed { border-style: dashed; }
-.call-dynamic-ring.ring-dotted { border-style: dotted; }
+.call-dynamic-ring.ring-solid {
+  border-style: solid;
+  box-shadow: 0 0 4px rgba(255,255,255,0.15), 0 0 8px rgba(255,215,0,0.1);
+}
+.call-dynamic-ring.ring-dashed {
+  border-style: dashed;
+  box-shadow: 0 0 4px rgba(255,255,255,0.15), 0 0 8px rgba(255,215,0,0.1);
+}
+.call-dynamic-ring.ring-dotted {
+  border-style: dotted;
+  box-shadow: 0 0 4px rgba(255,255,255,0.15), 0 0 8px rgba(255,215,0,0.1);
+}
 .call-dynamic-ring.ring-double {
   border-style: double;
-  box-shadow:
-    inset 0 0 4px rgba(255,255,255,0.5),
-    0 0 5px rgba(255,255,255,0.25),
-    0 0 10px rgba(255,215,0,0.2),
-    0 0 18px rgba(255,200,50,0.1);
+  box-shadow: 0 0 4px rgba(255,255,255,0.15), 0 0 8px rgba(255,215,0,0.1);
 }
 .call-dynamic-ring.ring-glow {
   border-style: solid;
-  filter: blur(0.3px) brightness(1.2);
   box-shadow:
-    inset 0 0 5px rgba(255,255,255,0.5),
-    0 0 7px rgba(255,255,255,0.3),
-    0 0 14px rgba(255,215,0,0.25),
-    0 0 24px rgba(255,200,50,0.15),
-    0 0 36px rgba(255,180,0,0.08);
+    inset 0 0 3px rgba(255,255,255,0.35),
+    0 0 4px rgba(255,255,255,0.2),
+    0 0 8px rgba(255,215,0,0.18),
+    0 0 16px rgba(255,200,50,0.1);
 }
 @keyframes callRingAppear {
   0% { transform: scale(0.3); opacity: 0; }
@@ -19548,8 +19546,8 @@ patText2 = patText2.replace(/你/g, '我');
         var dur = 2 + Math.random() * 3;
         var opacity = 0.3 + Math.random() * 0.5;
         var endScale = 2 + Math.random() * 4;
-        var borderWidth = 0.5 + Math.random() * 2.5;
-        var styles = ['ring-solid','ring-glow','ring-glow','ring-dashed','ring-double','ring-glow'];
+        var borderWidth = 0.3 + Math.random() * 0.8;
+        var styles = ['ring-glow','ring-glow','ring-glow','ring-solid','ring-solid','ring-dashed'];
         var styleClass = styles[Math.floor(Math.random() * styles.length)];
         var colors = [
           'rgba(255,250,230,'+opacity+')',
