@@ -17986,7 +17986,7 @@ patText2 = patText2.replace(/你/g, '我');
         // Helper: ensure a contact key has the {0:[],1:[],2:[],3:[],4:[]} structure
         function _ensureContactGroups(data, contactKey) {
           if (!data[contactKey]) {
-            data[contactKey] = {"0":[],"1":[],"2":[],"3":[],"4":[]};
+            data[contactKey] = {"0":[],"1":[],"2":[],"3":[],"4":[],"_celebration":[]};
           } else if (Array.isArray(data[contactKey])) {
             // Migrate old flat array format to priority-grouped format
             // Old data went into priority 0
@@ -17997,6 +17997,7 @@ patText2 = patText2.replace(/你/g, '我');
             for (var i = 0; i <= 4; i++) {
               if (!data[contactKey][String(i)]) data[contactKey][String(i)] = [];
             }
+            if (!data[contactKey]._celebration) data[contactKey]._celebration = [];
           }
         }
         function addReminderCard(contactKey, prioKey, text) {
@@ -18101,10 +18102,11 @@ patText2 = patText2.replace(/你/g, '我');
           var allContacts = typeof window.getAllNonGroupContacts === 'function' ? window.getAllNonGroupContacts() : [];
           var chevronHtml = '<svg class="reminder-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
           var html = '';
-          // ---- Celebration section (on top) ----
+          // ---- Celebration section (on top, collapsible, default collapsed) ----
           var celCards = data._celebration || [];
           html += '<div class="reminder-cards-section">';
-          html += '<div class="reminder-cards-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成待办</div>';
+          html += '<div class="reminder-cards-section-title" style="cursor:pointer;user-select:none;" onclick="_toggleCelebrationCollapse(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成待办 (' + celCards.length + ')<svg class="reminder-card-prio-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></div>';
+          html += '<div class="reminder-card-prio-collapse-content reminder-card-prio-collapsed">';
           if (celCards.length > 0) {
             html += '<div class="reminder-card-list">';
             celCards.forEach(function(card, idx) {
@@ -18113,6 +18115,7 @@ patText2 = patText2.replace(/你/g, '我');
             html += '</div>';
           }
           html += '<div class="reminder-card-add"><input class="reminder-card-add-input" data-rc-input="_celebration" data-rc-prio-input="0" placeholder="添加完成鼓励字卡..." /><button class="reminder-card-add-btn" data-rc-add="_celebration" data-rc-prio-add="0">添加</button></div>';
+          html += '</div>';
           html += '</div>';
           // ---- General section ----
           html += '<div class="reminder-cards-section">';
@@ -18129,6 +18132,19 @@ patText2 = patText2.replace(/你/g, '我');
             html += '<div class="reminder-card-contact-name" onclick="_toggleContactCollapse(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' + escapeTodoHtml(c.name) + chevronHtml + '</div>';
             html += '<div class="reminder-card-collapse-content">';
             html += _renderPrioGroups(cKey, cData, false);
+            // Per-contact celebration cards
+            var cCelCards = (cData && cData._celebration) ? cData._celebration : [];
+            html += '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #e0d8f0;">';
+            html += '<div style="font-size:12px;color:#9b8ec4;margin-bottom:4px;display:flex;align-items:center;gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>完成鼓励 (' + cCelCards.length + ')</div>';
+            if (cCelCards.length > 0) {
+              html += '<div class="reminder-card-list">';
+              cCelCards.forEach(function(card, idx) {
+                html += '<div class="reminder-card-item"><span class="reminder-card-item-text">' + escapeTodoHtml(card) + '</span><button class="reminder-card-delete" data-rc-del="' + cKey + '" data-rc-prio="_celebration" data-rc-idx="' + idx + '"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>';
+              });
+              html += '</div>';
+            }
+            html += '<div class="reminder-card-add"><input class="reminder-card-add-input" data-rc-input="' + cKey + '" data-rc-prio-input="_celebration" placeholder="添加完成鼓励字卡..." /><button class="reminder-card-add-btn" data-rc-add="' + cKey + '" data-rc-prio-add="_celebration">添加</button></div>';
+            html += '</div>';
             html += '</div>';
             html += '</div>';
           });
@@ -18185,7 +18201,16 @@ patText2 = patText2.replace(/你/g, '我');
         // Show celebration card when a todo is completed
         function showCelebrationCard(todo) {
           var data = getReminderCards();
-          var cards = data._celebration || [];
+          var cards = [];
+          // First try contact-specific celebration cards
+          var cid = todo.reminderContactId;
+          if (cid && data[String(cid)] && data[String(cid)]._celebration && data[String(cid)]._celebration.length > 0) {
+            cards = data[String(cid)]._celebration;
+          }
+          // Fall back to general celebration cards
+          if (cards.length === 0) {
+            cards = data._celebration || [];
+          }
           if (cards.length === 0) return;
           var cardText = cards[Math.floor(Math.random() * cards.length)];
           // Toast
@@ -18232,6 +18257,15 @@ patText2 = patText2.replace(/你/g, '我');
           if (group) group.classList.toggle('reminder-card-prio-collapsed');
         }
         window._togglePrioCollapse = _togglePrioCollapse;
+
+        function _toggleCelebrationCollapse(el) {
+          var section = el.parentElement;
+          var collapseContent = section.querySelector('.reminder-card-prio-collapse-content');
+          if (collapseContent) collapseContent.classList.toggle('reminder-card-prio-collapsed');
+          var chevron = el.querySelector('.reminder-card-prio-chevron');
+          if (chevron) chevron.style.transform = collapseContent && collapseContent.classList.contains('reminder-card-prio-collapsed') ? 'rotate(-90deg)' : 'rotate(0deg)';
+        }
+        window._toggleCelebrationCollapse = _toggleCelebrationCollapse;
 
         // Back button for reminder cards view
         var rcBackBtn = document.getElementById('reminderCardsBackBtn');
