@@ -19744,26 +19744,9 @@ patText2 = patText2.replace(/你/g, '我');
       }
       callVideoSmall.addEventListener('click', swapVideoWindows);
 
-      // 视频背景图片选择
+      // 视频小窗口背景图片选择（双击小窗口）
       (function() {
-        var bgBigBtn = document.getElementById('callBgBtn');
-        var bgBigInput = document.getElementById('callVideoBgBig');
         var bgSmallInput = document.getElementById('callVideoBgSmall');
-        if (bgBigBtn && bgBigInput) {
-          bgBigBtn.addEventListener('click', function() { bgBigInput.click(); });
-          bgBigInput.addEventListener('change', function(e) {
-            var file = e.target.files[0];
-            if (!file) return;
-            var reader = new FileReader();
-            reader.onload = function(ev) {
-              var bgUrl = 'url(' + ev.target.result + ')';
-              callVideoBig.style.backgroundImage = bgUrl;
-              callVideoBig.style.backgroundSize = 'cover';
-              callVideoBig.style.backgroundPosition = 'center';
-            };
-            reader.readAsDataURL(file);
-          });
-        }
         if (bgSmallInput) {
           callVideoSmall.addEventListener('dblclick', function() { bgSmallInput.click(); });
           bgSmallInput.addEventListener('change', function(e) {
@@ -20034,10 +20017,17 @@ patText2 = patText2.replace(/你/g, '我');
             var reader = new FileReader();
             reader.onload = function(ev) {
               var bgUrl = 'url(' + ev.target.result + ')';
+              // 语音通话：应用到 overlay 背景
               callOverlay.style.backgroundImage = bgUrl;
               callOverlay.style.backgroundSize = 'cover';
               callOverlay.style.backgroundPosition = 'center';
               callOverlay.style.backgroundRepeat = 'no-repeat';
+              // 视频通话：应用到大窗口背景
+              if (callType === 'video' && callVideoBig) {
+                callVideoBig.style.backgroundImage = bgUrl;
+                callVideoBig.style.backgroundSize = 'cover';
+                callVideoBig.style.backgroundPosition = 'center';
+              }
               var miniWin = document.getElementById('callMiniWindow');
               if (miniWin) {
                 miniWin.style.backgroundImage = bgUrl;
