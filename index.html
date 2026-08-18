@@ -9803,50 +9803,7 @@
               </div>
             </div>
           </div>
-          <div class="settings-section">
-            <div class="settings-section-title">字卡类目使用概率</div>
-            <div class="settings-item">
-              <div class="settings-item-left">
-                <span class="settings-item-label">文字字卡概率</span>
-                <span class="settings-item-hint">生成文字类型字卡的概率</span>
-              </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingTextCardProb" min="0" max="100" step="1" value="40" class="settings-range">
-                <span class="settings-prob-value" id="settingTextCardProbVal">40%</span>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-left">
-                <span class="settings-item-label">表情字卡概率</span>
-                <span class="settings-item-hint">生成表情类型字卡的概率</span>
-              </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingEmojiCardProb" min="0" max="100" step="1" value="30" class="settings-range">
-                <span class="settings-prob-value" id="settingEmojiCardProbVal">30%</span>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-left">
-                <span class="settings-item-label">图片字卡概率</span>
-                <span class="settings-item-hint">生成图片类型字卡的概率</span>
-              </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingImageCardProb" min="0" max="100" step="1" value="20" class="settings-range">
-                <span class="settings-prob-value" id="settingImageCardProbVal">20%</span>
-              </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-left">
-                <span class="settings-item-label">语音字卡概率</span>
-                <span class="settings-item-hint">生成语音类型字卡的概率</span>
-              </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingVoiceCardProb" min="0" max="100" step="1" value="10" class="settings-range">
-                <span class="settings-prob-value" id="settingVoiceCardProbVal">10%</span>
-              </div>
-            </div>
-          </div>
-          <div class="settings-section">
+                    <div class="settings-section">
             <div class="settings-section-title">其他</div>
             <div class="settings-item">
               <div class="settings-item-left">
@@ -9913,7 +9870,49 @@
           </div>
         </div>
       </div>
-      <div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
+              <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
+        <div class="settings-section-title" style="margin-top:12px;">字卡类目使用概率</div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <span class="settings-item-label">文字字卡概率</span>
+            <span class="settings-item-hint">该联系人发送文字字卡的概率</span>
+          </div>
+          <div class="settings-prob-control">
+            <input type="range" id="contactTextCardProb" min="0" max="100" step="1" value="40" class="settings-range">
+            <span class="settings-prob-value" id="contactTextCardProbVal">40%</span>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <span class="settings-item-label">表情字卡概率</span>
+            <span class="settings-item-hint">该联系人发送表情字卡的概率</span>
+          </div>
+          <div class="settings-prob-control">
+            <input type="range" id="contactEmojiCardProb" min="0" max="100" step="1" value="30" class="settings-range">
+            <span class="settings-prob-value" id="contactEmojiCardProbVal">30%</span>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <span class="settings-item-label">图片字卡概率</span>
+            <span class="settings-item-hint">该联系人发送图片字卡的概率</span>
+          </div>
+          <div class="settings-prob-control">
+            <input type="range" id="contactImageCardProb" min="0" max="100" step="1" value="20" class="settings-range">
+            <span class="settings-prob-value" id="contactImageCardProbVal">20%</span>
+          </div>
+        </div>
+        <div class="settings-item">
+          <div class="settings-item-left">
+            <span class="settings-item-label">语音字卡概率</span>
+            <span class="settings-item-hint">该联系人发送语音字卡的概率</span>
+          </div>
+          <div class="settings-prob-control">
+            <input type="range" id="contactVoiceCardProb" min="0" max="100" step="1" value="10" class="settings-range">
+            <span class="settings-prob-value" id="contactVoiceCardProbVal">10%</span>
+          </div>
+        </div>
+<div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
     </div>
   </div>
 
@@ -12151,7 +12150,7 @@
 
       // ===== 设置功能 =====
       // 设置默认值
-      var defaultSettings = { letterProb: 5, momentProb: 5, anonProb: 3, statusProb: 10, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, checkInterval: 5 };
+      var defaultSettings = { letterProb: 5, momentProb: 5, anonProb: 3, statusProb: 10, checkInterval: 5 };
 
       function getSettings() {
         try {
@@ -12161,10 +12160,6 @@
             momentProb: s.momentProb !== undefined ? s.momentProb : defaultSettings.momentProb,
             anonProb: s.anonProb !== undefined ? s.anonProb : defaultSettings.anonProb,
             statusProb: s.statusProb !== undefined ? s.statusProb : defaultSettings.statusProb,
-            textCardProb: s.textCardProb !== undefined ? s.textCardProb : defaultSettings.textCardProb,
-            emojiCardProb: s.emojiCardProb !== undefined ? s.emojiCardProb : defaultSettings.emojiCardProb,
-            imageCardProb: s.imageCardProb !== undefined ? s.imageCardProb : defaultSettings.imageCardProb,
-            voiceCardProb: s.voiceCardProb !== undefined ? s.voiceCardProb : defaultSettings.voiceCardProb,
             checkInterval: s.checkInterval !== undefined ? s.checkInterval : defaultSettings.checkInterval
           };
         } catch(e) { return Object.assign({}, defaultSettings); }
@@ -12180,24 +12175,16 @@
         var mp = document.getElementById('settingMomentProb');
         var ap = document.getElementById('settingAnonProb');
         var sp = document.getElementById('settingStatusProb');
-        var tcp = document.getElementById('settingTextCardProb');
-        var ecp = document.getElementById('settingEmojiCardProb');
-        var icp = document.getElementById('settingImageCardProb');
-        var vcp = document.getElementById('settingVoiceCardProb');
         var ci = document.getElementById('settingInterval');
         if (lp) { lp.value = s.letterProb; document.getElementById('settingLetterProbVal').textContent = s.letterProb + '%'; }
         if (mp) { mp.value = s.momentProb; document.getElementById('settingMomentProbVal').textContent = s.momentProb + '%'; }
         if (ap) { ap.value = s.anonProb; document.getElementById('settingAnonProbVal').textContent = s.anonProb + '%'; }
         if (sp) { sp.value = s.statusProb; document.getElementById('settingStatusProbVal').textContent = s.statusProb + '%'; }
-        if (tcp) { tcp.value = s.textCardProb; document.getElementById('settingTextCardProbVal').textContent = s.textCardProb + '%'; }
-        if (ecp) { ecp.value = s.emojiCardProb; document.getElementById('settingEmojiCardProbVal').textContent = s.emojiCardProb + '%'; }
-        if (icp) { icp.value = s.imageCardProb; document.getElementById('settingImageCardProbVal').textContent = s.imageCardProb + '%'; }
-        if (vcp) { vcp.value = s.voiceCardProb; document.getElementById('settingVoiceCardProbVal').textContent = s.voiceCardProb + '%'; }
         if (ci) { ci.value = s.checkInterval; document.getElementById('settingIntervalVal').textContent = s.checkInterval + '分钟'; }
       }
 
       // 设置滑块事件
-      ['LetterProb','MomentProb','AnonProb','StatusProb','TextCardProb','EmojiCardProb','ImageCardProb','VoiceCardProb','Interval'].forEach(function(key) {
+      ['LetterProb','MomentProb','AnonProb','StatusProb','Interval'].forEach(function(key) {
         var slider = document.getElementById('setting' + key);
         var display = document.getElementById('setting' + key + 'Val');
         if (slider && display) {
@@ -12206,7 +12193,7 @@
             var suffix = key === 'Interval' ? '分钟' : '%';
             display.textContent = val + suffix;
             var s = getSettings();
-            var map = { LetterProb: 'letterProb', MomentProb: 'momentProb', AnonProb: 'anonProb', StatusProb: 'statusProb', TextCardProb: 'textCardProb', EmojiCardProb: 'emojiCardProb', ImageCardProb: 'imageCardProb', VoiceCardProb: 'voiceCardProb', Interval: 'checkInterval' };
+            var map = { LetterProb: 'letterProb', MomentProb: 'momentProb', AnonProb: 'anonProb', StatusProb: 'statusProb', Interval: 'checkInterval' };
             s[map[key]] = val;
             saveSettings(s);
           });
@@ -12273,7 +12260,7 @@
 
       function loadContactProbSliders(contactId) {
         var settings = getContactProbSettings();
-        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3 };
+        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
         
         var contact = contacts.find(function(c) { return c.id === contactId; });
         if (contact) {
@@ -12283,15 +12270,23 @@
         var lp = document.getElementById('contactSettingLetterProb');
         var mp = document.getElementById('contactSettingMomentProb');
         var ap = document.getElementById('contactSettingAnonProb');
+        var tcp = document.getElementById('contactTextCardProb');
+        var ecp = document.getElementById('contactEmojiCardProb');
+        var icp = document.getElementById('contactImageCardProb');
+        var vcp = document.getElementById('contactVoiceCardProb');
         if (lp) { lp.value = cs.letterProb; document.getElementById('contactSettingLetterProbVal').textContent = cs.letterProb + '%'; }
         if (mp) { mp.value = cs.momentProb; document.getElementById('contactSettingMomentProbVal').textContent = cs.momentProb + '%'; }
         if (ap) { ap.value = cs.anonProb; document.getElementById('contactSettingAnonProbVal').textContent = cs.anonProb + '%'; }
+        if (tcp) { tcp.value = cs.textCardProb || 40; document.getElementById('contactTextCardProbVal').textContent = (cs.textCardProb || 40) + '%'; }
+        if (ecp) { ecp.value = cs.emojiCardProb || 30; document.getElementById('contactEmojiCardProbVal').textContent = (cs.emojiCardProb || 30) + '%'; }
+        if (icp) { icp.value = cs.imageCardProb || 20; document.getElementById('contactImageCardProbVal').textContent = (cs.imageCardProb || 20) + '%'; }
+        if (vcp) { vcp.value = cs.voiceCardProb || 10; document.getElementById('contactVoiceCardProbVal').textContent = (cs.voiceCardProb || 10) + '%'; }
         
         document.getElementById('contactProbSlidersSection').style.display = 'block';
       }
 
       // 联系人概率滑块事件
-      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb'].forEach(function(id) {
+      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb'].forEach(function(id) {
         var slider = document.getElementById(id);
         var display = document.getElementById(id + 'Val');
         if (slider && display) {
@@ -12300,8 +12295,8 @@
             display.textContent = val + '%';
             if (!currentContactProbId) return;
             var settings = getContactProbSettings();
-            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3 };
-            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb' };
+            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10 };
+            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb' };
             settings[currentContactProbId][keyMap[id]] = val;
             saveContactProbSettings(settings);
           });
