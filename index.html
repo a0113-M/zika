@@ -7626,23 +7626,21 @@
   margin-bottom: 8px;
 }
 .todo-time-wheel {
-  height: 280px;
+  height: 168px;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
   width: 56px;
   position: relative;
-  padding: 120px 0;
-  scroll-padding: 120px 0;
 }
 .todo-time-wheel::after {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 56px;
   left: 0;
   right: 0;
   height: 56px;
-  margin-top: -28px;
+  margin-top: 0;
   background: rgba(155,142,196,0.06);
   border-top: 1px solid rgba(155,142,196,0.15);
   border-bottom: 1px solid rgba(155,142,196,0.15);
@@ -17232,12 +17230,11 @@ patText2 = patText2.replace(/你/g, '我');
             mHtml += '<div class="todo-time-slot' + sel + '" data-m="' + m + '">' + (m < 10 ? '0'+m : m) + '</div>';
           }
           minWheel.innerHTML = mHtml;
-          // Scroll to selected
+          // Scroll to selected (center = index 1 when no padding)
           var slotH = 56;
-          var pad = 120;
           setTimeout(function() {
-            hourWheel.scrollTop = pad + _selectedHour * slotH - pad;
-            minWheel.scrollTop = pad + _selectedMin * slotH - pad;
+            hourWheel.scrollTop = Math.max(0, _selectedHour - 1) * slotH;
+            minWheel.scrollTop = Math.max(0, _selectedMin - 1) * slotH;
             syncWheelSelection(hourWheel, 'h');
             syncWheelSelection(minWheel, 'm');
           }, 50);
@@ -17255,22 +17252,21 @@ patText2 = patText2.replace(/你/g, '我');
           hourWheel.querySelectorAll('.todo-time-slot').forEach(function(el) {
             el.addEventListener('click', function() {
               var idx = parseInt(this.dataset.h);
-              hourWheel.scrollTo({ top: idx * slotH, behavior: 'smooth' });
+              hourWheel.scrollTo({ top: Math.max(0, idx - 1) * slotH, behavior: 'smooth' });
               setTimeout(function() { syncWheelSelection(hourWheel, 'h'); }, 400);
             });
           });
           minWheel.querySelectorAll('.todo-time-slot').forEach(function(el) {
             el.addEventListener('click', function() {
               var idx = parseInt(this.dataset.m);
-              minWheel.scrollTo({ top: idx * slotH, behavior: 'smooth' });
+              minWheel.scrollTo({ top: Math.max(0, idx - 1) * slotH, behavior: 'smooth' });
               setTimeout(function() { syncWheelSelection(minWheel, 'm'); }, 400);
             });
           });
         }
         function syncWheelSelection(wheel, type) {
           var slotH = 56;
-          var pad = 120;
-          var centerPos = wheel.scrollTop + pad;
+          var centerPos = wheel.scrollTop + slotH; // center of 3-row wheel (56px in)
           var idx = Math.round(centerPos / slotH);
           var maxIdx = type === 'h' ? 23 : 59;
           idx = Math.max(0, Math.min(idx, maxIdx));
@@ -17289,9 +17285,9 @@ patText2 = patText2.replace(/你/g, '我');
 
         function openTimePicker() {
           if (!_selectedDate) {
-            // Need to pick date first
-            openDatePicker();
-            return;
+            var today = new Date();
+            _selectedDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            updateDateTimeDisplay();
           }
           renderTimeWheels();
           document.getElementById('todoTimeOverlay').classList.add('show');
