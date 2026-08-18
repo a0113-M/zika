@@ -7406,15 +7406,184 @@
   color: #9b8ec4;
   flex-shrink: 0;
 }
-.todo-prio-reminder-input {
+.todo-prio-reminder-text {
   flex: 1;
-  border: none;
-  background: transparent;
   font-size: 13px;
   color: #555;
-  outline: none;
 }
-.todo-prio-reminder-input::placeholder { color: #c4b8d8; }
+.todo-prio-reminder-text.placeholder { color: #c4b8d8; }
+.todo-prio-reminder-row {
+  cursor: pointer;
+}
+.todo-prio-reminder-row:active { background: #ede7f6; }
+
+/* 日期/时间选择弹窗 */
+.todo-datetime-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  display: none;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 10000;
+}
+.todo-datetime-overlay.show { display: flex; }
+.todo-datetime-popup {
+  width: 92%;
+  max-height: 55%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.25s ease;
+}
+.todo-datetime-popup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 0.5px solid #f0ecf7;
+}
+.todo-datetime-popup-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+.todo-datetime-popup-btn {
+  font-size: 14px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.todo-datetime-popup-btn:active { background: #f5f0ff; }
+.todo-datetime-popup-btn.confirm-btn { color: #9b8ec4; font-weight: 600; }
+.todo-datetime-popup-btn.cancel-btn { color: #999; }
+
+/* 日期选择器 */
+.todo-date-grid {
+  padding: 12px 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+.todo-date-month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.todo-date-month-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+.todo-date-month-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f5f0ff;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #9b8ec4;
+}
+.todo-date-month-btn:active { background: #ede7f6; }
+.todo-date-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 8px;
+}
+.todo-date-weekday {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  padding: 4px 0;
+}
+.todo-date-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.todo-date-day {
+  text-align: center;
+  padding: 8px 0;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #333;
+  transition: all 0.15s;
+}
+.todo-date-day:active { background: #f5f0ff; }
+.todo-date-day.selected {
+  background: #9b8ec4;
+  color: #fff;
+  font-weight: 600;
+}
+.todo-date-day.today {
+  color: #9b8ec4;
+  font-weight: 600;
+}
+.todo-date-day.other-month {
+  color: #ddd;
+}
+
+/* 时间选择器 */
+.todo-time-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 20px 16px;
+  flex: 1;
+}
+.todo-time-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.todo-time-label {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 8px;
+}
+.todo-time-wheel {
+  height: 160px;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 56px;
+  position: relative;
+}
+.todo-time-wheel::-webkit-scrollbar { display: none; }
+.todo-time-slot {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #ccc;
+  scroll-snap-align: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.todo-time-slot.selected {
+  font-size: 22px;
+  font-weight: 700;
+  color: #9b8ec4;
+}
+.todo-time-separator {
+  font-size: 28px;
+  font-weight: 300;
+  color: #ccc;
+  margin-bottom: 20px;
+}
 
 /* 联系人选择弹窗 */
 .todo-contact-overlay {
@@ -7424,7 +7593,7 @@
   display: none;
   justify-content: center;
   align-items: flex-end;
-  z-index: 1000;
+  z-index: 10000;
 }
 .todo-contact-overlay.show { display: flex; }
 .todo-contact-popup {
@@ -8369,9 +8538,15 @@
           <span class="todo-prio-contact-text placeholder" id="todoPrioContactText">选择联系人（可选）</span>
           <span class="todo-prio-contact-arrow">&#8250;</span>
         </div>
-        <div class="todo-prio-reminder-row">
+        <div class="todo-prio-reminder-row" id="todoPrioDateRow">
+          <svg class="todo-prio-reminder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span class="todo-prio-reminder-text placeholder" id="todoPrioDateText">选择日期</span>
+          <span class="todo-prio-contact-arrow">&#8250;</span>
+        </div>
+        <div class="todo-prio-reminder-row" id="todoPrioTimeRow">
           <svg class="todo-prio-reminder-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          <input type="datetime-local" class="todo-prio-reminder-input" id="todoPrioReminderInput" placeholder="提醒时间（可选）">
+          <span class="todo-prio-reminder-text placeholder" id="todoPrioTimeText">选择时间</span>
+          <span class="todo-prio-contact-arrow">&#8250;</span>
         </div>
         <div class="todo-prio-actions">
           <button class="todo-prio-btn todo-prio-btn-cancel" id="todoPrioCancel">取消</button>
@@ -8385,6 +8560,56 @@
       <div class="todo-contact-popup">
         <div class="todo-contact-popup-title">选择联系人</div>
         <div class="todo-contact-list" id="todoContactList"></div>
+      </div>
+    </div>
+
+    <!-- 日期选择弹窗 -->
+    <div class="todo-datetime-overlay" id="todoDateOverlay">
+      <div class="todo-datetime-popup">
+        <div class="todo-datetime-popup-header">
+          <button class="todo-datetime-popup-btn cancel-btn" id="todoDateCancelBtn">取消</button>
+          <div class="todo-datetime-popup-title">选择日期</div>
+          <button class="todo-datetime-popup-btn confirm-btn" id="todoDateConfirmBtn">确定</button>
+        </div>
+        <div class="todo-date-grid">
+          <div class="todo-date-month-nav">
+            <button class="todo-date-month-btn" id="todoDatePrevBtn">&#8249;</button>
+            <div class="todo-date-month-label" id="todoDateMonthLabel"></div>
+            <button class="todo-date-month-btn" id="todoDateNextBtn">&#8250;</button>
+          </div>
+          <div class="todo-date-weekdays">
+            <div class="todo-date-weekday">日</div>
+            <div class="todo-date-weekday">一</div>
+            <div class="todo-date-weekday">二</div>
+            <div class="todo-date-weekday">三</div>
+            <div class="todo-date-weekday">四</div>
+            <div class="todo-date-weekday">五</div>
+            <div class="todo-date-weekday">六</div>
+          </div>
+          <div class="todo-date-days" id="todoDateDaysGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 时间选择弹窗 -->
+    <div class="todo-datetime-overlay" id="todoTimeOverlay">
+      <div class="todo-datetime-popup">
+        <div class="todo-datetime-popup-header">
+          <button class="todo-datetime-popup-btn cancel-btn" id="todoTimeCancelBtn">取消</button>
+          <div class="todo-datetime-popup-title">选择时间</div>
+          <button class="todo-datetime-popup-btn confirm-btn" id="todoTimeConfirmBtn">确定</button>
+        </div>
+        <div class="todo-time-picker">
+          <div class="todo-time-col">
+            <div class="todo-time-label">时</div>
+            <div class="todo-time-wheel" id="todoHourWheel"></div>
+          </div>
+          <div class="todo-time-separator">:</div>
+          <div class="todo-time-col">
+            <div class="todo-time-label">分</div>
+            <div class="todo-time-wheel" id="todoMinWheel"></div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -16757,17 +16982,17 @@ patText2 = patText2.replace(/你/g, '我');
           // Set selected contact
           _selectedContactId = t ? (t.reminderContactId || 0) : 0;
           updateContactDisplay();
-          // Set reminder time
-          var ri = document.getElementById('todoPrioReminderInput');
-          if (ri) {
-            if (t && t.reminderTime) {
-              var rd = new Date(t.reminderTime);
-              var pad = function(n) { return n < 10 ? '0'+n : n; };
-              ri.value = rd.getFullYear() + '-' + pad(rd.getMonth()+1) + '-' + pad(rd.getDate()) + 'T' + pad(rd.getHours()) + ':' + pad(rd.getMinutes());
-            } else {
-              ri.value = '';
-            }
+          // Set date/time display
+          _selectedDate = null;
+          _selectedHour = 9;
+          _selectedMin = 0;
+          if (t && t.reminderTime) {
+            var rd = new Date(t.reminderTime);
+            _selectedDate = new Date(rd.getFullYear(), rd.getMonth(), rd.getDate());
+            _selectedHour = rd.getHours();
+            _selectedMin = rd.getMinutes();
           }
+          updateDateTimeDisplay();
           overlay.classList.add('show');
         }
         function closePrioPopup() {
@@ -16775,6 +17000,9 @@ patText2 = patText2.replace(/你/g, '我');
           if (overlay) overlay.classList.remove('show');
           _prioTargetId = null;
           _selectedContactId = 0;
+          _selectedDate = null;
+          _selectedHour = 9;
+          _selectedMin = 0;
         }
         function applyPrio(p) {
           if (!_prioTargetId) return;
@@ -16786,9 +17014,10 @@ patText2 = patText2.replace(/你/g, '我');
             t.reminderContactId = _selectedContactId || 0;
             t.reminderContact = _selectedContactId > 0 && typeof getContactName === 'function' ? getContactName(_selectedContactId) : undefined;
             // Save reminder time
-            var ri = document.getElementById('todoPrioReminderInput');
-            if (ri && ri.value) {
-              t.reminderTime = new Date(ri.value).getTime();
+            if (_selectedDate) {
+              var rt = new Date(_selectedDate);
+              rt.setHours(_selectedHour, _selectedMin, 0, 0);
+              t.reminderTime = rt.getTime();
             } else {
               t.reminderTime = undefined;
             }
@@ -16825,17 +17054,205 @@ patText2 = patText2.replace(/你/g, '我');
           });
         }
 
+        // ----- 日期/时间选择 -----
+        var _selectedDate = null; // Date object (year/month/day)
+        var _selectedHour = 9;
+        var _selectedMin = 0;
+
+        function updateDateTimeDisplay() {
+          var dt = document.getElementById('todoPrioDateText');
+          var tt = document.getElementById('todoPrioTimeText');
+          if (dt) {
+            if (_selectedDate) {
+              var M = _selectedDate.getMonth() + 1;
+              var D = _selectedDate.getDate();
+              var W = ['日','一','二','三','四','五','六'][_selectedDate.getDay()];
+              dt.textContent = M + '月' + D + '日 周' + W;
+              dt.classList.remove('placeholder');
+            } else {
+              dt.textContent = '\u9009\u62e9\u65e5\u671f';
+              dt.classList.add('placeholder');
+            }
+          }
+          if (tt) {
+            if (_selectedDate) {
+              var pad = function(n) { return n < 10 ? '0'+n : n; };
+              tt.textContent = pad(_selectedHour) + ':' + pad(_selectedMin);
+              tt.classList.remove('placeholder');
+            } else {
+              tt.textContent = '\u9009\u62e9\u65e5\u671f\u540e\u8bbe\u7f6e';
+              tt.classList.add('placeholder');
+            }
+          }
+        }
+
+        // Date picker state
+        var _pickerYear, _pickerMonth;
+        function initDatePicker() {
+          var now = new Date();
+          _pickerYear = _selectedDate ? _selectedDate.getFullYear() : now.getFullYear();
+          _pickerMonth = _selectedDate ? _selectedDate.getMonth() : now.getMonth();
+        }
+        function renderDatePicker() {
+          var label = document.getElementById('todoDateMonthLabel');
+          var grid = document.getElementById('todoDateDaysGrid');
+          if (!label || !grid) return;
+          label.textContent = _pickerYear + '\u5e74' + (_pickerMonth+1) + '\u6708';
+          var firstDay = new Date(_pickerYear, _pickerMonth, 1);
+          var lastDay = new Date(_pickerYear, _pickerMonth+1, 0);
+          var startDow = firstDay.getDay();
+          var daysInMonth = lastDay.getDate();
+          var prevMonthDays = new Date(_pickerYear, _pickerMonth, 0).getDate();
+          var today = new Date();
+          var html = '';
+          // Previous month trailing days
+          for (var i = startDow - 1; i >= 0; i--) {
+            html += '<div class="todo-date-day other-month">' + (prevMonthDays - i) + '</div>';
+          }
+          // Current month days
+          for (var d = 1; d <= daysInMonth; d++) {
+            var classes = 'todo-date-day';
+            if (_selectedDate && _selectedDate.getFullYear() === _pickerYear && _selectedDate.getMonth() === _pickerMonth && _selectedDate.getDate() === d) {
+              classes += ' selected';
+            }
+            if (today.getFullYear() === _pickerYear && today.getMonth() === _pickerMonth && today.getDate() === d) {
+              classes += ' today';
+            }
+            html += '<div class="' + classes + '" data-day="' + d + '">' + d + '</div>';
+          }
+          // Next month leading days
+          var totalCells = startDow + daysInMonth;
+          var remaining = (7 - (totalCells % 7)) % 7;
+          for (var n = 1; n <= remaining; n++) {
+            html += '<div class="todo-date-day other-month">' + n + '</div>';
+          }
+          grid.innerHTML = html;
+          // Bind day clicks
+          grid.querySelectorAll('.todo-date-day:not(.other-month)').forEach(function(el) {
+            el.addEventListener('click', function() {
+              var day = parseInt(this.dataset.day);
+              _selectedDate = new Date(_pickerYear, _pickerMonth, day);
+              grid.querySelectorAll('.todo-date-day').forEach(function(e) { e.classList.remove('selected'); });
+              this.classList.add('selected');
+              updateDateTimeDisplay();
+            });
+          });
+        }
+
+        function openDatePicker() {
+          initDatePicker();
+          renderDatePicker();
+          document.getElementById('todoDateOverlay').classList.add('show');
+        }
+        function closeDatePicker() {
+          document.getElementById('todoDateOverlay').classList.remove('show');
+        }
+
+        // Time wheel state
+        function renderTimeWheels() {
+          var hourWheel = document.getElementById('todoHourWheel');
+          var minWheel = document.getElementById('todoMinWheel');
+          if (!hourWheel || !minWheel) return;
+          var hHtml = '';
+          for (var h = 0; h < 24; h++) {
+            var sel = h === _selectedHour ? ' selected' : '';
+            hHtml += '<div class="todo-time-slot' + sel + '" data-h="' + h + '">' + (h < 10 ? '0'+h : h) + '</div>';
+          }
+          hourWheel.innerHTML = hHtml;
+          var mHtml = '';
+          for (var m = 0; m < 60; m += 5) {
+            var sel = m === _selectedMin ? ' selected' : '';
+            mHtml += '<div class="todo-time-slot' + sel + '" data-m="' + m + '">' + (m < 10 ? '0'+m : m) + '</div>';
+          }
+          minWheel.innerHTML = mHtml;
+          // Scroll selected into view
+          setTimeout(function() {
+            var hSel = hourWheel.querySelector('.todo-time-slot.selected');
+            if (hSel) hSel.scrollIntoView({ block: 'center' });
+            var mSel = minWheel.querySelector('.todo-time-slot.selected');
+            if (mSel) mSel.scrollIntoView({ block: 'center' });
+          }, 50);
+          // Bind clicks
+          hourWheel.querySelectorAll('.todo-time-slot').forEach(function(el) {
+            el.addEventListener('click', function() {
+              _selectedHour = parseInt(this.dataset.h);
+              hourWheel.querySelectorAll('.todo-time-slot').forEach(function(e) { e.classList.remove('selected'); });
+              this.classList.add('selected');
+              updateDateTimeDisplay();
+            });
+          });
+          minWheel.querySelectorAll('.todo-time-slot').forEach(function(el) {
+            el.addEventListener('click', function() {
+              _selectedMin = parseInt(this.dataset.m);
+              minWheel.querySelectorAll('.todo-time-slot').forEach(function(e) { e.classList.remove('selected'); });
+              this.classList.add('selected');
+              updateDateTimeDisplay();
+            });
+          });
+        }
+
+        function openTimePicker() {
+          if (!_selectedDate) {
+            // Need to pick date first
+            openDatePicker();
+            return;
+          }
+          renderTimeWheels();
+          document.getElementById('todoTimeOverlay').classList.add('show');
+        }
+        function closeTimePicker() {
+          document.getElementById('todoTimeOverlay').classList.remove('show');
+        }
+
+        // Bind date/time row clicks
+        var dateRow = document.getElementById('todoPrioDateRow');
+        if (dateRow) dateRow.addEventListener('click', function(e) { e.stopPropagation(); openDatePicker(); });
+        var timeRow = document.getElementById('todoPrioTimeRow');
+        if (timeRow) timeRow.addEventListener('click', function(e) { e.stopPropagation(); openTimePicker(); });
+
+        // Date picker buttons
+        var datePrevBtn = document.getElementById('todoDatePrevBtn');
+        if (datePrevBtn) datePrevBtn.addEventListener('click', function() {
+          _pickerMonth--;
+          if (_pickerMonth < 0) { _pickerMonth = 11; _pickerYear--; }
+          renderDatePicker();
+        });
+        var dateNextBtn = document.getElementById('todoDateNextBtn');
+        if (dateNextBtn) dateNextBtn.addEventListener('click', function() {
+          _pickerMonth++;
+          if (_pickerMonth > 11) { _pickerMonth = 0; _pickerYear++; }
+          renderDatePicker();
+        });
+        var dateCancelBtn = document.getElementById('todoDateCancelBtn');
+        if (dateCancelBtn) dateCancelBtn.addEventListener('click', closeDatePicker);
+        var dateConfirmBtn = document.getElementById('todoDateConfirmBtn');
+        if (dateConfirmBtn) dateConfirmBtn.addEventListener('click', closeDatePicker);
+
+        // Date overlay click to close
+        var dateOverlay = document.getElementById('todoDateOverlay');
+        if (dateOverlay) dateOverlay.addEventListener('click', function(e) { if (e.target === dateOverlay) closeDatePicker(); });
+
+        // Time picker buttons
+        var timeCancelBtn = document.getElementById('todoTimeCancelBtn');
+        if (timeCancelBtn) timeCancelBtn.addEventListener('click', closeTimePicker);
+        var timeConfirmBtn = document.getElementById('todoTimeConfirmBtn');
+        if (timeConfirmBtn) timeConfirmBtn.addEventListener('click', closeTimePicker);
+
+        // Time overlay click to close
+        var timeOverlay = document.getElementById('todoTimeOverlay');
+        if (timeOverlay) timeOverlay.addEventListener('click', function(e) { if (e.target === timeOverlay) closeTimePicker(); });
+
         // ----- 联系人选择 -----
         var _selectedContactId = 0;
         function getContactName(id) {
-          if (typeof contacts !== 'undefined' && id > 0) {
-            var c = contacts.find(function(x) { return x.id === id; });
+          if (id > 0 && typeof window.getContactById === 'function') {
+            var c = window.getContactById(id);
             if (c) return c.name;
           }
           return '';
         }
         function getAllContacts() {
-          return typeof contacts !== 'undefined' ? contacts : [];
+          return typeof window.getAllNonGroupContacts === 'function' ? window.getAllNonGroupContacts() : [];
         }
         function updateContactDisplay() {
           var el = document.getElementById('todoPrioContactText');
@@ -16925,8 +17342,8 @@ patText2 = patText2.replace(/你/g, '我');
         }
         function injectTodoReminder(todo, isEarly) {
           var cid = todo.reminderContactId;
-          if (!cid || typeof contacts === 'undefined') return;
-          var contact = contacts.find(function(c) { return c.id === cid; });
+          if (!cid || typeof window.getContactById !== 'function') return;
+          var contact = window.getContactById(cid);
           if (!contact) return;
           var label = isEarly ? '\u23f0 5\u5206\u949f\u540e\u63d0\u9192\uff1a' : '\u23f0 \u5230\u65f6\u63d0\u9192\uff1a';
           var msgText = label + todo.text;
@@ -16948,8 +17365,9 @@ patText2 = patText2.replace(/你/g, '我');
           var todos = getTodos();
           var changed = false;
           todos.forEach(function(t) {
-            if (t.reminderContact && !t.reminderContactId && typeof contacts !== 'undefined') {
-              var c = contacts.find(function(x) { return x.name === t.reminderContact; });
+            if (t.reminderContact && !t.reminderContactId && typeof window.getAllNonGroupContacts === 'function') {
+              var allC = window.getAllNonGroupContacts();
+              var c = allC.find(function(x) { return x.name === t.reminderContact; });
               if (c) {
                 t.reminderContactId = c.id;
                 changed = true;
