@@ -8479,6 +8479,9 @@
 .msg-self .msg-bubble { border-radius: var(--bubble-radius-self) !important; }
 
 </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link id="presetFontLink" rel="stylesheet" href="">
 </head>
 
 <body>
@@ -18752,11 +18755,15 @@ patText2 = patText2.replace(/你/g, '我');
 
   function loadCustomFontUrl(url) {
     if (!url) return;
+    // Remove old custom font link if exists
+    var oldLink = document.getElementById('customFontLink');
+    if (oldLink) oldLink.remove();
     var link = document.createElement('link');
+    link.id = 'customFontLink';
     link.rel = 'stylesheet';
     link.href = url;
     document.head.appendChild(link);
-    // Try to detect font family name from URL
+    // Set --custom-font to the detected font name (takes priority over --font-family)
     var name = '';
     try {
       var u = new URL(url);
@@ -18764,7 +18771,7 @@ patText2 = patText2.replace(/你/g, '我');
       name = qs.replace(/\+/g, ' ').split(':')[0].trim();
     } catch(e) { name = 'CustomFont'; }
     if (name) {
-      document.documentElement.style.setProperty('--font-family', "'" + name + "', " + getComputedStyle(document.documentElement).getPropertyValue('--font-family'));
+      document.documentElement.style.setProperty('--custom-font', "'" + name + "'");
     }
   }
 
@@ -18802,9 +18809,34 @@ patText2 = patText2.replace(/你/g, '我');
     });
   });
 
+  // Font preset → Google Fonts mapping
+  var FONT_PRESETS = {
+    'rounded': 'https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap',
+    'serif': 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap',
+    'cute': 'https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&display=swap',
+    'elegant': 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap'
+  };
+
+  function loadPresetFont(fontKey) {
+    // Remove old preset font link
+    var oldPreset = document.getElementById('presetFontLink');
+    if (oldPreset) oldPreset.setAttribute('href', '');
+    // Clear custom font when switching to preset
+    document.documentElement.style.removeProperty('--custom-font');
+    document.documentElement.style.removeProperty('--font-family');
+    if (!fontKey || fontKey === 'default' || !FONT_PRESETS[fontKey]) return;
+    var url = FONT_PRESETS[fontKey];
+    var link = document.createElement('link');
+    link.id = 'presetFontLink';
+    link.rel = 'stylesheet';
+    link.href = url;
+    document.head.appendChild(link);
+  }
+
   document.querySelectorAll('[data-set-font]').forEach(function(pill) {
     pill.addEventListener('click', function() {
       localStorage.setItem(FONT_KEY, this.dataset.setFont);
+      loadPresetFont(this.dataset.setFont);
       applyTheme();
     });
   });
@@ -18847,7 +18879,9 @@ patText2 = patText2.replace(/你/g, '我');
 
   applyTheme();
 
-  // Apply saved custom font and CSS on load
+  // Apply saved font preset and custom font on load
+  var savedFont = localStorage.getItem(FONT_KEY);
+  if (savedFont && savedFont !== 'default') loadPresetFont(savedFont);
   var savedFontUrl = localStorage.getItem(CUSTOM_FONT_KEY);
   if (savedFontUrl) loadCustomFontUrl(savedFontUrl);
   var savedCss = localStorage.getItem(CUSTOM_CSS_KEY);
