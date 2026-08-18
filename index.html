@@ -7597,6 +7597,49 @@
   border-radius: 50%;
   flex-shrink: 0;
 }
+/* ===== 折叠功能样式 ===== */
+.reminder-card-contact-name {
+  cursor: pointer;
+  user-select: none;
+}
+.reminder-card-chevron {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.reminder-card-collapsed .reminder-card-chevron {
+  transform: rotate(-90deg);
+}
+.reminder-card-collapse-content {
+  max-height: 5000px;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.reminder-card-collapsed .reminder-card-collapse-content {
+  max-height: 0;
+}
+
+/* 通用优先级分组折叠 */
+.reminder-card-prio-title {
+  cursor: pointer;
+  user-select: none;
+}
+.reminder-card-prio-chevron {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+.reminder-card-prio-collapsed .reminder-card-prio-chevron {
+  transform: rotate(-90deg);
+}
+.reminder-card-prio-collapse-content {
+  max-height: 3000px;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+.reminder-card-prio-collapsed .reminder-card-prio-collapse-content {
+  max-height: 0;
+}
 
 /* Todo notes icon & popup */
 .todo-notes-icon {
@@ -17876,7 +17919,24 @@ patText2 = patText2.replace(/你/g, '我');
         }
         // ===== 提醒字卡系统 =====
         function getReminderCards() {
-          try { return JSON.parse(localStorage.getItem('reminderCards') || '{}'); } catch(e) { return {}; }
+          var data;
+          try { data = JSON.parse(localStorage.getItem('reminderCards') || '{}'); } catch(e) { data = {}; }
+          // 首次使用：通用字卡预设默认内容
+          if (!data._general) data._general = {"0":[],"1":[],"2":[],"3":[],"4":[]};
+          var _g = data._general;
+          var _allEmpty = true;
+          for (var _p = 0; _p <= 4; _p++) {
+            if (_g[String(_p)] && _g[String(_p)].length > 0) { _allEmpty = false; break; }
+          }
+          if (_allEmpty) {
+            _g["0"] = ["嘿，该处理这个了~","记得看看这个待办哦","这个还没做完呢","有空处理一下这个吧","别忘了还有件事没做"];
+            _g["1"] = ["这个待办还在等你哦，不急但别忘了~","有空的时候处理一下吧~","提醒你一下，还有个小任务没完成哦","这个不急，但今天可以顺手做了","悄悄提醒，有个待办还没处理呢"];
+            _g["2"] = ["这个待办需要处理了，别忘了哦！","任务提醒：你有件事还没做完","该处理这个待办了，别拖延啦","提醒你，这个待办还没完成","别忘了这个待办，尽快处理哦"];
+            _g["3"] = ["紧急！这个待办赶紧处理！","很重要！请立即处理这个待办！","高优先级提醒，别再拖了！","这个很急，马上处理！","注意！这个待办已经不能再拖了"];
+            _g["4"] = ["十万火急！立即处理！！","非常紧急！现在就做！！","最高优先级！必须马上完成！！","刻不容缓！立刻处理这个待办！！","紧急警报！这个待办必须现在完成！！"];
+            saveReminderCards(data);
+          }
+          return data;
         }
         function saveReminderCards(data) {
           localStorage.setItem('reminderCards', JSON.stringify(data));
@@ -17955,20 +18015,27 @@ patText2 = patText2.replace(/你/g, '我');
         var _PRIO_COLORS = ['#d8d0e8','#5cb85c','#f0a030','#e55a5a','#7b5ea7'];
         var _PRIO_LABELS = ['无','低','中','高','紧急'];
 
-        function _renderPrioGroups(containerKey, cardsData) {
+        function _renderPrioGroups(containerKey, cardsData, collapsible) {
           // Shared renderer for both contact and general priority groups
+          // collapsible: if true, each prio group is collapsible (for general section)
           var html = '';
           for (var p = 0; p <= 4; p++) {
             var pKey = String(p);
             var cards = [];
             if (Array.isArray(cardsData)) {
-              // Old format: flat array -> all in priority 0
               cards = (p === 0) ? cardsData : [];
             } else if (cardsData && cardsData[pKey]) {
               cards = cardsData[pKey];
             }
-            html += '<div class="reminder-card-prio-group">';
-            html += '<div class="reminder-card-prio-title"><span class="reminder-card-prio-dot" style="background:' + _PRIO_COLORS[p] + ';"></span>' + _PRIO_LABELS[p] + '</div>';
+            var chevronSvg = '<svg class="reminder-card-prio-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
+            if (collapsible) {
+              html += '<div class="reminder-card-prio-group">';
+              html += '<div class="reminder-card-prio-title" onclick="_togglePrioCollapse(this)"><span class="reminder-card-prio-dot" style="background:' + _PRIO_COLORS[p] + ';"></span>' + _PRIO_LABELS[p] + ' (' + cards.length + ')' + chevronSvg + '</div>';
+              html += '<div class="reminder-card-prio-collapse-content">';
+            } else {
+              html += '<div class="reminder-card-prio-group">';
+              html += '<div class="reminder-card-prio-title"><span class="reminder-card-prio-dot" style="background:' + _PRIO_COLORS[p] + ';"></span>' + _PRIO_LABELS[p] + ' (' + cards.length + ')</div>';
+            }
             if (cards.length > 0) {
               html += '<div class="reminder-card-list">';
               cards.forEach(function(card, idx) {
@@ -17977,6 +18044,9 @@ patText2 = patText2.replace(/你/g, '我');
               html += '</div>';
             }
             html += '<div class="reminder-card-add"><input class="reminder-card-add-input" data-rc-input="' + containerKey + '" data-rc-prio-input="' + pKey + '" placeholder="添加字卡..." /><button class="reminder-card-add-btn" data-rc-add="' + containerKey + '" data-rc-prio-add="' + pKey + '">添加</button></div>';
+            if (collapsible) {
+              html += '</div>';  // close collapse content
+            }
             html += '</div>';
           }
           return html;
@@ -17987,26 +18057,29 @@ patText2 = patText2.replace(/你/g, '我');
           if (!body) return;
           var data = getReminderCards();
           var allContacts = typeof window.getAllNonGroupContacts === 'function' ? window.getAllNonGroupContacts() : [];
+          var chevronHtml = '<svg class="reminder-card-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>';
           var html = '';
-          // ---- Contact section ----
+          // ---- General section (on top) ----
+          html += '<div class="reminder-cards-section">';
+          html += '<div class="reminder-cards-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M8 14h4"/></svg>通用字卡</div>';
+          html += _renderPrioGroups('_general', data._general || null, true);
+          html += '</div>';
+          // ---- Contact section (below) ----
           html += '<div class="reminder-cards-section">';
           html += '<div class="reminder-cards-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>联系人字卡</div>';
           allContacts.forEach(function(c) {
             var cKey = String(c.id);
             var cData = data[cKey] || null;
-            html += '<div class="reminder-card-contact">';
-            html += '<div class="reminder-card-contact-name"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' + escapeTodoHtml(c.name) + '</div>';
-            html += _renderPrioGroups(cKey, cData);
+            html += '<div class="reminder-card-contact reminder-card-collapsed">';
+            html += '<div class="reminder-card-contact-name" onclick="_toggleContactCollapse(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' + escapeTodoHtml(c.name) + chevronHtml + '</div>';
+            html += '<div class="reminder-card-collapse-content">';
+            html += _renderPrioGroups(cKey, cData, false);
+            html += '</div>';
             html += '</div>';
           });
           if (allContacts.length === 0) {
             html += '<div style="color:#a89cc0;font-size:12px;padding:8px;">暂无联系人</div>';
           }
-          html += '</div>';
-          // ---- General section ----
-          html += '<div class="reminder-cards-section">';
-          html += '<div class="reminder-cards-section-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M8 14h4"/></svg>通用字卡</div>';
-          html += _renderPrioGroups('_general', data._general || null);
           html += '</div>';
           body.innerHTML = html;
           // Bind events
@@ -18052,6 +18125,23 @@ patText2 = patText2.replace(/你/g, '我');
               }
             });
           });
+        }
+
+        // Toggle functions for collapse/expand
+        function _toggleContactCollapse(el) {
+          var card = el.parentElement;
+          while (card && !card.className.match(/reminder-card-contact\b/)) {
+            card = card.parentElement;
+          }
+          if (card) card.classList.toggle('reminder-card-collapsed');
+        }
+
+        function _togglePrioCollapse(el) {
+          var group = el.parentElement;
+          while (group && !group.className.match(/reminder-card-prio-group/)) {
+            group = group.parentElement;
+          }
+          if (group) group.classList.toggle('reminder-card-prio-collapsed');
         }
 
         // Back button for reminder cards view
