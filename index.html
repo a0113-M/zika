@@ -16944,7 +16944,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 筛选该联系人的信件
         var contactLetters = letterList.filter(function (l) {
-          return l.from === contactName;
+          return l.from === contactName && !l.anonymous;
         });
         clpContactLettersCache = contactLetters; // 缓存供日历详情使用
 
