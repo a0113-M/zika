@@ -8536,7 +8536,7 @@
 .call-ringing.active { display: flex; }
 .call-ringing .call-avatar-wrap {
   width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
-  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  background: var(--primary);
   font-size: 36px; font-weight: 600; color: #fff; margin-bottom: 20px;
   animation: callPulse 2s ease-in-out infinite;
 }
@@ -8693,9 +8693,10 @@
   color: rgba(255,255,255,0.5); font-size: 12px;
 }
 .call-video-big .video-avatar-large {
+  display: none;
   opacity: 0.3;
   width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
-  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  background: var(--primary);
   font-size: 36px; font-weight: 600; color: #fff;
   box-shadow: 0 0 20px rgba(255,215,0,0.3);
 }
@@ -8840,7 +8841,7 @@
 .call-mini-window .cmw-avatar {
   width: 24px; height: 24px; border-radius: 50%; overflow: hidden;
   margin-left: 6px; flex-shrink: 0;
-  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  background: var(--primary);
   font-size: 11px; font-weight: 600; color: #fff;
   box-shadow: 0 0 10px rgba(155,142,196,0.4);
 }
