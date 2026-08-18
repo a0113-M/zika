@@ -8496,9 +8496,10 @@
 .call-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 11000; display: none; flex-direction: column;
-  background: linear-gradient(180deg, #2d1f4e 0%, #1a1030 40%, #0d0a1a 100%);
+  background: linear-gradient(180deg, #2d1f4e 0%, #1a1030 50%, #2d1f4e 100%);
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 .call-overlay.active { display: flex; }
 
@@ -8727,7 +8728,7 @@
 .call-controls {
   position: absolute; bottom: 40px; left: 0; right: 0;
   display: flex; justify-content: center;
-  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  padding-bottom: 0;
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
