@@ -7626,12 +7626,29 @@
   margin-bottom: 8px;
 }
 .todo-time-wheel {
-  height: 160px;
+  height: 200px;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
   -webkit-overflow-scrolling: touch;
   width: 56px;
   position: relative;
+  padding: 80px 0;
+  box-sizing: border-box;
+  scroll-padding: 80px 0;
+}
+.todo-time-wheel::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 40px;
+  margin-top: -20px;
+  background: rgba(155,142,196,0.06);
+  border-top: 1px solid rgba(155,142,196,0.15);
+  border-bottom: 1px solid rgba(155,142,196,0.15);
+  pointer-events: none;
+  z-index: 0;
 }
 .todo-time-wheel::-webkit-scrollbar { display: none; }
 .todo-time-slot {
@@ -17209,7 +17226,7 @@ patText2 = patText2.replace(/你/g, '我');
           }
           hourWheel.innerHTML = hHtml;
           var mHtml = '';
-          for (var m = 0; m < 60; m += 5) {
+          for (var m = 0; m < 60; m++) {
             var sel = m === _selectedMin ? ' selected' : '';
             mHtml += '<div class="todo-time-slot' + sel + '" data-m="' + m + '">' + (m < 10 ? '0'+m : m) + '</div>';
           }
