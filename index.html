@@ -24,6 +24,7 @@
   --text-muted: #999999;
   --border-light: #ede7f6;
   --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --custom-font: '';
   --bubble-radius: 18px;
   --bubble-radius-self: 18px;
 }
@@ -77,7 +78,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-family: inherit;
     }
     button {
       background: transparent;
@@ -88,7 +89,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body { font-family: var(--font-family);
+    html, body { font-family: var(--custom-font), var(--font-family);
       height: 100%;
       margin: 0;
       padding: 0;
@@ -8395,47 +8396,76 @@
   margin-bottom: 12px; padding-left: 2px;
 }
 .theme-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
 }
 .theme-grid-sm { grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .theme-card {
-  position: relative; background: var(--bg-card); border-radius: 12px;
-  padding: 10px; cursor: pointer; border: 2px solid transparent;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  position: relative; background: var(--bg-card); border-radius: 10px;
+  padding: 8px; cursor: pointer; border: 2px solid transparent;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
 }
-.theme-card.active { border-color: var(--primary); box-shadow: 0 2px 12px rgba(155,142,196,0.2); }
+.theme-card:active { transform: scale(0.96); }
+.theme-card.active { border-color: var(--primary); box-shadow: 0 2px 12px rgba(155,142,196,0.18); }
 .theme-card-preview {
-  width: 100%; height: 48px; border-radius: 8px; margin-bottom: 6px;
+  width: 100%; height: 32px; border-radius: 6px; margin-bottom: 5px;
 }
 .theme-card-name {
-  font-size: 12px; color: var(--text-main); text-align: center;
+  font-size: 11px; color: var(--text-main); text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .theme-card-check {
-  position: absolute; top: 6px; right: 6px; width: 20px; height: 20px;
+  position: absolute; top: 4px; right: 4px; width: 18px; height: 18px;
   background: var(--primary); border-radius: 50%; display: none;
   align-items: center; justify-content: center;
 }
 .theme-card.active .theme-card-check { display: flex; }
 .theme-pill {
-  padding: 10px 12px; border-radius: 10px; text-align: center;
+  padding: 9px 10px; border-radius: 10px; text-align: center;
   font-size: 13px; color: var(--text-main); background: var(--bg-card);
   cursor: pointer; border: 2px solid transparent; transition: all 0.2s;
 }
 .theme-pill.active { border-color: var(--primary); color: var(--primary); background: var(--bg-soft); }
 .theme-bubble-preview {
   margin-top: 12px; padding: 12px; background: var(--bg-soft); border-radius: 10px;
+  display: flex; flex-direction: column; gap: 6px;
 }
 .theme-bubble-other, .theme-bubble-self {
-  padding: 8px 14px; margin-bottom: 6px; max-width: 75%; font-size: 13px; line-height: 1.5;
+  padding: 8px 14px; max-width: 75%; font-size: 13px; line-height: 1.5;
 }
 .theme-bubble-other {
-  background: var(--bg-card); color: var(--text-main);
+  background: var(--bg-card); color: var(--text-main); align-self: flex-start;
   border-radius: 4px var(--bubble-radius) var(--bubble-radius) var(--bubble-radius);
-  align-self: flex-start;
 }
 .theme-bubble-self {
-  background: var(--primary); color: #fff; margin-left: auto;
+  background: var(--primary); color: #fff; align-self: flex-end;
   border-radius: var(--bubble-radius-self) 4px var(--bubble-radius-self) var(--bubble-radius-self);
+}
+/* Custom font URL input */
+.theme-custom-row {
+  margin-top: 10px; display: flex; gap: 8px; align-items: center;
+}
+.theme-custom-input {
+  flex: 1; padding: 8px 10px; border: 1.5px solid var(--border-light); border-radius: 8px;
+  font-size: 12px; color: var(--text-main); background: var(--bg-card); outline: none;
+  transition: border-color 0.2s;
+}
+.theme-custom-input:focus { border-color: var(--primary); }
+.theme-custom-btn {
+  padding: 8px 14px; border-radius: 8px; background: var(--primary); color: #fff;
+  font-size: 12px; border: none; cursor: pointer; white-space: nowrap;
+}
+/* Custom bubble CSS textarea */
+.theme-css-label {
+  font-size: 11px; color: var(--text-muted); margin-top: 10px; margin-bottom: 4px;
+}
+.theme-css-textarea {
+  width: 100%; height: 60px; padding: 8px 10px; border: 1.5px solid var(--border-light);
+  border-radius: 8px; font-size: 12px; color: var(--text-main); background: var(--bg-card);
+  font-family: 'SF Mono', Menlo, monospace; resize: vertical; outline: none;
+  box-sizing: border-box; transition: border-color 0.2s;
+}
+.theme-css-textarea:focus { border-color: var(--primary); }
+.theme-css-hint {
+  font-size: 10px; color: var(--text-muted); margin-top: 4px; line-height: 1.4;
 }
 
 
@@ -9776,27 +9806,27 @@
         <div class="theme-card" data-set-theme="purple">
           <div class="theme-card-preview" style="background:linear-gradient(135deg,#9b8ec4,#e88ec4)"></div>
           <div class="theme-card-name">柔雾紫</div>
-          <div class="theme-card-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="theme-card-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         </div>
         <div class="theme-card" data-set-theme="pink">
           <div class="theme-card-preview" style="background:linear-gradient(135deg,#e08ba8,#d46b9c)"></div>
           <div class="theme-card-name">樱花粉</div>
-          <div class="theme-card-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="theme-card-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         </div>
         <div class="theme-card" data-set-theme="blue">
           <div class="theme-card-preview" style="background:linear-gradient(135deg,#7ba8d4,#5a96c8)"></div>
           <div class="theme-card-name">天空蓝</div>
-          <div class="theme-card-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="theme-card-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         </div>
         <div class="theme-card" data-set-theme="mint">
           <div class="theme-card-preview" style="background:linear-gradient(135deg,#6dbf9c,#4aaa80)"></div>
           <div class="theme-card-name">薄荷绿</div>
-          <div class="theme-card-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="theme-card-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         </div>
         <div class="theme-card" data-set-theme="orange">
           <div class="theme-card-preview" style="background:linear-gradient(135deg,#d49a6a,#c47a42)"></div>
           <div class="theme-card-name">暖阳橘</div>
-          <div class="theme-card-check"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="theme-card-check"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
         </div>
       </div>
     </div>
@@ -9809,6 +9839,11 @@
         <div class="theme-pill" data-set-font="cute">可爱</div>
         <div class="theme-pill" data-set-font="elegant">优雅</div>
       </div>
+      <div class="theme-custom-row">
+        <input class="theme-custom-input" id="customFontUrl" placeholder="粘贴字体链接(URL)…" />
+        <button class="theme-custom-btn" id="customFontBtn">应用</button>
+      </div>
+      <div class="theme-css-hint" id="customFontHint" style="display:none"></div>
     </div>
     <div class="theme-section">
       <div class="theme-section-title">聊天气泡</div>
@@ -9821,6 +9856,9 @@
         <div class="theme-bubble-other">你好呀~</div>
         <div class="theme-bubble-self">你好！最近怎么样~</div>
       </div>
+      <div class="theme-css-label">自定义气泡 CSS</div>
+      <textarea class="theme-css-textarea" id="customBubbleCss" placeholder=".msg-bubble { background: #f0e0ff; }"></textarea>
+      <div class="theme-css-hint">输入气泡样式的 CSS 代码，如背景色、阴影等。实时生效。</div>
     </div>
   </div>
 </div>
@@ -18670,6 +18708,8 @@ patText2 = patText2.replace(/你/g, '我');
   var THEME_KEY = 'appTheme';
   var FONT_KEY = 'appFont';
   var BUBBLE_KEY = 'appBubble';
+  var CUSTOM_FONT_KEY = 'appCustomFontUrl';
+  var CUSTOM_CSS_KEY = 'appCustomBubbleCss';
 
   function getThemeSettings() {
     return {
@@ -18684,27 +18724,55 @@ patText2 = patText2.replace(/你/g, '我');
     document.documentElement.setAttribute('data-theme', s.theme);
     document.documentElement.setAttribute('data-font', s.font);
     document.documentElement.setAttribute('data-bubble', s.bubble);
-    // Update theme page active states
     updateThemePageUI();
   }
 
   function updateThemePageUI() {
     var s = getThemeSettings();
-    // Theme cards
     document.querySelectorAll('[data-set-theme]').forEach(function(card) {
       card.classList.toggle('active', card.dataset.setTheme === s.theme);
     });
-    // Font pills
     document.querySelectorAll('[data-set-font]').forEach(function(pill) {
       pill.classList.toggle('active', pill.dataset.setFont === s.font);
     });
-    // Bubble pills
     document.querySelectorAll('[data-set-bubble]').forEach(function(pill) {
       pill.classList.toggle('active', pill.dataset.setBubble === s.bubble);
     });
+    // Restore custom inputs
+    var fontInput = document.getElementById('customFontUrl');
+    if (fontInput) fontInput.value = localStorage.getItem(CUSTOM_FONT_KEY) || '';
+    var cssInput = document.getElementById('customBubbleCss');
+    if (cssInput) cssInput.value = localStorage.getItem(CUSTOM_CSS_KEY) || '';
   }
 
-  // Open theme page
+  function loadCustomFontUrl(url) {
+    if (!url) return;
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = url;
+    document.head.appendChild(link);
+    // Try to detect font family name from URL
+    var name = '';
+    try {
+      var u = new URL(url);
+      var qs = u.searchParams.get('family') || '';
+      name = qs.replace(/\+/g, ' ').split(':')[0].trim();
+    } catch(e) { name = 'CustomFont'; }
+    if (name) {
+      document.documentElement.style.setProperty('--font-family', "'" + name + "', " + getComputedStyle(document.documentElement).getPropertyValue('--font-family'));
+    }
+  }
+
+  function applyCustomBubbleCss(css) {
+    var existing = document.getElementById('customBubbleStyle');
+    if (!existing) {
+      existing = document.createElement('style');
+      existing.id = 'customBubbleStyle';
+      document.head.appendChild(existing);
+    }
+    existing.textContent = css || '';
+  }
+
   var themeView = document.getElementById('themeView');
   var themeBackBtn = document.getElementById('themeBackBtn');
 
@@ -18722,7 +18790,6 @@ patText2 = patText2.replace(/你/g, '我');
     themeBackBtn.addEventListener('click', closeThemeView);
   }
 
-  // Theme card clicks
   document.querySelectorAll('[data-set-theme]').forEach(function(card) {
     card.addEventListener('click', function() {
       localStorage.setItem(THEME_KEY, this.dataset.setTheme);
@@ -18730,7 +18797,6 @@ patText2 = patText2.replace(/你/g, '我');
     });
   });
 
-  // Font pill clicks
   document.querySelectorAll('[data-set-font]').forEach(function(pill) {
     pill.addEventListener('click', function() {
       localStorage.setItem(FONT_KEY, this.dataset.setFont);
@@ -18738,7 +18804,6 @@ patText2 = patText2.replace(/你/g, '我');
     });
   });
 
-  // Bubble pill clicks
   document.querySelectorAll('[data-set-bubble]').forEach(function(pill) {
     pill.addEventListener('click', function() {
       localStorage.setItem(BUBBLE_KEY, this.dataset.setBubble);
@@ -18746,10 +18811,43 @@ patText2 = patText2.replace(/你/g, '我');
     });
   });
 
-  // Apply theme on load
+  // Custom font URL
+  var customFontBtn = document.getElementById('customFontBtn');
+  if (customFontBtn) {
+    customFontBtn.addEventListener('click', function() {
+      var url = document.getElementById('customFontUrl').value.trim();
+      if (!url) {
+        localStorage.removeItem(CUSTOM_FONT_KEY);
+        document.documentElement.style.removeProperty('--custom-font');
+        var oldLink = document.getElementById('customFontLink');
+        if (oldLink) oldLink.remove();
+        return;
+      }
+      localStorage.setItem(CUSTOM_FONT_KEY, url);
+      loadCustomFontUrl(url);
+      var hint = document.getElementById('customFontHint');
+      if (hint) { hint.textContent = '字体已加载'; hint.style.display = 'block'; hint.style.color = 'var(--primary)'; setTimeout(function(){ hint.style.display = 'none'; }, 2000); }
+    });
+  }
+
+  // Custom bubble CSS (real-time)
+  var customCssInput = document.getElementById('customBubbleCss');
+  if (customCssInput) {
+    customCssInput.addEventListener('input', function() {
+      var css = this.value;
+      localStorage.setItem(CUSTOM_CSS_KEY, css);
+      applyCustomBubbleCss(css);
+    });
+  }
+
   applyTheme();
 
-  // Expose open function
+  // Apply saved custom font and CSS on load
+  var savedFontUrl = localStorage.getItem(CUSTOM_FONT_KEY);
+  if (savedFontUrl) loadCustomFontUrl(savedFontUrl);
+  var savedCss = localStorage.getItem(CUSTOM_CSS_KEY);
+  if (savedCss) applyCustomBubbleCss(savedCss);
+
   window.openThemeView = openThemeView;
   window.closeThemeView = closeThemeView;
   window.applyTheme = applyTheme;
