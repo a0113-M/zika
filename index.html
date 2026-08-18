@@ -19472,7 +19472,7 @@ patText2 = patText2.replace(/你/g, '我');
         callStartTime = null;
         callMsgQueue = [];
         var _ovReset = document.getElementById('callOverlay');
-        if (_ovReset) _ovReset.style.background = '';
+        if (_ovReset) { _ovReset.style.backgroundImage = ''; _ovReset.style.backgroundSize = ''; _ovReset.style.backgroundPosition = ''; _ovReset.style.backgroundRepeat = ''; }
         callChatMessages.innerHTML = '';
         updateControlUI();
         // Restore toolbar after call ends
@@ -19767,8 +19767,10 @@ patText2 = patText2.replace(/你/g, '我');
             if (!file) return;
             var reader = new FileReader();
             reader.onload = function(ev) {
-              var bgUrl = 'url(' + ev.target.result + ') center/cover no-repeat';
-              callOverlay.style.background = bgUrl;
+              callOverlay.style.backgroundImage = 'url(' + ev.target.result + ')';
+              callOverlay.style.backgroundSize = 'cover';
+              callOverlay.style.backgroundPosition = 'center';
+              callOverlay.style.backgroundRepeat = 'no-repeat';
             };
             reader.readAsDataURL(file);
             fileInput.value = '';
