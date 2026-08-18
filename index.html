@@ -8491,7 +8491,8 @@
 
 /* ===== 通话功能 ===== */
 .call-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 100dvh; min-height: 100vh;
   z-index: 11000; display: none; flex-direction: column;
   background: linear-gradient(180deg, #2d1f4e 0%, #1a1030 40%, #0d0a1a 100%);
   color: #fff; overflow: hidden;
@@ -8722,18 +8723,51 @@
   padding: 0 16px;
 }
 .call-chat-messages {
-  height: 160px; overflow-y: auto; display: flex; flex-direction: column;
-  justify-content: flex-end; padding: 8px 0 4px 0;
-  -webkit-overflow-scrolling: touch;
+  display: flex; flex-direction: column;
+  height: 52px;
+  padding: 4px 0;
+  overflow: hidden;
 }
-.call-chat-msg {
-  padding: 4px 12px; margin: 4px 0; font-size: 14px;
-  color: rgba(255,255,255,0.85); text-align: center;
-  animation: callMsgFadeIn 0.5s ease;
+/* 第1行：联系人消息（左） */
+.call-chat-row-incoming {
+  display: flex; align-items: center; justify-content: flex-start;
+  height: 24px; padding: 0 4px;
+  position: relative;
 }
-@keyframes callMsgFadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.call-chat-msg.fading-out { opacity: 0; transform: translateY(-10px); transition: all 0.5s ease; }
-.call-chat-msg .call-msg-sender { display: none; }
+/* 第2行：用户消息（右） */
+.call-chat-row-outgoing {
+  display: flex; align-items: center; justify-content: flex-end;
+  height: 24px; padding: 0 4px;
+  position: relative;
+}
+.call-chat-msg-line {
+  font-size: 14px; color: rgba(255,255,255,0.85);
+  max-width: 80%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: all 0.4s ease;
+}
+.call-chat-msg-line .call-msg-sender-name {
+  display: none;
+}
+/* 翻入动画 */
+.call-chat-msg-line.flip-in {
+  animation: callMsgFlipIn 0.4s ease forwards;
+}
+/* 翻出动画 */
+.call-chat-msg-line.flip-out {
+  animation: callMsgFlipOut 0.3s ease forwards;
+}
+@keyframes callMsgFlipIn {
+  0% { opacity: 0; transform: translateY(12px) rotateX(60deg); }
+  100% { opacity: 1; transform: translateY(0) rotateX(0deg); }
+}
+@keyframes callMsgFlipOut {
+  0% { opacity: 1; transform: translateY(0) rotateX(0deg); }
+  100% { opacity: 0; transform: translateY(-12px) rotateX(-60deg); }
+}
+/* 系统消息居中 */
+.call-chat-msg-line.system-msg {
+  align-self: center; color: rgba(255,255,255,0.4); font-size: 11px;
+}
 
 .call-chat-input-bar {
   display: flex; align-items: center; gap: 8px; padding: 0;
@@ -9273,7 +9307,10 @@
             <div class="call-video-avatar" id="callVideoAvatar">?</div>
           </div>
           <div class="call-chat-area" id="callChatArea">
-            <div class="call-chat-messages" id="callChatMessages"></div>
+            <div class="call-chat-messages" id="callChatMessages">
+              <div class="call-chat-row-incoming" id="callRowIncoming"></div>
+              <div class="call-chat-row-outgoing" id="callRowOutgoing"></div>
+            </div>
             <div class="call-chat-input-bar">
               <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
               <button class="call-chat-send-btn" id="callChatSend">发送</button>
@@ -19423,6 +19460,8 @@ patText2 = patText2.replace(/你/g, '我');
       var callParticles = document.getElementById('callParticles');
       var callChatArea = document.getElementById('callChatArea');
       var callChatMessages = document.getElementById('callChatMessages');
+      var callRowIncoming = document.getElementById('callRowIncoming');
+      var callRowOutgoing = document.getElementById('callRowOutgoing');
       var callChatInput = document.getElementById('callChatInput');
       var callChatSend = document.getElementById('callChatSend');
       var callBtnHangup = document.getElementById('callBtnHangup');
@@ -19524,6 +19563,10 @@ patText2 = patText2.replace(/你/g, '我');
         }
         callStartTime = null;
         callMsgQueue = [];
+        displayedIncomingTime = 0;
+        displayedOutgoingTime = 0;
+        if (callRowIncoming) callRowIncoming.innerHTML = '';
+        if (callRowOutgoing) callRowOutgoing.innerHTML = '';
         var _ovReset = document.getElementById('callOverlay');
         if (_ovReset) { _ovReset.style.backgroundImage = ''; _ovReset.style.backgroundSize = ''; _ovReset.style.backgroundPosition = ''; _ovReset.style.backgroundRepeat = ''; }
         callChatMessages.innerHTML = '';
@@ -19637,6 +19680,10 @@ patText2 = patText2.replace(/你/g, '我');
         }, 3000 + Math.random() * 2000);
       }
 
+      // 当前显示的消息时间戳
+      var displayedIncomingTime = 0;
+      var displayedOutgoingTime = 0;
+
       function addCallChatMessage(type, text) {
         var msg = { type: type, text: text, time: Date.now() };
         callMsgQueue.push(msg);
@@ -19645,7 +19692,6 @@ patText2 = patText2.replace(/你/g, '我');
         if (type === 'incoming' && currentChatId !== null && chatHistories[currentChatId]) {
           var now = new Date();
           var timeStr = padTime(now);
-          // Check if it's a card (textCard) or regular message
           var cardData = null;
           try { cardData = JSON.parse(text); } catch(e) {}
           if (cardData && cardData.type) {
@@ -19659,15 +19705,18 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         if (type === 'system') {
+          // 系统消息：在incoming行短暂居中显示后消失
           var sysEl = document.createElement('div');
-          sysEl.className = 'call-chat-msg';
-          sysEl.style.cssText = 'align-self:center;background:none;color:rgba(255,255,255,0.4);font-size:11px;text-align:center;';
+          sysEl.className = 'call-chat-msg-line system-msg flip-in';
           sysEl.textContent = text;
-          callChatMessages.appendChild(sysEl);
+          // 临时居中
+          sysEl.style.cssText = 'position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;';
+          callRowIncoming.appendChild(sysEl);
           setTimeout(function() {
-            sysEl.classList.add('fading-out');
-            setTimeout(function() { if (sysEl.parentNode) sysEl.parentNode.removeChild(sysEl); }, 500);
-          }, 3000);
+            sysEl.classList.remove('flip-in');
+            sysEl.classList.add('flip-out');
+            setTimeout(function() { if (sysEl.parentNode) sysEl.parentNode.removeChild(sysEl); }, 300);
+          }, 2500);
           return;
         }
 
@@ -19676,40 +19725,44 @@ patText2 = patText2.replace(/你/g, '我');
 
       function renderCallChatMessages() {
         var nonSys = callMsgQueue.filter(function(m) { return m.type !== 'system'; });
-        var displayMsgs = nonSys.slice(-3);
-
-        var existingEls = callChatMessages.querySelectorAll('.call-chat-msg');
-        // Remove extras beyond 3
-        var toRemove = existingEls.length - 3;
-        if (toRemove > 0) {
-          for (var i = 0; i < toRemove && i < existingEls.length; i++) {
-            var el = existingEls[i];
-            el.classList.add('fading-out');
-            (function(e) { setTimeout(function() { if (e.parentNode) e.parentNode.removeChild(e); }, 500); })(el);
-          }
+        // 取最新一条incoming和最新一条outgoing
+        var lastIncoming = null, lastOutgoing = null;
+        for (var i = nonSys.length - 1; i >= 0; i--) {
+          if (nonSys[i].type === 'incoming' && !lastIncoming) lastIncoming = nonSys[i];
+          if (nonSys[i].type === 'outgoing' && !lastOutgoing) lastOutgoing = nonSys[i];
+          if (lastIncoming && lastOutgoing) break;
         }
 
-        for (var j = 0; j < displayMsgs.length; j++) {
-          var dm = displayMsgs[j];
-          var exists = false;
-          for (var k = 0; k < existingEls.length; k++) {
-            if (existingEls[k].dataset.msgTime == dm.time) { exists = true; break; }
+        // 更新incoming行
+        if (lastIncoming && lastIncoming.time !== displayedIncomingTime) {
+          var oldInEl = callRowIncoming.querySelector('.call-chat-msg-line');
+          if (oldInEl) {
+            oldInEl.classList.remove('flip-in');
+            oldInEl.classList.add('flip-out');
+            (function(el) { setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300); })(oldInEl);
           }
-          if (!exists) {
-            var el = document.createElement('div');
-            el.className = 'call-chat-msg ' + (dm.type === 'outgoing' ? 'outgoing' : 'incoming');
-            el.dataset.msgTime = dm.time;
-            if (dm.type === 'incoming' && callContact) {
-              var senderDiv = document.createElement('div');
-              senderDiv.className = 'call-msg-sender';
-              senderDiv.textContent = callContact.name;
-              el.appendChild(senderDiv);
-            }
-            var textDiv = document.createElement('div');
-            textDiv.textContent = dm.text;
-            el.appendChild(textDiv);
-            callChatMessages.appendChild(el);
+          var newInEl = document.createElement('div');
+          newInEl.className = 'call-chat-msg-line flip-in';
+          newInEl.textContent = lastIncoming.text;
+          newInEl.dataset.msgTime = lastIncoming.time;
+          callRowIncoming.appendChild(newInEl);
+          displayedIncomingTime = lastIncoming.time;
+        }
+
+        // 更新outgoing行
+        if (lastOutgoing && lastOutgoing.time !== displayedOutgoingTime) {
+          var oldOutEl = callRowOutgoing.querySelector('.call-chat-msg-line');
+          if (oldOutEl) {
+            oldOutEl.classList.remove('flip-in');
+            oldOutEl.classList.add('flip-out');
+            (function(el) { setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300); })(oldOutEl);
           }
+          var newOutEl = document.createElement('div');
+          newOutEl.className = 'call-chat-msg-line flip-in';
+          newOutEl.textContent = lastOutgoing.text;
+          newOutEl.dataset.msgTime = lastOutgoing.time;
+          callRowOutgoing.appendChild(newOutEl);
+          displayedOutgoingTime = lastOutgoing.time;
         }
       }
 
