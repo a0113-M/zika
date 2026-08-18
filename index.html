@@ -8719,10 +8719,11 @@
 .call-hangup-btn svg { width: 20px; height: 20px; }
 
 .call-chat-area {
-  position: absolute; top: 36%; left: 0; right: 0;
+  position: absolute; top: 36%; left: 50%;
+  transform: translateX(-50%);
   display: flex; flex-direction: column;
-  max-width: 380px; margin: 0 auto;
-  padding: 0 16px;
+  width: calc(100% - 32px); max-width: 380px;
+  padding: 0;
 }
 .call-chat-messages {
   display: flex; flex-direction: column;
