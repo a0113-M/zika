@@ -68,7 +68,7 @@
   --border-light: #f0d8c0;
 }
 /* Font overrides */
-[data-font="rounded"] { --font-family: 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif; }
+[data-font="rounded"] { --font-family: 'Varela Round', 'Comic Sans MS', cursive, sans-serif; }
 [data-font="serif"] { --font-family: 'Noto Serif SC', 'Source Han Serif SC', Georgia, serif; }
 [data-font="cute"] { --font-family: 'ZCOOL KuaiLe', 'Ma Shan Zheng', cursive, sans-serif; }
 [data-font="elegant"] { --font-family: 'Noto Sans SC', 'PingFang SC', -apple-system, sans-serif; }
@@ -8404,6 +8404,8 @@
   display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
 }
 .theme-grid-sm { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.font-grid { grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.font-grid .theme-pill { padding: 6px 4px; font-size: 12px; border-radius: 8px; }
 .theme-card {
   position: relative; background: var(--bg-card); border-radius: 10px;
   padding: 8px; cursor: pointer; border: 2px solid transparent;
@@ -9840,7 +9842,7 @@
     </div>
     <div class="theme-section">
       <div class="theme-section-title">字体风格</div>
-      <div class="theme-grid theme-grid-sm" id="fontGrid">
+      <div class="theme-grid font-grid" id="fontGrid">
         <div class="theme-pill" data-set-font="default">默认</div>
         <div class="theme-pill" data-set-font="rounded">圆润</div>
         <div class="theme-pill" data-set-font="serif">文艺</div>
@@ -18811,7 +18813,7 @@ patText2 = patText2.replace(/你/g, '我');
 
   // Font preset → Google Fonts mapping
   var FONT_PRESETS = {
-    'rounded': 'https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap',
+    'rounded': 'https://fonts.googleapis.com/css2?family=Varela+Round&display=swap',
     'serif': 'https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&display=swap',
     'cute': 'https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Ma+Shan+Zheng&display=swap',
     'elegant': 'https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap'
