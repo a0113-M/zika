@@ -8632,17 +8632,33 @@
   opacity: 0;
   will-change: transform, opacity;
   animation: callRingAppear ease-out forwards;
+  /* 荧光基础光晕：内层白+外层金 */
+  box-shadow:
+    inset 0 0 6px rgba(255,255,255,0.5),
+    0 0 8px rgba(255,255,255,0.3),
+    0 0 18px rgba(255,215,0,0.25),
+    0 0 36px rgba(255,200,50,0.15);
 }
 .call-dynamic-ring.ring-solid { border-style: solid; }
 .call-dynamic-ring.ring-dashed { border-style: dashed; }
 .call-dynamic-ring.ring-dotted { border-style: dotted; }
 .call-dynamic-ring.ring-double {
   border-style: double;
-  box-shadow: inset 0 0 0 1px rgba(255,215,0,0.3);
+  box-shadow:
+    inset 0 0 8px rgba(255,255,255,0.6),
+    0 0 10px rgba(255,255,255,0.35),
+    0 0 22px rgba(255,215,0,0.3),
+    0 0 40px rgba(255,200,50,0.2);
 }
 .call-dynamic-ring.ring-glow {
   border-style: solid;
-  box-shadow: 0 0 15px rgba(255,215,0,0.2);
+  filter: blur(0.5px) brightness(1.3);
+  box-shadow:
+    inset 0 0 10px rgba(255,255,255,0.7),
+    0 0 14px rgba(255,255,255,0.5),
+    0 0 30px rgba(255,215,0,0.4),
+    0 0 50px rgba(255,200,50,0.25),
+    0 0 70px rgba(255,180,0,0.15);
 }
 @keyframes callRingAppear {
   0% { transform: scale(0.3); opacity: 0; }
@@ -19534,14 +19550,14 @@ patText2 = patText2.replace(/你/g, '我');
         var opacity = 0.3 + Math.random() * 0.5;
         var endScale = 2 + Math.random() * 4;
         var borderWidth = 0.5 + Math.random() * 2.5;
-        var styles = ['ring-solid','ring-solid','ring-dashed','ring-dotted','ring-double','ring-glow'];
+        var styles = ['ring-solid','ring-glow','ring-glow','ring-dashed','ring-double','ring-glow'];
         var styleClass = styles[Math.floor(Math.random() * styles.length)];
         var colors = [
-          'rgba(255,215,0,'+opacity+')',
-          'rgba(255,200,50,'+opacity+')',
-          'rgba(212,168,83,'+opacity+')',
-          'rgba(255,230,100,'+opacity+')',
-          'rgba(255,180,0,'+opacity+')'
+          'rgba(255,250,230,'+opacity+')',
+          'rgba(255,240,200,'+opacity+')',
+          'rgba(255,255,255,'+Math.min(opacity*0.9,0.9)+')',
+          'rgba(255,235,180,'+opacity+')',
+          'rgba(255,220,150,'+opacity+')'
         ];
         var color = colors[Math.floor(Math.random() * colors.length)];
         ring.className = 'call-dynamic-ring ' + styleClass;
