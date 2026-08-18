@@ -9756,40 +9756,81 @@
         <div class="feature-content settings-body">
           <div class="settings-section">
             <div class="settings-section-title">概率事件</div>
-            <div class="settings-item" id="contactProbSettingsBtn" style="cursor:pointer;">
-              <div class="settings-item-left">
-                <span class="settings-item-label">联系人概率设置</span>
-                <span class="settings-item-hint">为每个联系人单独设置发信、朋友圈、匿名来信概率</span>
+            <div class="settings-section-title" style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">选择联系人</div>
+            <div id="contactProbSelector" style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0 12px;"></div>
+            <div id="contactProbSlidersSection" style="display:none;">
+              <div class="settings-section-title" id="contactProbContactName" style="font-size:13px;">联系人概率</div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">发信概率</span>
+                  <span class="settings-item-hint">该联系人自动给你发信的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingLetterProb" min="0" max="100" step="1" value="5" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingLetterProbVal">5%</span>
+                </div>
               </div>
-              <div class="settings-item-arrow">›</div>
-            </div>
-              <div class="settings-item-left">
-                <span class="settings-item-label">联系人发信概率</span>
-                <span class="settings-item-hint">联系人自动给你发信的概率</span>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">朋友圈概率</span>
+                  <span class="settings-item-hint">该联系人自动发朋友圈的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingMomentProb" min="0" max="100" step="1" value="5" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingMomentProbVal">5%</span>
+                </div>
               </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingLetterProb" min="0" max="100" step="1" value="5" class="settings-range">
-                <span class="settings-prob-value" id="settingLetterProbVal">5%</span>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">匿名来信概率</span>
+                  <span class="settings-item-hint">该联系人匿名信箱收到新信的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactSettingAnonProb" min="0" max="100" step="1" value="3" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingAnonProbVal">3%</span>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-left">
-                <span class="settings-item-label">联系人发朋友圈概率</span>
-                <span class="settings-item-hint">联系人自动发朋友圈的概率</span>
+              <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
+              <div class="settings-section-title" style="font-size:13px;margin-top:12px;">字卡类目使用概率</div>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">文字字卡概率</span>
+                  <span class="settings-item-hint">该联系人发送文字字卡的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactTextCardProb" min="0" max="100" step="1" value="40" class="settings-range">
+                  <span class="settings-prob-value" id="contactTextCardProbVal">40%</span>
+                </div>
               </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingMomentProb" min="0" max="100" step="1" value="5" class="settings-range">
-                <span class="settings-prob-value" id="settingMomentProbVal">5%</span>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">表情字卡概率</span>
+                  <span class="settings-item-hint">该联系人发送表情字卡的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactEmojiCardProb" min="0" max="100" step="1" value="30" class="settings-range">
+                  <span class="settings-prob-value" id="contactEmojiCardProbVal">30%</span>
+                </div>
               </div>
-            </div>
-            <div class="settings-item">
-              <div class="settings-item-left">
-                <span class="settings-item-label">匿名来信概率</span>
-                <span class="settings-item-hint">匿名信箱收到新信的概率</span>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">图片字卡概率</span>
+                  <span class="settings-item-hint">该联系人发送图片字卡的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactImageCardProb" min="0" max="100" step="1" value="20" class="settings-range">
+                  <span class="settings-prob-value" id="contactImageCardProbVal">20%</span>
+                </div>
               </div>
-              <div class="settings-prob-control">
-                <input type="range" id="settingAnonProb" min="0" max="100" step="1" value="3" class="settings-range">
-                <span class="settings-prob-value" id="settingAnonProbVal">3%</span>
+              <div class="settings-item">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">语音字卡概率</span>
+                  <span class="settings-item-hint">该联系人发送语音字卡的概率</span>
+                </div>
+                <div class="settings-prob-control">
+                  <input type="range" id="contactVoiceCardProb" min="0" max="100" step="1" value="10" class="settings-range">
+                  <span class="settings-prob-value" id="contactVoiceCardProbVal">10%</span>
+                </div>
               </div>
             </div>
             <div class="settings-item">
@@ -9824,97 +9865,6 @@
     </div>
   </div>
 
-  <!-- 联系人概率设置子页面 -->
-  <div class="feature-page" id="contactProbSettingsPage" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:var(--bg-main);z-index:9500;overflow-y:auto;">
-    <div class="card-feature-header">
-      <button class="card-feature-back" id="contactProbBackBtn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <span class="card-feature-title">联系人概率设置</span>
-    </div>
-    <div class="card-feature-content" style="padding:16px;">
-      <div class="settings-section">
-        <div class="settings-section-title">选择联系人</div>
-        <div id="contactProbSelector" style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0;"></div>
-      </div>
-      <div class="settings-section" id="contactProbSlidersSection" style="display:none;">
-        <div class="settings-section-title" id="contactProbContactName">联系人概率</div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">发信概率</span>
-            <span class="settings-item-hint">该联系人自动给你发信的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactSettingLetterProb" min="0" max="100" step="1" value="5" class="settings-range">
-            <span class="settings-prob-value" id="contactSettingLetterProbVal">5%</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">朋友圈概率</span>
-            <span class="settings-item-hint">该联系人自动发朋友圈的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactSettingMomentProb" min="0" max="100" step="1" value="5" class="settings-range">
-            <span class="settings-prob-value" id="contactSettingMomentProbVal">5%</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">匿名来信概率</span>
-            <span class="settings-item-hint">该联系人匿名信箱收到新信的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactSettingAnonProb" min="0" max="100" step="1" value="3" class="settings-range">
-            <span class="settings-prob-value" id="contactSettingAnonProbVal">3%</span>
-          </div>
-        </div>
-      </div>
-              <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
-        <div class="settings-section-title" style="margin-top:12px;">字卡类目使用概率</div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">文字字卡概率</span>
-            <span class="settings-item-hint">该联系人发送文字字卡的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactTextCardProb" min="0" max="100" step="1" value="40" class="settings-range">
-            <span class="settings-prob-value" id="contactTextCardProbVal">40%</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">表情字卡概率</span>
-            <span class="settings-item-hint">该联系人发送表情字卡的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactEmojiCardProb" min="0" max="100" step="1" value="30" class="settings-range">
-            <span class="settings-prob-value" id="contactEmojiCardProbVal">30%</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">图片字卡概率</span>
-            <span class="settings-item-hint">该联系人发送图片字卡的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactImageCardProb" min="0" max="100" step="1" value="20" class="settings-range">
-            <span class="settings-prob-value" id="contactImageCardProbVal">20%</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <div class="settings-item-left">
-            <span class="settings-item-label">语音字卡概率</span>
-            <span class="settings-item-hint">该联系人发送语音字卡的概率</span>
-          </div>
-          <div class="settings-prob-control">
-            <input type="range" id="contactVoiceCardProb" min="0" max="100" step="1" value="10" class="settings-range">
-            <span class="settings-prob-value" id="contactVoiceCardProbVal">10%</span>
-          </div>
-        </div>
-<div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
-    </div>
-  </div>
 
 
   
@@ -12302,22 +12252,6 @@
           });
         }
       });
-
-      // 联系人概率设置入口按钮
-      if (document.getElementById('contactProbSettingsBtn')) {
-        document.getElementById('contactProbSettingsBtn').addEventListener('click', function() {
-          document.getElementById('contactProbSettingsPage').style.display = 'block';
-          renderContactProbSelector();
-        });
-      }
-
-      // 联系人概率设置返回按钮
-      if (document.getElementById('contactProbBackBtn')) {
-        document.getElementById('contactProbBackBtn').addEventListener('click', function() {
-          document.getElementById('contactProbSettingsPage').style.display = 'none';
-          currentContactProbId = null;
-        });
-      }
 
       // 设置返回按钮
       if (document.getElementById('settingsBackBtn')) {
