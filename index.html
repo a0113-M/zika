@@ -19489,7 +19489,7 @@ patText2 = patText2.replace(/你/g, '我');
           var min = Math.floor(elapsed / 60);
           var sec = elapsed % 60;
           var str = (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
-      callActTimer.textContent = str;
+      if (callActTimer) callActTimer.textContent = str;
       if (callVoiceTimer) callVoiceTimer.textContent = str;
           cmwTimer.textContent = str;
         }, 1000);
