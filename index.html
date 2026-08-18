@@ -8589,11 +8589,13 @@
 .call-top-bar .call-minimize-btn:active { background: rgba(255,255,255,0.2); }
 
 .call-main-area {
+  display: flex; flex-direction: column;
   position: absolute; top: 0; left: 0; right: 0; bottom: 80px;
 }
 
 .call-voice-visual {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; flex: 1;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; height: 100%;
   transition: background 0.4s ease; position: relative; overflow: visible;
 }
 .call-ripple-wrap {
@@ -8602,10 +8604,10 @@
   pointer-events: none;
 }
 .call-voice-avatar {
-  width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
+  width: 100px; height: 100px; min-width: 100px; border-radius: 50%; overflow: hidden;
   background: var(--primary); display: flex; align-items: center; justify-content: center;
   font-size: 32px; font-weight: 600; color: #fff; position: relative; z-index: 2;
-  box-shadow: 0 0 30px rgba(212,168,83,0.3); flex-shrink: 0;
+  box-shadow: 0 0 30px rgba(212,168,83,0.3); flex-shrink: 0; align-self: center;
 }
 .call-voice-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .call-ripple-ring {
