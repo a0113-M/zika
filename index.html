@@ -19769,8 +19769,6 @@ patText2 = patText2.replace(/你/g, '我');
             reader.onload = function(ev) {
               var bgUrl = 'url(' + ev.target.result + ') center/cover no-repeat';
               callOverlay.style.background = bgUrl;
-              var vv = document.getElementById('callVoiceVisual');
-              if (vv) vv.style.background = bgUrl;
             };
             reader.readAsDataURL(file);
             fileInput.value = '';
