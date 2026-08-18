@@ -6533,6 +6533,26 @@
   color: #c0b8cc;
   line-height: 1;
 }
+.todo-edit-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #9b8ec4;
+  cursor: pointer;
+  border-radius: 8px;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: all 0.15s;
+  margin-right: 2px;
+}
+.todo-item:active .todo-edit-btn,
+.todo-item:hover .todo-edit-btn { opacity: 1; }
+.todo-edit-btn svg { width: 16px; height: 16px; }
+.todo-edit-btn:active { background: #f5f0ff; }
 .todo-del-btn {
   flex-shrink: 0;
   width: 28px;
@@ -7278,11 +7298,9 @@
   height: 12px;
   border-radius: 50%;
   flex-shrink: 0;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.15s;
+  transition: background 0.2s;
   margin-left: 4px;
 }
-.todo-prio-dot:active { transform: scale(1.3); }
 .todo-prio-dot[data-p="0"] { background: #d8d0e8; }
 .todo-prio-dot[data-p="1"] { background: #5cb85c; }
 .todo-prio-dot[data-p="2"] { background: #f0a030; }
@@ -7290,6 +7308,60 @@
 .todo-prio-dot[data-p="4"] { background: #7b5ea7; box-shadow: 0 0 6px rgba(123,94,167,0.5); }
 
 /* Priority popup */
+.todo-reminder-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, #9b8ec4, #7b5ea7);
+  color: #fff;
+  border-radius: 12px;
+  padding: 14px 20px;
+  max-width: 85%;
+  z-index: 10001;
+  box-shadow: 0 4px 24px rgba(123,94,167,0.3);
+  font-size: 14px;
+  line-height: 1.5;
+  animation: toastSlideDown 0.3s ease;
+}
+@keyframes toastSlideDown {
+  from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.todo-reminder-toast-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.todo-reminder-toast-title {
+  font-size: 12px;
+  opacity: 0.85;
+}
+.todo-reminder-toast-close {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  line-height: 1;
+}
+.todo-reminder-toast-text {
+  font-size: 15px;
+  font-weight: 600;
+}
+.todo-reminder-toast-time {
+  font-size: 11px;
+  opacity: 0.7;
+  margin-top: 4px;
+}
 .todo-prio-overlay {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -16871,7 +16943,7 @@ patText2 = patText2.replace(/你/g, '我');
             html += '<div class="todo-checkbox' + (t.done ? ' checked' : '') + '" data-toggle-todo="' + t.id + '"></div>';
             // Content
             html += '<div class="todo-content">';
-            html += '<div class="todo-text" data-edit-todo="' + t.id + '">' + escapeTodoHtml(t.text) + '</div>';
+            html += '<div class="todo-text">' + escapeTodoHtml(t.text) + '</div>';
             // Contact tag
             var cId = t.reminderContactId || 0;
             var cName = '';
@@ -16892,8 +16964,9 @@ patText2 = patText2.replace(/你/g, '我');
             html += '<div class="todo-date">' + formatDate(t.createdAt) + '</div>';
             html += '</div>';
             // Priority dot (right side, clickable to open popup)
-            html += '<div class="todo-prio-dot" data-p="' + prio + '" data-prio-open="' + t.id + '" title="' + PRIORITY_NAMES[prio] + '"></div>';
+            html += '<div class="todo-prio-dot" data-p="' + prio + '" title="' + PRIORITY_NAMES[prio] + '"></div>';
             // Delete
+            html += '<button class="todo-edit-btn" data-edit-todo-btn="' + t.id + '" title="编辑"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>';
             html += '<button class="todo-del-btn" data-del-todo="' + t.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>';
             html += '</div>';
           });
@@ -16909,11 +16982,11 @@ patText2 = patText2.replace(/你/g, '我');
           var list = document.getElementById('todoList');
           if (!list) return;
 
-          // Priority dot click -> open popup
-          list.querySelectorAll('[data-prio-open]').forEach(function(dot) {
-            dot.addEventListener('click', function(e) {
+          // Edit button click -> open priority/contact/time popup
+          list.querySelectorAll('[data-edit-todo-btn]').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
               e.stopPropagation();
-              var id = this.dataset.prioOpen;
+              var id = this.dataset.editTodoBtn;
               openPrioPopup(id);
             });
           });
@@ -16937,39 +17010,6 @@ patText2 = patText2.replace(/你/g, '我');
               var todos = getTodos().filter(function(x) { return x.id !== id; });
               saveTodos(todos);
               renderTodoList();
-            });
-          });
-
-          // Edit (tap text)
-          list.querySelectorAll('[data-edit-todo]').forEach(function(span) {
-            span.addEventListener('click', function(e) {
-              e.stopPropagation();
-              var id = this.dataset.editTodo;
-              if (this.querySelector('.todo-edit-input')) return;
-              var oldText = this.textContent;
-              var input = document.createElement('input');
-              input.className = 'todo-edit-input';
-              input.value = oldText;
-              this.textContent = '';
-              this.appendChild(input);
-              input.focus();
-              input.select();
-              function doSave() {
-                var newText = input.value.trim();
-                if (!newText || newText === oldText) {
-                  this.textContent = oldText;
-                  return;
-                }
-                var todos = getTodos();
-                var t = todos.find(function(x) { return x.id === id; });
-                if (t) { t.text = newText; saveTodos(todos); }
-                renderTodoList();
-              }
-              input.addEventListener('blur', doSave);
-              input.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
-                if (e.key === 'Escape') { input.value = oldText; input.blur(); }
-              });
             });
           });
         }
@@ -17328,28 +17368,55 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         // ----- 提醒检查 -----
-        var _todoReminded = {}; // key: todoId + '_5min' / '_ontime'
+        var _todoReminded = {}; // key: todoId + '_5min' / '_ontime' / '_5min_chat' / '_ontime_chat'
         function checkTodoReminders() {
           var todos = getTodos();
           var now = Date.now();
           todos.forEach(function(t) {
-            if (t.done || !t.reminderTime || !t.reminderContactId) return;
+            if (t.done || !t.reminderTime) return;
             var rt = t.reminderTime;
             var key5 = t.id + '_5min';
             var key0 = t.id + '_ontime';
-            // 5 min early
+            // 5 min early - toast for all
             if (now >= rt - 5*60*1000 && now < rt && !_todoReminded[key5]) {
               _todoReminded[key5] = true;
-              injectTodoReminder(t, true);
+              showReminderToast(t, true);
             }
-            // On time
+            // On time - toast for all
             if (now >= rt && now < rt + 60*1000 && !_todoReminded[key0]) {
               _todoReminded[key0] = true;
-              injectTodoReminder(t, false);
+              showReminderToast(t, false);
+            }
+            // Also inject into chat if contact is set
+            if (t.reminderContactId) {
+              var key5c = t.id + '_5min_chat';
+              var key0c = t.id + '_ontime_chat';
+              if (now >= rt - 5*60*1000 && now < rt && !_todoReminded[key5c]) {
+                _todoReminded[key5c] = true;
+                injectTodoReminderChat(t, true);
+              }
+              if (now >= rt && now < rt + 60*1000 && !_todoReminded[key0c]) {
+                _todoReminded[key0c] = true;
+                injectTodoReminderChat(t, false);
+              }
             }
           });
         }
-        function injectTodoReminder(todo, isEarly) {
+        function showReminderToast(todo, isEarly) {
+          // Remove existing toast
+          var existing = document.querySelector('.todo-reminder-toast');
+          if (existing) existing.remove();
+          var toast = document.createElement('div');
+          toast.className = 'todo-reminder-toast';
+          var rt = new Date(todo.reminderTime);
+          var timeStr = (rt.getMonth()+1) + '/' + rt.getDate() + ' ' + (rt.getHours()<10?'0':'') + rt.getHours() + ':' + (rt.getMinutes()<10?'0':'') + rt.getMinutes();
+          var label = isEarly ? '\u23f0 5\u5206\u949f\u540e\u63d0\u9192' : '\u23f0 \u5230\u65f6\u63d0\u9192';
+          toast.innerHTML = '<div class="todo-reminder-toast-header"><span class="todo-reminder-toast-title">' + label + '</span><button class="todo-reminder-toast-close" id="toastCloseBtn">&times;</button></div><div class="todo-reminder-toast-text">' + escapeTodoHtml(todo.text) + '</div><div class="todo-reminder-toast-time">' + timeStr + '</div>';
+          document.body.appendChild(toast);
+          toast.querySelector('#toastCloseBtn').addEventListener('click', function() { toast.remove(); });
+          setTimeout(function() { if (toast.parentNode) toast.remove(); }, 10000);
+        }
+        function injectTodoReminderChat(todo, isEarly) {
           var cid = todo.reminderContactId;
           if (!cid || typeof window.getContactById !== 'function') return;
           var contact = window.getContactById(cid);
@@ -17360,7 +17427,6 @@ patText2 = patText2.replace(/你/g, '我');
           var now = new Date();
           var timeStr = (now.getHours()<10?'0':'') + now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes();
           chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isReminder: true });
-          // If currently viewing this chat, re-render
           if (typeof currentChatId !== 'undefined' && currentChatId === cid && typeof renderMessages === 'function') {
             renderMessages(cid);
           }
@@ -17368,7 +17434,6 @@ patText2 = patText2.replace(/你/g, '我');
         // Start reminder checker
         setInterval(checkTodoReminders, 30000);
         checkTodoReminders();
-
         // ----- 数据迁移：旧版 reminderContact(string) -> reminderContactId(number) -----
         (function() {
           var todos = getTodos();
