@@ -8679,29 +8679,46 @@
 
 .call-video-visual {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  display: flex; align-items: center; justify-content: center;
+  display: none;
+}
+/* 视频大窗口 - 联系人 */
+.call-video-big {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: linear-gradient(135deg, #2d1f4e 0%, #1a1030 50%, #3d2060 100%);
+  background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
 }
-.call-video-avatar {
-  width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
+.call-video-big .video-label {
+  position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.5); font-size: 12px;
+}
+.call-video-big .video-avatar-large {
+  width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
   background: var(--primary); display: flex; align-items: center; justify-content: center;
-  font-size: 42px; font-weight: 600; color: #fff;
-  box-shadow: 0 0 20px rgba(255,215,0,0.3), 0 0 40px rgba(255,215,0,0.12);
-  animation: callVideoFloat 4s ease-in-out infinite;
+  font-size: 36px; font-weight: 600; color: #fff;
+  box-shadow: 0 0 20px rgba(255,215,0,0.3);
 }
-.call-video-avatar img { width: 100%; height: 100%; object-fit: cover; }
-@keyframes callVideoFloat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-.call-video-particles {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none;
+/* 视频小窗口 - 自己 */
+.call-video-small {
+  position: fixed; top: 80px; right: 16px;
+  width: 100px; height: 134px;
+  border-radius: 12px; overflow: hidden;
+  background: #3d2060; background-size: cover; background-position: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(155,142,196,0.15);
+  z-index: 11100; cursor: pointer;
+  transition: transform 0.3s ease;
+  display: flex; align-items: center; justify-content: center;
 }
-.call-video-particle {
-  position: absolute; width: 4px; height: 4px; border-radius: 50%;
-  background: rgba(155,142,196,0.3); animation: callParticle 6s linear infinite;
+.call-video-small:active { transform: scale(0.95); }
+.call-video-small .video-avatar-small {
+  width: 50px; height: 50px; border-radius: 50%; overflow: hidden;
+  background: rgba(155,142,196,0.6); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 600; color: #fff;
 }
-@keyframes callParticle {
-  0% { transform: translateY(100vh) scale(0); opacity: 0; }
-  10% { opacity: 1; } 90% { opacity: 1; }
-  100% { transform: translateY(-100px) scale(1); opacity: 0; }
+.call-video-small .swap-icon {
+  position: absolute; bottom: 4px; right: 4px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
 }
 
 .call-controls {
@@ -8771,7 +8788,18 @@
 }
 /* 系统消息居中 */
 .call-chat-msg-line.system-msg {
-  align-self: center; color: rgba(255,255,255,0.4); font-size: 11px;
+  align-self: center; color: rgba(255,255,255,0.4); font-size: 12px;
+}
+.call-sys-msg {
+  position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.4); font-size: 12px; white-space: nowrap;
+  animation: sysMsgFade 3s ease forwards;
+}
+@keyframes sysMsgFade {
+  0% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 .call-chat-input-bar {
@@ -8834,13 +8862,13 @@
   flex-shrink: 0; font-variant-numeric: tabular-nums;
 }
 .call-mini-window .cmw-close {
-  position: absolute; top: -5px; right: -5px; width: 18px; height: 18px; border-radius: 50%;
-  background: rgba(255,59,48,0.9); border: 2px solid rgba(30,20,50,0.9);
-  color: #fff; cursor: pointer; font-size: 9px;
-  display: flex; align-items: center; justify-content: center; line-height: 1;
-  opacity: 0; transition: opacity 0.2s; z-index: 2;
+  position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%;
+  background: #ff3b30; border: 2px solid rgba(30,20,50,0.9);
+  color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 1; z-index: 2; padding: 0;
+  box-shadow: 0 2px 6px rgba(255,59,48,0.4);
 }
-.call-mini-window:active .cmw-close { opacity: 1; }
 
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -9317,10 +9345,20 @@
             <div class="call-voice-timer" id="callVoiceTimer">00:00</div>
           </div>
           <div class="call-video-visual" id="callVideoVisual" style="display:none;">
-            <div class="call-video-particles" id="callParticles"></div>
-            <div class="call-video-avatar" id="callVideoAvatar">?</div>
+            <div class="call-video-big" id="callVideoBig">
+              <div class="video-avatar-large" id="callVideoAvatarBig">?</div>
+            </div>
+            <div class="call-video-small" id="callVideoSmall">
+              <div class="video-avatar-small" id="callVideoAvatarSmall">我</div>
+              <div class="swap-icon">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+              </div>
+            </div>
+            <input type="file" id="callVideoBgBig" accept="image/*" style="display:none">
+            <input type="file" id="callVideoBgSmall" accept="image/*" style="display:none">
           </div>
           <div class="call-chat-area" id="callChatArea">
+            <div class="call-sys-msg" id="callSysMsg" style="display:none;"></div>
             <div class="call-chat-messages" id="callChatMessages">
               <div class="call-chat-row-incoming" id="callRowIncoming"></div>
               <div class="call-chat-row-outgoing" id="callRowOutgoing"></div>
@@ -9350,7 +9388,9 @@
         <div class="cmw-wave-bar"></div>
       </div>
       <div class="cmw-timer" id="cmwTimer">00:00</div>
-      <button class="cmw-close" id="cmwClose">&#10005;</button>
+      <button class="cmw-close" id="cmwHangup" title="挂断">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+      </button>
     </div>
 
     <!-- 信件模块 -->
@@ -19470,8 +19510,12 @@ patText2 = patText2.replace(/你/g, '我');
       var callVoiceVisual = document.getElementById('callVoiceVisual');
       var callVideoVisual = document.getElementById('callVideoVisual');
       var callVoiceAvatar = document.getElementById('callVoiceAvatar');
-      var callVideoAvatar = document.getElementById('callVideoAvatar');
-      var callParticles = document.getElementById('callParticles');
+      var callVideoAvatarBig = document.getElementById('callVideoAvatarBig');
+      var callVideoAvatarSmall = document.getElementById('callVideoAvatarSmall');
+      var callVideoBig = document.getElementById('callVideoBig');
+      var callVideoSmall = document.getElementById('callVideoSmall');
+      var callVideoBgBig = document.getElementById('callVideoBgBig');
+      var callVideoBgSmall = document.getElementById('callVideoBgSmall');
       var callChatArea = document.getElementById('callChatArea');
       var callChatMessages = document.getElementById('callChatMessages');
       var callRowIncoming = document.getElementById('callRowIncoming');
@@ -19481,7 +19525,7 @@ patText2 = patText2.replace(/你/g, '我');
       var callBtnHangup = document.getElementById('callBtnHangup');
       var cmwAvatar = document.getElementById('cmwAvatar');
       var cmwTimer = document.getElementById('cmwTimer');
-      var cmwClose = document.getElementById('cmwClose');
+      var cmwHangup = document.getElementById('cmwHangup');
 
       var callState = 'idle';
       var callType = 'voice';
@@ -19534,8 +19578,10 @@ patText2 = patText2.replace(/你/g, '我');
       if (callActName) callActName.textContent = callContact.name;
         callVoiceAvatar.textContent = initial;
         callVoiceAvatar.style.background = avatarBg;
-        callVideoAvatar.textContent = initial;
-        callVideoAvatar.style.background = avatarBg;
+        callVideoAvatarBig.textContent = initial;
+        callVideoAvatarBig.style.background = avatarBg;
+        callVideoAvatarSmall.textContent = '我';
+        callVideoAvatarSmall.style.background = 'rgba(155,142,196,0.6)';
         updateCallVisual();
         startCallTimer();
         startRippleAnimation();
@@ -19585,6 +19631,10 @@ patText2 = patText2.replace(/你/g, '我');
         if (_ovReset) { _ovReset.style.backgroundImage = ''; _ovReset.style.backgroundSize = ''; _ovReset.style.backgroundPosition = ''; _ovReset.style.backgroundRepeat = ''; }
         var _mwReset = document.getElementById('callMiniWindow');
         if (_mwReset) { _mwReset.style.backgroundImage = ''; _mwReset.style.backgroundSize = ''; _mwReset.style.backgroundPosition = ''; _mwReset.style.backgroundRepeat = ''; }
+        if (callVideoBig) { callVideoBig.style.backgroundImage = ''; callVideoBig.style.backgroundSize = ''; callVideoBig.style.backgroundPosition = ''; }
+        if (callVideoSmall) { callVideoSmall.style.backgroundImage = ''; callVideoSmall.style.backgroundSize = ''; callVideoSmall.style.backgroundPosition = ''; }
+        if (callVideoBgBig) callVideoBgBig.value = '';
+        if (callVideoBgSmall) callVideoBgSmall.value = '';
         callChatMessages.innerHTML = '';
         updateControlUI();
         // Restore toolbar after call ends
@@ -19655,29 +19705,83 @@ patText2 = patText2.replace(/你/g, '我');
       function updateCallVisual() {
         if (callType === 'video') {
           callVoiceVisual.style.display = 'none';
-          callVideoVisual.style.display = 'flex';
-          createParticles();
+          callVideoVisual.style.display = 'block';
+          callVideoBig.style.display = 'flex';
+          callVideoSmall.style.display = 'flex';
         } else {
           callVoiceVisual.style.display = 'flex';
           callVideoVisual.style.display = 'none';
-          callParticles.innerHTML = '';
         }
       }
 
-      function createParticles() {
-        callParticles.innerHTML = '';
-        for (var i = 0; i < 15; i++) {
-          var p = document.createElement('div');
-          p.className = 'call-video-particle';
-          p.style.left = (Math.random() * 100) + '%';
-          p.style.animationDelay = (Math.random() * 6) + 's';
-          p.style.animationDuration = (4 + Math.random() * 4) + 's';
-          var sz = (2 + Math.random() * 4) + 'px';
-          p.style.width = sz;
-          p.style.height = sz;
-          callParticles.appendChild(p);
-        }
+      // 视频窗口大小切换
+      function swapVideoWindows() {
+        var bigBg = callVideoBig.style.backgroundImage || '';
+        var bigBgSize = callVideoBig.style.backgroundSize || '';
+        var bigBgPos = callVideoBig.style.backgroundPosition || '';
+        var smallBg = callVideoSmall.style.backgroundImage || '';
+        var smallBgSize = callVideoSmall.style.backgroundSize || '';
+        var smallBgPos = callVideoSmall.style.backgroundPosition || '';
+        var bigAvatar = callVideoAvatarBig.textContent;
+        var bigAvatarBg = callVideoAvatarBig.style.background;
+        var smallAvatar = callVideoAvatarSmall.textContent;
+        var smallAvatarBg = callVideoAvatarSmall.style.background;
+        // 交换背景
+        callVideoBig.style.backgroundImage = smallBg;
+        callVideoBig.style.backgroundSize = smallBgSize;
+        callVideoBig.style.backgroundPosition = smallBgPos;
+        callVideoSmall.style.backgroundImage = bigBg;
+        callVideoSmall.style.backgroundSize = bigBgSize;
+        callVideoSmall.style.backgroundPosition = bigBgPos;
+        // 交换头像
+        callVideoAvatarBig.textContent = smallAvatar;
+        callVideoAvatarBig.style.background = smallAvatarBg;
+        callVideoAvatarSmall.textContent = bigAvatar;
+        callVideoAvatarSmall.style.background = bigAvatarBg;
+        // 动画反馈
+        callVideoSmall.style.transform = 'scale(1.1)';
+        setTimeout(function() { callVideoSmall.style.transform = ''; }, 300);
       }
+      callVideoSmall.addEventListener('click', swapVideoWindows);
+
+      // 视频背景图片选择
+      (function() {
+        var bgBigBtn = document.getElementById('callBgBtn');
+        var bgBigInput = document.getElementById('callVideoBgBig');
+        var bgSmallInput = document.getElementById('callVideoBgSmall');
+        if (bgBigBtn && bgBigInput) {
+          bgBigBtn.addEventListener('click', function() { bgBigInput.click(); });
+          bgBigInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+              var bgUrl = 'url(' + ev.target.result + ')';
+              callVideoBig.style.backgroundImage = bgUrl;
+              callVideoBig.style.backgroundSize = 'cover';
+              callVideoBig.style.backgroundPosition = 'center';
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+        if (bgSmallInput) {
+          callVideoSmall.addEventListener('dblclick', function() { bgSmallInput.click(); });
+          bgSmallInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+              var bgUrl = 'url(' + ev.target.result + ')';
+              callVideoSmall.style.backgroundImage = bgUrl;
+              callVideoSmall.style.backgroundSize = 'cover';
+              callVideoSmall.style.backgroundPosition = 'center';
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+      })();
+
+      function createParticles() { /* no-op */ }
 
       function scheduleAutoMessage() {
         if (callAutoMsgTimeout) clearTimeout(callAutoMsgTimeout);
@@ -19721,18 +19825,15 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         if (type === 'system') {
-          // 系统消息：在incoming行短暂居中显示后消失
-          var sysEl = document.createElement('div');
-          sysEl.className = 'call-chat-msg-line system-msg flip-in';
-          sysEl.textContent = text;
-          // 临时居中
-          sysEl.style.cssText = 'position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;';
-          callRowIncoming.appendChild(sysEl);
-          setTimeout(function() {
-            sysEl.classList.remove('flip-in');
-            sysEl.classList.add('flip-out');
-            setTimeout(function() { if (sysEl.parentNode) sysEl.parentNode.removeChild(sysEl); }, 300);
-          }, 2500);
+          var sysEl = document.getElementById('callSysMsg');
+          if (sysEl) {
+            sysEl.textContent = text;
+            sysEl.style.display = 'block';
+            sysEl.style.animation = 'none';
+            void sysEl.offsetWidth;
+            sysEl.style.animation = '';
+            setTimeout(function() { if (sysEl) sysEl.style.display = 'none'; }, 3000);
+          }
           return;
         }
 
@@ -19890,7 +19991,7 @@ patText2 = patText2.replace(/你/g, '我');
       // 小窗拖拽 + 点击放大回全屏 + 背景切换
       (function() {
         var win = document.getElementById('callMiniWindow');
-        var closeBtn = document.getElementById('cmwClose');
+        var closeBtn = document.getElementById('cmwHangup');
         var dragging = false, sx = 0, sy = 0, sl = 0, st = 0, moved = false;
         win.addEventListener('pointerdown', function(e) {
           if (e.target === closeBtn) return;
