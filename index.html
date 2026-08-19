@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='16'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','16');location.href=location.pathname+'?v=16&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='17'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','17');location.href=location.pathname+'?v=17&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v16</title>
+  <title>字卡 · 小手机 v17</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8522,15 +8522,16 @@
 /* --- 通话全屏界面 --- */
 .call-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 11000; display: none; flex-direction: column;
+  z-index: 11000; display: none;
   background: #1e1432;
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
 }
-.call-overlay.active { display: flex; }
+.call-overlay.active { display: block; }
 .call-top-bar {
+  position: absolute; top: 0; left: 0; right: 0;
   display: flex; justify-content: flex-end; align-items: center;
-  padding: 52px 16px 8px; gap: 12px; z-index: 2;
+  padding: 52px 16px 8px; gap: 12px; z-index: 5;
 }
 .call-top-bar .call-bg-btn,
 .call-top-bar .call-minimize-btn {
@@ -8540,13 +8541,10 @@
 }
 .call-top-bar .call-bg-btn:active,
 .call-top-bar .call-minimize-btn:active { background: rgba(255,255,255,0.3); }
-.call-main-area {
-  display: flex; flex-direction: column;
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-}
 .call-voice-visual {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 100%; flex: 1; gap: 16px;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
 }
 .call-voice-avatar-wrap { position: relative; width: 120px; height: 120px; }
 .call-voice-avatar {
@@ -8556,6 +8554,7 @@
 }
 .call-voice-timer {
   font-size: 18px; color: rgba(255,255,255,0.8); font-variant-numeric: tabular-nums;
+  margin-top: 16px;
 }
 .call-status-text {
   font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 4px;
@@ -8563,6 +8562,7 @@
 /* 视频区域 */
 .call-video-visual {
   display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 1;
 }
 .call-video-visual.active { display: block; }
 .call-video-big {
@@ -8581,10 +8581,10 @@
 }
 /* 聊天区 */
 .call-chat-area {
-  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+  position: absolute; left: 16px; right: 16px; bottom: 100px;
   display: flex; flex-direction: column;
-  width: calc(100% - 32px); max-width: 380px;
-  z-index: 2;
+  max-width: 380px; margin: 0 auto;
+  z-index: 4;
 }
 .call-sys-msg {
   text-align: center; font-size: 12px; color: rgba(255,255,255,0.5);
@@ -8630,6 +8630,7 @@
 .call-controls {
   position: absolute; bottom: 36px; left: 0; right: 0;
   display: flex; justify-content: center;
+  z-index: 5;
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -10192,7 +10193,6 @@
 
 <!-- 通话全屏界面 -->
 <div class="call-overlay" id="callOverlay">
-  <div class="call-main-area" id="callMainArea">
     <!-- 语音通话视觉区 -->
     <div class="call-voice-visual" id="callVoiceVisual">
       <div class="call-voice-avatar-wrap">
@@ -10237,7 +10237,6 @@
         挂断
       </button>
     </div>
-  </div>
 </div>
 
 <script>
