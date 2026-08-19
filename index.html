@@ -19580,15 +19580,16 @@ patText2 = patText2.replace(/你/g, '我');
           function _dk(f){ return 'rgb('+Math.round(_r*f)+','+Math.round(_g*f)+','+Math.round(_b*f)+')'; }
           // 先设暗色底（background 简写会清除 backgroundImage）
           if (callOverlay) { callOverlay.style.background = _dk(0.35); }
-          // 再恢复保存的壁纸（叠在底色上）
+          // 大窗口和小窗口都清空背景
+          if (callVideoBig) { callVideoBig.style.background = 'transparent'; callVideoBig.style.backgroundImage = 'none'; }
+          if (callVideoSmall) { callVideoSmall.style.background = 'transparent'; callVideoSmall.style.backgroundImage = 'none'; }
+          // 恢复保存的壁纸到 overlay（叠在底色上）
           if (_callWallpaper && callOverlay) {
             callOverlay.style.backgroundImage = _callWallpaper;
             callOverlay.style.backgroundSize = _callWallpaperSize;
             callOverlay.style.backgroundPosition = _callWallpaperPos;
             callOverlay.style.backgroundRepeat = 'no-repeat';
           }
-          if (callVideoBig) { callVideoBig.style.background = 'transparent'; callVideoBig.style.backgroundImage = 'none'; }
-          if (callVideoSmall) { callVideoSmall.style.background = 'transparent'; callVideoSmall.style.backgroundImage = 'none'; }
         } catch(e) {}
 
         callState = 'active';
@@ -19737,6 +19738,21 @@ patText2 = patText2.replace(/你/g, '我');
         }
       }
 
+      // 更新 overlay 壁纸显示：当大窗口有自己的图片时隐藏 overlay 壁纸，否则显示
+      function _updateOverlayWallpaper() {
+        var bigHasBg = callVideoBig && callVideoBig.style.backgroundImage && callVideoBig.style.backgroundImage !== 'none' && callVideoBig.style.backgroundImage !== '';
+        if (callOverlay) {
+          if (bigHasBg) {
+            callOverlay.style.backgroundImage = 'none';
+          } else if (_callWallpaper) {
+            callOverlay.style.backgroundImage = _callWallpaper;
+            callOverlay.style.backgroundSize = _callWallpaperSize;
+            callOverlay.style.backgroundPosition = _callWallpaperPos;
+            callOverlay.style.backgroundRepeat = 'no-repeat';
+          }
+        }
+      }
+
       // 视频窗口大小切换
       function swapVideoWindows() {
         // 只交换两个视频窗口各自的背景，overlay 壁纸不动
@@ -19757,6 +19773,8 @@ patText2 = patText2.replace(/你/g, '我');
         callVideoSmall.style.backgroundImage = bigBg;
         callVideoSmall.style.backgroundSize = bigBgSize;
         callVideoSmall.style.backgroundPosition = bigBgPos;
+        // 交换后更新 overlay 壁纸显示
+        _updateOverlayWallpaper();
         // 交换头像
         if(callVideoAvatarBig){ callVideoAvatarBig.textContent = smallAvatar; }
         if(callVideoAvatarBig){ callVideoAvatarBig.style.background = smallAvatarBg; }
@@ -20058,7 +20076,7 @@ patText2 = patText2.replace(/你/g, '我');
               }
               var miniWin = document.getElementById('callMiniWindow');
               if (miniWin) {
-                miniWin.style.backgroundImage = bgUrl;
+                miniWin.style.backgroundImage = _callWallpaper;
                 miniWin.style.backgroundSize = 'cover';
                 miniWin.style.backgroundPosition = 'center';
                 miniWin.style.backgroundRepeat = 'no-repeat';
