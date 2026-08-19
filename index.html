@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v5')){sessionStorage.setItem('zk_v5','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v6')){sessionStorage.setItem('zk_v6','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v5</title>
+  <title>字卡 · 小手机 v6</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8685,8 +8685,7 @@
 /* 视频大窗口 - 联系人 */
 .call-video-big {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  
-  background-size: cover; background-position: center;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
   display: flex; align-items: center; justify-content: center;
 }
 .call-video-big .video-label {
@@ -8706,7 +8705,7 @@
   position: fixed; top: 80px; right: 16px;
   width: 100px; height: 134px;
   border-radius: 12px; overflow: hidden;
-  background-size: cover; background-position: center;
+  background-size: cover; background-position: center; background-repeat: no-repeat;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(155,142,196,0.15);
   z-index: 11100; cursor: pointer;
   transition: transform 0.3s ease;
@@ -19578,18 +19577,9 @@ patText2 = patText2.replace(/你/g, '我');
           var _pc = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
           var _r = parseInt(_pc.slice(1,3),16), _g = parseInt(_pc.slice(3,5),16), _b = parseInt(_pc.slice(5,7),16);
           function _dk(f){ return 'rgb('+Math.round(_r*f)+','+Math.round(_g*f)+','+Math.round(_b*f)+')'; }
-          // 先设暗色底（background 简写会清除 backgroundImage）
-          if (callOverlay) { callOverlay.style.background = _dk(0.35); }
-          // 大窗口和小窗口都清空背景
-          if (callVideoBig) { callVideoBig.style.background = 'transparent'; callVideoBig.style.backgroundImage = 'none'; }
-          if (callVideoSmall) { callVideoSmall.style.background = 'transparent'; callVideoSmall.style.backgroundImage = 'none'; }
-          // 恢复保存的壁纸到 overlay（叠在底色上）
-          if (_callWallpaper && callOverlay) {
-            callOverlay.style.backgroundImage = _callWallpaper;
-            callOverlay.style.backgroundSize = _callWallpaperSize;
-            callOverlay.style.backgroundPosition = _callWallpaperPos;
-            callOverlay.style.backgroundRepeat = 'no-repeat';
-          }
+          if (callOverlay) { callOverlay.style.backgroundColor = _dk(0.35); callOverlay.style.backgroundImage = 'none'; }
+          if (callVideoBig) { callVideoBig.style.backgroundColor = 'transparent'; callVideoBig.style.backgroundImage = 'none'; }
+          if (callVideoSmall) { callVideoSmall.style.backgroundColor = 'transparent'; callVideoSmall.style.backgroundImage = 'none'; }
         } catch(e) {}
 
         callState = 'active';
@@ -19652,11 +19642,11 @@ patText2 = patText2.replace(/你/g, '我');
         if (callRowIncoming) callRowIncoming.innerHTML = '';
         if (callRowOutgoing) callRowOutgoing.innerHTML = '';
         var _ovReset = document.getElementById('callOverlay');
-        if (_ovReset) { _ovReset.style.backgroundImage = ''; _ovReset.style.backgroundSize = ''; _ovReset.style.backgroundPosition = ''; _ovReset.style.backgroundRepeat = '';  _ovReset.style.background = ''; }
+        if (_ovReset) { _ovReset.style.backgroundColor = ''; _ovReset.style.backgroundImage = ''; _ovReset.style.backgroundSize = ''; _ovReset.style.backgroundPosition = ''; _ovReset.style.backgroundRepeat = ''; _ovReset.style.background = ''; }
         var _mwReset = document.getElementById('callMiniWindow');
         if (_mwReset) { _mwReset.style.backgroundImage = ''; _mwReset.style.backgroundSize = ''; _mwReset.style.backgroundPosition = ''; _mwReset.style.backgroundRepeat = ''; }
-        if (callVideoBig) { callVideoBig.style.backgroundImage = ''; callVideoBig.style.backgroundSize = ''; callVideoBig.style.backgroundPosition = '';  callVideoBig.style.background = ''; }
-        if (callVideoSmall) { callVideoSmall.style.backgroundImage = ''; callVideoSmall.style.backgroundSize = ''; callVideoSmall.style.backgroundPosition = '';  callVideoSmall.style.background = ''; }
+        if (callVideoBig) { callVideoBig.style.backgroundImage = ''; callVideoBig.style.backgroundSize = ''; callVideoBig.style.backgroundPosition = ''; callVideoBig.style.backgroundColor = ''; callVideoBig.style.background = ''; }
+        if (callVideoSmall) { callVideoSmall.style.backgroundImage = ''; callVideoSmall.style.backgroundSize = ''; callVideoSmall.style.backgroundPosition = ''; callVideoSmall.style.backgroundColor = ''; callVideoSmall.style.background = ''; }
         if (callVideoBgBig) callVideoBgBig.value = '';
         if (callVideoBgSmall) callVideoBgSmall.value = '';
         callChatMessages.innerHTML = '';
@@ -19738,68 +19728,71 @@ patText2 = patText2.replace(/你/g, '我');
         }
       }
 
-      // 更新 overlay 壁纸显示：当大窗口有自己的图片时隐藏 overlay 壁纸，否则显示
-      function _updateOverlayWallpaper() {
-        var bigHasBg = callVideoBig && callVideoBig.style.backgroundImage && callVideoBig.style.backgroundImage !== 'none' && callVideoBig.style.backgroundImage !== '';
-        if (callOverlay) {
-          if (bigHasBg) {
-            callOverlay.style.backgroundImage = 'none';
-          } else if (_callWallpaper) {
-            callOverlay.style.backgroundImage = _callWallpaper;
-            callOverlay.style.backgroundSize = _callWallpaperSize;
-            callOverlay.style.backgroundPosition = _callWallpaperPos;
-            callOverlay.style.backgroundRepeat = 'no-repeat';
-          }
-        }
-      }
-
       // 视频窗口大小切换
       function swapVideoWindows() {
-        // 只交换两个视频窗口各自的背景，overlay 壁纸不动
-        var bigBg = callVideoBig.style.backgroundImage || '';
-        var bigBgSize = callVideoBig.style.backgroundSize || '';
-        var bigBgPos = callVideoBig.style.backgroundPosition || '';
-        var smallBg = callVideoSmall.style.backgroundImage || '';
-        var smallBgSize = callVideoSmall.style.backgroundSize || '';
-        var smallBgPos = callVideoSmall.style.backgroundPosition || '';
+        var bigBgImg = callVideoBig ? callVideoBig.style.backgroundImage : '';
+        var bigBgSize = callVideoBig ? callVideoBig.style.backgroundSize : '';
+        var bigBgPos = callVideoBig ? callVideoBig.style.backgroundPosition : '';
+        var bigBgColor = callVideoBig ? callVideoBig.style.backgroundColor : '';
+        var smallBgImg = callVideoSmall ? callVideoSmall.style.backgroundImage : '';
+        var smallBgSize = callVideoSmall ? callVideoSmall.style.backgroundSize : '';
+        var smallBgPos = callVideoSmall ? callVideoSmall.style.backgroundPosition : '';
+        var smallBgColor = callVideoSmall ? callVideoSmall.style.backgroundColor : '';
+        
+        if (callVideoBig) {
+          callVideoBig.style.backgroundImage = smallBgImg;
+          callVideoBig.style.backgroundSize = smallBgSize;
+          callVideoBig.style.backgroundPosition = smallBgPos;
+          callVideoBig.style.backgroundColor = smallBgColor;
+        }
+        if (callVideoSmall) {
+          callVideoSmall.style.backgroundImage = bigBgImg;
+          callVideoSmall.style.backgroundSize = bigBgSize;
+          callVideoSmall.style.backgroundPosition = bigBgPos;
+          callVideoSmall.style.backgroundColor = bigBgColor;
+        }
+        
         var bigAvatar = callVideoAvatarBig ? callVideoAvatarBig.textContent : '';
         var bigAvatarBg = callVideoAvatarBig ? callVideoAvatarBig.style.background : '';
         var smallAvatar = callVideoAvatarSmall ? callVideoAvatarSmall.textContent : '';
         var smallAvatarBg = callVideoAvatarSmall ? callVideoAvatarSmall.style.background : '';
-        // 交换背景
-        callVideoBig.style.backgroundImage = smallBg;
-        callVideoBig.style.backgroundSize = smallBgSize;
-        callVideoBig.style.backgroundPosition = smallBgPos;
-        callVideoSmall.style.backgroundImage = bigBg;
-        callVideoSmall.style.backgroundSize = bigBgSize;
-        callVideoSmall.style.backgroundPosition = bigBgPos;
-        // 交换后更新 overlay 壁纸显示
-        _updateOverlayWallpaper();
-        // 交换头像
-        if(callVideoAvatarBig){ callVideoAvatarBig.textContent = smallAvatar; }
-        if(callVideoAvatarBig){ callVideoAvatarBig.style.background = smallAvatarBg; }
-        if(callVideoAvatarSmall){ callVideoAvatarSmall.textContent = bigAvatar; }
-        if(callVideoAvatarSmall){ callVideoAvatarSmall.style.background = bigAvatarBg; }
-        // 动画反馈
+        if(callVideoAvatarBig){ callVideoAvatarBig.textContent = smallAvatar; callVideoAvatarBig.style.background = smallAvatarBg; }
+        if(callVideoAvatarSmall){ callVideoAvatarSmall.textContent = bigAvatar; callVideoAvatarSmall.style.background = bigAvatarBg; }
+        
         callVideoSmall.style.transform = 'scale(1.1)';
-        setTimeout(function() { callVideoSmall.style.transform = ''; }, 300);
+        setTimeout(function() { if(callVideoSmall) callVideoSmall.style.transform = ''; }, 300);
       }
       callVideoSmall.addEventListener('click', swapVideoWindows);
 
-      // 视频小窗口背景图片选择（双击小窗口）
       (function() {
         var bgSmallInput = document.getElementById('callVideoBgSmall');
-        if (bgSmallInput) {
-          callVideoSmall.addEventListener('dblclick', function() { bgSmallInput.click(); });
+        var bgBigInput = document.getElementById('callVideoBgBig');
+        if (bgSmallInput && callVideoSmall) {
+          callVideoSmall.addEventListener('dblclick', function(e) { e.preventDefault(); bgSmallInput.click(); });
           bgSmallInput.addEventListener('change', function(e) {
             var file = e.target.files[0];
             if (!file) return;
             var reader = new FileReader();
             reader.onload = function(ev) {
-              var bgUrl = 'url(' + ev.target.result + ')';
-              callVideoSmall.style.backgroundImage = bgUrl;
+              var url = 'url(' + ev.target.result + ')';
+              callVideoSmall.style.backgroundImage = url;
               callVideoSmall.style.backgroundSize = 'cover';
               callVideoSmall.style.backgroundPosition = 'center';
+            };
+            reader.readAsDataURL(file);
+          });
+        }
+        if (bgBigInput && callVideoBig) {
+          callVideoBig.addEventListener('dblclick', function(e) { e.preventDefault(); bgBigInput.click(); });
+          bgBigInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
+            var reader = new FileReader();
+            reader.onload = function(ev) {
+              var url = 'url(' + ev.target.result + ')';
+              callVideoBig.style.backgroundImage = url;
+              callVideoBig.style.backgroundSize = 'cover';
+              callVideoBig.style.backgroundPosition = 'center';
             };
             reader.readAsDataURL(file);
           });
@@ -20047,12 +20040,8 @@ patText2 = patText2.replace(/你/g, '我');
         closeBtn.addEventListener('click', function(e) { e.stopPropagation(); endCall(); });
       })();
 
-      // 通话背景壁纸（独立于底色，避免被 background 简写清除）
       var _callWallpaper = '';
-      var _callWallpaperSize = '';
-      var _callWallpaperPos = '';
 
-      // 背景图片选择（从相册选取）
       (function() {
         var bgBtn = document.getElementById('callBgBtn');
         var fileInput = document.getElementById('callBgFileInput');
@@ -20064,22 +20053,17 @@ patText2 = patText2.replace(/你/g, '我');
             var reader = new FileReader();
             reader.onload = function(ev) {
               _callWallpaper = 'url(' + ev.target.result + ')';
-              _callWallpaperSize = 'cover';
-              _callWallpaperPos = 'center';
-              callOverlay.style.backgroundImage = _callWallpaper;
-              callOverlay.style.backgroundSize = _callWallpaperSize;
-              callOverlay.style.backgroundPosition = _callWallpaperPos;
-              callOverlay.style.backgroundRepeat = 'no-repeat';
               if (callVideoBig) {
-                callVideoBig.style.backgroundImage = 'none';
-                callVideoBig.style.background = 'transparent';
+                callVideoBig.style.backgroundImage = _callWallpaper;
+                callVideoBig.style.backgroundSize = 'cover';
+                callVideoBig.style.backgroundPosition = 'center';
+                callVideoBig.style.backgroundRepeat = 'no-repeat';
               }
-              var miniWin = document.getElementById('callMiniWindow');
-              if (miniWin) {
-                miniWin.style.backgroundImage = _callWallpaper;
-                miniWin.style.backgroundSize = 'cover';
-                miniWin.style.backgroundPosition = 'center';
-                miniWin.style.backgroundRepeat = 'no-repeat';
+              if (callVideoSmall) {
+                callVideoSmall.style.backgroundImage = _callWallpaper;
+                callVideoSmall.style.backgroundSize = 'cover';
+                callVideoSmall.style.backgroundPosition = 'center';
+                callVideoSmall.style.backgroundRepeat = 'no-repeat';
               }
             };
             reader.readAsDataURL(file);
