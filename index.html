@@ -1087,8 +1087,7 @@
       padding-bottom: env(safe-area-inset-bottom, 2px);
       max-height: 50vh;
       flex-shrink: 0;
-      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      will-change: transform;
+      transition: none;
     }
 
     .chat-input-bar {
@@ -10253,7 +10252,7 @@
 
 <script>
     (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
-    // ===== 键盘跟随 + 视口适配 (v28: transform方案) =====
+    // ===== 键盘跟随 + 视口适配 (v28简化) =====
     (function () {
       const phone = document.querySelector('.phone');
       const bw = document.querySelector('.chat-bottom-wrapper');
@@ -10275,16 +10274,12 @@
         var callOverlay = document.getElementById('callOverlay');
         if (callOverlay && callOverlay.classList.contains('active')) return;
 
-        // 用 transform 上推输入栏，始终 position:relative，丝滑过渡
-        if (kbHeight > 0) {
-          bw.style.transform = 'translateY(-' + kbHeight + 'px)';
-        } else {
-          bw.style.transform = 'translateY(0)';
-        }
-
-        // phone 高度跟随视口
+        // 只调整 phone 高度，bw 作为 flex 子元素自然跟随到底部
         var targetH = inputFocused ? curVH : maxVH;
-        if (phone) phone.style.height = targetH + 'px';
+        if (phone) {
+          phone.style.height = targetH + 'px';
+          phone.style.overflow = 'hidden';
+        }
       }
 
       document.addEventListener('focusin', function(e) {
@@ -10305,10 +10300,10 @@
             inputFocused = false;
             kbHeight = 0;
             apply();
-            setTimeout(apply, 100);
-            setTimeout(apply, 250);
+            setTimeout(apply, 150);
+            setTimeout(apply, 300);
           }
-        }, 80);
+        }, 100);
       });
 
       if (window.visualViewport) {
