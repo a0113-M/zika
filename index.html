@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='31'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','31');location.href=location.pathname+'?v=33&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='31'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','31');location.href=location.pathname+'?v=34&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v33</title>
+  <title>字卡 · 小手机 v34</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8599,6 +8599,66 @@
 .call-minimize-btn svg { width: 16px; height: 16px; }
 .call-minimize-btn:active { transform: scale(0.9); background: rgba(0,0,0,0.5); }
 
+/* 通话悬浮药丸 */
+.call-float-pill {
+  position: fixed;
+  top: 8px; left: 50%; transform: translateX(-50%);
+  display: none;
+  align-items: center; gap: 10px;
+  padding: 6px 12px 6px 6px;
+  background: rgba(0,0,0,0.65);
+  border-radius: 999px;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  z-index: 11500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  cursor: pointer;
+  user-select: none; -webkit-user-select: none;
+}
+.call-float-pill.active { display: flex; }
+.call-float-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--primary, #9b8ec4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff; font-weight: 600;
+  flex-shrink: 0;
+}
+.call-float-info {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.call-float-wave {
+  display: flex; align-items: center; gap: 2px;
+  height: 16px;
+}
+.call-float-wave span {
+  display: block;
+  width: 2px; height: 100%;
+  background: #4cd964;
+  border-radius: 2px;
+  animation: floatWave 1s ease-in-out infinite;
+}
+.call-float-wave span:nth-child(1) { animation-delay: 0s; }
+.call-float-wave span:nth-child(2) { animation-delay: 0.15s; }
+.call-float-wave span:nth-child(3) { animation-delay: 0.3s; }
+.call-float-wave span:nth-child(4) { animation-delay: 0.45s; }
+.call-float-wave span:nth-child(5) { animation-delay: 0.6s; }
+@keyframes floatWave {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+}
+.call-float-time {
+  font-size: 11px; color: rgba(255,255,255,0.7);
+  font-variant-numeric: tabular-nums;
+}
+.call-float-hangup {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: #ff3b30; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff;
+  flex-shrink: 0;
+}
+.call-float-hangup svg { width: 14px; height: 14px; }
+.call-float-hangup:active { transform: scale(0.9); }
+
 /* 背景切换按钮 */
 .call-bg-toggle-btn {
   position: absolute;
@@ -10330,6 +10390,20 @@
       挂断
     </button>
   </div>
+</div>
+
+<!-- 通话悬浮药丸（缩小后显示） -->
+<div class="call-float-pill" id="callFloatPill">
+  <div class="call-float-avatar" id="callFloatAvatar">?</div>
+  <div class="call-float-info">
+    <div class="call-float-wave" id="callFloatWave">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="call-float-time" id="callFloatTime">00:00</div>
+  </div>
+  <button class="call-float-hangup" id="callFloatHangup" title="挂断">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+  </button>
 </div>
 
 <!-- 背景切换弹窗 -->
@@ -19581,6 +19655,10 @@ patText2 = patText2.replace(/你/g, '我');
     // 通话中界面
     var callOverlay = document.getElementById('callOverlay');
     var callMinimizeBtn = document.getElementById('callMinimizeBtn');
+    var callFloatPill = document.getElementById('callFloatPill');
+    var callFloatAvatar = document.getElementById('callFloatAvatar');
+    var callFloatTime = document.getElementById('callFloatTime');
+    var callFloatHangup = document.getElementById('callFloatHangup');
     var callBgToggleBtn = document.getElementById('callBgToggleBtn');
     var callActiveVoiceAvatar = document.getElementById('callActiveVoiceAvatar');
     var callVoiceBigAvatar = document.getElementById('callVoiceBigAvatar');
@@ -19742,7 +19820,9 @@ patText2 = patText2.replace(/你/g, '我');
       // 开始计时
       callTimerInterval = setInterval(function() {
         callSeconds++;
-        callVoiceTimerActive.textContent = formatCallTime();
+        var timeStr = formatCallTime();
+        callVoiceTimerActive.textContent = timeStr;
+        callFloatTime.textContent = timeStr;
       }, 1000);
     }
 
@@ -19796,6 +19876,7 @@ patText2 = patText2.replace(/你/g, '我');
       // 隐藏界面
       callRingScreen.classList.remove('active');
       callOverlay.classList.remove('active');
+      callFloatPill.classList.remove('active');
       callBgPopup.classList.remove('active');
       callActiveVoiceAvatar.classList.remove('active');
 
@@ -19932,8 +20013,24 @@ patText2 = patText2.replace(/你/g, '我');
       reader.readAsDataURL(file);
     });
 
-    // ---- 缩小界面按钮 ----
+    // ---- 缩小界面按钮 → 显示悬浮药丸 ----
     callMinimizeBtn.addEventListener('click', function() {
+      callOverlay.classList.remove('active');
+      callFloatAvatar.textContent = _currentContactInitial;
+      callFloatTime.textContent = formatCallTime();
+      callFloatPill.classList.add('active');
+    });
+
+    // 点击悬浮药丸 → 恢复通话界面
+    callFloatPill.addEventListener('click', function(e) {
+      if (e.target.closest('.call-float-hangup')) return;
+      callFloatPill.classList.remove('active');
+      callOverlay.classList.add('active');
+    });
+
+    // 悬浮药丸挂断按钮
+    callFloatHangup.addEventListener('click', function(e) {
+      e.stopPropagation();
       endCall();
     });
 
