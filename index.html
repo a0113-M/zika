@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='31'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','31');location.href=location.pathname+'?v=34&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='35'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','35');location.href=location.pathname+'?v=35&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v34</title>
+  <title>字卡 · 小手机 v35</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8582,12 +8582,12 @@
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
 }
-.call-overlay.active { display: block; }
+.call-overlay.active { display: flex; flex-direction: column; align-items: center; }
 
-/* 缩小界面按钮 */
-.call-minimize-btn {
+/* 右上角按钮组 */
+.call-top-right-btn {
   position: absolute;
-  top: 50px; left: 16px;
+  top: 50px;
   width: 36px; height: 36px; border-radius: 50%;
   background: rgba(0,0,0,0.35);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
@@ -8596,8 +8596,10 @@
   z-index: 10;
   transition: all 0.2s;
 }
-.call-minimize-btn svg { width: 16px; height: 16px; }
-.call-minimize-btn:active { transform: scale(0.9); background: rgba(0,0,0,0.5); }
+.call-top-right-btn:active { transform: scale(0.9); background: rgba(0,0,0,0.5); }
+.call-top-right-btn svg { width: 18px; height: 18px; }
+#callBgToggleBtn { right: 56px; }
+#callMinimizeBtn { right: 12px; }
 
 /* 通话悬浮药丸 */
 .call-float-pill {
@@ -8659,60 +8661,49 @@
 .call-float-hangup svg { width: 14px; height: 14px; }
 .call-float-hangup:active { transform: scale(0.9); }
 
-/* 背景切换按钮 */
-.call-bg-toggle-btn {
-  position: absolute;
-  top: 50px; right: 16px;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border: none; color: #fff; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 10;
-}
-.call-bg-toggle-btn svg { width: 18px; height: 18px; }
-.call-bg-toggle-btn:active { transform: scale(0.92); background: rgba(0,0,0,0.7); }
+/* 背景切换按钮 - 使用共享 .call-top-right-btn 样式 */
 
 /* 语音通话居中头像 */
 .call-active-voice-avatar {
   display: none;
   flex-direction: column; align-items: center;
-  position: absolute; top: 90px; left: 0; right: 0;
-  z-index: 3;
+  flex-shrink: 0;
+  margin-top: 50px;
 }
 .call-active-voice-avatar.active { display: flex; }
 .call-voice-big-avatar {
-  width: 120px; height: 120px; border-radius: 50%;
+  width: 88px; height: 88px; border-radius: 50%;
   background: var(--primary, #9b8ec4);
   display: flex; align-items: center; justify-content: center;
-  font-size: 44px; color: #fff; font-weight: 700;
+  font-size: 34px; color: #fff; font-weight: 700;
   border: 3px solid #d4af37;
-  box-shadow: 0 0 30px rgba(212,175,55,0.4);
+  box-shadow: 0 0 20px rgba(212,175,55,0.4);
 }
 .call-voice-timer-active {
-  font-size: 18px; color: rgba(255,255,255,0.8);
+  font-size: 15px; color: rgba(255,255,255,0.8);
   font-variant-numeric: tabular-nums;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 
-/* 聊天区 */
+/* 聊天区 - 固定2行，一人一行 */
 .call-chat-area {
-  position: absolute; left: 16px; right: 16px;
-  top: 240px; bottom: 180px;
+  flex: 1;
   display: flex; flex-direction: column;
-  max-width: 380px; margin: 0 auto;
-  z-index: 3;
+  justify-content: flex-end;
+  width: calc(100% - 32px); max-width: 380px;
+  padding: 8px 0;
+  min-height: 0;
 }
 .call-chat-messages {
   display: flex; flex-direction: column;
-  height: 100%; overflow-y: auto; padding: 6px 0;
-  scrollbar-width: none;
+  gap: 8px; padding: 6px 0;
 }
-.call-chat-messages::-webkit-scrollbar { display: none; }
 .call-chat-row-incoming, .call-chat-row-outgoing {
-  display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px;
-  align-items: center;
+  display: flex; flex-direction: column; gap: 2px;
+  min-height: 0;
 }
+.call-chat-row-incoming { align-items: flex-start; }
+.call-chat-row-outgoing { align-items: flex-end; }
 .call-msg-bubble {
   max-width: 70%; padding: 8px 12px; border-radius: 12px;
   font-size: 14px; line-height: 1.4; word-break: break-word;
@@ -8727,8 +8718,9 @@
 /* 聊天输入栏 */
 .call-chat-input-bar {
   display: flex; gap: 8px; align-items: center;
-  position: absolute; left: 16px; right: 16px; bottom: 90px;
-  max-width: 380px; margin: 0 auto; z-index: 3;
+  width: calc(100% - 32px); max-width: 380px;
+  flex-shrink: 0;
+  padding-bottom: 12px;
 }
 .call-chat-input {
   flex: 1; background: rgba(255,255,255,0.18);
@@ -8748,11 +8740,12 @@
 }
 .call-chat-send-btn:active { transform: scale(0.95); }
 
-/* 挂断按钮 */
+/* 挂断按钮 - 底部居中 */
 .call-controls {
-  position: absolute; bottom: 30px; left: 0; right: 0;
   display: flex; justify-content: center;
-  z-index: 5;
+  flex-shrink: 0;
+  padding-bottom: 30px;
+  width: 100%;
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -10353,23 +10346,21 @@
 
 <!-- 通话中界面 -->
 <div class="call-overlay" id="callOverlay">
-  <!-- 缩小界面按钮 -->
-  <button class="call-minimize-btn" id="callMinimizeBtn" title="缩小">
+  <!-- 右上角按钮：更改背景（左）+ 缩小（右） -->
+  <button class="call-top-right-btn" id="callBgToggleBtn" title="切换背景">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" rx="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21"/></svg>
+  </button>
+  <button class="call-top-right-btn" id="callMinimizeBtn" title="缩小">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
   </button>
 
-  <!-- 背景切换按钮 -->
-  <button class="call-bg-toggle-btn" id="callBgToggleBtn" title="切换背景">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" rx="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21"/></svg>
-  </button>
-
-  <!-- 语音通话：居中头像 -->
+  <!-- 语音通话头像 + 时间 -->
   <div class="call-active-voice-avatar" id="callActiveVoiceAvatar">
     <div class="call-voice-big-avatar" id="callVoiceBigAvatar">?</div>
     <div class="call-voice-timer-active" id="callVoiceTimerActive">00:00</div>
   </div>
 
-  <!-- 聊天消息区 -->
+  <!-- 聊天消息区（固定2行，一人一行） -->
   <div class="call-chat-area" id="callChatArea">
     <div class="call-chat-messages" id="callChatMessages">
       <div class="call-chat-row-incoming" id="callRowIncoming"></div>
@@ -10377,7 +10368,7 @@
     </div>
   </div>
 
-  <!-- 聊天输入栏 -->
+  <!-- 输入框 + 发送按钮 -->
   <div class="call-chat-input-bar" id="callChatInputBar">
     <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
     <button class="call-chat-send-btn" id="callChatSend">发送</button>
