@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='26'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','26');location.href=location.pathname+'?v=26&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='27'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','27');location.href=location.pathname+'?v=27&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v26</title>
+  <title>字卡 · 小手机 v27</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -1087,6 +1087,7 @@
       padding-bottom: env(safe-area-inset-bottom, 2px);
       max-height: 50vh;
       flex-shrink: 0;
+      transition: bottom 0.2s ease, transform 0.2s ease;
     }
 
     .chat-input-bar {
@@ -10291,11 +10292,14 @@
           bw.style.right = '0';
           bw.style.zIndex = '1000';
         } else {
+          // 键盘收起时，确保完全重置为自然文档流位置
           bw.style.position = 'relative';
           bw.style.bottom = 'auto';
           bw.style.left = 'auto';
           bw.style.right = 'auto';
           bw.style.zIndex = 'auto';
+          // 强制重排确保布局生效
+          void bw.offsetHeight;
         }
       }
 
@@ -10324,11 +10328,25 @@
               if (inputBar) inputBar.style.bottom = '';
               if (controls) controls.style.bottom = '';
             }
-            // 等浏览器恢复视口后再应用
-            setTimeout(apply, 100);
-            setTimeout(apply, 400);
+            // 强制重置 phone 高度和底部栏位置
+            if (phone) {
+              phone.style.height = '';
+              phone.style.overflow = '';
+            }
+            if (bw) {
+              bw.style.position = '';
+              bw.style.bottom = '';
+              bw.style.left = '';
+              bw.style.right = '';
+              bw.style.zIndex = '';
+            }
+            // 多次延迟确保浏览器完全重置
+            setTimeout(apply, 50);
+            setTimeout(apply, 150);
+            setTimeout(apply, 300);
+            setTimeout(apply, 500);
           }
-        }, 100);
+        }, 50);
       });
 
       if (window.visualViewport) {
