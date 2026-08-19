@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='18'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','18');location.href=location.pathname+'?v=18&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='19'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','19');location.href=location.pathname+'?v=19&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v18</title>
+  <title>字卡 · 小手机 v19</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8580,12 +8580,11 @@
   position: absolute; bottom: 6px; right: 6px; width: 24px; height: 24px;
   background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center;
 }
-/* 聊天区 */
+/* 聊天区（与头像同层，无独立z-index） */
 .call-chat-area {
   position: absolute; left: 16px; right: 16px; bottom: 200px;
   display: flex; flex-direction: column;
   max-width: 380px; margin: 0 auto;
-  z-index: 4;
 }
 .call-sys-msg {
   text-align: center; font-size: 12px; color: rgba(255,255,255,0.5);
@@ -19547,26 +19546,19 @@ patText2 = patText2.replace(/你/g, '我');
       endCall();
     });
 
-    // 通话中发送消息
+    // 通话中发送消息（只显示最新一条）
     function sendCallMessage() {
       var text = callChatInput.value.trim();
       if (!text) return;
-      var bubble = document.createElement('div');
-      bubble.className = 'call-msg-bubble';
-      bubble.textContent = text;
-      callRowOutgoing.appendChild(bubble);
+      // 替换（不追加）
+      callRowOutgoing.innerHTML = '<div class="call-msg-bubble">' + text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
       callChatInput.value = '';
-      callChatMessages.scrollTop = callChatMessages.scrollHeight;
 
-      // 模拟对方回复
+      // 模拟对方回复（替换，只显示一条）
       setTimeout(function() {
         var replies = ['嗯嗯~', '好的呢', '哈哈', '收到', 'ok~'];
         var reply = replies[Math.floor(Math.random() * replies.length)];
-        var rb = document.createElement('div');
-        rb.className = 'call-msg-bubble';
-        rb.textContent = reply;
-        callRowIncoming.appendChild(rb);
-        callChatMessages.scrollTop = callChatMessages.scrollHeight;
+        callRowIncoming.innerHTML = '<div class="call-msg-bubble">' + reply.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
       }, 800 + Math.random() * 1200);
     }
 
