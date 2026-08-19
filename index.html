@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v16')){sessionStorage.setItem('zk_v16','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='16'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','16');location.href=location.pathname+'?v=16&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
