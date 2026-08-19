@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v15')){sessionStorage.setItem('zk_v15','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v16')){sessionStorage.setItem('zk_v16','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v15</title>
+  <title>字卡 · 小手机 v16</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8498,25 +8498,26 @@
 .call-type-modal {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 11000; display: none; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0,0,0,0.35);
 }
 .call-type-modal.active { display: flex; }
 .call-type-cards {
   display: flex; gap: 24px; padding: 32px;
-  background: rgba(30,20,50,0.85); border-radius: 20px;
+  background: rgba(224,139,168,0.15); border-radius: 20px;
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 40px rgba(224,139,168,0.25);
+  border: 1px solid rgba(224,139,168,0.2);
 }
 .call-type-card {
   display: flex; flex-direction: column; align-items: center; gap: 12px;
   width: 100px; height: 120px; justify-content: center;
-  background: rgba(255,255,255,0.08); border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(224,139,168,0.12); border-radius: 16px;
+  border: 1px solid rgba(224,139,168,0.25);
   cursor: pointer; transition: all 0.2s;
 }
-.call-type-card:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
-.call-type-card svg { width: 36px; height: 36px; color: #fff; }
-.call-type-card span { color: #fff; font-size: 14px; font-weight: 500; }
+.call-type-card:active { transform: scale(0.95); background: rgba(224,139,168,0.25); }
+.call-type-card svg { width: 36px; height: 36px; color: #e08ba8; }
+.call-type-card span { color: #e08ba8; font-size: 14px; font-weight: 500; }
 
 /* --- 通话全屏界面 --- */
 .call-overlay {
@@ -10331,6 +10332,7 @@
         { id: 3, name: '12', isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [1, 2] }
       ];
       let nextId = 4;
+      window.__contacts = contacts; // 暴露给通话模块
 
       // Expose contacts to todo module
       window.getContactById = function(id) {
@@ -10757,6 +10759,7 @@
         const contact = contacts.find(c => c.id === contactId);
         if (!contact) return;
         currentChatId = contactId;
+        window.__callChatId = contactId;
         chatTitle.textContent = contact.name;
         if (!chatHistories[contactId]) {
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
@@ -10769,6 +10772,7 @@
         chatView.classList.remove('show');
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='';
         currentChatId = null;
+        window.__callChatId = null;
         refreshList();
       }
 
@@ -19425,6 +19429,7 @@ patText2 = patText2.replace(/你/g, '我');
     if (callToolbarBtn) {
       callToolbarBtn.addEventListener('click', function(e) {
         e.stopPropagation();
+        if (!window.__callChatId) { if (typeof showToast === 'function') showToast('请先进入一个聊天'); else alert('请先进入一个聊天'); return; }
         callTypeModal.classList.add('active');
       });
     }
@@ -19456,8 +19461,8 @@ patText2 = patText2.replace(/你/g, '我');
       // 获取当前联系人信息
       var contactName = '联系人';
       var contactInitial = '?';
-      if (currentChatId) {
-        var contact = contacts.find(function(c) { return c.id === currentChatId; });
+      if (window.__callChatId) {
+        var contact = window.__contacts.find(function(c) { return c.id === window.__callChatId; });
         if (contact) {
           contactName = contact.name;
           contactInitial = contact.name.charAt(0);
