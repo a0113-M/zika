@@ -10274,13 +10274,7 @@
         var isCallActive = callOverlay && callOverlay.classList.contains('active');
 
         if (isCallActive) {
-          // 通话中只处理输入栏和挂断按钮跟随键盘
-          if (kbHeight > 0) {
-            var inputBar = document.getElementById('callChatInputBar');
-            var controls = document.getElementById('callControls');
-            if (inputBar) inputBar.style.bottom = (kbHeight + 8) + 'px';
-            if (controls) controls.style.bottom = (kbHeight + 8) + 'px';
-          }
+          // 通话中 overlay 已经是完整视口高度，输入栏和挂断按钮位置固定不变
           return; // 不调整 phone 高度
         }
 
