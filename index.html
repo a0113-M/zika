@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='22'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','22');location.href=location.pathname+'?v=22&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='23'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','23');location.href=location.pathname+'?v=23&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v22</title>
+  <title>字卡 · 小手机 v23</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8543,7 +8543,8 @@
 .call-top-bar .call-minimize-btn:active { background: rgba(255,255,255,0.3); }
 .call-voice-visual {
   display: flex; flex-direction: column; align-items: center;
-  position: absolute; top: 0; left: 0; right: 0; bottom: 200px;
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 55vh;
   justify-content: center;
   z-index: 1;
 }
@@ -8583,9 +8584,10 @@
 /* 聊天区（与头像同层，无独立z-index） */
 .call-chat-area {
   position: absolute; left: 16px; right: 16px;
-  top: calc(100% - 340px); bottom: 230px;
+  top: 58vh; bottom: 30vh;
   display: flex; flex-direction: column;
   max-width: 380px; margin: 0 auto;
+  z-index: 2;
 }
 .call-sys-msg {
   text-align: center; font-size: 12px; color: rgba(255,255,255,0.5);
@@ -8613,8 +8615,8 @@
 }
 /* 聊天输入栏（独立绝对定位，确保可点击） */
 .call-chat-input-bar {
-  display: flex; flex-direction: column; gap: 3px; align-items: center;
-  position: absolute; left: 16px; right: 16px; bottom: 130px;
+  display: flex; flex-direction: column; gap: 6px; align-items: center;
+  position: absolute; left: 16px; right: 16px; bottom: 18vh;
   max-width: 380px; margin: 0 auto; z-index: 5;
 }
 .call-chat-input {
@@ -8633,7 +8635,7 @@
 .call-chat-send-btn:active { transform: scale(0.95); }
 /* 挂断按钮 */
 .call-controls {
-  position: absolute; bottom: 24px; left: 0; right: 0;
+  position: absolute; bottom: 6vh; left: 0; right: 0;
   display: flex; justify-content: center;
   z-index: 5;
 }
@@ -10267,21 +10269,24 @@
         // 更新最大高度（键盘收起时 curVH 最大）
         if (curVH > maxVH) maxVH = curVH;
 
-        // 通话界面激活时，不调整 phone 高度（避免通话界面元素上移）
+        // 通话界面激活时，完全不调整 phone 高度（避免 overflow 容器影响 fixed overlay 定位）
         var callOverlay = document.getElementById('callOverlay');
         var isCallActive = callOverlay && callOverlay.classList.contains('active');
 
-        // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
-        var targetH = (inputFocused && !isCallActive) ? curVH : maxVH;
-        if (phone) phone.style.height = targetH + 'px';
-
-        // 通话界面激活时，只调整输入框和发送按钮的位置（跟随键盘）
-        if (isCallActive && kbHeight > 0) {
-          var inputBar = document.getElementById('callChatInputBar');
-          var controls = document.getElementById('callControls');
-          if (inputBar) inputBar.style.bottom = (kbHeight + 8) + 'px';
-          if (controls) controls.style.bottom = (kbHeight + 8) + 'px';
+        if (isCallActive) {
+          // 通话中只处理输入栏和挂断按钮跟随键盘
+          if (kbHeight > 0) {
+            var inputBar = document.getElementById('callChatInputBar');
+            var controls = document.getElementById('callControls');
+            if (inputBar) inputBar.style.bottom = (kbHeight + 8) + 'px';
+            if (controls) controls.style.bottom = (kbHeight + 8) + 'px';
+          }
+          return; // 不调整 phone 高度
         }
+
+        // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
+        var targetH = inputFocused ? curVH : maxVH;
+        if (phone) phone.style.height = targetH + 'px';
 
         if (kbHeight > 0) {
           bw.style.position = 'fixed';
@@ -19483,6 +19488,17 @@ patText2 = patText2.replace(/你/g, '我');
       callState = 'ringing';
       callSeconds = 0;
 
+      // 通话开启时，锁定 phone 高度为完整视口，防止 overflow 容器影响 fixed overlay
+      var phoneEl = document.querySelector('.phone');
+      if (phoneEl) {
+        var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        phoneEl.style.height = vh + 'px';
+        phoneEl.style.overflow = 'hidden';
+      }
+      // 强制 overlay 尺寸为完整视口
+      callOverlay.style.width = '100vw';
+      callOverlay.style.height = window.visualViewport ? window.visualViewport.height + 'px' : '100vh';
+
       // 获取当前联系人信息
       var contactName = '联系人';
       var contactInitial = '?';
@@ -19559,10 +19575,18 @@ patText2 = patText2.replace(/你/g, '我');
 
       // 清理样式
       callOverlay.style.backgroundColor = '#1e1432';
+      callOverlay.style.width = '';
+      callOverlay.style.height = '';
       callVideoBig.style.backgroundColor = 'transparent';
       callVideoBig.style.backgroundImage = 'none';
       callVideoSmall.style.backgroundColor = 'var(--primary)';
       callVideoSmall.style.backgroundImage = 'none';
+
+      // 恢复 phone 滚动
+      var phoneEl = document.querySelector('.phone');
+      if (phoneEl) {
+        phoneEl.style.overflow = '';
+      }
     }
 
     // 挂断
