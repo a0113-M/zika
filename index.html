@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='31'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','31');location.href=location.pathname+'?v=31&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='31'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','31');location.href=location.pathname+'?v=32&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v31</title>
+  <title>字卡 · 小手机 v32</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8523,65 +8523,56 @@
 .call-type-card svg { width: 36px; height: 36px; color: #e08ba8; }
 .call-type-card span { color: #e08ba8; font-size: 14px; font-weight: 500; }
 
-/* --- 来电/去电界面 --- */
+/* --- 来电/去电卡片弹窗 --- */
 .call-ring-screen {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 11001; display: none;
-  flex-direction: column; align-items: center; justify-content: center;
-  background: rgba(30,20,50,0.85);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.4);
 }
 .call-ring-screen.active { display: flex; }
 .call-ring-card {
   display: flex; flex-direction: column; align-items: center;
-  background: rgba(240,240,245,0.9);
-  border-radius: 20px;
-  padding: 40px 50px 30px;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.2);
-  margin-bottom: 40px;
+  background: #e8e8ec;
+  border-radius: 18px;
+  padding: 32px 40px 20px;
+  width: 280px;
+  box-shadow: 0 6px 30px rgba(0,0,0,0.25);
 }
 .call-ring-avatar {
-  width: 120px; height: 120px; border-radius: 50%;
+  width: 110px; height: 110px; border-radius: 50%;
   background: var(--primary, #9b8ec4);
   display: flex; align-items: center; justify-content: center;
-  font-size: 44px; color: #fff; font-weight: 700;
-  margin-bottom: 16px;
+  font-size: 40px; color: #fff; font-weight: 700;
+  margin-bottom: 14px;
+  overflow: hidden;
 }
 .call-ring-time {
-  font-size: 16px; color: #999; font-variant-numeric: tabular-nums;
-  margin-bottom: 8px;
+  font-size: 15px; color: #6b6b6b; font-variant-numeric: tabular-nums;
+  margin-bottom: 6px;
 }
 .call-ring-text {
-  font-size: 15px; color: #333; font-weight: 500;
-  text-align: center;
+  font-size: 14px; color: #333;
+  text-align: center; margin-bottom: 24px;
 }
 .call-ring-actions {
-  display: flex; gap: 40px; justify-content: center;
+  display: flex; gap: 16px; justify-content: center;
+  width: 100%;
 }
 .call-accept-btn, .call-reject-btn {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-  width: 70px; height: 70px; border-radius: 50%;
+  flex: 1; height: 44px; border-radius: 10px;
   border: none; cursor: pointer; color: #fff;
+  font-size: 16px; font-weight: 500;
   transition: all 0.2s;
-  position: relative;
 }
 .call-accept-btn {
   background: #4cd964;
-  box-shadow: 0 4px 16px rgba(76,217,100,0.4);
 }
-.call-accept-btn svg { width: 26px; height: 26px; }
-.call-accept-btn:active { transform: scale(0.92); }
+.call-accept-btn:active { transform: scale(0.96); }
 .call-reject-btn {
   background: #ff3b30;
-  box-shadow: 0 4px 16px rgba(255,59,48,0.4);
 }
-.call-reject-btn svg { width: 26px; height: 26px; }
-.call-reject-btn:active { transform: scale(0.92); }
-.call-accept-btn span, .call-reject-btn span {
-  position: absolute; bottom: -22px;
-  font-size: 12px; color: rgba(255,255,255,0.8);
-  white-space: nowrap;
-}
+.call-reject-btn:active { transform: scale(0.96); }
 
 /* --- 通话中全屏界面 --- */
 .call-overlay {
@@ -10335,16 +10326,10 @@
     <div class="call-ring-avatar" id="callRingAvatar">?</div>
     <div class="call-ring-time" id="callRingTime">00:00</div>
     <div class="call-ring-text" id="callRingText">等待接听...</div>
-  </div>
-  <div class="call-ring-actions">
-    <button class="call-accept-btn" id="callAcceptBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      接听
-    </button>
-    <button class="call-reject-btn" id="callRejectBtn">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-      挂断
-    </button>
+    <div class="call-ring-actions">
+      <button class="call-accept-btn" id="callAcceptBtn">接听</button>
+      <button class="call-reject-btn" id="callRejectBtn">挂断</button>
+    </div>
   </div>
 </div>
 
@@ -19724,7 +19709,7 @@ patText2 = patText2.replace(/你/g, '我');
           contactId = contact.id;
         }
       }
-      showRingScreen('outgoing', type, contactName, contactInitial, contactId);
+      showRingScreen('outgoing', type, contactName, contactInitial, contactId, contact ? contact.isGroup : false);
       
       // 3秒后自动接通
       callAutoAnswerTimeout = setTimeout(function() {
@@ -19746,7 +19731,7 @@ patText2 = patText2.replace(/你/g, '我');
       var contactInitial = contact.name.charAt(0);
       
       // 如果用户在聊天中，切换到来电界面
-      showRingScreen('incoming', type, contactName, contactInitial, contactId);
+      showRingScreen('incoming', type, contactName, contactInitial, contactId, contact.isGroup);
       
       // 6秒不接自动挂断
       callRingTimeout = setTimeout(function() {
@@ -19757,7 +19742,7 @@ patText2 = patText2.replace(/你/g, '我');
     }
 
     // ---- 显示来电/去电界面 ----
-    function showRingScreen(direction, type, contactName, contactInitial, contactId) {
+    function showRingScreen(direction, type, contactName, contactInitial, contactId, isGroup) {
       callState = 'ringing';
       callDirection = direction;
       callType = type;
@@ -19776,6 +19761,7 @@ patText2 = patText2.replace(/你/g, '我');
 
       // 更新界面
       callRingAvatar.textContent = contactInitial;
+      callRingAvatar.style.background = isGroup ? '#9b9b9b' : 'var(--primary)';
       callRingTime.textContent = formatTime();
       
       var typeText = type === 'video' ? '视频通话' : '语音通话';
