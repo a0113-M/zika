@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='28'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','28');location.href=location.pathname+'?v=28&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='29'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','29');location.href=location.pathname+'?v=29&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v28</title>
+  <title>字卡 · 小手机 v29</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10286,6 +10286,13 @@
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
           inputFocused = true;
+          // 打开键盘时自动关闭底部工具栏
+          var ct = document.getElementById('chatToolbar');
+          if (ct) ct.classList.remove('open');
+          var eg = document.getElementById('emojiModule');
+          if (eg) eg.classList.remove('active');
+          var tg = document.getElementById('toolbarGrid');
+          if (tg) tg.classList.add('hidden');
           var curVH = getVH();
           kbHeight = (maxVH - curVH > 40) ? Math.round(maxVH - curVH) : Math.round(maxVH * 0.28);
           apply();
