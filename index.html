@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='19'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','19');location.href=location.pathname+'?v=19&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='20'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','20');location.href=location.pathname+'?v=20&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v19</title>
+  <title>字卡 · 小手机 v20</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8582,7 +8582,8 @@
 }
 /* 聊天区（与头像同层，无独立z-index） */
 .call-chat-area {
-  position: absolute; left: 16px; right: 16px; bottom: 200px;
+  position: absolute; left: 16px; right: 16px;
+  top: calc(100% - 340px); bottom: 180px;
   display: flex; flex-direction: column;
   max-width: 380px; margin: 0 auto;
 }
@@ -8610,9 +8611,11 @@
 .call-chat-row-outgoing .call-msg-bubble {
   background: var(--primary); color: #fff;
 }
+/* 聊天输入栏（独立绝对定位，确保可点击） */
 .call-chat-input-bar {
   display: flex; flex-direction: column; gap: 8px; align-items: center;
-  padding: 0; margin-top: 8px;
+  position: absolute; left: 16px; right: 16px; bottom: 96px;
+  max-width: 380px; margin: 0 auto; z-index: 5;
 }
 .call-chat-input {
   width: 100%; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.2);
@@ -10220,17 +10223,18 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" rx="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21"/></svg>
       </button>
     </div>
-    <!-- 聊天区 -->
+    <!-- 聊天消息区 -->
     <div class="call-chat-area" id="callChatArea">
       <div class="call-sys-msg" id="callSysMsg" style="display:none;"></div>
       <div class="call-chat-messages" id="callChatMessages">
         <div class="call-chat-row-incoming" id="callRowIncoming"></div>
         <div class="call-chat-row-outgoing" id="callRowOutgoing"></div>
       </div>
-      <div class="call-chat-input-bar">
-        <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
-        <button class="call-chat-send-btn" id="callChatSend">发送</button>
-      </div>
+    </div>
+    <!-- 聊天输入栏（独立层级，确保可点击） -->
+    <div class="call-chat-input-bar" id="callChatInputBar">
+      <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
+      <button class="call-chat-send-btn" id="callChatSend">发送</button>
     </div>
     <!-- 挂断按钮 -->
     <div class="call-controls" id="callControls">
