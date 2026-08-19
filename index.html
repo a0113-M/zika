@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='27'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','27');location.href=location.pathname+'?v=27&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='28'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','28');location.href=location.pathname+'?v=28&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v27</title>
+  <title>字卡 · 小手机 v28</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -1087,7 +1087,8 @@
       padding-bottom: env(safe-area-inset-bottom, 2px);
       max-height: 50vh;
       flex-shrink: 0;
-      transition: bottom 0.2s ease, transform 0.2s ease;
+      transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
     }
 
     .chat-input-bar {
@@ -10252,7 +10253,7 @@
 
 <script>
     (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
-    // ===== 键盘跟随 + 视口适配 =====
+    // ===== 键盘跟随 + 视口适配 (v28: transform方案) =====
     (function () {
       const phone = document.querySelector('.phone');
       const bw = document.querySelector('.chat-bottom-wrapper');
@@ -10260,7 +10261,6 @@
 
       let kbHeight = 0;
       let inputFocused = false;
-      // maxVH 始终记录无键盘时的最大可视高度
       let maxVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
       function getVH() {
@@ -10269,38 +10269,22 @@
 
       function apply() {
         var curVH = getVH();
-        // 更新最大高度（键盘收起时 curVH 最大）
         if (curVH > maxVH) maxVH = curVH;
 
-        // 通话界面激活时，完全不调整 phone 高度（避免 overflow 容器影响 fixed overlay 定位）
+        // 通话中不调整
         var callOverlay = document.getElementById('callOverlay');
-        var isCallActive = callOverlay && callOverlay.classList.contains('active');
+        if (callOverlay && callOverlay.classList.contains('active')) return;
 
-        if (isCallActive) {
-          // 通话中 overlay 已经是完整视口高度，输入栏和挂断按钮位置固定不变
-          return; // 不调整 phone 高度
+        // 用 transform 上推输入栏，始终 position:relative，丝滑过渡
+        if (kbHeight > 0) {
+          bw.style.transform = 'translateY(-' + kbHeight + 'px)';
+        } else {
+          bw.style.transform = 'translateY(0)';
         }
 
-        // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
+        // phone 高度跟随视口
         var targetH = inputFocused ? curVH : maxVH;
         if (phone) phone.style.height = targetH + 'px';
-
-        if (kbHeight > 0) {
-          bw.style.position = 'fixed';
-          bw.style.bottom = kbHeight + 'px';
-          bw.style.left = '0';
-          bw.style.right = '0';
-          bw.style.zIndex = '1000';
-        } else {
-          // 键盘收起时，确保完全重置为自然文档流位置
-          bw.style.position = 'relative';
-          bw.style.bottom = 'auto';
-          bw.style.left = 'auto';
-          bw.style.right = 'auto';
-          bw.style.zIndex = 'auto';
-          // 强制重排确保布局生效
-          void bw.offsetHeight;
-        }
       }
 
       document.addEventListener('focusin', function(e) {
@@ -10317,36 +10301,14 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+          if (el && el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
-            // 恢复通话界面输入栏和挂断按钮位置
-            var callOverlay = document.getElementById('callOverlay');
-            if (callOverlay && callOverlay.classList.contains('active')) {
-              var inputBar = document.getElementById('callChatInputBar');
-              var controls = document.getElementById('callControls');
-              if (inputBar) inputBar.style.bottom = '';
-              if (controls) controls.style.bottom = '';
-            }
-            // 强制重置 phone 高度和底部栏位置
-            if (phone) {
-              phone.style.height = '';
-              phone.style.overflow = '';
-            }
-            if (bw) {
-              bw.style.position = '';
-              bw.style.bottom = '';
-              bw.style.left = '';
-              bw.style.right = '';
-              bw.style.zIndex = '';
-            }
-            // 多次延迟确保浏览器完全重置
-            setTimeout(apply, 50);
-            setTimeout(apply, 150);
-            setTimeout(apply, 300);
-            setTimeout(apply, 500);
+            apply();
+            setTimeout(apply, 100);
+            setTimeout(apply, 250);
           }
-        }, 50);
+        }, 80);
       });
 
       if (window.visualViewport) {
@@ -10363,7 +10325,6 @@
         });
       }
 
-      // 初始化
       apply();
     })();
 
