@@ -8494,6 +8494,151 @@
 
 
 
+/* --- 通话类型选择弹窗 --- */
+.call-type-modal {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 11000; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.45);
+}
+.call-type-modal.active { display: flex; }
+.call-type-cards {
+  display: flex; gap: 24px; padding: 32px;
+  background: rgba(30,20,50,0.85); border-radius: 20px;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+.call-type-card {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  width: 100px; height: 120px; justify-content: center;
+  background: rgba(255,255,255,0.08); border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.12);
+  cursor: pointer; transition: all 0.2s;
+}
+.call-type-card:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
+.call-type-card svg { width: 36px; height: 36px; color: #fff; }
+.call-type-card span { color: #fff; font-size: 14px; font-weight: 500; }
+
+/* --- 通话全屏界面 --- */
+.call-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 11000; display: none; flex-direction: column;
+  background: #1e1432;
+  color: #fff; overflow: hidden;
+  transition: background 0.4s ease;
+}
+.call-overlay.active { display: flex; }
+.call-top-bar {
+  display: flex; justify-content: flex-end; align-items: center;
+  padding: 52px 16px 8px; gap: 12px; z-index: 2;
+}
+.call-top-bar .call-bg-btn,
+.call-top-bar .call-minimize-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); border: none; color: #fff;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.call-top-bar .call-bg-btn:active,
+.call-top-bar .call-minimize-btn:active { background: rgba(255,255,255,0.3); }
+.call-main-area {
+  display: flex; flex-direction: column;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+}
+.call-voice-visual {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 100%; flex: 1; gap: 16px;
+}
+.call-voice-avatar-wrap { position: relative; width: 120px; height: 120px; }
+.call-voice-avatar {
+  width: 120px; height: 120px; border-radius: 50%;
+  background: var(--primary); display: flex; align-items: center; justify-content: center;
+  font-size: 40px; color: #fff; font-weight: 700; z-index: 1; position: relative;
+}
+.call-voice-timer {
+  font-size: 18px; color: rgba(255,255,255,0.8); font-variant-numeric: tabular-nums;
+}
+.call-status-text {
+  font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 4px;
+}
+/* 视频区域 */
+.call-video-visual {
+  display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+}
+.call-video-visual.active { display: block; }
+.call-video-big {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: transparent; background-size: cover; background-position: center; background-repeat: no-repeat;
+}
+.call-video-small {
+  position: fixed; top: 60px; right: 16px; width: 100px; height: 134px;
+  background-color: var(--primary); background-size: cover; background-position: center; background-repeat: no-repeat;
+  border-radius: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.4); z-index: 3;
+  display: flex; align-items: center; justify-content: center;
+}
+.call-video-small .swap-icon {
+  position: absolute; bottom: 6px; right: 6px; width: 24px; height: 24px;
+  background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+}
+/* 聊天区 */
+.call-chat-area {
+  position: absolute; bottom: 100px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column;
+  width: calc(100% - 32px); max-width: 380px;
+  z-index: 2;
+}
+.call-sys-msg {
+  text-align: center; font-size: 12px; color: rgba(255,255,255,0.5);
+  padding: 4px 0; display: none;
+}
+.call-chat-messages {
+  display: flex; flex-direction: column;
+  height: 120px; overflow-y: auto; padding: 6px 0;
+  scrollbar-width: none;
+}
+.call-chat-messages::-webkit-scrollbar { display: none; }
+.call-chat-row-incoming, .call-chat-row-outgoing {
+  display: flex; flex-direction: column; gap: 2px; margin-bottom: 8px;
+}
+.call-chat-row-outgoing { align-items: flex-end; }
+.call-chat-row-incoming { align-items: flex-start; }
+.call-msg-bubble {
+  max-width: 70%; padding: 8px 12px; border-radius: 12px;
+  font-size: 14px; line-height: 1.4; word-break: break-word;
+}
+.call-chat-row-incoming .call-msg-bubble {
+  background: rgba(255,255,255,0.15); color: #fff;
+}
+.call-chat-row-outgoing .call-msg-bubble {
+  background: var(--primary); color: #fff;
+}
+.call-chat-input-bar {
+  display: flex; gap: 8px; align-items: center;
+  padding: 0; margin-top: 8px;
+}
+.call-chat-input {
+  flex: 1; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px; padding: 10px 16px; color: #fff; font-size: 14px; outline: none;
+}
+.call-chat-input:focus { border-color: var(--primary); }
+.call-chat-input::placeholder { color: rgba(255,255,255,0.4); }
+.call-chat-send-btn {
+  background: var(--primary); color: #fff; border: none; border-radius: 23px;
+  width: 60px; height: 40px; font-size: 14px; cursor: pointer; flex-shrink: 0;
+  font-weight: 600;
+}
+/* 挂断按钮 */
+.call-controls {
+  position: absolute; bottom: 36px; left: 0; right: 0;
+  display: flex; justify-content: center;
+}
+.call-hangup-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 160px; height: 46px; border-radius: 23px; border: none; cursor: pointer;
+  background: #ff3b30; color: #fff; font-size: 16px; font-weight: 600;
+  transition: all 0.2s; box-shadow: 0 4px 16px rgba(255,59,48,0.35);
+}
+.call-hangup-btn:active { transform: scale(0.95); }
+.call-hangup-btn svg { width: 20px; height: 20px; }
+
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -10021,6 +10166,75 @@
       <div class="theme-css-label">自定义气泡 CSS</div>
       <textarea class="theme-css-textarea" id="customBubbleCss" placeholder=".msg-bubble { background: #f0e0ff; }"></textarea>
       <div class="theme-css-hint">输入气泡样式的 CSS 代码，如背景色、阴影等。实时生效。</div>
+    </div>
+  </div>
+</div>
+
+<!-- 通话类型选择弹窗 -->
+<div class="call-type-modal" id="callTypeModal">
+  <div class="call-type-cards">
+    <div class="call-type-card" id="callTypeVoice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+      </svg>
+      <span>语音通话</span>
+    </div>
+    <div class="call-type-card" id="callTypeVideo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="23 7 16 12 23 17 23 7"/>
+        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+      </svg>
+      <span>视频通话</span>
+    </div>
+  </div>
+</div>
+
+<!-- 通话全屏界面 -->
+<div class="call-overlay" id="callOverlay">
+  <div class="call-main-area" id="callMainArea">
+    <!-- 语音通话视觉区 -->
+    <div class="call-voice-visual" id="callVoiceVisual">
+      <div class="call-voice-avatar-wrap">
+        <div class="call-voice-avatar" id="callVoiceAvatar">?</div>
+      </div>
+      <div class="call-voice-timer" id="callVoiceTimer">00:00</div>
+      <div class="call-status-text" id="callStatusText">呼叫中...</div>
+    </div>
+    <!-- 视频通话视觉区 -->
+    <div class="call-video-visual" id="callVideoVisual">
+      <div class="call-video-big" id="callVideoBig"></div>
+      <div class="call-video-small" id="callVideoSmall">
+        <div class="swap-icon">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+        </div>
+      </div>
+      <input type="file" id="callVideoBgBig" accept="image/*" style="display:none">
+      <input type="file" id="callVideoBgSmall" accept="image/*" style="display:none">
+    </div>
+    <!-- 顶部操作栏 -->
+    <div class="call-top-bar" id="callTopBar">
+      <button class="call-bg-btn" id="callBgBtn" title="换背景">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" rx="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21"/></svg>
+      </button>
+    </div>
+    <!-- 聊天区 -->
+    <div class="call-chat-area" id="callChatArea">
+      <div class="call-sys-msg" id="callSysMsg" style="display:none;"></div>
+      <div class="call-chat-messages" id="callChatMessages">
+        <div class="call-chat-row-incoming" id="callRowIncoming"></div>
+        <div class="call-chat-row-outgoing" id="callRowOutgoing"></div>
+      </div>
+      <div class="call-chat-input-bar">
+        <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
+        <button class="call-chat-send-btn" id="callChatSend">发送</button>
+      </div>
+    </div>
+    <!-- 挂断按钮 -->
+    <div class="call-controls" id="callControls">
+      <button class="call-hangup-btn" id="callBtnHangup" title="挂断">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+        挂断
+      </button>
     </div>
   </div>
 </div>
@@ -19174,6 +19388,230 @@ patText2 = patText2.replace(/你/g, '我');
   window.openThemeView = openThemeView;
   window.closeThemeView = closeThemeView;
   window.applyTheme = applyTheme;
+
+  // ===== 通话功能 =====
+  (function() {
+    var callTypeModal = document.getElementById('callTypeModal');
+    var callTypeVoice = document.getElementById('callTypeVoice');
+    var callTypeVideo = document.getElementById('callTypeVideo');
+    var callOverlay = document.getElementById('callOverlay');
+    var callVoiceVisual = document.getElementById('callVoiceVisual');
+    var callVideoVisual = document.getElementById('callVideoVisual');
+    var callVoiceAvatar = document.getElementById('callVoiceAvatar');
+    var callVoiceTimer = document.getElementById('callVoiceTimer');
+    var callStatusText = document.getElementById('callStatusText');
+    var callVideoBig = document.getElementById('callVideoBig');
+    var callVideoSmall = document.getElementById('callVideoSmall');
+    var callVideoBgBig = document.getElementById('callVideoBgBig');
+    var callVideoBgSmall = document.getElementById('callVideoBgSmall');
+    var callBgBtn = document.getElementById('callBgBtn');
+    var callChatArea = document.getElementById('callChatArea');
+    var callSysMsg = document.getElementById('callSysMsg');
+    var callChatMessages = document.getElementById('callChatMessages');
+    var callRowIncoming = document.getElementById('callRowIncoming');
+    var callRowOutgoing = document.getElementById('callRowOutgoing');
+    var callChatInput = document.getElementById('callChatInput');
+    var callChatSend = document.getElementById('callChatSend');
+    var callBtnHangup = document.getElementById('callBtnHangup');
+
+    var callState = 'idle'; // idle, ringing, connected
+    var callType = ''; // 'voice' or 'video'
+    var callTimerInterval = null;
+    var callSeconds = 0;
+    var _callWallpaper = '';
+
+    // 工具栏点击通话按钮 → 显示类型选择弹窗
+    var callToolbarBtn = document.querySelector('.toolbar-item[data-tool="call"]');
+    if (callToolbarBtn) {
+      callToolbarBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        callTypeModal.classList.add('active');
+      });
+    }
+
+    // 点击弹窗外部关闭
+    callTypeModal.addEventListener('click', function(e) {
+      if (e.target === callTypeModal) {
+        callTypeModal.classList.remove('active');
+      }
+    });
+
+    // 选择语音通话
+    callTypeVoice.addEventListener('click', function() {
+      callTypeModal.classList.remove('active');
+      startCall('voice');
+    });
+
+    // 选择视频通话
+    callTypeVideo.addEventListener('click', function() {
+      callTypeModal.classList.remove('active');
+      startCall('video');
+    });
+
+    function startCall(type) {
+      callType = type;
+      callState = 'ringing';
+      callSeconds = 0;
+
+      // 获取当前联系人信息
+      var contactName = '联系人';
+      var contactInitial = '?';
+      if (currentChatId) {
+        var contact = contacts.find(function(c) { return c.id === currentChatId; });
+        if (contact) {
+          contactName = contact.name;
+          contactInitial = contact.name.charAt(0);
+        }
+      }
+
+      // 重置界面
+      callVoiceAvatar.textContent = contactInitial;
+      callVoiceTimer.textContent = '00:00';
+      callStatusText.textContent = '呼叫中...';
+      callSysMsg.style.display = 'none';
+      callRowIncoming.innerHTML = '';
+      callRowOutgoing.innerHTML = '';
+
+      // 设置背景
+      try {
+        var _pc = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
+        var _r = parseInt(_pc.slice(1,3),16), _g = parseInt(_pc.slice(3,5),16), _b = parseInt(_pc.slice(5,7),16);
+        function _dk(f){ return 'rgb('+Math.round(_r*f)+','+Math.round(_g*f)+','+Math.round(_b*f)+')'; }
+        callOverlay.style.backgroundColor = _dk(0.35);
+      } catch(e) {
+        callOverlay.style.backgroundColor = '#1e1432';
+      }
+
+      // 切换语音/视频模式
+      if (type === 'video') {
+        callVoiceVisual.style.display = 'none';
+        callVideoVisual.classList.add('active');
+        callVideoBig.style.backgroundColor = 'transparent';
+        callVideoBig.style.backgroundImage = 'none';
+        callVideoSmall.style.backgroundColor = 'var(--primary)';
+        callVideoSmall.style.backgroundImage = 'none';
+      } else {
+        callVoiceVisual.style.display = '';
+        callVideoVisual.classList.remove('active');
+      }
+
+      // 显示通话界面
+      callOverlay.classList.add('active');
+
+      // 2秒后自动接听
+      setTimeout(function() {
+        if (callState === 'ringing') acceptCall();
+      }, 2000);
+    }
+
+    function acceptCall() {
+      callState = 'connected';
+      callStatusText.textContent = '通话中';
+      callSysMsg.textContent = '通话已接通';
+      callSysMsg.style.display = 'block';
+
+      // 开始计时
+      callTimerInterval = setInterval(function() {
+        callSeconds++;
+        var m = Math.floor(callSeconds / 60);
+        var s = callSeconds % 60;
+        callVoiceTimer.textContent = (m < 10 ? '0'+m : m) + ':' + (s < 10 ? '0'+s : s);
+      }, 1000);
+    }
+
+    function endCall() {
+      callState = 'idle';
+      callOverlay.classList.remove('active');
+      callVideoVisual.classList.remove('active');
+      if (callTimerInterval) { clearInterval(callTimerInterval); callTimerInterval = null; }
+      callSeconds = 0;
+      _callWallpaper = '';
+
+      // 清理样式
+      callOverlay.style.backgroundColor = '#1e1432';
+      callVideoBig.style.backgroundColor = 'transparent';
+      callVideoBig.style.backgroundImage = 'none';
+      callVideoSmall.style.backgroundColor = 'var(--primary)';
+      callVideoSmall.style.backgroundImage = 'none';
+    }
+
+    // 挂断
+    callBtnHangup.addEventListener('click', function() {
+      endCall();
+    });
+
+    // 通话中发送消息
+    function sendCallMessage() {
+      var text = callChatInput.value.trim();
+      if (!text) return;
+      var bubble = document.createElement('div');
+      bubble.className = 'call-msg-bubble';
+      bubble.textContent = text;
+      callRowOutgoing.appendChild(bubble);
+      callChatInput.value = '';
+      callChatMessages.scrollTop = callChatMessages.scrollHeight;
+
+      // 模拟对方回复
+      setTimeout(function() {
+        var replies = ['嗯嗯~', '好的呢', '哈哈', '收到', 'ok~'];
+        var reply = replies[Math.floor(Math.random() * replies.length)];
+        var rb = document.createElement('div');
+        rb.className = 'call-msg-bubble';
+        rb.textContent = reply;
+        callRowIncoming.appendChild(rb);
+        callChatMessages.scrollTop = callChatMessages.scrollHeight;
+      }, 800 + Math.random() * 1200);
+    }
+
+    callChatSend.addEventListener('click', sendCallMessage);
+    callChatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') { e.preventDefault(); sendCallMessage(); }
+    });
+
+    // 换背景按钮
+    callBgBtn.addEventListener('click', function() {
+      if (callType === 'video') {
+        callVideoBgBig.click();
+      }
+    });
+
+    callVideoBgBig.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        var url = ev.target.result;
+        _callWallpaper = 'url(' + url + ')';
+        callVideoBig.style.backgroundImage = _callWallpaper;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 双击小窗设置背景
+    callVideoSmall.addEventListener('dblclick', function() {
+      callVideoBgSmall.click();
+    });
+
+    callVideoBgSmall.addEventListener('change', function(e) {
+      var file = e.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        callVideoSmall.style.backgroundImage = 'url(' + ev.target.result + ')';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // 交换大小窗口背景
+    callVideoSmall.addEventListener('click', function(e) {
+      // 避免和 dblclick 冲突
+      if (e.detail >= 2) return;
+      var tempImg = callVideoBig.style.backgroundImage;
+      callVideoBig.style.backgroundImage = callVideoSmall.style.backgroundImage;
+      callVideoSmall.style.backgroundImage = tempImg;
+    });
+
+  })();
 })();
 
 </script>
