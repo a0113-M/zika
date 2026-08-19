@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='25'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','25');location.href=location.pathname+'?v=25&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='26'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','26');location.href=location.pathname+'?v=26&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v25</title>
+  <title>字卡 · 小手机 v26</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -373,7 +373,7 @@
 
     /* --- 弹窗 (添加/群聊) --- */
     .modal-overlay {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -1128,6 +1128,7 @@
 
     .chat-input-bar input {
       flex: 1;
+      min-width: 0;
       padding: 6px 12px;
       border: none;
       border-radius: 6px;
@@ -1179,6 +1180,7 @@
       font-weight: 500;
       cursor: pointer;
       flex-shrink: 0;
+      min-width: 50px;
     }
 
     .chat-send-btn:active {
@@ -8789,7 +8791,7 @@
     </div>
 
     <!-- 弹窗 (添加联系人/群聊) -->
-    <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-overlay" id="modalOverlay" style="position:fixed;">
       <div class="modal-box" id="modalBox">
         <h3 id="modalTitle">添加联系人</h3>
         <div class="modal-field">
@@ -9664,7 +9666,7 @@
   </div>
 
   <!-- 拍一拍选择弹窗 -->
-  <div class="modal-overlay" id="patModal" style="z-index: 300;">
+  <div class="modal-overlay" id="patModal" style="position:fixed; z-index: 300;">
     <div class="modal-box" style="width:290px; max-height:70vh; overflow-y:auto;">
       <h3 id="patModalTitle">选择拍一拍</h3>
       <!-- 自定义拍一拍（直接展示，放在列表上方） -->
@@ -9694,7 +9696,7 @@
   <input type="file" id="albumFileInput" accept="image/*,video/*" multiple style="display:none;" />
 
   <!-- 帮我决定弹窗 -->
-  <div class="modal-overlay" id="decisionModal" style="z-index: 300;">
+  <div class="modal-overlay" id="decisionModal" style="position:fixed; z-index: 300;">
     <div class="modal-box" style="width:320px; max-height:80vh; padding:0; display:flex; flex-direction:column;">
       <!-- 头部 -->
       <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px 12px; border-bottom:0.5px solid #eee;">
@@ -9751,7 +9753,7 @@
   </div>
 
   <!-- 决策结果弹窗 -->
-  <div class="modal-overlay" id="decisionResultModal" style="z-index: 350;">
+  <div class="modal-overlay" id="decisionResultModal" style="position:fixed; z-index: 350;">
     <div class="modal-box" style="width:290px; padding:28px 22px 22px; text-align:center;">
       <div id="decResultText" style="font-size:32px; font-weight:700; color:#1a1a1a; margin-bottom:8px; letter-spacing:2px;"></div>
       <div id="decResultQuestion" style="font-size:13px; color:#999; margin-bottom:18px;"></div>
@@ -9760,7 +9762,7 @@
   </div>
 
   <!-- 搜索聊天记录弹窗 -->
-  <div class="modal-overlay" id="chatSearchModal" style="z-index: 300;">
+  <div class="modal-overlay" id="chatSearchModal" style="position:fixed; z-index: 300;">
     <div class="modal-box" style="width:310px; max-height:75vh; display:flex; flex-direction:column;">
       <h3 style="margin-bottom:14px;">搜索聊天记录</h3>
       <!-- 搜索输入区 -->
