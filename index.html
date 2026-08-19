@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='21'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','21');location.href=location.pathname+'?v=21&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='22'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','22');location.href=location.pathname+'?v=22&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v21</title>
+  <title>字卡 · 小手机 v22</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10267,9 +10267,21 @@
         // 更新最大高度（键盘收起时 curVH 最大）
         if (curVH > maxVH) maxVH = curVH;
 
+        // 通话界面激活时，不调整 phone 高度（避免通话界面元素上移）
+        var callOverlay = document.getElementById('callOverlay');
+        var isCallActive = callOverlay && callOverlay.classList.contains('active');
+
         // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
-        var targetH = inputFocused ? curVH : maxVH;
+        var targetH = (inputFocused && !isCallActive) ? curVH : maxVH;
         if (phone) phone.style.height = targetH + 'px';
+
+        // 通话界面激活时，只调整输入框和发送按钮的位置（跟随键盘）
+        if (isCallActive && kbHeight > 0) {
+          var inputBar = document.getElementById('callChatInputBar');
+          var controls = document.getElementById('callControls');
+          if (inputBar) inputBar.style.bottom = (kbHeight + 8) + 'px';
+          if (controls) controls.style.bottom = (kbHeight + 8) + 'px';
+        }
 
         if (kbHeight > 0) {
           bw.style.position = 'fixed';
@@ -10303,6 +10315,14 @@
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
+            // 恢复通话界面输入栏和挂断按钮位置
+            var callOverlay = document.getElementById('callOverlay');
+            if (callOverlay && callOverlay.classList.contains('active')) {
+              var inputBar = document.getElementById('callChatInputBar');
+              var controls = document.getElementById('callControls');
+              if (inputBar) inputBar.style.bottom = '';
+              if (controls) controls.style.bottom = '';
+            }
             // 等浏览器恢复视口后再应用
             setTimeout(apply, 100);
             setTimeout(apply, 400);
