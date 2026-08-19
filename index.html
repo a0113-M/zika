@@ -10286,9 +10286,13 @@
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
           inputFocused = true;
-          // 打开键盘时自动关闭底部工具栏
+          // 打开键盘时自动关闭底部工具栏和emoji面板
           var ct = document.getElementById('chatToolbar');
-          if (ct) ct.classList.remove('open');
+          if (ct) {
+            ct.classList.remove('open');
+            ct.style.height = '0';
+            ct.style.overflow = 'hidden';
+          }
           var eg = document.getElementById('emojiModule');
           if (eg) eg.classList.remove('active');
           var tg = document.getElementById('toolbarGrid');
@@ -10307,6 +10311,9 @@
           if (el && el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
+            // 清除工具栏内联样式，让CSS类重新控制显示
+            var ct2 = document.getElementById('chatToolbar');
+            if (ct2) { ct2.style.height = ''; ct2.style.overflow = ''; }
             apply();
             setTimeout(apply, 150);
             setTimeout(apply, 300);
