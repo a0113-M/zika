@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='20'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','20');location.href=location.pathname+'?v=20&t='+Date.now();}}catch(e){}</script>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='21'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','21');location.href=location.pathname+'?v=21&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v20</title>
+  <title>字卡 · 小手机 v21</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8583,7 +8583,7 @@
 /* 聊天区（与头像同层，无独立z-index） */
 .call-chat-area {
   position: absolute; left: 16px; right: 16px;
-  top: calc(100% - 340px); bottom: 180px;
+  top: calc(100% - 340px); bottom: 230px;
   display: flex; flex-direction: column;
   max-width: 380px; margin: 0 auto;
 }
@@ -8613,8 +8613,8 @@
 }
 /* 聊天输入栏（独立绝对定位，确保可点击） */
 .call-chat-input-bar {
-  display: flex; flex-direction: column; gap: 8px; align-items: center;
-  position: absolute; left: 16px; right: 16px; bottom: 96px;
+  display: flex; flex-direction: column; gap: 3px; align-items: center;
+  position: absolute; left: 16px; right: 16px; bottom: 130px;
   max-width: 380px; margin: 0 auto; z-index: 5;
 }
 .call-chat-input {
@@ -8633,7 +8633,7 @@
 .call-chat-send-btn:active { transform: scale(0.95); }
 /* 挂断按钮 */
 .call-controls {
-  position: absolute; bottom: 36px; left: 0; right: 0;
+  position: absolute; bottom: 24px; left: 0; right: 0;
   display: flex; justify-content: center;
   z-index: 5;
 }
