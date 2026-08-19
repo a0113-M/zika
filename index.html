@@ -20029,16 +20029,15 @@ patText2 = patText2.replace(/你/g, '我');
             var reader = new FileReader();
             reader.onload = function(ev) {
               var bgUrl = 'url(' + ev.target.result + ')';
-              // 语音通话：应用到 overlay 背景
+              // 壁纸只应用到 overlay 一层，video 窗口保持透明
               callOverlay.style.backgroundImage = bgUrl;
               callOverlay.style.backgroundSize = 'cover';
               callOverlay.style.backgroundPosition = 'center';
               callOverlay.style.backgroundRepeat = 'no-repeat';
-              // 视频通话：应用到大窗口背景
-              if (callType === 'video' && callVideoBig) {
-                callVideoBig.style.backgroundImage = bgUrl;
-                callVideoBig.style.backgroundSize = 'cover';
-                callVideoBig.style.backgroundPosition = 'center';
+              // 清除 video 窗口的独立背景，避免两层重叠
+              if (callVideoBig) {
+                callVideoBig.style.backgroundImage = 'none';
+                callVideoBig.style.background = 'transparent';
               }
               var miniWin = document.getElementById('callMiniWindow');
               if (miniWin) {
