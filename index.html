@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v7')){sessionStorage.setItem('zk_v7','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v8')){sessionStorage.setItem('zk_v8','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v7</title>
+  <title>字卡 · 小手机 v8</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8725,9 +8725,8 @@
 }
 
 .call-controls {
-  position: absolute; bottom: 40px; left: 0; right: 0;
   display: flex; justify-content: center;
-  padding-bottom: 0;
+  margin-top: 12px;
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -9370,14 +9369,13 @@
               <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
               <button class="call-chat-send-btn" id="callChatSend">发送</button>
             </div>
+            <div class="call-controls" id="callControls">
+              <button class="call-hangup-btn" id="callBtnHangup" title="挂断">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+                挂断
+              </button>
+            </div>
           </div>
-        </div>
-
-        <div class="call-controls" id="callControls">
-          <button class="call-hangup-btn" id="callBtnHangup" title="挂断">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-            挂断
-          </button>
         </div>
       </div>
     </div>
