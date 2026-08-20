@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v74')){sessionStorage.setItem('zk_v74','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v75')){sessionStorage.setItem('zk_v75','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v74</title>
+  <title>字卡 · 小手机 v75</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8515,6 +8515,7 @@
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
   --call-msg-color: rgba(60,60,60,0.85);
+  --call-msg-color-self: rgba(60,60,60,0.85);
   --halo-r: 255; --halo-g: 215; --halo-b: 0;
   --halo-opacity: 1;
   --input-opacity: 0.25;
@@ -8738,6 +8739,21 @@
 .cs-slider-group { padding: 10px 0; border-top: 1px solid var(--border-light); }
 .cs-slider-val { font-size: 12px; color: var(--text-muted); font-weight: 500; }
 .cs-slider-group .cs-slider { width: 100%; flex: none; margin-top: 6px; }
+.cs-hex-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.cs-hex-label { font-size: 11px; color: var(--text-muted); width: 24px; text-align: right; flex-shrink: 0; }
+.cs-hex-input {
+  flex: 1; height: 28px; border: 1px solid var(--border-light); border-radius: 6px;
+  padding: 0 8px; font-size: 12px; color: var(--text-main); outline: none;
+  font-family: monospace; background: rgba(var(--primary-rgba), 0.04);
+  -webkit-appearance: none; appearance: none;
+}
+.cs-hex-input:focus { border-color: var(--primary); background: #fff; }
+.cs-hex-apply {
+  border: none; border-radius: 6px; background: var(--primary); color: #fff;
+  padding: 5px 12px; font-size: 12px; cursor: pointer; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.cs-hex-apply:active { background: var(--primary-light); }
 
 .call-main-area {
   display: flex; flex-direction: column;
@@ -8930,6 +8946,9 @@
 }
 .call-chat-msg-line {
   font-size: 16px; color: var(--call-msg-color);
+}
+.call-chat-row-outgoing .call-chat-msg-line {
+  color: var(--call-msg-color-self);
   max-width: 85%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   transition: all 0.4s ease;
 }
@@ -8985,7 +9004,7 @@
 .call-chat-input-fixed {
   width: 100%; min-width: 0;
   background: rgba(255,255,255,var(--input-opacity)); border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 20px; padding: 12px 18px; color: var(--call-msg-color); font-size: 14px; outline: none;
+  border-radius: 20px; padding: 12px 18px; color: var(--call-msg-color-self); font-size: 14px; outline: none;
   transition: border-color 0.2s, background 0.2s; box-sizing: border-box;
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
@@ -9577,18 +9596,20 @@
               <button class="cs-bg-btn" id="callSettingsBgBtn">选择图片</button>
             </div>
             <div class="cs-color-group">
-              <div class="cs-color-header"><span>消息文字颜色</span><div class="cs-color-preview" id="msgColorPreview"><div class="cs-color-fill"></div></div></div>
+              <div class="cs-color-header"><span>联系人消息颜色</span><div class="cs-color-preview" id="msgColorPreview"><div class="cs-color-fill"></div></div></div>
               <div class="cs-slider-row"><span class="cs-slider-label">色相</span><input type="range" class="cs-slider cs-hue" id="msgHue" min="0" max="360" value="0"></div>
               <div class="cs-slider-row"><span class="cs-slider-label">饱和</span><input type="range" class="cs-slider" id="msgSat" min="0" max="100" value="0"></div>
               <div class="cs-slider-row"><span class="cs-slider-label">明暗</span><input type="range" class="cs-slider" id="msgLight" min="0" max="100" value="24"></div>
               <div class="cs-slider-row"><span class="cs-slider-label">透明</span><input type="range" class="cs-slider" id="msgAlpha" min="0" max="100" value="85"></div>
+              <div class="cs-hex-row"><span class="cs-hex-label">编码</span><input type="text" class="cs-hex-input" id="msgHexInput" placeholder="#3c3c3c" maxlength="7"><button class="cs-hex-apply" id="msgHexApply">应用</button></div>
             </div>
             <div class="cs-color-group">
-              <div class="cs-color-header"><span>光圈颜色</span><div class="cs-color-preview" id="haloColorPreview"><div class="cs-color-fill"></div></div></div>
-              <div class="cs-slider-row"><span class="cs-slider-label">色相</span><input type="range" class="cs-slider cs-hue" id="haloHue" min="0" max="360" value="50"></div>
-              <div class="cs-slider-row"><span class="cs-slider-label">饱和</span><input type="range" class="cs-slider" id="haloSat" min="0" max="100" value="100"></div>
-              <div class="cs-slider-row"><span class="cs-slider-label">明暗</span><input type="range" class="cs-slider" id="haloLight" min="0" max="100" value="50"></div>
-              <div class="cs-slider-row"><span class="cs-slider-label">透明</span><input type="range" class="cs-slider" id="haloAlpha" min="0" max="100" value="100"></div>
+              <div class="cs-color-header"><span>我的消息颜色</span><div class="cs-color-preview" id="umsgColorPreview"><div class="cs-color-fill"></div></div></div>
+              <div class="cs-slider-row"><span class="cs-slider-label">色相</span><input type="range" class="cs-slider cs-hue" id="umsgHue" min="0" max="360" value="0"></div>
+              <div class="cs-slider-row"><span class="cs-slider-label">饱和</span><input type="range" class="cs-slider" id="umsgSat" min="0" max="100" value="0"></div>
+              <div class="cs-slider-row"><span class="cs-slider-label">明暗</span><input type="range" class="cs-slider" id="umsgLight" min="0" max="100" value="24"></div>
+              <div class="cs-slider-row"><span class="cs-slider-label">透明</span><input type="range" class="cs-slider" id="umsgAlpha" min="0" max="100" value="85"></div>
+              <div class="cs-hex-row"><span class="cs-hex-label">编码</span><input type="text" class="cs-hex-input" id="umsgHexInput" placeholder="#3c3c3c" maxlength="7"><button class="cs-hex-apply" id="umsgHexApply">应用</button></div>
             </div>
             <div class="cs-slider-group">
               <div class="cs-color-header"><span>输入框透明度</span><span class="cs-slider-val" id="callSettingsInputVal">25%</span></div>
@@ -20393,19 +20414,21 @@ patText2 = patText2.replace(/你/g, '我');
           var raw = JSON.parse(localStorage.getItem(CALL_SETTINGS_KEY) || '{}');
           if (raw.msgColor || raw.haloColor) {
             var mh=_hexToHsl(raw.msgColor||'#3c3c3c'), hh=_hexToHsl(raw.haloColor||'#ffd700');
-            return {msgH:mh.h,msgS:mh.s,msgL:mh.l,msgA:85,haloH:hh.h,haloS:hh.s,haloL:hh.l,
+            return {msgH:mh.h,msgS:mh.s,msgL:mh.l,msgA:85,umsgH:mh.h,umsgS:mh.s,umsgL:mh.l,umsgA:85,haloH:hh.h,haloS:hh.s,haloL:hh.l,
               haloA:raw.haloOpacity!==undefined?raw.haloOpacity:100,
               inputOpacity:raw.inputOpacity!==undefined?raw.inputOpacity:25};
           }
           return {
             msgH:raw.msgH!==undefined?raw.msgH:0, msgS:raw.msgS!==undefined?raw.msgS:0,
             msgL:raw.msgL!==undefined?raw.msgL:24, msgA:raw.msgA!==undefined?raw.msgA:85,
+            umsgH:raw.umsgH!==undefined?raw.umsgH:0, umsgS:raw.umsgS!==undefined?raw.umsgS:0,
+            umsgL:raw.umsgL!==undefined?raw.umsgL:24, umsgA:raw.umsgA!==undefined?raw.umsgA:85,
             haloH:raw.haloH!==undefined?raw.haloH:50, haloS:raw.haloS!==undefined?raw.haloS:100,
             haloL:raw.haloL!==undefined?raw.haloL:50, haloA:raw.haloA!==undefined?raw.haloA:100,
             inputOpacity:raw.inputOpacity!==undefined?raw.inputOpacity:25
           };
         } catch(e) {
-          return {msgH:0,msgS:0,msgL:24,msgA:85,haloH:50,haloS:100,haloL:50,haloA:100,inputOpacity:25};
+          return {msgH:0,msgS:0,msgL:24,msgA:85,umsgH:0,umsgS:0,umsgL:24,umsgA:85,haloH:50,haloS:100,haloL:50,haloA:100,inputOpacity:25};
         }
       }
       function _saveCallSettings(s) { try { localStorage.setItem(CALL_SETTINGS_KEY, JSON.stringify(s)); } catch(e) {} }
@@ -20414,6 +20437,8 @@ patText2 = patText2.replace(/你/g, '我');
         if (!ov) return;
         var mc = _hslToRgb(s.msgH, s.msgS, s.msgL);
         ov.style.setProperty('--call-msg-color', 'rgba('+mc.r+','+mc.g+','+mc.b+','+(s.msgA/100)+')');
+        var uc = _hslToRgb(s.umsgH, s.umsgS, s.umsgL);
+        ov.style.setProperty('--call-msg-color-self', 'rgba('+uc.r+','+uc.g+','+uc.b+','+(s.umsgA/100)+')');
         var hc = _hslToRgb(s.haloH, s.haloS, s.haloL);
         ov.style.setProperty('--halo-r', hc.r);
         ov.style.setProperty('--halo-g', hc.g);
@@ -20441,14 +20466,18 @@ patText2 = patText2.replace(/你/g, '我');
         var fileInput=document.getElementById('callBgFileInput');
         var inputOpacityInput=document.getElementById('callSettingsInputOpacity');
         var inputVal=document.getElementById('callSettingsInputVal');
-        var initMap={msgHue:s.msgH,msgSat:s.msgS,msgLight:s.msgL,msgAlpha:s.msgA,haloHue:s.haloH,haloSat:s.haloS,haloLight:s.haloL,haloAlpha:s.haloA};
+        var initMap={msgHue:s.msgH,msgSat:s.msgS,msgLight:s.msgL,msgAlpha:s.msgA,umsgHue:s.umsgH,umsgSat:s.umsgS,umsgLight:s.umsgL,umsgAlpha:s.umsgA};
         for(var k in initMap){var e=document.getElementById(k);if(e)e.value=initMap[k];}
         if(inputOpacityInput) inputOpacityInput.value=s.inputOpacity;
         if(inputVal) inputVal.textContent=s.inputOpacity+'%';
         _updateSliders('msg',s.msgH,s.msgS,s.msgL,s.msgA);
         _updatePreview('msgColorPreview',s.msgH,s.msgS,s.msgL,s.msgA);
-        _updateSliders('halo',s.haloH,s.haloS,s.haloL,s.haloA);
-        _updatePreview('haloColorPreview',s.haloH,s.haloS,s.haloL,s.haloA);
+        _updateSliders('umsg',s.umsgH,s.umsgS,s.umsgL,s.umsgA);
+        _updatePreview('umsgColorPreview',s.umsgH,s.umsgS,s.umsgL,s.umsgA);
+        var msgHexInput=document.getElementById('msgHexInput');
+        var msgHexApply=document.getElementById('msgHexApply');
+        var umsgHexInput=document.getElementById('umsgHexInput');
+        var umsgHexApply=document.getElementById('umsgHexApply');
         if(closeBtn) closeBtn.addEventListener('click',function(){if(overlay)overlay.classList.remove('active');});
         if(overlay) overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.classList.remove('active');});
         if(bgBtn&&fileInput) bgBtn.addEventListener('click',function(){fileInput.click();});
@@ -20471,7 +20500,33 @@ patText2 = patText2.replace(/你/g, '我');
           if(lightEl)lightEl.addEventListener('input',upd);
           if(alphaEl)alphaEl.addEventListener('input',upd);
         }
-        bindColor('msg');bindColor('halo');
+        bindColor('msg');bindColor('umsg');
+        function applyHex(prefix){
+          var inp=document.getElementById(prefix+'HexInput');
+          var btn=document.getElementById(prefix+'HexApply');
+          if(!inp||!btn) return;
+          function doApply(){
+            var v=inp.value.trim();
+            if(!v) return;
+            if(v[0]!=='#') v='#'+v;
+            if(!/^#[0-9a-fA-F]{6}$/.test(v)){inp.style.borderColor='#e88ec4';return;}
+            inp.style.borderColor='';
+            var hsl=_hexToHsl(v);
+            var cs=_loadCallSettings();
+            cs[prefix+'H']=hsl.h;cs[prefix+'S']=hsl.s;cs[prefix+'L']=hsl.l;
+            _saveCallSettings(cs);
+            var hueEl=document.getElementById(prefix+'Hue'),satEl=document.getElementById(prefix+'Sat'),
+                lightEl=document.getElementById(prefix+'Light'),alphaEl=document.getElementById(prefix+'Alpha');
+            if(hueEl)hueEl.value=hsl.h;if(satEl)satEl.value=hsl.s;if(lightEl)lightEl.value=hsl.l;
+            var a=alphaEl?parseInt(alphaEl.value):85;
+            _updateSliders(prefix,hsl.h,hsl.s,hsl.l,a);
+            _updatePreview(prefix+'ColorPreview',hsl.h,hsl.s,hsl.l,a);
+            _applyCallSettings();
+          }
+          btn.addEventListener('click',doApply);
+          inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();doApply();}});
+        }
+        applyHex('msg');applyHex('umsg');
       })();
 
     })();
