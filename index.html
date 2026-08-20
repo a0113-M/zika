@@ -8559,8 +8559,8 @@
 .call-action-wrap { display: flex; flex-direction: column; align-items: center; }
 .call-btn-label { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px; text-align: center; }
 
-.call-active { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
-.call-active.active { display: block; }
+.call-active { display: none; flex-direction: column; height: 100%; }
+.call-active.active { display: flex; }
 
 .call-top-bar {
   position: absolute; top: 0; left: 0; right: 0;
@@ -8594,14 +8594,15 @@
 
 .call-main-area {
   display: flex; flex-direction: column;
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  flex: 1; min-height: 0;
+  padding-top: 56px;
 }
 
 .call-voice-visual {
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  width: 100%; height: 100%;
-  padding-top: 0; position: fixed; top: 80px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; z-index: 5;
-  
+  display: flex; flex-direction: column; align-items: center;
+  width: 100%;
+  padding-top: 40px;
+  flex-shrink: 0;
 }
 .call-voice-avatar-wrap {
   position: relative; width: 120px; height: 120px; flex-shrink: 0;
@@ -8670,11 +8671,11 @@
 }
 
 .call-voice-timer {
-  position: fixed; top: 250px; left: 50%;
-  transform: translateX(-50%);
   font-size: 14px; color: rgba(255,215,0,0.7);
   font-variant-numeric: tabular-nums; letter-spacing: 1px;
-  z-index: 2; text-shadow: 0 0 10px rgba(255,215,0,0.3);
+  text-shadow: 0 0 10px rgba(255,215,0,0.3);
+  margin-top: 20px; margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 
@@ -8725,9 +8726,10 @@
 }
 
 .call-controls {
-  position: fixed; left: 16px; right: 16px; bottom: 100px;
   display: flex; justify-content: center;
-  z-index: 12000;
+  padding: 10px 16px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  flex-shrink: 0;
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -8739,11 +8741,11 @@
 .call-hangup-btn svg { width: 20px; height: 20px; }
 
 .call-chat-area {
-  position: fixed; top: 52%; left: 50%; bottom: 260px;
-  transform: translateX(-50%);
+  flex: 1; min-height: 0;
   display: flex; flex-direction: column;
-  width: calc(100% - 32px); max-width: 380px;
-  padding: 0; overflow-y: auto;
+  width: 100%; max-width: 380px;
+  padding: 0 16px; overflow-y: auto;
+  align-self: center;
 }
 .call-chat-messages {
   display: flex; flex-direction: column;
@@ -8806,21 +8808,19 @@
 }
 
 .call-chat-input-bar {
-  position: fixed; left: 16px; right: 16px; bottom: 160px;
-  display: flex; justify-content: center; padding: 0;
-  z-index: 12000;
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 10px 16px;
+  flex-shrink: 0;
 }
 .call-chat-input-fixed {
-  position: fixed; left: 16px; right: 16px; bottom: 220px;
-  z-index: 12000;
+  flex: 1; min-width: 0;
   background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px; padding: 12px 18px; color: #fff; font-size: 14px; outline: none;
-  transition: bottom 0.25s ease, border-color 0.2s; box-sizing: border-box;
-  margin: 0 0 max(8px, env(safe-area-inset-bottom)) 0;
+  transition: border-color 0.2s; box-sizing: border-box;
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(255,255,255,0.25); }
-/* 键盘打开时：输入框由JS动态设置bottom */
+/* flex布局自动适应键盘弹出 */
 /* 键盘打开时：隐藏发送按钮 */
 .call-keyboard-open .call-chat-send-btn {
   display: none;
@@ -8830,9 +8830,10 @@
   display: none;
 }
 .call-chat-send-btn {
-  background: var(--primary); color: #fff; border: none; border-radius: 23px;
-  width: 160px; height: 46px; font-size: 16px; cursor: pointer; white-space: nowrap;
-  font-weight: 600; transition: opacity 0.2s; align-self: center;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff; border: none; border-radius: 23px;
+  width: 100px; height: 46px; font-size: 16px; cursor: pointer; white-space: nowrap;
+  font-weight: 600; transition: opacity 0.2s; flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(155,142,196,0.35);
 }
 .call-chat-send-btn:active { opacity: 0.7; transform: scale(0.96); }
@@ -9380,17 +9381,18 @@
             </div>
           </div>
           <!-- 发送和挂断按钮 -->
+          <!-- 输入框 + 发送按钮 -->
           <div class="call-chat-input-bar">
+            <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息...">
             <button class="call-chat-send-btn" id="callChatSend">发送</button>
           </div>
+          <!-- 挂断按钮 -->
           <div class="call-controls" id="callControls">
             <button class="call-hangup-btn" id="callBtnHangup" title="挂断">
               <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
               挂断
             </button>
           </div>
-          <!-- 输入框固定在底部 -->
-          <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息...">
         </div>
       </div>
     </div>
@@ -20036,11 +20038,7 @@ patText2 = patText2.replace(/你/g, '我');
           var keyboardHeight = baseHeight - currentHeight;
           var isKeyboardOpen = keyboardHeight > keyboardThreshold;
           document.getElementById('callOverlay').classList.toggle('call-keyboard-open', isKeyboardOpen);
-          if (isKeyboardOpen) {
-            inputEl.style.bottom = keyboardHeight + 'px';
-          } else {
-            inputEl.style.bottom = '';
-          }
+          /* flex 布局自动适应，无需手动调整 */
         }
         // 页面稳定后再开始检测
         setTimeout(function() {
