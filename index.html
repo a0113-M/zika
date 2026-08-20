@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v53')){sessionStorage.setItem('zk_v53','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v57')){sessionStorage.setItem('zk_v57','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v53</title>
+  <title>字卡 · 小手机 v57</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8495,7 +8495,9 @@
 
 /* ===== 通话功能 ===== */
 .call-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 100vh;
+  height: 100dvh;
   z-index: 11000; display: none; flex-direction: column;
   background: #1e1432;
   color: #fff; overflow: hidden;
@@ -8808,31 +8810,26 @@
 }
 
 .call-chat-input-bar {
+  flex-direction: column;
   display: flex; align-items: center; justify-content: center;
   gap: 10px; padding: 10px 16px;
   flex-shrink: 0;
+  width: 100%;
+  margin-top: auto;
 }
 .call-chat-input-fixed {
-  flex: 1; min-width: 0;
+  width: 100%; min-width: 0;
   background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px; padding: 12px 18px; color: #fff; font-size: 14px; outline: none;
   transition: border-color 0.2s; box-sizing: border-box;
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(255,255,255,0.25); }
-/* flex布局自动适应键盘弹出 */
-/* 键盘打开时：隐藏发送按钮 */
-.call-keyboard-open .call-chat-send-btn {
-  display: none;
-}
-/* 键盘打开时：挂断按钮隐藏 */
-.call-keyboard-open .call-hangup-btn {
-  display: none;
-}
+/* 键盘弹出时：dvh 动态视口 + flex 自动压缩聊天区，输入框/发送/挂断全部贴合键盘上方，无需隐藏 */
 .call-chat-send-btn {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff; border: none; border-radius: 23px;
-  width: 100px; height: 46px; font-size: 16px; cursor: pointer; white-space: nowrap;
+  width: 160px; height: 46px; font-size: 18px; cursor: pointer; white-space: nowrap;
   font-weight: 600; transition: opacity 0.2s; flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(155,142,196,0.35);
 }
