@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v55')){sessionStorage.setItem('zk_v55','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v53')){sessionStorage.setItem('zk_v53','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v56</title>
+  <title>字卡 · 小手机 v53</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8808,13 +8808,11 @@
 }
 
 .call-chat-input-bar {
-  flex-direction: column;
   display: flex; align-items: center; justify-content: center;
   gap: 10px; padding: 10px 16px;
   flex-shrink: 0;
 }
 .call-chat-input-fixed {
-  width: 100%; background: rgba(255,255,255,0.15); border-radius: 25px; padding: 14px 20px;
   flex: 1; min-width: 0;
   background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px; padding: 12px 18px; color: #fff; font-size: 14px; outline: none;
@@ -8822,46 +8820,19 @@
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(255,255,255,0.25); }
-/* 键盘弹出时：输入框+按钮固定到底部，聊天区留出空间 */
-.call-input-focused .call-main-area {
-  padding-bottom: 0;
-}
-.call-input-focused .call-chat-area {
-  flex: 0 0 auto;
-  max-height: calc(100vh - 320px);
-}
-.call-input-focused .call-voice-visual {
+/* flex布局自动适应键盘弹出 */
+/* 键盘打开时：隐藏发送按钮 */
+.call-keyboard-open .call-chat-send-btn {
   display: none;
 }
-.call-input-focused .call-chat-input-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 11100;
-  background: rgba(20,15,35,0.95);
-  backdrop-filter: blur(10px);
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.3);
-}
-.call-input-focused .call-controls {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 11099;
-  background: rgba(20,15,35,0.95);
-  backdrop-filter: blur(10px);
-  padding-bottom: max(10px, env(safe-area-inset-bottom));
-  padding-top: 0;
-}
-.call-input-focused .call-hangup-btn {
-  margin-top: 56px;
+/* 键盘打开时：挂断按钮隐藏 */
+.call-keyboard-open .call-hangup-btn {
+  display: none;
 }
 .call-chat-send-btn {
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff; border: none; border-radius: 23px;
-  width: 160px; height: 46px; font-size: 18px; cursor: pointer; white-space: nowrap;
+  width: 100px; height: 46px; font-size: 16px; cursor: pointer; white-space: nowrap;
   font-weight: 600; transition: opacity 0.2s; flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(155,142,196,0.35);
 }
@@ -9412,7 +9383,7 @@
           <!-- 发送和挂断按钮 -->
           <!-- 输入框 + 发送按钮 -->
           <div class="call-chat-input-bar">
-            <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息..." onfocus="document.getElementById('callActiveView').classList.add('call-input-focused')" onblur="setTimeout(function(){document.getElementById('callActiveView').classList.remove('call-input-focused')},200)">
+            <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息...">
             <button class="call-chat-send-btn" id="callChatSend">发送</button>
           </div>
           <!-- 挂断按钮 -->
