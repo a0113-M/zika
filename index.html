@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v58')){sessionStorage.setItem('zk_v58','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v59')){sessionStorage.setItem('zk_v59','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v58</title>
+  <title>字卡 · 小手机 v59</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -95,6 +95,13 @@
       padding: 0;
       box-sizing: border-box;
       font-family: inherit;
+      /* 移动端：点击元素不出现高亮背景（跨浏览器统一） */
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* 输入控件基线统一：去掉 iOS 内阴影/圆角等 UA 默认样式（checkbox/radio 保留原生渲染） */
+    input:not([type="checkbox"]):not([type="radio"]), textarea {
+      -webkit-appearance: none;
+      appearance: none;
     }
     button {
       background: transparent;
@@ -10571,6 +10578,10 @@
         // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
         var targetH = inputFocused ? curVH : maxVH;
         if (phone) phone.style.height = targetH + 'px';
+        // 通话浮层同步高度：键盘弹出时浮层变矮，flex 压缩聊天区，输入框贴合键盘
+        // （老 WebView 不认识 dvh / 不响应键盘时的 JS 兜底；visualViewport 在 iOS 上同样生效）
+        var callOv = document.getElementById('callOverlay');
+        if (callOv) callOv.style.height = targetH + 'px';
 
         if (kbHeight > 0) {
           bw.style.position = 'fixed';
