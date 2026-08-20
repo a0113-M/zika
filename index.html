@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v83')){sessionStorage.setItem('zk_v83','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==83){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v84')){sessionStorage.setItem('zk_v84','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==84){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v83</title>
+  <title>字卡 · 小手机 v84</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9655,6 +9655,7 @@
           </div>
           <div class="call-video-visual" id="callVideoVisual" style="display:none;">
             <div class="call-video-big" id="callVideoBig"></div>
+            <div class="call-ripple-field" id="callVideoRippleField"></div>
             <div class="call-video-small" id="callVideoSmall">
               <div class="video-avatar-small" id="callVideoAvatarSmall">我</div>
               <div class="swap-icon">
@@ -20069,42 +20070,45 @@ patText2 = patText2.replace(/你/g, '我');
 
       var rippleInterval = null;
       function spawnRing() {
-        var field = document.getElementById('callRippleField');
-        if (!field) return;
-        var ring = document.createElement('div');
-        var size = 30 + Math.random() * 100;
-        var left = Math.random() * 100;
-        var top = Math.random() * 100;
-        var dur = 2 + Math.random() * 3;
-        var opacity = 0.3 + Math.random() * 0.5;
-        var endScale = 2 + Math.random() * 4;
-        var borderWidth = 0.3 + Math.random() * 0.8;
-        var styles = ['ring-glow','ring-glow','ring-glow','ring-solid','ring-solid','ring-dashed'];
-        var styleClass = styles[Math.floor(Math.random() * styles.length)];
-        var colors = [
-          'rgba(255,250,230,'+opacity+')',
-          'rgba(255,240,200,'+opacity+')',
-          'rgba(255,255,255,'+Math.min(opacity*0.9,0.9)+')',
-          'rgba(255,235,180,'+opacity+')',
-          'rgba(255,220,150,'+opacity+')'
-        ];
-        var color = colors[Math.floor(Math.random() * colors.length)];
-        ring.className = 'call-dynamic-ring ' + styleClass;
-        ring.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+left+'%;top:'+top+'%;border-width:'+borderWidth+'px;border-color:'+color+';--ring-opacity:'+opacity+';--ring-end-scale:'+endScale+';animation-duration:'+dur+'s;';
-        field.appendChild(ring);
-        setTimeout(function() { if (ring.parentNode) ring.parentNode.removeChild(ring); }, dur * 1000 + 100);
+        var fieldIds = callType === 'video' ? ['callVideoRippleField'] : ['callRippleField'];
+        for (var fi = 0; fi < fieldIds.length; fi++) {
+          var field = document.getElementById(fieldIds[fi]);
+          if (!field) continue;
+          var ring = document.createElement('div');
+          var size = 30 + Math.random() * 100;
+          var left = Math.random() * 100;
+          var top = Math.random() * 100;
+          var dur = 2 + Math.random() * 3;
+          var opacity = 0.3 + Math.random() * 0.5;
+          var endScale = 2 + Math.random() * 4;
+          var borderWidth = 0.3 + Math.random() * 0.8;
+          var styles = ['ring-glow','ring-glow','ring-glow','ring-solid','ring-solid','ring-dashed'];
+          var styleClass = styles[Math.floor(Math.random() * styles.length)];
+          var colors = [
+            'rgba(255,250,230,'+opacity+')',
+            'rgba(255,240,200,'+opacity+')',
+            'rgba(255,255,255,'+Math.min(opacity*0.9,0.9)+')',
+            'rgba(255,235,180,'+opacity+')',
+            'rgba(255,220,150,'+opacity+')'
+          ];
+          var color = colors[Math.floor(Math.random() * colors.length)];
+          ring.className = 'call-dynamic-ring ' + styleClass;
+          ring.style.cssText = 'width:'+size+'px;height:'+size+'px;left:'+left+'%;top:'+top+'%;border-width:'+borderWidth+'px;border-color:'+color+';--ring-opacity:'+opacity+';--ring-end-scale:'+endScale+';animation-duration:'+dur+'s;';
+          field.appendChild(ring);
+          (function(rg, d) { setTimeout(function() { if (rg.parentNode) rg.parentNode.removeChild(rg); }, d * 1000 + 100); })(ring, dur);
+        }
       }
       function startRippleAnimation() {
         stopRippleAnimation();
-        var field = document.getElementById('callRippleField');
-        if (field) field.innerHTML = '';
+        var _rfIds = ['callRippleField', 'callVideoRippleField'];
+        for (var ri = 0; ri < _rfIds.length; ri++) { var _rf = document.getElementById(_rfIds[ri]); if (_rf) _rf.innerHTML = ''; }
         for (var i = 0; i < 6; i++) { setTimeout(spawnRing, i * 200); }
         rippleInterval = setInterval(spawnRing, 400);
       }
       function stopRippleAnimation() {
         if (rippleInterval) { clearInterval(rippleInterval); rippleInterval = null; }
-        var field = document.getElementById('callRippleField');
-        if (field) field.innerHTML = '';
+        var _rfIds2 = ['callRippleField', 'callVideoRippleField'];
+        for (var ri2 = 0; ri2 < _rfIds2.length; ri2++) { var _rf2 = document.getElementById(_rfIds2[ri2]); if (_rf2) _rf2.innerHTML = ''; }
       }
 
       function startCallTimer() {
