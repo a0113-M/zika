@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v66')){sessionStorage.setItem('zk_v66','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v67')){sessionStorage.setItem('zk_v67','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v66</title>
+  <title>字卡 · 小手机 v67</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10664,6 +10664,11 @@
         window.visualViewport.addEventListener('resize', function() {
           var curVH = getVH();
           if (curVH > maxVH) maxVH = curVH;
+          // 视口恢复到接近最大值 → 键盘已收起，自动重置（防 focusout 不触发的浏览器）
+          if (inputFocused && curVH >= maxVH - 40) {
+            inputFocused = false;
+            kbHeight = 0;
+          }
           if (inputFocused) {
             var d = maxVH - curVH;
             kbHeight = d > 40 ? Math.round(d) : kbHeight;
@@ -10676,6 +10681,18 @@
 
       // 部分安卓浏览器键盘弹出只触发 window resize、不触发 visualViewport resize，双保险
       window.addEventListener('resize', function() { apply(); });
+
+      // 兜底：部分浏览器键盘收起不触发 focusout，定时检测焦点状态自动恢复
+      setInterval(function() {
+        if (inputFocused) {
+          var el = document.activeElement;
+          if (!el || (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA')) {
+            inputFocused = false;
+            kbHeight = 0;
+            apply();
+          }
+        }
+      }, 500);
 
       // 初始化
       apply();
