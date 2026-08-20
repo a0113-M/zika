@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v79')){sessionStorage.setItem('zk_v79','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v80')){sessionStorage.setItem('zk_v80','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v79</title>
+  <title>字卡 · 小手机 v80</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8870,8 +8870,14 @@
   overflow: hidden;
 }
 .video-center-col {
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  display: none;
+  flex: 1; min-height: 0;
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 14px;
+  position: relative; z-index: 5;
+  pointer-events: none;
 }
+.call-overlay.video-mode .video-center-col { display: flex; }
 .call-video-big .video-avatar-large {
   display: flex; align-items: center; justify-content: center;
   opacity: 0.85;
@@ -9619,12 +9625,7 @@
             <div class="call-voice-timer" id="callVoiceTimer">00:00</div>
           </div>
           <div class="call-video-visual" id="callVideoVisual" style="display:none;">
-            <div class="call-video-big" id="callVideoBig">
-              <div class="video-center-col">
-                <div class="video-avatar-large" id="callVideoAvatarBig">?</div>
-                <div class="call-video-timer" id="callVideoTimer">00:00</div>
-              </div>
-            </div>
+            <div class="call-video-big" id="callVideoBig"></div>
             <div class="call-video-small" id="callVideoSmall">
               <div class="video-avatar-small" id="callVideoAvatarSmall">我</div>
               <div class="swap-icon">
@@ -9633,6 +9634,10 @@
             </div>
             <input type="file" id="callVideoBgBig" accept="image/*" style="display:none">
             <input type="file" id="callVideoBgSmall" accept="image/*" style="display:none">
+          </div>
+          <div class="video-center-col" id="videoCenterCol">
+            <div class="video-avatar-large" id="callVideoAvatarBig">?</div>
+            <div class="call-video-timer" id="callVideoTimer">00:00</div>
           </div>
           <div class="call-chat-area" id="callChatArea">
             <div class="call-sys-msg" id="callSysMsg" style="display:none;"></div>
