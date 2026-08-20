@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v39')){sessionStorage.setItem('zk_v39','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v40')){sessionStorage.setItem('zk_v40','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v39</title>
+  <title>字卡 · 小手机 v40</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8814,11 +8814,28 @@
   z-index: 12000;
   background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
   border-radius: 20px; padding: 12px 18px; color: #fff; font-size: 14px; outline: none;
-  transition: border-color 0.2s; box-sizing: border-box;
+  transition: bottom 0.25s ease, border-color 0.2s; box-sizing: border-box;
   margin: 0 0 max(8px, env(safe-area-inset-bottom)) 0;
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(255,255,255,0.25); }
+/* 键盘打开时：输入框上移 */
+.call-keyboard-open .call-chat-input-fixed {
+  bottom: 280px;
+}
+/* 键盘打开时：隐藏发送按钮 */
+.call-keyboard-open .call-chat-send-btn {
+  display: none;
+}
+/* 键盘打开时：挂断按钮上移，不被键盘遮挡 */
+.call-keyboard-open .call-hangup-btn {
+  position: fixed;
+  bottom: 180px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 12001;
+  margin: 0;
+}
 .call-chat-send-btn {
   background: var(--primary); color: #fff; border: none; border-radius: 23px;
   width: 160px; height: 46px; font-size: 16px; cursor: pointer; white-space: nowrap;
@@ -19615,6 +19632,7 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
       function endCall() {
+        callOverlay.classList.remove('call-keyboard-open');
         callState = 'idle';
         callOverlay.classList.remove('active');
         callMiniWindow.classList.remove('active');
@@ -20007,6 +20025,20 @@ patText2 = patText2.replace(/你/g, '我');
 
       callChatSend.addEventListener('click', sendCallChatMessage);
       callChatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); sendCallChatMessage(); } });
+
+      // 键盘检测：键盘打开时切换样式
+      (function() {
+        var baseHeight = window.innerHeight;
+        var keyboardThreshold = 150;
+        function checkKeyboard() {
+          var currentHeight = window.innerHeight;
+          var isKeyboardOpen = (baseHeight - currentHeight) > keyboardThreshold;
+          document.getElementById('callOverlay').classList.toggle('call-keyboard-open', isKeyboardOpen);
+        }
+        window.addEventListener('resize', checkKeyboard);
+        callChatInput.addEventListener('focus', function() { setTimeout(checkKeyboard, 100); });
+        callChatInput.addEventListener('blur', function() { setTimeout(checkKeyboard, 100); });
+      })();
 
       // 小窗拖拽 + 点击放大回全屏 + 背景切换
       (function() {
