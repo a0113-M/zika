@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v72')){sessionStorage.setItem('zk_v72','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v73')){sessionStorage.setItem('zk_v73','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v72</title>
+  <title>字卡 · 小手机 v73</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8653,12 +8653,14 @@
 .call-settings-overlay.active { display: flex; }
 .call-settings-panel {
   width: 100%;
-  background: rgba(30,20,50,0.95);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-radius: 20px 20px 0 0;
   padding: 20px 24px; padding-bottom: max(20px, env(safe-area-inset-bottom));
   max-height: 80vh; overflow-y: auto;
   animation: callSettingsSlideUp 0.3s ease;
+  border-top: 3px solid var(--primary);
+  box-shadow: 0 -4px 30px rgba(var(--primary-rgba), 0.15);
 }
 @keyframes callSettingsSlideUp {
   from { transform: translateY(100%); }
@@ -8669,37 +8671,39 @@
   margin-bottom: 16px;
 }
 .call-settings-header span {
-  font-size: 18px; font-weight: 600; color: #fff;
+  font-size: 18px; font-weight: 600; color: var(--text-main);
 }
 .call-settings-close {
   width: 32px; height: 32px; border-radius: 50%; border: none;
-  background: rgba(255,255,255,0.1); color: #fff; cursor: pointer;
+  background: rgba(var(--primary-rgba), 0.12); color: var(--text-secondary); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
 }
-.call-settings-close:active { background: rgba(255,255,255,0.2); }
+.call-settings-close:active { background: rgba(var(--primary-rgba), 0.25); }
 .call-settings-item {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 0; border-bottom: 1px solid var(--border-light);
 }
 .call-settings-item:last-child { border-bottom: none; }
 .call-settings-item label {
-  font-size: 15px; color: rgba(255,255,255,0.85); display: flex; align-items: center;
+  font-size: 15px; color: var(--text-main); display: flex; align-items: center;
 }
 .call-settings-item .setting-value {
-  font-size: 13px; color: rgba(255,255,255,0.5); margin-left: 8px;
+  font-size: 13px; color: var(--text-muted); margin-left: 8px;
 }
 .call-settings-item input[type="color"] {
-  width: 44px; height: 32px; border: 1px solid rgba(255,255,255,0.2);
+  width: 44px; height: 32px; border: 1px solid var(--border-light);
   border-radius: 8px; background: transparent; cursor: pointer; padding: 2px;
 }
 .call-settings-item input[type="range"] {
-  width: 120px; accent-color: var(--primary);
+  width: 120px; height: 6px; accent-color: var(--primary); cursor: pointer;
 }
 .call-settings-bg-btn {
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+  background: var(--primary); border: none;
   border-radius: 8px; color: #fff; padding: 6px 16px; font-size: 14px; cursor: pointer;
+  transition: background 0.15s;
 }
-.call-settings-bg-btn:active { background: rgba(255,255,255,0.2); }
+.call-settings-bg-btn:active { background: var(--primary-light); }
 
 .call-main-area {
   display: flex; flex-direction: column;
