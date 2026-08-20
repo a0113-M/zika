@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v61')){sessionStorage.setItem('zk_v61','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v62')){sessionStorage.setItem('zk_v62','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v61</title>
+  <title>字卡 · 小手机 v62</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8658,11 +8658,9 @@
 .call-overlay.kb-open .call-voice-avatar { font-size: 24px; }
 .call-overlay.kb-open .call-voice-timer { margin-top: 6px; margin-bottom: 6px; }
 
-/* 键盘弹出时重排底部区：只有输入框贴键盘上沿，发送/挂断按钮排在输入框上方 */
-.call-overlay.kb-open .call-chat-area { order: 1; }
-.call-overlay.kb-open .call-send-bar { order: 2; }
-.call-overlay.kb-open .call-controls { order: 3; }
-.call-overlay.kb-open .call-chat-input-bar { order: 4; }
+/* 键盘弹出时：只有输入框贴键盘上沿，发送/挂断按钮隐藏（挂断仍可用顶栏mini按钮） */
+.call-overlay.kb-open .call-send-bar { display: none; }
+.call-overlay.kb-open .call-controls { display: none; }
 .call-dynamic-ring {
   position: absolute;
   border-radius: 50%;
