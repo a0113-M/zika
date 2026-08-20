@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v70')){sessionStorage.setItem('zk_v70','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v71')){sessionStorage.setItem('zk_v71','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v70</title>
+  <title>字卡 · 小手机 v71</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8511,7 +8511,7 @@
   height: 100vh;
   height: 100dvh;
   z-index: 11000; display: none; flex-direction: column;
-  background: var(--primary);
+  background: transparent;
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
   --call-msg-color: rgba(60,60,60,0.85);
@@ -8520,6 +8520,11 @@
   --input-opacity: 0.25;
 }
 .call-overlay.active { display: flex; }
+.call-overlay.ringing-mode {
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  justify-content: center; align-items: center;
+}
 
 .call-type-modal {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -8551,8 +8556,8 @@
   color: var(--text-muted); font-size: 13px; cursor: pointer;
 }
 
-.call-ringing { display: none; flex-direction: column; align-items: center; flex: 1; padding: 20px 20px; padding-bottom: max(40px, env(safe-area-inset-bottom)); }
-.call-ringing.active { display: flex; }
+.call-ringing { display: none; flex-direction: column; align-items: stretch; width: 100%; max-width: 320px; padding: 28px 24px; padding-bottom: 28px; background: rgba(30,20,50,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+.call-ringing.active { display: flex; animation: callCardIn 0.3s ease; }
 .call-ringing-center {
   flex: 1;
   display: flex; flex-direction: column;
@@ -8570,6 +8575,10 @@
 @keyframes callPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(155,142,196,0.4); }
   50% { box-shadow: 0 0 0 20px rgba(155,142,196,0); }
+}
+@keyframes callCardIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
 }
 .call-ringing .call-contact-name { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 8px; }
 .call-ringing .call-status-text { font-size: 16px; color: rgba(255,255,255,0.6); }
@@ -19760,6 +19769,8 @@ patText2 = patText2.replace(/你/g, '我');
         callRinging.classList.add('active');
         callActiveView.classList.remove('active');
         callOverlay.classList.add('active');
+        callOverlay.classList.add('ringing-mode');
+        callOverlay.style.backgroundColor = ''; callOverlay.style.backgroundImage = '';
         setTimeout(function() { if (callState === 'ringing') acceptCall(); }, 2000);
       }
 
@@ -19778,6 +19789,7 @@ patText2 = patText2.replace(/你/g, '我');
         callStartTime = Date.now();
         callRinging.classList.remove('active');
         callActiveView.classList.add('active');
+        callOverlay.classList.remove('ringing-mode');
         var initial = callContact.name.charAt(0).toUpperCase();
         var avatarBg = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
       if (callActAvatar) { callActAvatar.textContent = initial; callActAvatar.style.background = avatarBg; }
@@ -19808,6 +19820,8 @@ patText2 = patText2.replace(/你/g, '我');
         callOverlay.classList.remove('call-keyboard-open');
         callState = 'idle';
         callOverlay.classList.remove('active');
+        callOverlay.classList.remove('ringing-mode');
+        callOverlay.style.backgroundColor = ''; callOverlay.style.backgroundImage = '';
         callMiniWindow.classList.remove('active');
         callRinging.classList.remove('active');
         callActiveView.classList.remove('active');
