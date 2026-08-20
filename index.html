@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v69')){sessionStorage.setItem('zk_v69','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v70')){sessionStorage.setItem('zk_v70','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v69</title>
+  <title>字卡 · 小手机 v70</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8551,31 +8551,42 @@
   color: var(--text-muted); font-size: 13px; cursor: pointer;
 }
 
-.call-ringing { display: none; flex-direction: column; align-items: center; justify-content: center; flex: 1; padding: 40px 20px; }
+.call-ringing { display: none; flex-direction: column; align-items: center; flex: 1; padding: 20px 20px; padding-bottom: max(40px, env(safe-area-inset-bottom)); }
 .call-ringing.active { display: flex; }
+.call-ringing-center {
+  flex: 1;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  width: 100%;
+}
 .call-ringing .call-avatar-wrap {
-  width: 100px; height: 100px; border-radius: 50%; overflow: hidden;
+  width: 120px; height: 120px; border-radius: 50%; overflow: hidden;
   background: var(--primary);
-  font-size: 36px; font-weight: 600; color: #fff; margin-bottom: 20px;
+  font-size: 44px; font-weight: 600; color: #fff; margin-bottom: 20px;
   animation: callPulse 2s ease-in-out infinite;
+  display: flex; align-items: center; justify-content: center;
 }
 .call-ringing .call-avatar-wrap img { width: 100%; height: 100%; object-fit: cover; }
 @keyframes callPulse {
   0%, 100% { box-shadow: 0 0 0 0 rgba(155,142,196,0.4); }
   50% { box-shadow: 0 0 0 20px rgba(155,142,196,0); }
 }
-.call-ringing .call-contact-name { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-.call-ringing .call-status-text { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 60px; }
-.call-ringing .call-actions { display: flex; gap: 60px; align-items: center; }
-.call-action-btn {
-  width: 60px; height: 60px; border-radius: 50%; border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+.call-ringing .call-contact-name { font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+.call-ringing .call-status-text { font-size: 16px; color: rgba(255,255,255,0.6); }
+.call-ringing .call-actions {
+  display: flex; gap: 20px; align-items: center;
+  width: 100%; padding-top: 20px;
 }
-.call-action-btn:active { transform: scale(0.9); }
-.call-action-btn.accept { background: #34c759; color: #fff; }
-.call-action-btn.decline { background: #ff3b30; color: #fff; }
-.call-action-wrap { display: flex; flex-direction: column; align-items: center; }
-.call-btn-label { font-size: 10px; color: rgba(255,255,255,0.6); margin-top: 6px; text-align: center; }
+.call-action-btn {
+  flex: 1; padding: 16px 0; border: none; border-radius: 30px;
+  font-size: 18px; font-weight: 500; color: #fff; cursor: pointer;
+  transition: opacity 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.call-action-btn:active { opacity: 0.8; }
+.call-action-btn.accept { background: linear-gradient(180deg, #45d358, #34a848); }
+.call-action-btn.decline { background: linear-gradient(180deg, #ff5e5e, #ff3b3b); }
+.call-action-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
 
 .call-active { display: none; flex-direction: column; height: 100%; }
 .call-active.active { display: flex; }
@@ -9405,22 +9416,20 @@
     <div class="call-overlay" id="callOverlay">
       <!-- 呼叫中 -->
       <div class="call-ringing" id="callRinging">
-        <div class="call-avatar-wrap" id="callRingAvatar">?</div>
-        <div class="call-contact-name" id="callRingName">联系人</div>
-        <div class="call-status-text" id="callRingStatus">正在呼叫...</div>
+        <div class="call-ringing-center">
+          <div class="call-avatar-wrap" id="callRingAvatar">?</div>
+          <div class="call-contact-name" id="callRingName">联系人</div>
+          <div class="call-status-text" id="callRingStatus">正在呼叫...</div>
+        </div>
         <div class="call-actions">
-          <div class="call-action-wrap">
-            <button class="call-action-btn decline" id="callRingDecline">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-            </button>
-            <span class="call-btn-label">挂断</span>
-          </div>
-          <div class="call-action-wrap">
-            <button class="call-action-btn accept" id="callRingAccept">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
-            </button>
-            <span class="call-btn-label">接听</span>
-          </div>
+          <button class="call-action-btn decline" id="callRingDecline">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
+            挂断
+          </button>
+          <button class="call-action-btn accept" id="callRingAccept">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56a.977.977 0 0 0-1.01.24l-1.57 1.97c-2.83-1.35-5.48-3.9-6.89-6.83l1.95-1.66c.27-.28.35-.67.24-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+            接听
+          </button>
         </div>
       </div>
 
