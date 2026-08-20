@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v35</title>
+  <title>字卡 · 小手机 v36</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8584,22 +8584,22 @@
 }
 .call-overlay.active { display: flex; flex-direction: column; align-items: center; }
 
-/* 右上角按钮组 */
+/* 右上角按钮组 - 只有图标没有圆圈 */
 .call-top-right-btn {
   position: absolute;
   top: 50px;
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(0,0,0,0.35);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  width: 24px; height: 24px;
+  background: transparent;
   border: none; color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   z-index: 10;
   transition: all 0.2s;
+  padding: 0;
 }
-.call-top-right-btn:active { transform: scale(0.9); background: rgba(0,0,0,0.5); }
-.call-top-right-btn svg { width: 18px; height: 18px; }
-#callBgToggleBtn { right: 56px; }
-#callMinimizeBtn { right: 12px; }
+.call-top-right-btn:active { transform: scale(0.9); opacity: 0.7; }
+.call-top-right-btn svg { width: 22px; height: 22px; }
+#callBgToggleBtn { right: 50px; }
+#callMinimizeBtn { right: 16px; }
 
 /* 通话悬浮药丸 */
 .call-float-pill {
@@ -8705,25 +8705,25 @@
 .call-chat-row-incoming { align-items: flex-start; }
 .call-chat-row-outgoing { align-items: flex-end; }
 .call-msg-bubble {
-  max-width: 70%; padding: 8px 12px; border-radius: 12px;
-  font-size: 14px; line-height: 1.4; word-break: break-word;
+  font-size: 14px; line-height: 1.5; word-break: break-word;
+  color: #fff; padding: 2px 0;
 }
 .call-chat-row-incoming .call-msg-bubble {
-  background: rgba(255,255,255,0.15); color: #fff;
+  text-align: left;
 }
 .call-chat-row-outgoing .call-msg-bubble {
-  background: var(--primary, #9b8ec4); color: #fff;
+  text-align: right;
 }
 
-/* 聊天输入栏 */
+/* 聊天输入栏 - 垂直堆叠 */
 .call-chat-input-bar {
-  display: flex; gap: 8px; align-items: center;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   width: calc(100% - 32px); max-width: 380px;
   flex-shrink: 0;
-  padding-bottom: 12px;
 }
 .call-chat-input {
-  flex: 1; background: rgba(255,255,255,0.18);
+  width: 100%;
+  background: rgba(255,255,255,0.18);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 20px; padding: 10px 16px;
   color: #fff; font-size: 14px; outline: none;
@@ -8732,11 +8732,10 @@
 .call-chat-input:focus { border-color: var(--primary, #9b8ec4); }
 .call-chat-input::placeholder { color: rgba(255,255,255,0.4); }
 .call-chat-send-btn {
-  background: #e08ba8; color: #fff; border: none;
-  border-radius: 20px; padding: 10px 20px;
+  background: var(--primary, #9b8ec4); color: #fff; border: none;
+  border-radius: 10px; padding: 10px 40px;
   font-size: 14px; cursor: pointer; font-weight: 600;
-  flex-shrink: 0;
-  box-shadow: 0 2px 10px rgba(224,139,168,0.3);
+  transition: all 0.2s;
 }
 .call-chat-send-btn:active { transform: scale(0.95); }
 
