@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v55</title>
+  <title>字卡 · 小手机 v56</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8822,14 +8822,41 @@
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(255,255,255,0.25); }
-/* flex布局自动适应键盘弹出 */
-/* 键盘打开时：隐藏发送按钮 */
-.call-keyboard-open .call-chat-send-btn {
+/* 键盘弹出时：输入框+按钮固定到底部，聊天区留出空间 */
+.call-input-focused .call-main-area {
+  padding-bottom: 0;
+}
+.call-input-focused .call-chat-area {
+  flex: 0 0 auto;
+  max-height: calc(100vh - 320px);
+}
+.call-input-focused .call-voice-visual {
   display: none;
 }
-/* 键盘打开时：挂断按钮隐藏 */
-.call-keyboard-open .call-hangup-btn {
-  display: none;
+.call-input-focused .call-chat-input-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 11100;
+  background: rgba(20,15,35,0.95);
+  backdrop-filter: blur(10px);
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.3);
+}
+.call-input-focused .call-controls {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 11099;
+  background: rgba(20,15,35,0.95);
+  backdrop-filter: blur(10px);
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  padding-top: 0;
+}
+.call-input-focused .call-hangup-btn {
+  margin-top: 56px;
 }
 .call-chat-send-btn {
   background: linear-gradient(135deg, var(--primary), var(--accent));
@@ -9385,7 +9412,7 @@
           <!-- 发送和挂断按钮 -->
           <!-- 输入框 + 发送按钮 -->
           <div class="call-chat-input-bar">
-            <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息...">
+            <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息..." onfocus="document.getElementById('callActiveView').classList.add('call-input-focused')" onblur="setTimeout(function(){document.getElementById('callActiveView').classList.remove('call-input-focused')},200)">
             <button class="call-chat-send-btn" id="callChatSend">发送</button>
           </div>
           <!-- 挂断按钮 -->
