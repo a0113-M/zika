@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v37')){sessionStorage.setItem('zk_v37','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v38')){sessionStorage.setItem('zk_v38','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v37</title>
+  <title>字卡 · 小手机 v38</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8579,18 +8579,18 @@
 .call-top-bar .call-hangup-mini:active { transform: scale(0.92); opacity: 0.85; }
 .call-top-bar .call-hangup-mini svg { width: 18px; height: 18px; }
 .call-top-bar .call-bg-btn {
-  width: 32px; height: 32px; border-radius: 50%; border: none;
-  background: rgba(255,255,255,0.1); color: #fff; cursor: pointer;
+  width: 32px; height: 32px; border: none;
+  background: transparent; color: rgba(255,255,255,0.8); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  margin-right: 8px;
+  margin-right: 4px;
 }
-.call-top-bar .call-bg-btn:active { background: rgba(255,255,255,0.2); }
+.call-top-bar .call-bg-btn:active { color: #fff; }
 .call-top-bar .call-minimize-btn {
-  width: 32px; height: 32px; border-radius: 50%; border: none;
-  background: rgba(255,255,255,0.1); color: #fff; cursor: pointer;
+  width: 32px; height: 32px; border: none;
+  background: transparent; color: rgba(255,255,255,0.8); cursor: pointer;
   display: flex; align-items: center; justify-content: center;
 }
-.call-top-bar .call-minimize-btn:active { background: rgba(255,255,255,0.2); }
+.call-top-bar .call-minimize-btn:active { color: #fff; }
 
 .call-main-area {
   display: flex; flex-direction: column;
@@ -8738,7 +8738,7 @@
 .call-hangup-btn svg { width: 20px; height: 20px; }
 
 .call-chat-area {
-  position: absolute; top: 52%; left: 50%;
+  position: absolute; top: 55%; left: 50%;
   transform: translateX(-50%);
   display: flex; flex-direction: column;
   width: calc(100% - 32px); max-width: 380px;
@@ -8750,18 +8750,18 @@
   padding: 6px 0;
   overflow: hidden;
 }
-/* 第1行：联系人消息（居中） */
+/* 第1行：联系人消息（左对齐） */
 .call-chat-row-incoming {
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: flex-start;
   height: 28px; padding: 0 4px;
-  min-width: 70%; max-width: 70%; margin: 0 auto;
+  min-width: 70%; max-width: 70%;
   position: relative;
 }
-/* 第2行：用户消息（居中） */
+/* 第2行：用户消息（右对齐） */
 .call-chat-row-outgoing {
-  display: flex; align-items: center; justify-content: center;
+  display: flex; align-items: center; justify-content: flex-end;
   height: 28px; padding: 0 4px;
-  min-width: 70%; max-width: 70%; margin: 0 auto;
+  min-width: 70%; max-width: 70%;
   position: relative;
 }
 .call-chat-msg-line {
@@ -8805,20 +8805,20 @@
 }
 
 .call-chat-input-bar {
-  display: flex; flex-direction: column; gap: 8px; padding: 0;
-  margin-bottom: 24px;
-  margin-top: 12px;
+  display: flex; flex-direction: column; gap: 10px; padding: 0;
+  margin-bottom: 16px;
+  margin-top: 16px;
 }
 .call-chat-input {
-  flex: 1; background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px; padding: 10px 16px; color: #fff; font-size: 14px; outline: none;
-  transition: border-color 0.2s;
+  width: 100%; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 20px; padding: 12px 18px; color: #fff; font-size: 14px; outline: none;
+  transition: border-color 0.2s; box-sizing: border-box;
 }
 .call-chat-input:focus { border-color: var(--primary); }
 .call-chat-input::placeholder { color: rgba(255,255,255,0.25); }
 .call-chat-send-btn {
   background: var(--primary); color: #fff; border: none; border-radius: 23px;
-  width: 160px; height: 46px; font-size: 16px; cursor: pointer; white-space: nowrap;
+  width: 140px; height: 42px; font-size: 15px; cursor: pointer; white-space: nowrap;
   font-weight: 600; transition: opacity 0.2s; align-self: center;
   box-shadow: 0 4px 16px rgba(155,142,196,0.35);
 }
