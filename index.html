@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v75')){sessionStorage.setItem('zk_v75','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v76')){sessionStorage.setItem('zk_v76','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v75</title>
+  <title>字卡 · 小手机 v76</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20439,11 +20439,10 @@ patText2 = patText2.replace(/你/g, '我');
         ov.style.setProperty('--call-msg-color', 'rgba('+mc.r+','+mc.g+','+mc.b+','+(s.msgA/100)+')');
         var uc = _hslToRgb(s.umsgH, s.umsgS, s.umsgL);
         ov.style.setProperty('--call-msg-color-self', 'rgba('+uc.r+','+uc.g+','+uc.b+','+(s.umsgA/100)+')');
-        var hc = _hslToRgb(s.haloH, s.haloS, s.haloL);
-        ov.style.setProperty('--halo-r', hc.r);
-        ov.style.setProperty('--halo-g', hc.g);
-        ov.style.setProperty('--halo-b', hc.b);
-        ov.style.setProperty('--halo-opacity', s.haloA / 100);
+        ov.style.setProperty('--halo-r', 255);
+        ov.style.setProperty('--halo-g', 215);
+        ov.style.setProperty('--halo-b', 0);
+        ov.style.setProperty('--halo-opacity', 1);
         ov.style.setProperty('--input-opacity', s.inputOpacity / 100);
       }
       function _updateSliders(prefix, h, s, l, a) {
