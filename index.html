@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v77')){sessionStorage.setItem('zk_v77','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v78')){sessionStorage.setItem('zk_v78','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v77</title>
+  <title>字卡 · 小手机 v78</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8855,8 +8855,13 @@
 
 
 .call-video-visual {
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  flex: 1; min-height: 140px;
+  position: relative;
   display: none;
+  margin: 0 12px 6px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1a1a2e;
 }
 /* 视频大窗口 - 联系人 */
 .call-video-big {
@@ -8864,11 +8869,13 @@
   background-color: #1a1a2e;
   background-size: cover; background-position: center; background-repeat: no-repeat;
   display: flex; align-items: center; justify-content: center;
+  border-radius: 16px; overflow: hidden;
 }
 .call-video-big .video-label {
-  position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-  color: rgba(255,255,255,0.8); font-size: 13px; font-weight: 500;
+  position: absolute; top: 10px; left: 14px;
+  color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500;
   text-shadow: 0 1px 4px rgba(0,0,0,0.6); pointer-events: none;
+  z-index: 3;
 }
 .call-video-big .video-avatar-large {
   display: flex; align-items: center; justify-content: center;
@@ -8881,12 +8888,13 @@
 }
 /* 视频小窗口 - 自己 */
 .call-video-small {
-  position: fixed; top: 80px; right: 16px;
-  width: 100px; height: 134px;
+  position: absolute; top: 10px; right: 10px;
+  width: 96px; height: 140px;
   border-radius: 12px; overflow: hidden;
+  background-color: #2a2a3e;
   background-size: cover; background-position: center; background-repeat: no-repeat;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1px rgba(155,142,196,0.15);
-  z-index: 11100; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), 0 0 0 1.5px rgba(255,255,255,0.25);
+  z-index: 5; cursor: pointer;
   transition: transform 0.3s ease;
   display: flex; align-items: center; justify-content: center;
 }
@@ -8930,11 +8938,30 @@
 }
 .video-bg-menu-btn:active { background: var(--bg-soft); }
 .video-bg-menu-btn.cancel { color: var(--text-muted); }
-.call-overlay.video-mode .call-chat-msg-line {
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+.call-video-timer {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  color: rgba(255,255,255,0.95); font-size: 14px; font-weight: 600;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+  z-index: 3; pointer-events: none;
+  font-variant-numeric: tabular-nums;
 }
-.call-overlay.video-mode .call-sys-msg {
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+/* 视频模式：聊天区不占 flex 剩余空间，紧贴视频下方 */
+.call-overlay.video-mode .call-chat-area {
+  flex: none;
+  padding-top: 4px;
+  padding-bottom: 2px;
+}
+/* 视频模式：顶栏按钮更明显 */
+.call-overlay.video-mode .call-top-bar .call-bg-btn,
+.call-overlay.video-mode .call-top-bar .call-minimize-btn,
+.call-overlay.video-mode .call-top-bar .call-video-bg-btn {
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.call-overlay.video-mode .call-top-bar .call-bg-btn:active,
+.call-overlay.video-mode .call-top-bar .call-minimize-btn:active,
+.call-overlay.video-mode .call-top-bar .call-video-bg-btn:active {
+  background: rgba(255,255,255,0.3);
 }
 .call-controls {
   display: flex; justify-content: center;
@@ -9589,6 +9616,7 @@
           <div class="call-video-visual" id="callVideoVisual" style="display:none;">
             <div class="call-video-big" id="callVideoBig">
               <div class="video-label" id="callVideoLabel"></div>
+              <div class="call-video-timer" id="callVideoTimer">00:00</div>
               <div class="video-avatar-large" id="callVideoAvatarBig">?</div>
             </div>
             <div class="call-video-small" id="callVideoSmall">
@@ -19842,6 +19870,7 @@ patText2 = patText2.replace(/你/g, '我');
       var callVideoAvatarSmall = document.getElementById('callVideoAvatarSmall');
       var callVideoBig = document.getElementById('callVideoBig');
       var callVideoSmall = document.getElementById('callVideoSmall');
+      var callVideoTimer = document.getElementById('callVideoTimer');
       var callVideoBgBig = document.getElementById('callVideoBgBig');
       var callVideoBgSmall = document.getElementById('callVideoBgSmall');
       var callChatArea = document.getElementById('callChatArea');
@@ -19888,7 +19917,7 @@ patText2 = patText2.replace(/你/g, '我');
         callRingAvatar.textContent = initial;
         callRingAvatar.style.background = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
         callRingName.textContent = callContact.name;
-        callRingStatus.textContent = '\u6b63\u5728\u547c\u53eb...';
+        callRingStatus.textContent = type === 'video' ? '\u89c6\u9891\u901a\u8bdd\u4e2d...' : '\u6b63\u5728\u547c\u53eb...';
         callRinging.classList.add('active');
         callActiveView.classList.remove('active');
         callOverlay.classList.add('active');
@@ -19923,6 +19952,7 @@ patText2 = patText2.replace(/你/g, '我');
         if(callVideoAvatarBig){ callVideoAvatarBig.style.background = avatarBg; }
         if(callVideoAvatarSmall){ callVideoAvatarSmall.textContent = '我'; }
         if(callVideoAvatarSmall){ callVideoAvatarSmall.style.background = _pc; }
+        if (callVideoTimer) callVideoTimer.textContent = '00:00';
         updateCallVisual();
         startCallTimer();
         startRippleAnimation();
@@ -19976,6 +20006,7 @@ patText2 = patText2.replace(/你/g, '我');
         var _mwReset = document.getElementById('callMiniWindow');
         if (_mwReset) { _mwReset.style.backgroundImage = ''; _mwReset.style.backgroundSize = ''; _mwReset.style.backgroundPosition = ''; _mwReset.style.backgroundRepeat = ''; }
         if (callVideoBig) { callVideoBig.style.backgroundImage = ''; callVideoBig.style.backgroundSize = ''; callVideoBig.style.backgroundPosition = ''; callVideoBig.style.backgroundColor = ''; callVideoBig.style.background = ''; }
+        if (callVideoTimer) callVideoTimer.textContent = '00:00';
         var _vbgm=document.getElementById('videoBgMenu'); if(_vbgm) _vbgm.classList.remove('active');
         if (callVideoSmall) { callVideoSmall.style.backgroundImage = ''; callVideoSmall.style.backgroundSize = ''; callVideoSmall.style.backgroundPosition = ''; callVideoSmall.style.backgroundColor = ''; callVideoSmall.style.background = ''; }
         if (callVideoBgBig) callVideoBgBig.value = '';
@@ -20043,6 +20074,7 @@ patText2 = patText2.replace(/你/g, '我');
           var str = (min < 10 ? '0' : '') + min + ':' + (sec < 10 ? '0' : '') + sec;
       if (callActTimer) callActTimer.textContent = str;
       if (callVoiceTimer) callVoiceTimer.textContent = str;
+      if (callVideoTimer) callVideoTimer.textContent = str;
           cmwTimer.textContent = str;
         }, 1000);
       }
