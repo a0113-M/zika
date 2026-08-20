@@ -2,14 +2,11 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(localStorage.getItem('zk_cache_v')!=='35'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','35');location.href=location.pathname+'?v=35&t='+Date.now();}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v36</title>
+  <title>字卡 · 小手机 v37</title>
+  <script>try{if(localStorage.getItem('zk_cache_v')!=='37'){var ks=Object.keys(sessionStorage);for(var i=0;i<ks.length;i++){if(ks[i].indexOf('zk_')===0)sessionStorage.removeItem(ks[i]);}localStorage.setItem('zk_cache_v','37');location.href=location.pathname+'?v=37&t='+Date.now();}}catch(e){}</script>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -130,7 +127,6 @@
       flex-direction: column;
       position: relative;
       height: 100%;
-      transition: height 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .app-container {
@@ -374,7 +370,7 @@
 
     /* --- 弹窗 (添加/群聊) --- */
     .modal-overlay {
-      position: fixed;
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
@@ -1088,7 +1084,6 @@
       padding-bottom: env(safe-area-inset-bottom, 2px);
       max-height: 50vh;
       flex-shrink: 0;
-      transition: none;
     }
 
     .chat-input-bar {
@@ -1130,7 +1125,6 @@
 
     .chat-input-bar input {
       flex: 1;
-      min-width: 0;
       padding: 6px 12px;
       border: none;
       border-radius: 6px;
@@ -1182,7 +1176,6 @@
       font-weight: 500;
       cursor: pointer;
       flex-shrink: 0;
-      min-width: 50px;
     }
 
     .chat-send-btn:active {
@@ -8496,290 +8489,6 @@
 .msg-bubble { border-radius: var(--bubble-radius) !important; }
 .msg-right .msg-bubble { border-radius: var(--bubble-radius-self) !important; }
 
-
-
-/* --- 通话类型选择弹窗 --- */
-.call-type-modal {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 11000; display: none; align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.35);
-}
-.call-type-modal.active { display: flex; }
-.call-type-cards {
-  display: flex; gap: 24px; padding: 32px;
-  background: rgba(224,139,168,0.15); border-radius: 20px;
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 8px 40px rgba(224,139,168,0.25);
-  border: 1px solid rgba(224,139,168,0.2);
-}
-.call-type-card {
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
-  width: 100px; height: 120px; justify-content: center;
-  background: rgba(224,139,168,0.12); border-radius: 16px;
-  border: 1px solid rgba(224,139,168,0.25);
-  cursor: pointer; transition: all 0.2s;
-}
-.call-type-card:active { transform: scale(0.95); background: rgba(224,139,168,0.25); }
-.call-type-card svg { width: 36px; height: 36px; color: #e08ba8; }
-.call-type-card span { color: #e08ba8; font-size: 14px; font-weight: 500; }
-
-/* --- 来电/去电卡片弹窗 --- */
-.call-ring-screen {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 11001; display: none;
-  align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.4);
-}
-.call-ring-screen.active { display: flex; }
-.call-ring-card {
-  display: flex; flex-direction: column; align-items: center;
-  background: #e8e8ec;
-  border-radius: 18px;
-  padding: 32px 40px 20px;
-  width: 280px;
-  box-shadow: 0 6px 30px rgba(0,0,0,0.25);
-}
-.call-ring-avatar {
-  width: 110px; height: 110px; border-radius: 50%;
-  background: var(--primary, #9b8ec4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 40px; color: #fff; font-weight: 700;
-  margin-bottom: 14px;
-  overflow: hidden;
-}
-.call-ring-time {
-  font-size: 15px; color: #6b6b6b; font-variant-numeric: tabular-nums;
-  margin-bottom: 6px;
-}
-.call-ring-text {
-  font-size: 14px; color: #333;
-  text-align: center; margin-bottom: 24px;
-}
-.call-ring-actions {
-  display: flex; gap: 16px; justify-content: center;
-  width: 100%;
-}
-.call-accept-btn, .call-reject-btn {
-  flex: 1; height: 44px; border-radius: 10px;
-  border: none; cursor: pointer; color: #fff;
-  font-size: 16px; font-weight: 500;
-  transition: all 0.2s;
-}
-.call-accept-btn {
-  background: #4cd964;
-}
-.call-accept-btn:active { transform: scale(0.96); }
-.call-reject-btn {
-  background: #ff3b30;
-}
-.call-reject-btn:active { transform: scale(0.96); }
-
-/* --- 通话中全屏界面 --- */
-.call-overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 11000; display: none;
-  background: #1e1432;
-  color: #fff; overflow: hidden;
-  transition: background 0.4s ease;
-}
-.call-overlay.active { display: flex; flex-direction: column; align-items: center; }
-
-/* 右上角按钮组 - 只有图标没有圆圈 */
-.call-top-right-btn {
-  position: absolute;
-  top: 50px;
-  width: 24px; height: 24px;
-  background: transparent;
-  border: none; color: #fff; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  z-index: 10;
-  transition: all 0.2s;
-  padding: 0;
-}
-.call-top-right-btn:active { transform: scale(0.9); opacity: 0.7; }
-.call-top-right-btn svg { width: 22px; height: 22px; }
-#callBgToggleBtn { right: 50px; }
-#callMinimizeBtn { right: 16px; }
-
-/* 通话悬浮药丸 */
-.call-float-pill {
-  position: fixed;
-  top: 8px; left: 50%; transform: translateX(-50%);
-  display: none;
-  align-items: center; gap: 10px;
-  padding: 6px 12px 6px 6px;
-  background: rgba(0,0,0,0.65);
-  border-radius: 999px;
-  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-  z-index: 11500;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-  cursor: pointer;
-  user-select: none; -webkit-user-select: none;
-}
-.call-float-pill.active { display: flex; }
-.call-float-avatar {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: var(--primary, #9b8ec4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; color: #fff; font-weight: 600;
-  flex-shrink: 0;
-}
-.call-float-info {
-  display: flex; flex-direction: column; align-items: center; gap: 2px;
-}
-.call-float-wave {
-  display: flex; align-items: center; gap: 2px;
-  height: 16px;
-}
-.call-float-wave span {
-  display: block;
-  width: 2px; height: 100%;
-  background: #4cd964;
-  border-radius: 2px;
-  animation: floatWave 1s ease-in-out infinite;
-}
-.call-float-wave span:nth-child(1) { animation-delay: 0s; }
-.call-float-wave span:nth-child(2) { animation-delay: 0.15s; }
-.call-float-wave span:nth-child(3) { animation-delay: 0.3s; }
-.call-float-wave span:nth-child(4) { animation-delay: 0.45s; }
-.call-float-wave span:nth-child(5) { animation-delay: 0.6s; }
-@keyframes floatWave {
-  0%, 100% { transform: scaleY(0.3); }
-  50% { transform: scaleY(1); }
-}
-.call-float-time {
-  font-size: 11px; color: rgba(255,255,255,0.7);
-  font-variant-numeric: tabular-nums;
-}
-.call-float-hangup {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: #ff3b30; border: none;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #fff;
-  flex-shrink: 0;
-}
-.call-float-hangup svg { width: 14px; height: 14px; }
-.call-float-hangup:active { transform: scale(0.9); }
-
-/* 背景切换按钮 - 使用共享 .call-top-right-btn 样式 */
-
-/* 语音通话居中头像 */
-.call-active-voice-avatar {
-  display: none;
-  flex-direction: column; align-items: center;
-  flex-shrink: 0;
-  margin-top: 50px;
-}
-.call-active-voice-avatar.active { display: flex; }
-.call-voice-big-avatar {
-  width: 88px; height: 88px; border-radius: 50%;
-  background: var(--primary, #9b8ec4);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 34px; color: #fff; font-weight: 700;
-  border: 3px solid #d4af37;
-  box-shadow: 0 0 20px rgba(212,175,55,0.4);
-}
-.call-voice-timer-active {
-  font-size: 15px; color: rgba(255,255,255,0.8);
-  font-variant-numeric: tabular-nums;
-  margin-top: 10px;
-}
-
-/* 聊天区 - 固定2行，一人一行 */
-.call-chat-area {
-  flex: 1;
-  display: flex; flex-direction: column;
-  justify-content: flex-end;
-  width: calc(100% - 32px); max-width: 380px;
-  padding: 8px 0;
-  min-height: 0;
-}
-.call-chat-messages {
-  display: flex; flex-direction: column;
-  gap: 8px; padding: 6px 0;
-}
-.call-chat-row-incoming, .call-chat-row-outgoing {
-  display: flex; flex-direction: column; gap: 2px;
-  min-height: 0;
-}
-.call-chat-row-incoming { align-items: flex-start; }
-.call-chat-row-outgoing { align-items: flex-end; }
-.call-msg-bubble {
-  font-size: 14px; line-height: 1.5; word-break: break-word;
-  color: #fff; padding: 2px 0;
-}
-.call-chat-row-incoming .call-msg-bubble {
-  text-align: left;
-}
-.call-chat-row-outgoing .call-msg-bubble {
-  text-align: right;
-}
-
-/* 聊天输入栏 - 垂直堆叠 */
-.call-chat-input-bar {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  width: calc(100% - 32px); max-width: 380px;
-  flex-shrink: 0;
-}
-.call-chat-input {
-  width: 100%;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 20px; padding: 10px 16px;
-  color: #fff; font-size: 14px; outline: none;
-  box-sizing: border-box;
-}
-.call-chat-input:focus { border-color: var(--primary, #9b8ec4); }
-.call-chat-input::placeholder { color: rgba(255,255,255,0.4); }
-.call-chat-send-btn {
-  background: var(--primary, #9b8ec4); color: #fff; border: none;
-  border-radius: 10px; padding: 10px 40px;
-  font-size: 14px; cursor: pointer; font-weight: 600;
-  transition: all 0.2s;
-}
-.call-chat-send-btn:active { transform: scale(0.95); }
-
-/* 挂断按钮 - 底部居中 */
-.call-controls {
-  display: flex; justify-content: center;
-  flex-shrink: 0;
-  padding-bottom: 30px;
-  width: 100%;
-}
-.call-hangup-btn {
-  display: flex; align-items: center; justify-content: center; gap: 8px;
-  width: 160px; height: 46px; border-radius: 23px; border: none; cursor: pointer;
-  background: #ff3b30; color: #fff; font-size: 16px; font-weight: 600;
-  transition: all 0.2s; box-shadow: 0 4px 16px rgba(255,59,48,0.35);
-}
-.call-hangup-btn:active { transform: scale(0.95); }
-.call-hangup-btn svg { width: 20px; height: 20px; }
-
-/* 背景切换弹窗 */
-.call-bg-popup {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 12000; display: none;
-  align-items: flex-start; justify-content: flex-end;
-  padding: 90px 16px 0 0;
-}
-.call-bg-popup.active { display: flex; }
-.call-bg-popup-content {
-  background: rgba(30,20,50,0.95);
-  border-radius: 12px;
-  overflow: hidden;
-  min-width: 200px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-.call-bg-option {
-  padding: 14px 20px;
-  font-size: 14px; color: #fff;
-  cursor: pointer;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  text-align: center;
-}
-.call-bg-option:last-child { border-bottom: none; }
-.call-bg-option:active { background: rgba(255,255,255,0.1); }
-.call-bg-cancel { color: #ff3b30; }
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -8921,7 +8630,7 @@
     </div>
 
     <!-- 弹窗 (添加联系人/群聊) -->
-    <div class="modal-overlay" id="modalOverlay" style="position:fixed;">
+    <div class="modal-overlay" id="modalOverlay">
       <div class="modal-box" id="modalBox">
         <h3 id="modalTitle">添加联系人</h3>
         <div class="modal-field">
@@ -9052,6 +8761,14 @@
               <span class="toolbar-label">相册</span>
             </button>
 
+            <button class="toolbar-item" data-tool="call">
+              <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path
+                    d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg></span>
+              <span class="toolbar-label">通话</span>
+            </button>
             <button class="toolbar-item" data-tool="pat">
               <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -9099,13 +8816,6 @@
                   <path d="M9 13l3 3 3-3" />
                 </svg></span>
               <span class="toolbar-label">统计</span>
-            </button>
-            <button class="toolbar-item" data-tool="call">
-              <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg></span>
-              <span class="toolbar-label">通话</span>
             </button>
           </div>
           <!-- 表情包模块 -->
@@ -9178,8 +8888,6 @@
         </div>
       </div>
     </div>
-
-
 
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
@@ -9796,7 +9504,7 @@
   </div>
 
   <!-- 拍一拍选择弹窗 -->
-  <div class="modal-overlay" id="patModal" style="position:fixed; z-index: 300;">
+  <div class="modal-overlay" id="patModal" style="z-index: 300;">
     <div class="modal-box" style="width:290px; max-height:70vh; overflow-y:auto;">
       <h3 id="patModalTitle">选择拍一拍</h3>
       <!-- 自定义拍一拍（直接展示，放在列表上方） -->
@@ -9826,7 +9534,7 @@
   <input type="file" id="albumFileInput" accept="image/*,video/*" multiple style="display:none;" />
 
   <!-- 帮我决定弹窗 -->
-  <div class="modal-overlay" id="decisionModal" style="position:fixed; z-index: 300;">
+  <div class="modal-overlay" id="decisionModal" style="z-index: 300;">
     <div class="modal-box" style="width:320px; max-height:80vh; padding:0; display:flex; flex-direction:column;">
       <!-- 头部 -->
       <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 18px 12px; border-bottom:0.5px solid #eee;">
@@ -9883,7 +9591,7 @@
   </div>
 
   <!-- 决策结果弹窗 -->
-  <div class="modal-overlay" id="decisionResultModal" style="position:fixed; z-index: 350;">
+  <div class="modal-overlay" id="decisionResultModal" style="z-index: 350;">
     <div class="modal-box" style="width:290px; padding:28px 22px 22px; text-align:center;">
       <div id="decResultText" style="font-size:32px; font-weight:700; color:#1a1a1a; margin-bottom:8px; letter-spacing:2px;"></div>
       <div id="decResultQuestion" style="font-size:13px; color:#999; margin-bottom:18px;"></div>
@@ -9892,7 +9600,7 @@
   </div>
 
   <!-- 搜索聊天记录弹窗 -->
-  <div class="modal-overlay" id="chatSearchModal" style="position:fixed; z-index: 300;">
+  <div class="modal-overlay" id="chatSearchModal" style="z-index: 300;">
     <div class="modal-box" style="width:310px; max-height:75vh; display:flex; flex-direction:column;">
       <h3 style="margin-bottom:14px;">搜索聊天记录</h3>
       <!-- 搜索输入区 -->
@@ -10311,108 +10019,9 @@
   </div>
 </div>
 
-<!-- 通话类型选择弹窗 -->
-<div class="call-type-modal" id="callTypeModal">
-  <div class="call-type-cards">
-    <div class="call-type-card" id="callTypeVoice">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-      </svg>
-      <span>语音通话</span>
-    </div>
-    <div class="call-type-card" id="callTypeVideo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="23 7 16 12 23 17 23 7"/>
-        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
-      </svg>
-      <span>视频通话</span>
-    </div>
-  </div>
-</div>
-
-<!-- 来电/去电界面 -->
-<div class="call-ring-screen" id="callRingScreen">
-  <div class="call-ring-card">
-    <div class="call-ring-avatar" id="callRingAvatar">?</div>
-    <div class="call-ring-time" id="callRingTime">00:00</div>
-    <div class="call-ring-text" id="callRingText">等待接听...</div>
-    <div class="call-ring-actions">
-      <button class="call-accept-btn" id="callAcceptBtn">接听</button>
-      <button class="call-reject-btn" id="callRejectBtn">挂断</button>
-    </div>
-  </div>
-</div>
-
-<!-- 通话中界面 -->
-<div class="call-overlay" id="callOverlay">
-  <!-- 右上角按钮：更改背景（左）+ 缩小（右） -->
-  <button class="call-top-right-btn" id="callBgToggleBtn" title="切换背景">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" rx="3" width="18" height="18"/><circle cx="8.5" cy="8.5" r="1.5" fill="currentColor"/><path d="M21 15l-5-5L5 21"/></svg>
-  </button>
-  <button class="call-top-right-btn" id="callMinimizeBtn" title="缩小">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-  </button>
-
-  <!-- 语音通话头像 + 时间 -->
-  <div class="call-active-voice-avatar" id="callActiveVoiceAvatar">
-    <div class="call-voice-big-avatar" id="callVoiceBigAvatar">?</div>
-    <div class="call-voice-timer-active" id="callVoiceTimerActive">00:00</div>
-  </div>
-
-  <!-- 聊天消息区（固定2行，一人一行） -->
-  <div class="call-chat-area" id="callChatArea">
-    <div class="call-chat-messages" id="callChatMessages">
-      <div class="call-chat-row-incoming" id="callRowIncoming"></div>
-      <div class="call-chat-row-outgoing" id="callRowOutgoing"></div>
-    </div>
-  </div>
-
-  <!-- 输入框 + 发送按钮 -->
-  <div class="call-chat-input-bar" id="callChatInputBar">
-    <input type="text" class="call-chat-input" id="callChatInput" placeholder="输入消息...">
-    <button class="call-chat-send-btn" id="callChatSend">发送</button>
-  </div>
-
-  <!-- 挂断按钮 -->
-  <div class="call-controls" id="callControls">
-    <button class="call-hangup-btn" id="callBtnHangup" title="挂断">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-      挂断
-    </button>
-  </div>
-</div>
-
-<!-- 通话悬浮药丸（缩小后显示） -->
-<div class="call-float-pill" id="callFloatPill">
-  <div class="call-float-avatar" id="callFloatAvatar">?</div>
-  <div class="call-float-info">
-    <div class="call-float-wave" id="callFloatWave">
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="call-float-time" id="callFloatTime">00:00</div>
-  </div>
-  <button class="call-float-hangup" id="callFloatHangup" title="挂断">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
-  </button>
-</div>
-
-<!-- 背景切换弹窗 -->
-<div class="call-bg-popup" id="callBgPopup">
-  <div class="call-bg-popup-content">
-    <div class="call-bg-option" id="callBgOptionMain">更改主视频通话背景</div>
-    <div class="call-bg-option" id="callBgOptionSub">更改次视频通话背景</div>
-    <div class="call-bg-option call-bg-cancel" id="callBgOptionCancel">取消</div>
-  </div>
-</div>
-
-<!-- 隐藏的文件选择器 -->
-<input type="file" id="callVideoBgMain" accept="image/*" style="display:none">
-<input type="file" id="callVideoBgSub" accept="image/*" style="display:none">
-
-
 <script>
     (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
-    // ===== 键盘跟随 + 视口适配 (v28简化) =====
+    // ===== 键盘跟随 + 视口适配 =====
     (function () {
       const phone = document.querySelector('.phone');
       const bw = document.querySelector('.chat-bottom-wrapper');
@@ -10420,6 +10029,7 @@
 
       let kbHeight = 0;
       let inputFocused = false;
+      // maxVH 始终记录无键盘时的最大可视高度
       let maxVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
       function getVH() {
@@ -10428,34 +10038,31 @@
 
       function apply() {
         var curVH = getVH();
+        // 更新最大高度（键盘收起时 curVH 最大）
         if (curVH > maxVH) maxVH = curVH;
 
-        // 通话中不调整
-        var callOverlay = document.getElementById('callOverlay');
-        if (callOverlay && callOverlay.classList.contains('active')) return;
-
-        // 只调整 phone 高度，bw 作为 flex 子元素自然跟随到底部
+        // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
         var targetH = inputFocused ? curVH : maxVH;
-        if (phone) {
-          phone.style.height = targetH + 'px';
-          phone.style.overflow = 'hidden';
+        if (phone) phone.style.height = targetH + 'px';
+
+        if (kbHeight > 0) {
+          bw.style.position = 'fixed';
+          bw.style.bottom = kbHeight + 'px';
+          bw.style.left = '0';
+          bw.style.right = '0';
+          bw.style.zIndex = '1000';
+        } else {
+          bw.style.position = 'relative';
+          bw.style.bottom = 'auto';
+          bw.style.left = 'auto';
+          bw.style.right = 'auto';
+          bw.style.zIndex = 'auto';
         }
       }
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
           inputFocused = true;
-          // 打开键盘时自动关闭底部工具栏和emoji面板
-          var ct = document.getElementById('chatToolbar');
-          if (ct) {
-            ct.classList.remove('open');
-            ct.style.height = '0';
-            ct.style.overflow = 'hidden';
-          }
-          var eg = document.getElementById('emojiModule');
-          if (eg) eg.classList.remove('active');
-          var tg = document.getElementById('toolbarGrid');
-          if (tg) tg.classList.add('hidden');
           var curVH = getVH();
           kbHeight = (maxVH - curVH > 40) ? Math.round(maxVH - curVH) : Math.round(maxVH * 0.28);
           apply();
@@ -10467,15 +10074,12 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          if (el && el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+          if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
-            // 清除工具栏内联样式，让CSS类重新控制显示
-            var ct2 = document.getElementById('chatToolbar');
-            if (ct2) { ct2.style.height = ''; ct2.style.overflow = ''; }
-            apply();
-            setTimeout(apply, 150);
-            setTimeout(apply, 300);
+            // 等浏览器恢复视口后再应用
+            setTimeout(apply, 100);
+            setTimeout(apply, 400);
           }
         }, 100);
       });
@@ -10494,6 +10098,7 @@
         });
       }
 
+      // 初始化
       apply();
     })();
 
@@ -10506,68 +10111,6 @@
         { id: 3, name: '12', isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [1, 2] }
       ];
       let nextId = 4;
-      window.__contacts = contacts; // 暴露给通话模块
-      // ===== 概率来电功能 =====
-      (function() {
-        var randomCallTimer = null;
-        var isInCallCheck = false;
-        
-        function scheduleNextCall() {
-          if (randomCallTimer) clearTimeout(randomCallTimer);
-          // 3~8分钟随机间隔
-          var delay = (3 + Math.random() * 5) * 60 * 1000;
-          randomCallTimer = setTimeout(tryRandomCall, delay);
-        }
-        
-        function tryRandomCall() {
-          // 30% 概率来电
-          if (Math.random() >= 0.3) {
-            scheduleNextCall();
-            return;
-          }
-          
-          // 已有通话中则跳过
-          if (window.__getCallState && window.__getCallState() !== 'idle') {
-            scheduleNextCall();
-            return;
-          }
-          
-          if (!contacts || contacts.length === 0) {
-            scheduleNextCall();
-            return;
-          }
-          
-          // 随机选一个非群聊、非"我"的联系人
-          var candidates = contacts.filter(function(c) {
-            return !c.isGroup && c.name !== '我';
-          });
-          
-          if (candidates.length === 0) {
-            scheduleNextCall();
-            return;
-          }
-          
-          var randomContact = candidates[Math.floor(Math.random() * candidates.length)];
-          var callType = Math.random() < 0.5 ? 'voice' : 'video';
-          
-          // 触发来电
-          if (window.__incomingCall) {
-            window.__incomingCall(callType, randomContact.id);
-          }
-          
-          scheduleNextCall();
-        }
-        
-        // 启动定时器
-        function startRandomCalls() {
-          if (randomCallTimer) return;
-          scheduleNextCall();
-        }
-        
-        // 延迟启动，等页面初始化完成
-        setTimeout(startRandomCalls, 5000);
-      })();
-
 
       // Expose contacts to todo module
       window.getContactById = function(id) {
@@ -10994,7 +10537,6 @@
         const contact = contacts.find(c => c.id === contactId);
         if (!contact) return;
         currentChatId = contactId;
-        window.__callChatId = contactId;
         chatTitle.textContent = contact.name;
         if (!chatHistories[contactId]) {
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
@@ -11007,7 +10549,6 @@
         chatView.classList.remove('show');
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='';
         currentChatId = null;
-        window.__callChatId = null;
         refreshList();
       }
 
@@ -19442,7 +18983,6 @@ patText2 = patText2.replace(/你/g, '我');
         window.renderTodoList = renderTodoList;
       })();
 
-
     })();
 
     (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor=getComputedStyle(document.documentElement).getPropertyValue("--primary");d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
@@ -19627,408 +19167,6 @@ patText2 = patText2.replace(/你/g, '我');
   window.openThemeView = openThemeView;
   window.closeThemeView = closeThemeView;
   window.applyTheme = applyTheme;
-
-  // ===== 通话功能 =====
-  (function() {
-    var callTypeModal = document.getElementById('callTypeModal');
-    var callTypeVoice = document.getElementById('callTypeVoice');
-    var callTypeVideo = document.getElementById('callTypeVideo');
-    
-    // 来电/去电界面
-    var callRingScreen = document.getElementById('callRingScreen');
-    var callRingAvatar = document.getElementById('callRingAvatar');
-    var callRingTime = document.getElementById('callRingTime');
-    var callRingText = document.getElementById('callRingText');
-    var callAcceptBtn = document.getElementById('callAcceptBtn');
-    var callRejectBtn = document.getElementById('callRejectBtn');
-    
-    // 通话中界面
-    var callOverlay = document.getElementById('callOverlay');
-    var callMinimizeBtn = document.getElementById('callMinimizeBtn');
-    var callFloatPill = document.getElementById('callFloatPill');
-    var callFloatAvatar = document.getElementById('callFloatAvatar');
-    var callFloatTime = document.getElementById('callFloatTime');
-    var callFloatHangup = document.getElementById('callFloatHangup');
-    var callBgToggleBtn = document.getElementById('callBgToggleBtn');
-    var callActiveVoiceAvatar = document.getElementById('callActiveVoiceAvatar');
-    var callVoiceBigAvatar = document.getElementById('callVoiceBigAvatar');
-    var callVoiceTimerActive = document.getElementById('callVoiceTimerActive');
-    var callChatMessages = document.getElementById('callChatMessages');
-    var callRowIncoming = document.getElementById('callRowIncoming');
-    var callRowOutgoing = document.getElementById('callRowOutgoing');
-    var callChatInput = document.getElementById('callChatInput');
-    var callChatSend = document.getElementById('callChatSend');
-    var callBtnHangup = document.getElementById('callBtnHangup');
-    
-    // 背景切换弹窗
-    var callBgPopup = document.getElementById('callBgPopup');
-    var callBgOptionMain = document.getElementById('callBgOptionMain');
-    var callBgOptionSub = document.getElementById('callBgOptionSub');
-    var callBgOptionCancel = document.getElementById('callBgOptionCancel');
-    var callVideoBgMain = document.getElementById('callVideoBgMain');
-    var callVideoBgSub = document.getElementById('callVideoBgSub');
-
-    var callState = 'idle'; // idle, ringing, connected
-    var callDirection = 'outgoing'; // 'incoming' or 'outgoing'
-    var callType = ''; // 'voice' or 'video'
-    var callTimerInterval = null;
-    var callSeconds = 0;
-    var callRingTimeout = null;
-    var callAutoAnswerTimeout = null;
-    var _callMainBg = '';
-    var _callSubBg = '';
-    var _currentContactName = '';
-    var _currentContactInitial = '?';
-    var _currentContactId = null;
-
-    // 工具栏点击通话按钮 → 显示类型选择弹窗
-    var callToolbarBtn = document.querySelector('.toolbar-item[data-tool="call"]');
-    if (callToolbarBtn) {
-      callToolbarBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (!window.__callChatId) { 
-          if (typeof showToast === 'function') showToast('请先进入一个聊天'); 
-          else alert('请先进入一个聊天'); 
-          return; 
-        }
-        callTypeModal.classList.add('active');
-      });
-    }
-
-    // 点击弹窗外部关闭
-    callTypeModal.addEventListener('click', function(e) {
-      if (e.target === callTypeModal) {
-        callTypeModal.classList.remove('active');
-      }
-    });
-
-    // 选择语音通话
-    callTypeVoice.addEventListener('click', function() {
-      callTypeModal.classList.remove('active');
-      startOutgoingCall('voice');
-    });
-
-    // 选择视频通话
-    callTypeVideo.addEventListener('click', function() {
-      callTypeModal.classList.remove('active');
-      startOutgoingCall('video');
-    });
-
-    // ---- 去电（用户主动打出去） ----
-    function startOutgoingCall(type) {
-      var contactName = '联系人';
-      var contactInitial = '?';
-      var contactId = null;
-      if (window.__callChatId) {
-        var contact = window.__contacts.find(function(c) { return c.id === window.__callChatId; });
-        if (contact) {
-          contactName = contact.name;
-          contactInitial = contact.name.charAt(0);
-          contactId = contact.id;
-        }
-      }
-      showRingScreen('outgoing', type, contactName, contactInitial, contactId, contact ? contact.isGroup : false);
-      
-      // 3秒后自动接通
-      callAutoAnswerTimeout = setTimeout(function() {
-        if (callState === 'ringing') {
-          acceptCall();
-        }
-      }, 3000);
-    }
-
-    // ---- 来电（对方打进来，含概率来电） ----
-    function incomingCall(type, contactId) {
-      // 已有通话中则忽略
-      if (callState !== 'idle') return;
-      
-      var contact = window.__contacts.find(function(c) { return c.id === contactId; });
-      if (!contact) return;
-      
-      var contactName = contact.name;
-      var contactInitial = contact.name.charAt(0);
-      
-      // 如果用户在聊天中，切换到来电界面
-      showRingScreen('incoming', type, contactName, contactInitial, contactId, contact.isGroup);
-      
-      // 6秒不接自动挂断
-      callRingTimeout = setTimeout(function() {
-        if (callState === 'ringing') {
-          endCall();
-        }
-      }, 6000);
-    }
-
-    // ---- 显示来电/去电界面 ----
-    function showRingScreen(direction, type, contactName, contactInitial, contactId, isGroup) {
-      callState = 'ringing';
-      callDirection = direction;
-      callType = type;
-      callSeconds = 0;
-      _currentContactName = contactName;
-      _currentContactInitial = contactInitial;
-      _currentContactId = contactId;
-
-      // 锁定 phone 高度
-      var phoneEl = document.querySelector('.phone');
-      if (phoneEl) {
-        var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-        phoneEl.style.height = vh + 'px';
-        phoneEl.style.overflow = 'hidden';
-      }
-
-      // 更新界面
-      callRingAvatar.textContent = contactInitial;
-      callRingAvatar.style.background = isGroup ? '#9b9b9b' : 'var(--primary)';
-      callRingTime.textContent = formatTime();
-      
-      var typeText = type === 'video' ? '视频通话' : '语音通话';
-      if (direction === 'incoming') {
-        callRingText.textContent = contactName + ' 邀请你' + typeText + '...';
-      } else {
-        callRingText.textContent = '等待 ' + contactName + ' 接听...';
-      }
-
-      callRingScreen.classList.add('active');
-    }
-
-    // ---- 接听 ----
-    function acceptCall() {
-      callState = 'connected';
-      
-      // 清理超时
-      if (callRingTimeout) { clearTimeout(callRingTimeout); callRingTimeout = null; }
-      if (callAutoAnswerTimeout) { clearTimeout(callAutoAnswerTimeout); callAutoAnswerTimeout = null; }
-
-      // 隐藏来电界面
-      callRingScreen.classList.remove('active');
-
-      // 显示通话中界面
-      setupActiveCallScreen();
-      callOverlay.classList.add('active');
-
-      // 开始计时
-      callTimerInterval = setInterval(function() {
-        callSeconds++;
-        var timeStr = formatCallTime();
-        callVoiceTimerActive.textContent = timeStr;
-        callFloatTime.textContent = timeStr;
-      }, 1000);
-    }
-
-    // ---- 配置通话中界面 ----
-    function setupActiveCallScreen() {
-      // 语音通话显示居中金边头像，视频通话不显示
-      if (callType === 'voice') {
-        callActiveVoiceAvatar.classList.add('active');
-        callVoiceBigAvatar.textContent = _currentContactInitial;
-        callVoiceTimerActive.textContent = '00:00';
-      } else {
-        callActiveVoiceAvatar.classList.remove('active');
-      }
-
-      // 重置聊天
-      callRowIncoming.innerHTML = '';
-      callRowOutgoing.innerHTML = '';
-
-      // 设置背景
-      try {
-        var _pc = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
-        var _r = parseInt(_pc.slice(1,3),16), _g = parseInt(_pc.slice(3,5),16), _b = parseInt(_pc.slice(5,7),16);
-        function _dk(f){ return 'rgb('+Math.round(_r*f)+','+Math.round(_g*f)+','+Math.round(_b*f)+')'; }
-        callOverlay.style.backgroundColor = _dk(0.35);
-      } catch(e) {
-        callOverlay.style.backgroundColor = '#1e1432';
-      }
-
-      // 如果有保存的背景则应用
-      if (_callMainBg) {
-        callOverlay.style.backgroundImage = _callMainBg;
-        callOverlay.style.backgroundSize = 'cover';
-        callOverlay.style.backgroundPosition = 'center';
-      } else {
-        callOverlay.style.backgroundImage = 'none';
-      }
-
-    }
-
-    // ---- 挂断 ----
-    function endCall() {
-      callState = 'idle';
-      
-      // 清理超时
-      if (callRingTimeout) { clearTimeout(callRingTimeout); callRingTimeout = null; }
-      if (callAutoAnswerTimeout) { clearTimeout(callAutoAnswerTimeout); callAutoAnswerTimeout = null; }
-      if (callTimerInterval) { clearInterval(callTimerInterval); callTimerInterval = null; }
-      
-      callSeconds = 0;
-
-      // 隐藏界面
-      callRingScreen.classList.remove('active');
-      callOverlay.classList.remove('active');
-      callFloatPill.classList.remove('active');
-      callBgPopup.classList.remove('active');
-      callActiveVoiceAvatar.classList.remove('active');
-
-      // 清理背景
-      callOverlay.style.backgroundImage = 'none';
-      callOverlay.style.backgroundSize = '';
-      callOverlay.style.backgroundPosition = '';
-      callOverlay.style.backgroundColor = '#1e1432';
-      callOverlay.style.width = '';
-      callOverlay.style.height = '';
-
-      // 恢复 phone 滚动
-      var phoneEl = document.querySelector('.phone');
-      if (phoneEl) {
-        phoneEl.style.overflow = '';
-        phoneEl.style.height = '';
-      }
-
-      _currentContactId = null;
-      _currentContactName = '';
-    }
-
-    // ---- 工具函数 ----
-    function formatTime() {
-      var now = new Date();
-      var h = now.getHours();
-      var m = now.getMinutes();
-      return (h < 10 ? '0'+h : h) + ':' + (m < 10 ? '0'+m : m);
-    }
-
-    function formatCallTime() {
-      var m = Math.floor(callSeconds / 60);
-      var s = callSeconds % 60;
-      return (m < 10 ? '0'+m : m) + ':' + (s < 10 ? '0'+s : s);
-    }
-
-    // ---- 事件绑定 ----
-    
-    // 接听按钮
-    callAcceptBtn.addEventListener('click', function() {
-      if (callState === 'ringing') {
-        acceptCall();
-      }
-    });
-
-    // 挂断按钮（来电界面）
-    callRejectBtn.addEventListener('click', function() {
-      endCall();
-    });
-
-    // 底部挂断按钮
-    callBtnHangup.addEventListener('click', function() {
-      endCall();
-    });
-
-    // 通话中发送消息
-    function sendCallMessage() {
-      var text = callChatInput.value.trim();
-      if (!text) return;
-      callRowOutgoing.innerHTML = '<div class="call-msg-bubble">' + text.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
-      callChatInput.value = '';
-      callChatMessages.scrollTop = callChatMessages.scrollHeight;
-
-      // 模拟对方回复
-      setTimeout(function() {
-        if (callState !== 'connected') return;
-        var replies = ['嗯嗯~', '好的呢', '哈哈', '收到', 'ok~', '在呢~', '嗯呢'];
-        var reply = replies[Math.floor(Math.random() * replies.length)];
-        callRowIncoming.innerHTML = '<div class="call-msg-bubble">' + reply.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
-        callChatMessages.scrollTop = callChatMessages.scrollHeight;
-      }, 800 + Math.random() * 1200);
-    }
-
-    callChatSend.addEventListener('click', sendCallMessage);
-    callChatInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') { e.preventDefault(); sendCallMessage(); }
-    });
-
-    // 背景切换按钮
-    callBgToggleBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      callBgPopup.classList.toggle('active');
-    });
-
-    // 点击弹窗外部关闭
-    callBgPopup.addEventListener('click', function(e) {
-      if (e.target === callBgPopup) {
-        callBgPopup.classList.remove('active');
-      }
-    });
-
-    // 更改主视频背景
-    callBgOptionMain.addEventListener('click', function() {
-      callBgPopup.classList.remove('active');
-      callVideoBgMain.click();
-    });
-
-    // 更改次视频背景
-    callBgOptionSub.addEventListener('click', function() {
-      callBgPopup.classList.remove('active');
-      callVideoBgSub.click();
-    });
-
-    // 取消
-    callBgOptionCancel.addEventListener('click', function() {
-      callBgPopup.classList.remove('active');
-    });
-
-    // 主背景文件选择
-    callVideoBgMain.addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var url = ev.target.result;
-        _callMainBg = 'url(' + url + ')';
-        callOverlay.style.backgroundImage = _callMainBg;
-        callOverlay.style.backgroundSize = 'cover';
-        callOverlay.style.backgroundPosition = 'center';
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // 次背景文件选择
-    callVideoBgSub.addEventListener('change', function(e) {
-      var file = e.target.files[0];
-      if (!file) return;
-      var reader = new FileReader();
-      reader.onload = function(ev) {
-        var url = ev.target.result;
-        _callSubBg = 'url(' + url + ')';
-        // 次背景保存，暂用于切换或药丸扩展
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // ---- 缩小界面按钮 → 显示悬浮药丸 ----
-    callMinimizeBtn.addEventListener('click', function() {
-      callOverlay.classList.remove('active');
-      callFloatAvatar.textContent = _currentContactInitial;
-      callFloatTime.textContent = formatCallTime();
-      callFloatPill.classList.add('active');
-    });
-
-    // 点击悬浮药丸 → 恢复通话界面
-    callFloatPill.addEventListener('click', function(e) {
-      if (e.target.closest('.call-float-hangup')) return;
-      callFloatPill.classList.remove('active');
-      callOverlay.classList.add('active');
-    });
-
-    // 悬浮药丸挂断按钮
-    callFloatHangup.addEventListener('click', function(e) {
-      e.stopPropagation();
-      endCall();
-    });
-
-
-    // 暴露给概率来电模块
-    window.__incomingCall = incomingCall;
-    window.__getCallState = function() { return callState; };
-  })();
 })();
 
 </script>
