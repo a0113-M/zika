@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v85')){sessionStorage.setItem('zk_v85','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==85){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v86')){sessionStorage.setItem('zk_v86','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==86){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v85</title>
+  <title>字卡 · 小手机 v86</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9007,6 +9007,12 @@
   background: rgba(255,255,255,0.62);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-radius: 14px;
+}
+/* 视频模式：白底由 call-chat-area 承担，消息容器不重复套白 */
+.call-overlay.video-mode .call-chat-messages {
+  background: none;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
+  border-radius: 0;
 }
 /* 第1行：联系人消息（居中） */
 .call-chat-row-incoming {
@@ -19968,11 +19974,16 @@ patText2 = patText2.replace(/你/g, '我');
         callOverlay.classList.add('active');
         callOverlay.classList.add('ringing-mode');
         try {
-          var _rpc = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim();
           if (callOverlay) {
-            callOverlay.style.backgroundColor = _rpc;
-            callOverlay.style.backgroundImage = _callWallpaper || 'none';
-            if (_callWallpaper) { callOverlay.style.backgroundSize = 'cover'; callOverlay.style.backgroundPosition = 'center'; callOverlay.style.backgroundRepeat = 'no-repeat'; }
+            if (_callWallpaper) {
+              callOverlay.style.backgroundColor = 'transparent';
+              callOverlay.style.backgroundImage = _callWallpaper;
+              callOverlay.style.backgroundSize = 'cover';
+              callOverlay.style.backgroundPosition = 'center';
+              callOverlay.style.backgroundRepeat = 'no-repeat';
+            } else {
+              callOverlay.style.backgroundColor = ''; callOverlay.style.backgroundImage = '';
+            }
           }
         } catch(e) { callOverlay.style.backgroundColor = ''; callOverlay.style.backgroundImage = ''; }
         setTimeout(function() { if (callState === 'ringing') acceptCall(); }, 2000);
