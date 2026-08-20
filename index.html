@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v78')){sessionStorage.setItem('zk_v78','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v79')){sessionStorage.setItem('zk_v79','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v78</title>
+  <title>字卡 · 小手机 v79</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8855,13 +8855,11 @@
 
 
 .call-video-visual {
-  flex: 1; min-height: 140px;
-  position: relative;
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   display: none;
-  margin: 0 12px 6px;
-  border-radius: 16px;
   overflow: hidden;
   background: #1a1a2e;
+  z-index: 1;
 }
 /* 视频大窗口 - 联系人 */
 .call-video-big {
@@ -8869,13 +8867,10 @@
   background-color: #1a1a2e;
   background-size: cover; background-position: center; background-repeat: no-repeat;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 16px; overflow: hidden;
+  overflow: hidden;
 }
-.call-video-big .video-label {
-  position: absolute; top: 10px; left: 14px;
-  color: rgba(255,255,255,0.85); font-size: 13px; font-weight: 500;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6); pointer-events: none;
-  z-index: 3;
+.video-center-col {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
 }
 .call-video-big .video-avatar-large {
   display: flex; align-items: center; justify-content: center;
@@ -8888,7 +8883,7 @@
 }
 /* 视频小窗口 - 自己 */
 .call-video-small {
-  position: absolute; top: 10px; right: 10px;
+  position: absolute; top: calc(env(safe-area-inset-top, 0px) + 64px); right: 12px;
   width: 96px; height: 140px;
   border-radius: 12px; overflow: hidden;
   background-color: #2a2a3e;
@@ -8939,17 +8934,26 @@
 .video-bg-menu-btn:active { background: var(--bg-soft); }
 .video-bg-menu-btn.cancel { color: var(--text-muted); }
 .call-video-timer {
-  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
-  color: rgba(255,255,255,0.95); font-size: 14px; font-weight: 600;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.6);
-  z-index: 3; pointer-events: none;
+  color: rgba(255,255,255,0.95); font-size: 15px; font-weight: 600;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  pointer-events: none;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 1px;
 }
-/* 视频模式：聊天区不占 flex 剩余空间，紧贴视频下方 */
+/* 视频模式：视频铺满全屏，聊天/输入/控制叠加在视频上层 */
 .call-overlay.video-mode .call-chat-area {
   flex: none;
-  padding-top: 4px;
-  padding-bottom: 2px;
+  padding-top: 6px;
+  padding-bottom: 4px;
+  position: relative; z-index: 5;
+  background: rgba(255,255,255,0.62);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
+}
+.call-overlay.video-mode .call-chat-input-bar,
+.call-overlay.video-mode .call-send-bar,
+.call-overlay.video-mode .call-controls {
+  position: relative; z-index: 5;
 }
 /* 视频模式：顶栏按钮更明显 */
 .call-overlay.video-mode .call-top-bar .call-bg-btn,
@@ -8981,6 +8985,7 @@
 .call-hangup-btn svg { width: 20px; height: 20px; }
 
 .call-chat-area {
+  position: relative;
   flex: 1; min-height: 0;
   display: flex; flex-direction: column;
   width: 100%; max-width: 380px;
@@ -9615,9 +9620,10 @@
           </div>
           <div class="call-video-visual" id="callVideoVisual" style="display:none;">
             <div class="call-video-big" id="callVideoBig">
-              <div class="video-label" id="callVideoLabel"></div>
-              <div class="call-video-timer" id="callVideoTimer">00:00</div>
-              <div class="video-avatar-large" id="callVideoAvatarBig">?</div>
+              <div class="video-center-col">
+                <div class="video-avatar-large" id="callVideoAvatarBig">?</div>
+                <div class="call-video-timer" id="callVideoTimer">00:00</div>
+              </div>
             </div>
             <div class="call-video-small" id="callVideoSmall">
               <div class="video-avatar-small" id="callVideoAvatarSmall">我</div>
@@ -20089,8 +20095,6 @@ patText2 = patText2.replace(/你/g, '我');
           callVideoSmall.style.display = 'flex';
           callOverlay.classList.add('video-mode');
           if(vbgBtn) vbgBtn.style.display='flex';
-          var vlbl=document.getElementById('callVideoLabel');
-          if(vlbl && callContact) vlbl.textContent=callContact.name;
           updateVideoAvatars();
         } else {
           callVoiceVisual.style.display = 'flex';
