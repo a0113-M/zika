@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v60')){sessionStorage.setItem('zk_v60','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v61')){sessionStorage.setItem('zk_v61','1');location.replace(location.pathname+'?_='+Date.now());}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v60</title>
+  <title>字卡 · 小手机 v61</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8657,6 +8657,12 @@
 .call-overlay.kb-open .call-voice-avatar { width: 64px; height: 64px; }
 .call-overlay.kb-open .call-voice-avatar { font-size: 24px; }
 .call-overlay.kb-open .call-voice-timer { margin-top: 6px; margin-bottom: 6px; }
+
+/* 键盘弹出时重排底部区：只有输入框贴键盘上沿，发送/挂断按钮排在输入框上方 */
+.call-overlay.kb-open .call-chat-area { order: 1; }
+.call-overlay.kb-open .call-send-bar { order: 2; }
+.call-overlay.kb-open .call-controls { order: 3; }
+.call-overlay.kb-open .call-chat-input-bar { order: 4; }
 .call-dynamic-ring {
   position: absolute;
   border-radius: 50%;
@@ -8840,6 +8846,10 @@
   flex-shrink: 0;
   width: 100%;
   margin-top: auto;
+}
+.call-send-bar {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 0 16px; flex-shrink: 0; width: 100%;
 }
 .call-chat-input-fixed {
   width: 100%; min-width: 0;
@@ -9402,9 +9412,12 @@
             </div>
           </div>
           <!-- 发送和挂断按钮 -->
-          <!-- 输入框 + 发送按钮 -->
+          <!-- 输入框（键盘弹出时贴键盘） -->
           <div class="call-chat-input-bar">
             <input type="text" class="call-chat-input-fixed" id="callChatInput" placeholder="输入消息...">
+          </div>
+          <!-- 发送按钮 -->
+          <div class="call-send-bar">
             <button class="call-chat-send-btn" id="callChatSend">发送</button>
           </div>
           <!-- 挂断按钮 -->
