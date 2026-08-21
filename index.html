@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v116')){sessionStorage.setItem('zk_v116','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==116){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v117')){sessionStorage.setItem('zk_v117','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==117){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v116</title>
+  <title>字卡 · 小手机 v117</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4493,7 +4493,7 @@
       display: flex; align-items: center; justify-content: center;
       color: #fff; font-size: 18px; font-weight: 600;
       flex-shrink: 0;
-      box-shadow: 0 3px 10px rgba(155, 142, 196, 0.25);
+      box-shadow: 0 3px 10px rgba(var(--primary-rgba), 0.25);
     }
     .chat-letter-panel .clp-hero-info {
       flex: 1; min-width: 0;
@@ -4544,7 +4544,7 @@
     .chat-letter-panel .clp-stat-card .clp-sc-label {
       font-size: 10px; color: #999; margin-top: 3px; font-weight: 500;
     }
-    .chat-letter-panel .clp-stat-card.receive .clp-sc-icon { background: rgba(155, 142, 196, 0.12); }
+    .chat-letter-panel .clp-stat-card.receive .clp-sc-icon { background: rgba(var(--primary-rgba), 0.12); }
     .chat-letter-panel .clp-stat-card.receive .clp-sc-num { color: var(--primary); }
     .chat-letter-panel .clp-stat-card.send .clp-sc-icon { background: rgba(25, 118, 210, 0.1); }
     .chat-letter-panel .clp-stat-card.send .clp-sc-num { color: #1976d2; }
@@ -4600,7 +4600,7 @@
       display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
-    .chat-letter-panel .clp-letter-icon.incoming { background: rgba(155,142,196,0.1); }
+    .chat-letter-panel .clp-letter-icon.incoming { background: rgba(var(--primary-rgba),0.1); }
     .chat-letter-panel .clp-letter-icon.outgoing { background: rgba(25,118,210,0.1); }
     .chat-letter-panel .clp-letter-body {
       flex: 1; min-width: 0;
@@ -4677,7 +4677,7 @@
     .chat-letter-panel .clp-action-btn.primary {
       background: linear-gradient(135deg, var(--primary), var(--primary-light));
       color: #fff;
-      box-shadow: 0 3px 10px rgba(155, 142, 196, 0.25);
+      box-shadow: 0 3px 10px rgba(var(--primary-rgba), 0.25);
     }
     .chat-letter-panel .clp-action-btn.secondary {
       background: #f0f1f2;
@@ -4768,7 +4768,7 @@
       margin: 6px 14px 4px;
       padding: 10px 14px;
       background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-soft) 100%);
-      border: 1px solid rgba(155,142,196,0.12);
+      border: 1px solid rgba(var(--primary-rgba),0.12);
       border-radius: 12px;
       animation: clp-scale-in 0.2s ease;
       display: none;
@@ -4825,7 +4825,7 @@
       background: #f7f7f7;
       flex-direction: column;
       z-index: 5;
-      overflow-y: auto;
+      overflow: hidden;
       padding: 10px;
       border-radius: 16px;
     }
@@ -4850,7 +4850,13 @@
       padding: 16px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      display: flex;
+      flex-direction: column;
     }
+    .chat-letter-detail .cld-paper::-webkit-scrollbar { width: 0; }
     .chat-letter-detail .cld-date {
       font-size: 11px; color: #bbb; margin-bottom: 8px;
     }
@@ -4861,6 +4867,109 @@
       background: var(--bg-main); border-radius: 8px;
       padding: 4px 10px; font-size: 13px; color: #333;
     }
+    .chat-letter-detail .cld-greeting {
+      font-size: 14px; color: #333; font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .chat-letter-detail .cld-words { margin-bottom: 4px; }
+    .chat-letter-detail .cld-word.cld-pickable {
+      border: 1.5px dashed rgba(var(--primary-rgba),0.55);
+      cursor: pointer;
+    }
+    .chat-letter-detail .cld-word.cld-picked {
+      background: var(--primary); color: #fff;
+    }
+    .chat-letter-detail .cld-replies { margin-top: 10px; }
+    .chat-letter-detail .cld-reply-item {
+      background: var(--bg-soft); border-left: 3px solid var(--primary);
+      border-radius: 0 8px 8px 0; padding: 8px 10px; margin-bottom: 8px;
+    }
+    .chat-letter-detail .cld-reply-header {
+      font-size: 11px; color: var(--primary); font-weight: 700; margin-bottom: 4px;
+    }
+    .chat-letter-detail .cld-reply-content {
+      font-size: 13px; color: #444; white-space: pre-wrap; line-height: 1.5;
+    }
+    .chat-letter-detail .cld-signature {
+      margin-top: auto; padding-top: 14px; text-align: right;
+    }
+    .chat-letter-detail .cld-sig-name { font-size: 14px; font-weight: 700; color: #333; }
+    .chat-letter-detail .cld-sig-date { font-size: 11px; color: #999; margin-top: 2px; }
+    .chat-letter-detail .cld-actions {
+      flex-shrink: 0; display: flex; gap: 8px;
+      padding: 10px 0 2px;
+    }
+    .chat-letter-detail .cld-action-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+      border: 1px solid rgba(var(--primary-rgba),0.45); background: #fff;
+      color: var(--primary-strong); border-radius: 10px;
+      font-size: 12.5px; font-weight: 600; padding: 9px 0;
+    }
+    .chat-letter-detail .cld-action-btn:active { transform: scale(0.96); opacity: 0.85; }
+    .chat-letter-detail .cld-action-btn.btn-active {
+      background: var(--primary-strong); color: #fff; border-color: transparent;
+    }
+    .chat-letter-detail .cld-action-btn.btn-dim { opacity: 0.45; }
+    .chat-letter-detail .cld-ann-bar {
+      display: none; flex-direction: column; gap: 8px;
+      padding: 10px 12px; background: #fff;
+      border-top: 1px solid rgba(0,0,0,0.06); flex-shrink: 0;
+    }
+    .chat-letter-detail .cld-ann-bar.show { display: flex; }
+    .chat-letter-detail .cld-ann-count { font-size: 11px; color: #888; }
+    .chat-letter-detail .cld-ann-colors { display: flex; gap: 8px; }
+    .chat-letter-detail .cld-ann-color {
+      width: 20px; height: 20px; border-radius: 50%;
+      border: 2px solid transparent; padding: 0;
+    }
+    .chat-letter-detail .cld-ann-color.active { border-color: #333; }
+    .chat-letter-detail .cld-ann-input {
+      width: 100%; box-sizing: border-box;
+      border: 1px solid rgba(var(--primary-rgba),0.35); border-radius: 8px;
+      padding: 8px 10px; font-size: 13px; outline: none;
+    }
+    .chat-letter-detail .cld-ann-btns { display: flex; gap: 8px; }
+    .chat-letter-detail .cld-ann-save {
+      flex: 1; border: none; border-radius: 8px; padding: 8px 0;
+      background: var(--primary-strong); color: #fff; font-size: 13px; font-weight: 600;
+    }
+    .chat-letter-detail .cld-ann-exit {
+      flex: 1; border: none; border-radius: 8px; padding: 8px 0;
+      background: #f0f1f2; color: #666; font-size: 13px; font-weight: 600;
+    }
+    .chat-letter-detail .cld-ovl {
+      display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.35); z-index: 20;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    .chat-letter-detail .cld-ovl.show { display: flex; }
+    .chat-letter-detail .cld-ovl-card {
+      width: 100%; max-width: 300px; background: #fff; border-radius: 14px;
+      padding: 16px;
+    }
+    .chat-letter-detail .cld-ovl-title {
+      font-size: 13px; font-weight: 700; color: #333; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .chat-letter-detail .cld-ovl-dot { width: 10px; height: 10px; border-radius: 50%; background: #999; }
+    .chat-letter-detail .cld-ovl-text {
+      font-size: 13px; color: #444; line-height: 1.6; white-space: pre-wrap;
+      background: var(--bg-soft); border-radius: 8px; padding: 10px; margin-bottom: 12px;
+      max-height: 160px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    .chat-letter-detail .cld-ovl-textarea {
+      width: 100%; box-sizing: border-box; min-height: 90px;
+      border: 1px solid rgba(var(--primary-rgba),0.35); border-radius: 8px;
+      padding: 10px; font-size: 13px; outline: none; resize: none; font-family: inherit;
+      margin-bottom: 12px;
+    }
+    .chat-letter-detail .cld-ovl-btns { display: flex; gap: 8px; }
+    .chat-letter-detail .cld-ovl-btn {
+      flex: 1; border: none; border-radius: 8px; padding: 9px 0; font-size: 13px; font-weight: 600;
+    }
+    .chat-letter-detail .cld-ovl-btn.primary { background: var(--primary-strong); color: #fff; }
+    .chat-letter-detail .cld-ovl-btn.plain { background: #f0f1f2; color: #666; }
+    .chat-letter-detail .cld-ovl-btn.danger { background: #fff; color: #e53935; border: 1px solid rgba(229,57,53,0.35); }
 
     /* --- 侧边栏 --- */
     .sidebar-overlay {
@@ -7852,7 +7961,7 @@
   line-height: 1.5;
   animation: toastSlideDown 0.35s cubic-bezier(.4,0,.2,1);
   overflow: hidden;
-  border: 1px solid rgba(155,142,196,0.12);
+  border: 1px solid rgba(var(--primary-rgba),0.12);
 }
 @keyframes toastSlideDown {
   from { opacity: 0; transform: translateX(-50%) translateY(-24px); }
@@ -10225,7 +10334,51 @@
           </div>
           <div class="cld-paper">
             <div class="cld-date" id="cldDate"></div>
+            <div class="cld-greeting" id="cldGreeting"></div>
             <div class="cld-words" id="cldWords"></div>
+            <div class="cld-replies" id="cldReplies"></div>
+            <div class="cld-signature">
+              <div class="cld-sig-name" id="cldSigName"></div>
+              <div class="cld-sig-date" id="cldSigDate"></div>
+            </div>
+          </div>
+          <div class="cld-ann-bar" id="cldAnnBar">
+            <div class="cld-ann-count" id="cldAnnCount">点击字卡选择</div>
+            <div class="cld-ann-colors" id="cldAnnColors"></div>
+            <input class="cld-ann-input" id="cldAnnInput" type="text" placeholder="输入批注内容..." />
+            <div class="cld-ann-btns">
+              <button class="cld-ann-exit" id="cldAnnExitBtn">退出批注</button>
+              <button class="cld-ann-save" id="cldAnnSaveBtn">保存批注</button>
+            </div>
+          </div>
+          <div class="cld-actions" id="cldActions">
+            <button class="cld-action-btn" id="cldAnnotateBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>批注
+            </button>
+            <button class="cld-action-btn" id="cldReplyBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>回信
+            </button>
+            <button class="cld-action-btn" id="cldFavBtn">收藏</button>
+          </div>
+          <div class="cld-ovl" id="cldAnnOvl">
+            <div class="cld-ovl-card">
+              <div class="cld-ovl-title"><span class="cld-ovl-dot" id="cldAnnOvlDot"></span>批注</div>
+              <div class="cld-ovl-text" id="cldAnnOvlText"></div>
+              <div class="cld-ovl-btns">
+                <button class="cld-ovl-btn plain" id="cldAnnOvlClose">关闭</button>
+                <button class="cld-ovl-btn danger" id="cldAnnDelBtn">删除批注</button>
+              </div>
+            </div>
+          </div>
+          <div class="cld-ovl" id="cldReplyOvl">
+            <div class="cld-ovl-card">
+              <div class="cld-ovl-title">写回信</div>
+              <textarea class="cld-ovl-textarea" id="cldReplyInput" placeholder="写下想说的话..."></textarea>
+              <div class="cld-ovl-btns">
+                <button class="cld-ovl-btn plain" id="cldReplyCancelBtn">取消</button>
+                <button class="cld-ovl-btn primary" id="cldReplySendBtn">发送</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -11597,7 +11750,7 @@
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput');
+          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput');
           inputFocused = true;
           kbHeight = calcKb();
           apply();
@@ -11609,7 +11762,7 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput'));
+          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput'));
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
@@ -17653,11 +17806,11 @@ patText2 = patText2.replace(/你/g, '我');
           const isToday = dateStr === todayStr;
           const isSelected = dateStr === calSelectedDate;
           const count = dailyCount[dateStr] || 0;
-          // 热力背景：信件越多颜色越深（蓝色系）
+          // 热力背景：信件越多颜色越深（跟随主题）
           let bgStyle = '';
           if (count > 0) {
             const intensity = 0.08 + (count / maxCount) * 0.35;
-            bgStyle = `background:rgba(24,144,255,${intensity.toFixed(2)});`;
+            bgStyle = `background:rgba(var(--primary-rgba),${intensity.toFixed(2)});`;
           }
           let cls = 'custom-cal-day';
           if (isToday) cls += ' today';
@@ -18346,7 +18499,7 @@ patText2 = patText2.replace(/你/g, '我');
           var bgStyle = '';
           if (count > 0 && maxCount > 0) {
             var intensity = 0.06 + (count / maxCount) * 0.3;
-            bgStyle = 'background:rgba(155,142,196,' + intensity.toFixed(2) + ');';
+            bgStyle = 'background:rgba(var(--primary-rgba),' + intensity.toFixed(2) + ');';
           }
           var cls = 'clp-cal-day';
           if (isToday) cls += ' today';
@@ -19343,6 +19496,8 @@ patText2 = patText2.replace(/你/g, '我');
       cldBackBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         chatLetterDetail.classList.remove('active');
+        if (cldAnnMode) toggleCldAnnMode();
+        if (cldDirty) { cldDirty = false; renderChatLetterPanel(); }
       });
 
       // 底部按钮事件（写新信 / 查看全部）
@@ -19519,30 +19674,261 @@ patText2 = patText2.replace(/你/g, '我');
 
           // 点击查看详情
           item.addEventListener('click', function () {
-            cldTitle.textContent = letter.isOutgoing ? '寄出的信件' : '收到的信件';
-            if (letter.timestamp) {
-              var dd = new Date(letter.timestamp);
-              cldDate.textContent = dd.getFullYear() + '年' + (dd.getMonth() + 1) + '月' + dd.getDate() + '日 ' + dd.getHours().toString().padStart(2, '0') + ':' + dd.getMinutes().toString().padStart(2, '0');
-            } else {
-              cldDate.textContent = '';
-            }
-            cldWords.innerHTML = '';
-            if (letter.words && letter.words.length > 0) {
-              letter.words.forEach(function (w) {
-                var wordEl = document.createElement('div');
-                wordEl.className = 'cld-word';
-                wordEl.textContent = w.name || '';
-                cldWords.appendChild(wordEl);
-              });
-            } else {
-              cldWords.innerHTML = '<span style="color:#bbb;font-size:13px;">无内容</span>';
-            }
-            chatLetterDetail.classList.add('active');
+            openCldDetail(letter);
           });
 
           clpList.appendChild(item);
         });
       }
+
+      // ===== 聊天信件详情（信件化 + 批注/回信/收藏）=====
+      var cldLetter = null;
+      var cldAnnMode = false;
+      var cldAnnSel = [];
+      var cldAnnColor = '#e65100';
+      var cldAnnViewIdx = null;
+      var cldDirty = false;
+      var CLD_ANN_COLORS = ['#e65100', '#1565c0', '#7b1fa2', '#7b6ea8', '#c62828'];
+
+      function openCldDetail(letter) {
+        cldLetter = letter;
+        cldAnnMode = false;
+        cldAnnSel = [];
+        cldDirty = false;
+        cldCloseOverlays();
+        document.getElementById('cldActions').style.display = 'flex';
+        renderCldDetail();
+        chatLetterDetail.classList.add('active');
+      }
+
+      function cldCloseOverlays() {
+        document.getElementById('cldReplyOvl').classList.remove('show');
+        document.getElementById('cldAnnOvl').classList.remove('show');
+        document.getElementById('cldAnnBar').classList.remove('show');
+      }
+
+      function renderCldDetail() {
+        if (!cldLetter) return;
+        var letter = cldLetter;
+        cldTitle.textContent = letter.isOutgoing ? '寄出的信件' : '收到的信件';
+        // 日期
+        var dateStr = letter.time || '';
+        if (!dateStr && letter.timestamp) {
+          var dd = new Date(letter.timestamp);
+          dateStr = dd.getFullYear() + '年' + (dd.getMonth() + 1) + '月' + dd.getDate() + '日 ' + dd.getHours().toString().padStart(2, '0') + ':' + dd.getMinutes().toString().padStart(2, '0');
+        }
+        cldDate.textContent = dateStr;
+        // 称呼
+        var greetName = letter.isOutgoing ? (letter.from || '朋友') : (userProfile.name || '我');
+        document.getElementById('cldGreeting').textContent = '亲爱的 ' + greetName + '：';
+        // 字卡（带批注标记）
+        cldWords.innerHTML = '';
+        var annotations = letter.annotations || {};
+        if (letter.words && letter.words.length > 0) {
+          letter.words.forEach(function (w, wIdx) {
+            var wordEl = document.createElement('div');
+            wordEl.className = 'cld-word' + (cldAnnMode ? ' cld-pickable' : '');
+            wordEl.textContent = w.name || '';
+            var ann = annotations[wIdx];
+            var hasAnn = !!(ann && ann.text && ann.color);
+            if (hasAnn) {
+              wordEl.style.borderLeft = '3px solid ' + ann.color;
+              wordEl.style.paddingLeft = '7px';
+            }
+            (function (idx, annotated) {
+              wordEl.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (cldAnnMode) {
+                  var pos = cldAnnSel.indexOf(idx);
+                  if (pos >= 0) { cldAnnSel.splice(pos, 1); this.classList.remove('cld-picked'); }
+                  else { cldAnnSel.push(idx); this.classList.add('cld-picked'); }
+                  updateCldAnnCount();
+                } else if (annotated) {
+                  showCldAnnView(idx);
+                }
+              });
+            })(wIdx, hasAnn);
+            cldWords.appendChild(wordEl);
+          });
+        } else {
+          cldWords.innerHTML = '<span style="color:#bbb;font-size:13px;">无内容</span>';
+        }
+        // 回信记录
+        var repliesBox = document.getElementById('cldReplies');
+        repliesBox.innerHTML = '';
+        if (letter.replies && letter.replies.length > 0) {
+          letter.replies.forEach(function (reply) {
+            var repItem = document.createElement('div');
+            repItem.className = 'cld-reply-item';
+            var repHead = document.createElement('div');
+            repHead.className = 'cld-reply-header';
+            repHead.textContent = reply.fromContact ? ((reply.from || letter.from) + ' 的回信') : '我的回信';
+            repItem.appendChild(repHead);
+            var repBody = document.createElement('div');
+            repBody.className = 'cld-reply-content';
+            repBody.textContent = reply.text || '';
+            repItem.appendChild(repBody);
+            repliesBox.appendChild(repItem);
+          });
+        }
+        // 署名 + 日期
+        var sigName = letter.isOutgoing ? (userProfile.name || '我') : (letter.from || '朋友');
+        document.getElementById('cldSigName').textContent = '—— ' + sigName;
+        document.getElementById('cldSigDate').textContent = dateStr;
+        // 按钮状态
+        updateCldFavBtn();
+        var canReply = !letter.isOutgoing && !(letter.replies && letter.replies.length > 0);
+        document.getElementById('cldReplyBtn').classList.toggle('btn-dim', !canReply);
+        document.getElementById('cldAnnotateBtn').classList.toggle('btn-active', cldAnnMode);
+        document.getElementById('cldAnnBar').classList.toggle('show', cldAnnMode);
+        updateCldAnnCount();
+      }
+
+      function updateCldFavBtn() {
+        var btn = document.getElementById('cldFavBtn');
+        if (!cldLetter) return;
+        var isFav = !!cldLetter.favorite;
+        var fill = isFav ? 'var(--primary-strong)' : 'none';
+        var stroke = isFav ? 'var(--primary-strong)' : '#bbb';
+        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="' + fill + '" stroke="' + stroke + '" stroke-width="2"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg>' + (isFav ? '已收藏' : '收藏');
+        btn.classList.toggle('btn-active', isFav);
+      }
+
+      function updateCldAnnCount() {
+        document.getElementById('cldAnnCount').textContent = cldAnnMode ? ('已选 ' + cldAnnSel.length + ' 张字卡，点击字卡选择') : '';
+      }
+
+      function renderCldAnnColors() {
+        var box = document.getElementById('cldAnnColors');
+        box.innerHTML = '';
+        CLD_ANN_COLORS.forEach(function (c) {
+          var dot = document.createElement('button');
+          dot.className = 'cld-ann-color' + (c === cldAnnColor ? ' active' : '');
+          dot.style.background = c;
+          (function (color) {
+            dot.addEventListener('click', function (e) {
+              e.stopPropagation();
+              cldAnnColor = color;
+              renderCldAnnColors();
+            });
+          })(c);
+          box.appendChild(dot);
+        });
+      }
+
+      function toggleCldAnnMode() {
+        if (!cldLetter) return;
+        cldAnnMode = !cldAnnMode;
+        cldAnnSel = [];
+        if (cldAnnMode) {
+          cldAnnColor = CLD_ANN_COLORS[0];
+          renderCldAnnColors();
+          document.getElementById('cldActions').style.display = 'none';
+        } else {
+          document.getElementById('cldActions').style.display = 'flex';
+        }
+        renderCldDetail();
+      }
+
+      function saveCldAnnotations() {
+        if (!cldLetter) return;
+        var input = document.getElementById('cldAnnInput');
+        var text = input.value.trim();
+        if (cldAnnSel.length === 0) { showToast('请先点选要批注的字卡'); return; }
+        if (!text) { showToast('请输入批注内容'); return; }
+        if (!cldLetter.annotations) cldLetter.annotations = {};
+        cldAnnSel.forEach(function (idx) {
+          cldLetter.annotations[idx] = { text: text, color: cldAnnColor };
+        });
+        saveLetters();
+        cldDirty = true;
+        input.value = '';
+        toggleCldAnnMode();
+        showToast('批注已保存');
+      }
+
+      function showCldAnnView(idx) {
+        if (!cldLetter || !cldLetter.annotations || !cldLetter.annotations[idx]) return;
+        cldAnnViewIdx = idx;
+        var ann = cldLetter.annotations[idx];
+        document.getElementById('cldAnnOvlDot').style.background = ann.color || '#999';
+        document.getElementById('cldAnnOvlText').textContent = ann.text || '';
+        document.getElementById('cldAnnOvl').classList.add('show');
+      }
+
+      // cld 静态按钮绑定（一次）
+      document.getElementById('cldAnnotateBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        toggleCldAnnMode();
+      });
+      document.getElementById('cldAnnSaveBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        saveCldAnnotations();
+      });
+      document.getElementById('cldAnnExitBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (cldAnnMode) toggleCldAnnMode();
+      });
+      document.getElementById('cldFavBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!cldLetter) return;
+        cldLetter.favorite = !cldLetter.favorite;
+        saveLetters();
+        cldDirty = true;
+        updateCldFavBtn();
+        showToast(cldLetter.favorite ? '已收藏' : '已取消收藏');
+      });
+      document.getElementById('cldReplyBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!cldLetter) return;
+        if (cldLetter.isOutgoing) { showToast('寄出的信只能由联系人回复'); return; }
+        if (cldLetter.replies && cldLetter.replies.length > 0) { showToast('已回复过这封信'); return; }
+        if (cldAnnMode) toggleCldAnnMode();
+        document.getElementById('cldReplyInput').value = '';
+        document.getElementById('cldReplyOvl').classList.add('show');
+        setTimeout(function () { document.getElementById('cldReplyInput').focus(); }, 100);
+      });
+      document.getElementById('cldReplySendBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!cldLetter) return;
+        var input = document.getElementById('cldReplyInput');
+        var text = input.value.trim();
+        if (!text) { showToast('请输入回信内容'); return; }
+        if (!cldLetter.replies) cldLetter.replies = [];
+        cldLetter.replies.push({ time: new Date().toLocaleString('zh-CN'), text: text, fromContact: false });
+        cldLetter.userReplied = true;
+        saveLetters();
+        cldDirty = true;
+        document.getElementById('cldReplyOvl').classList.remove('show');
+        renderCldDetail();
+        showToast('回信已发送');
+      });
+      document.getElementById('cldReplyCancelBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('cldReplyOvl').classList.remove('show');
+      });
+      document.getElementById('cldReplyOvl').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('show');
+      });
+      document.getElementById('cldAnnOvl').addEventListener('click', function (e) {
+        if (e.target === this) this.classList.remove('show');
+      });
+      document.getElementById('cldAnnOvlClose').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('cldAnnOvl').classList.remove('show');
+      });
+      document.getElementById('cldAnnDelBtn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!cldLetter || cldAnnViewIdx === null) return;
+        if (cldLetter.annotations) {
+          delete cldLetter.annotations[cldAnnViewIdx];
+          saveLetters();
+          cldDirty = true;
+        }
+        document.getElementById('cldAnnOvl').classList.remove('show');
+        renderCldDetail();
+        showToast('已删除批注');
+      });
 
       // ===== 联系人自动发朋友圈 =====
       // 加载持久化的聊天记录
