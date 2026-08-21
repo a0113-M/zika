@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v98')){sessionStorage.setItem('zk_v98','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==98){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v99')){sessionStorage.setItem('zk_v99','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==99){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v98</title>
+  <title>字卡 · 小手机 v99</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4028,6 +4028,130 @@
       from { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
       to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
     }
+    /* --- 工具栏翻页（微信式） --- */
+    .chat-toolbar .toolbar-pages {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .chat-toolbar .toolbar-pages::-webkit-scrollbar { display: none; }
+    .chat-toolbar .toolbar-page {
+      flex: 0 0 100%;
+      scroll-snap-align: start;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .toolbar-dots {
+      display: flex; justify-content: center; align-items: center;
+      gap: 5px; margin-top: 10px;
+    }
+    .toolbar-dots.hidden { display: none; }
+    .toolbar-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(0,0,0,0.18); border: none; padding: 0;
+      transition: all .25s ease;
+    }
+    .toolbar-dot.active { background: #7c68d9; width: 14px; border-radius: 3px; }
+
+    /* --- 塔罗占卜面板 --- */
+    .cdp-panel { z-index: 271; }
+    .cdp-header {
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 10px;
+      padding: 16px 16px 12px;
+      background: linear-gradient(135deg, #6a5acd 0%, #9370db 55%, #b39ddb 100%);
+      color: #fff;
+    }
+    .cdp-title-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+    .cdp-title { font-size: 16px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+    .cdp-sub { font-size: 11px; opacity: 0.85; }
+    .cdp-close-btn {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.2); border: none; padding: 0; flex-shrink: 0;
+    }
+    .cdp-close-btn:active { background: rgba(255,255,255,0.35); }
+    .cdp-body {
+      flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
+      padding: 12px 14px 4px;
+      background: linear-gradient(180deg, #faf8ff 0%, #ffffff 30%);
+    }
+    .cdp-body::-webkit-scrollbar { width: 3px; }
+    .cdp-body::-webkit-scrollbar-thumb { background: rgba(106,90,205,0.15); border-radius: 3px; }
+    .cdp-chips { display: flex; gap: 7px; margin-bottom: 12px; }
+    .cdp-chip {
+      flex: 1; padding: 7px 0; border-radius: 999px;
+      border: 1px solid rgba(106,90,205,0.25);
+      background: #fff; color: #7e6bc4;
+      font-size: 11.5px; font-weight: 600; text-align: center;
+    }
+    .cdp-chip.active { background: linear-gradient(135deg, #7c68d9, #9b7ede); color: #fff; border-color: transparent; }
+    .cdp-cards { display: flex; gap: 8px; justify-content: center; perspective: 900px; margin: 4px 0 8px; }
+    .cdv-card { flex: 1; max-width: 108px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .cdv-pos { font-size: 10.5px; color: #9b8ec9; font-weight: 600; letter-spacing: 2px; }
+    .cdv-flip { position: relative; width: 100%; aspect-ratio: 5/8; transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.4, 0.1, 0.2, 1); cursor: pointer; }
+    .cdv-card.flipped .cdv-flip { transform: rotateY(180deg); }
+    .cdv-face, .cdv-back {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      border-radius: 10px; overflow: hidden;
+    }
+    .cdv-back {
+      background: linear-gradient(150deg, #5646a8 0%, #7c68d9 50%, #4a3d94 100%);
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25), inset 0 0 22px rgba(0,0,0,0.28);
+    }
+    .cdv-orbit {
+      position: absolute; top: 10%; left: 10%; right: 10%; bottom: 10%;
+      border: 1px dashed rgba(255,255,255,0.35); border-radius: 50%;
+      animation: cdp-spin 14s linear infinite;
+    }
+    @keyframes cdp-spin { to { transform: rotate(360deg); } }
+    .cdv-face {
+      transform: rotateY(180deg);
+      background: #fffdf9;
+      border: 2px solid #b9a7e8;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: inset 0 0 0 3px #fff, inset 0 0 0 4px rgba(124,104,217,0.35);
+    }
+    .cdv-face-in { display: flex; flex-direction: column; align-items: center; gap: 3px; width: 100%; padding: 8px 3px; transition: transform .4s; }
+    .cdv-card.reversed .cdv-face-in { transform: rotate(180deg); }
+    .cdv-num { font-size: 10px; color: #9b8ec9; font-weight: 700; letter-spacing: 1px; }
+    .cdv-name { font-size: 12px; font-weight: 700; color: #55489c; }
+    .cdv-kw { font-size: 9.5px; color: #9b8ec9; line-height: 1.25; text-align: center; padding: 0 2px; }
+    .cdv-badge {
+      position: absolute; top: 5px; left: 5px;
+      font-size: 8.5px; font-weight: 700; color: #fff;
+      background: rgba(230,178,60,0.92);
+      border-radius: 6px; padding: 1px 5px;
+    }
+    .cdv-card.reversed .cdv-badge { background: rgba(124,104,217,0.85); }
+    .cdv-note {
+      font-size: 10.5px; color: #6f6494; line-height: 1.5;
+      text-align: center; min-height: 34px; opacity: 0; transition: opacity .4s .3s;
+    }
+    .cdv-card.flipped .cdv-note { opacity: 1; }
+    .cdp-summary {
+      display: none; margin: 10px 0 4px; padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(124,104,217,0.08), rgba(179,157,219,0.1));
+      border: 1px solid rgba(124,104,217,0.18);
+      border-radius: 14px; font-size: 12px; color: #55489c; line-height: 1.7;
+    }
+    .cdp-summary.show { display: block; animation: cdp-rise .5s ease; }
+    @keyframes cdp-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .cdp-summary b { color: #6a4fc9; }
+    .cdp-footer { flex-shrink: 0; padding: 10px 14px 14px; background: #fff; }
+    .cdp-again {
+      width: 100%; padding: 11px 0; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, #7c68d9, #9b7ede); color: #fff;
+      font-size: 13.5px; font-weight: 700; letter-spacing: 2px;
+    }
+    .cdp-again:active { transform: scale(0.98); opacity: 0.9; }
+
     .clp-backdrop {
       display: none;
       position: absolute;
@@ -9429,7 +9553,8 @@
           <button class="chat-send-btn" id="chatSendBtn">发送</button>
         </div>
         <div class="chat-toolbar" id="chatToolbar">
-          <div class="toolbar-grid" id="toolbarGrid">
+          <div class="toolbar-pages" id="toolbarGrid">
+            <div class="toolbar-page">
             <button class="toolbar-item" data-tool="emoji">
               <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -9506,6 +9631,22 @@
                 </svg></span>
               <span class="toolbar-label">统计</span>
             </button>
+            </div>
+            <div class="toolbar-page">
+              <button class="toolbar-item" data-tool="divine">
+              <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="10" r="7"/>
+                  <path d="M12 7.4l.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8z" fill="currentColor" stroke="none"/>
+                  <path d="M9 20.5h6M10.5 17c1 1 2 1 3 0"/>
+                </svg></span>
+              <span class="toolbar-label">占卜</span>
+            </button>
+            </div>
+          </div>
+          <div class="toolbar-dots" id="toolbarDots">
+            <button class="toolbar-dot active" data-p="0"></button>
+            <button class="toolbar-dot" data-p="1"></button>
           </div>
           <!-- 表情包模块 -->
           <div class="emoji-module" id="emojiModule">
@@ -9521,6 +9662,31 @@
 
         </div>
       </div>
+      <!-- 塔罗占卜面板 -->
+      <div class="clp-backdrop" id="cdvBackdrop"></div>
+      <div class="chat-letter-panel cdp-panel" id="chatDivinePanel">
+        <div class="cdp-header">
+          <div class="cdp-title-wrap">
+            <span class="cdp-title">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="7"/><path d="M12 7.4l.8 1.8 1.8.8-1.8.8-.8 1.8-.8-1.8-1.8-.8 1.8-.8z" fill="currentColor" stroke="none"/><path d="M9 20.5h6M10.5 17c1 1 2 1 3 0"/></svg>
+              塔罗占卜
+            </span>
+            <span class="cdp-sub">默念心中的问题，翻开属于你的三张牌</span>
+          </div>
+          <button class="cdp-close-btn" id="cdvCloseBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="cdp-body">
+          <div class="cdp-chips" id="cdvChips"></div>
+          <div class="cdp-cards" id="cdvCards"></div>
+          <div class="cdp-summary" id="cdvSummary"></div>
+        </div>
+        <div class="cdp-footer">
+          <button class="cdp-again" id="cdvAgainBtn">重新占卜</button>
+        </div>
+      </div>
+
       <!-- 信件面板遮罩 + 居中弹窗 -->
       <div class="clp-backdrop" id="clpBackdrop"></div>
       <div class="chat-letter-panel" id="chatLetterPanel">
@@ -11124,7 +11290,31 @@
           var _bk = document.getElementById('clpBackdrop');
           if (_bk) _bk.classList.remove('active');
         }
+        var _dp3 = document.getElementById('chatDivinePanel');
+        if (_dp3) _dp3.classList.remove('active');
+        var _db3 = document.getElementById('cdvBackdrop');
+        if (_db3) _db3.classList.remove('active');
       });
+
+      // ----- 工具栏翻页（微信式） -----
+      (function () {
+        var pages = document.getElementById('toolbarGrid');
+        var dotsWrap = document.getElementById('toolbarDots');
+        if (!pages || !dotsWrap) return;
+        var dots = dotsWrap.querySelectorAll('.toolbar-dot');
+        dotsWrap.addEventListener('click', function (e) {
+          var d = e.target.closest('.toolbar-dot');
+          if (!d) return;
+          pages.scrollTo({ left: (+d.dataset.p) * pages.clientWidth, behavior: 'smooth' });
+        });
+        pages.addEventListener('scroll', function () {
+          var p = Math.round(pages.scrollLeft / Math.max(1, pages.clientWidth));
+          dots.forEach(function (d, i) { d.classList.toggle('active', i === p); });
+        }, { passive: true });
+        new MutationObserver(function () {
+          dotsWrap.classList.toggle('hidden', pages.classList.contains('hidden'));
+        }).observe(pages, { attributes: true, attributeFilter: ['class'] });
+      })();
 
       chatToolbarToggle.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -11423,6 +11613,10 @@
         document.getElementById('chatLetterPanel').classList.remove('active');
         document.getElementById('chatLetterDetail').classList.remove('active');
         document.getElementById('clpBackdrop').classList.remove('active');
+        var _dp2 = document.getElementById('chatDivinePanel');
+        if (_dp2) _dp2.classList.remove('active');
+        var _db2 = document.getElementById('cdvBackdrop');
+        if (_db2) _db2.classList.remove('active');
         if (isActive) {
           emojiModule.classList.remove('active');
           toolbarGrid.classList.remove('hidden');
@@ -11438,12 +11632,16 @@
       });
       document.querySelectorAll('.toolbar-item[data-tool]').forEach(item => {
         const tool = item.dataset.tool;
-        if (tool === 'emoji' || tool === 'letter') return;
+        if (tool === 'emoji' || tool === 'letter' || tool === 'divine') return;
         item.addEventListener('click', function () {
           emojiModule.classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
           document.getElementById('chatLetterPanel').classList.remove('active');
           document.getElementById('clpBackdrop').classList.remove('active');
+          var _dp = document.getElementById('chatDivinePanel');
+          if (_dp) _dp.classList.remove('active');
+          var _db = document.getElementById('cdvBackdrop');
+          if (_db) _db.classList.remove('active');
         });
       });
 
@@ -17755,6 +17953,10 @@ patText2 = patText2.replace(/你/g, '我');
         var isActive = chatLetterPanel.classList.contains('active');
         emojiModule.classList.remove('active');
         chatLetterDetail.classList.remove('active');
+        var _dp4 = document.getElementById('chatDivinePanel');
+        if (_dp4) _dp4.classList.remove('active');
+        var _db4 = document.getElementById('cdvBackdrop');
+        if (_db4) _db4.classList.remove('active');
         if (isActive) {
           chatLetterPanel.classList.remove('active');
           document.getElementById('clpBackdrop').classList.remove('active');
@@ -17779,6 +17981,145 @@ patText2 = patText2.replace(/你/g, '我');
         chatLetterDetail.classList.remove('active');
         this.classList.remove('active');
       });
+
+      // ----- 塔罗占卜 -----
+      (function () {
+        var panel = document.getElementById('chatDivinePanel');
+        var backdrop = document.getElementById('cdvBackdrop');
+        if (!panel || !backdrop) return;
+        var MAJORS = [
+          { n: '0', name: '愚者', up: '新的开始', rev: '尚未起程', upT: '一段轻盈的新旅程正在展开，别怕走岔路', revT: '想得太多反而迈不开步，先迈一小步也好' },
+          { n: 'I', name: '魔术师', up: '心想事成', rev: '用力过猛', upT: '你手里的资源比你以为的多，大胆去用', revT: '别急着表现，先把手上的事做扎实' },
+          { n: 'II', name: '女祭司', up: '内在直觉', rev: '忽略心声', upT: '答案其实早就在心里了，安静听一听', revT: '外面的声音太吵，记得回头问问自己' },
+          { n: 'III', name: '皇后', up: '温柔丰盛', rev: '需要滋养', upT: '被好好爱着的感觉，正在慢慢靠近', revT: '先照顾好自己，才有力气照顾在乎的人' },
+          { n: 'IV', name: '皇帝', up: '稳定掌控', rev: '适度放手', upT: '秩序会带来安全感，稳稳的就好', revT: '抓太紧会累，试着让一部分顺其自然' },
+          { n: 'V', name: '教皇', up: '良师指引', rev: '守旧', upT: '身边有值得信任的经验，听一听', revT: '老办法不一定适用，可以试试新思路' },
+          { n: 'VI', name: '恋人', up: '心动连结', rev: '心有犹疑', upT: '重要的相遇正在发生，坦诚一点', revT: '别急着下结论，让心再确认一会儿' },
+          { n: 'VII', name: '战车', up: '勇往直前', rev: '调整方向', upT: '握紧方向盘，这一程你会赢', revT: '暂时停下来校准方向，不是认输' },
+          { n: 'VIII', name: '力量', up: '温柔的坚定', rev: '自我怀疑', upT: '耐心比蛮力更有用，你比想象中强大', revT: '怀疑自己的时候，回头看看走过的路' },
+          { n: 'IX', name: '隐士', up: '向内沉淀', rev: '适度出走', upT: '一个人安静待一会儿，答案会亮起来', revT: '独处太久会闷，出去见见光和人' },
+          { n: 'X', name: '命运之轮', up: '时来运转', rev: '静待花开', upT: '轮子转起来了，顺着势走会更轻松', revT: '时机还没到，蓄力也是一种前进' },
+          { n: 'XI', name: '正义', up: '公正平衡', rev: '失衡', upT: '诚实会替你做出最好的选择', revT: '心里的秤有点歪了，找平衡点' },
+          { n: 'XII', name: '倒吊人', up: '换个角度', rev: '原地打转', upT: '换个角度看，问题忽然就不一样了', revT: '钻牛角尖啦，退一步海阔天空' },
+          { n: 'XIII', name: '死神', up: '告别新生', rev: '恋恋不舍', upT: '旧的正在谢幕，新的正在排队登场', revT: '有些告别躲不掉，轻一点放手' },
+          { n: 'XIV', name: '节制', up: '调和耐心', rev: '急躁', upT: '慢慢来，比较快，火候刚好', revT: '别催结果，好事需要一点时间' },
+          { n: 'XV', name: '恶魔', up: '看清执念', rev: '解开束缚', upT: '该松手的东西被看见了，恭喜', revT: '别被「必须」绑住，你其实有得选' },
+          { n: 'XVI', name: '塔', up: '破而后立', rev: '虚惊一场', upT: '摇一摇，不稳的掉光了，留下来的更稳', revT: '担心的崩塌并没有发生，安心' },
+          { n: 'XVII', name: '星星', up: '希望治愈', rev: '短暂迷雾', upT: '许个愿吧，星星正在认真听', revT: '光暂时被云挡住，但星还在天上' },
+          { n: 'XVIII', name: '月亮', up: '跟随直觉', rev: '拨开迷雾', upT: '雾里也有路，跟着感觉走', revT: '不安多是想象，看清了就不怕了' },
+          { n: 'XIX', name: '太阳', up: '明亮活力', rev: '攒攒能量', upT: '今天的你自带阳光，笑一个', revT: '电量偏低，晒晒太阳充充电' },
+          { n: 'XX', name: '审判', up: '觉醒召唤', rev: '自我怀疑', upT: '一个重要的声音在呼唤你，别错过', revT: '别急着否定自己，你比想象中好' },
+          { n: 'XXI', name: '世界', up: '圆满达成', rev: '差临门一脚', upT: '一个章节要圆满了，值得庆祝', revT: '就差一点点坚持，收尾要漂亮' }
+        ];
+        var THEMES = [
+          { id: 'guide', label: '今日指引' },
+          { id: 'love', label: '爱情' },
+          { id: 'work', label: '事业' },
+          { id: 'study', label: '学业' },
+          { id: 'wealth', label: '财运' }
+        ];
+        var POS = ['过去', '现在', '未来'];
+        var LEAD = ['过去的你，', '现在，', '接下来，'];
+        var theme = 'guide';
+        var draw = [];
+        var chipsEl = document.getElementById('cdvChips');
+        var cardsEl = document.getElementById('cdvCards');
+        var sumEl = document.getElementById('cdvSummary');
+        var MOON = '<svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" opacity="0.92"><path d="M20 13.5A8 8 0 0 1 10.5 4 7 7 0 1 0 20 13.5z" opacity="0.9"/><circle cx="17" cy="5.5" r="1.1"/></svg>';
+        var SYM = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8d7cd6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="rgba(141,124,214,0.12)"/></svg>';
+
+        function pickThree() {
+          var pool = MAJORS.slice();
+          var out = [];
+          while (out.length < 3) out.push(pool.splice(Math.floor(Math.random() * pool.length), 1)[0]);
+          return out.map(function (c) { return { c: c, r: Math.random() < 0.35 }; });
+        }
+
+        function render() {
+          draw = pickThree();
+          chipsEl.innerHTML = THEMES.map(function (t) {
+            return '<button class="cdp-chip' + (t.id === theme ? ' active' : '') + '" data-t="' + t.id + '">' + t.label + '</button>';
+          }).join('');
+          cardsEl.innerHTML = draw.map(function (d, i) {
+            return '<div class="cdv-card" data-i="' + i + '">' +
+              '<div class="cdv-pos">' + POS[i] + '</div>' +
+              '<div class="cdv-flip">' +
+                '<div class="cdv-back"><div class="cdv-orbit"></div>' + MOON + '</div>' +
+                '<div class="cdv-face">' +
+                  '<div class="cdv-badge">' + (d.r ? '逆位' : '正位') + '</div>' +
+                  '<div class="cdv-face-in">' +
+                    '<div class="cdv-num">' + d.c.n + '</div>' + SYM +
+                    '<div class="cdv-name">' + d.c.name + '</div>' +
+                    '<div class="cdv-kw">' + (d.r ? d.c.rev : d.c.up) + '</div>' +
+                  '</div>' +
+                '</div>' +
+              '</div>' +
+              '<div class="cdv-note"></div>' +
+            '</div>';
+          }).join('');
+          sumEl.classList.remove('show');
+          sumEl.innerHTML = '';
+        }
+
+        function showSummary() {
+          var n = draw.map(function (d) { return d.c.name; });
+          var mid = draw[1].r ? draw[1].c.revT : draw[1].c.upT;
+          var kw = draw[1].r ? draw[1].c.rev : draw[1].c.up;
+          var txt = '';
+          if (theme === 'love') {
+            txt = '在爱情里，「<b>' + n[1] + '</b>」是此刻的主旋律——' + mid + '。' + n[2] + '在未来守望着，多一点坦诚，心会替你选。';
+          } else if (theme === 'work') {
+            txt = '事业上，牌面落在「<b>' + n[1] + '</b>」：' + mid + '。带着' + n[0] + '的沉淀往前走，节奏比冲刺更重要。';
+          } else if (theme === 'study') {
+            txt = '学业上，「<b>' + n[1] + '</b>」是今天的关键：' + mid + '。' + n[2] + '提醒你，把大目标拆成小台阶。';
+          } else if (theme === 'wealth') {
+            txt = '财运方面，「<b>' + n[1] + '</b>」说：' + mid + '。' + n[0] + '的课题是看清自己真正想要的，钱会跟着目标来。';
+          } else {
+            txt = '今天的关键词是「<b>' + kw + '</b>」。' + mid + '。' + n[0] + '与' + n[2] + '一前一后护着你，顺其自然，好运正在路上。';
+          }
+          sumEl.innerHTML = txt;
+          sumEl.classList.add('show');
+        }
+
+        function flipCard(el) {
+          if (el.classList.contains('flipped')) return;
+          var i = +el.dataset.i;
+          var d = draw[i];
+          el.classList.add(d.r ? 'flipped reversed' : 'flipped');
+          el.querySelector('.cdv-note').textContent = LEAD[i] + (d.r ? d.c.revT : d.c.upT);
+          if (cardsEl.querySelectorAll('.cdv-card.flipped').length === 3) {
+            setTimeout(showSummary, 550);
+          }
+        }
+
+        chipsEl.addEventListener('click', function (e) {
+          var b = e.target.closest('.cdp-chip');
+          if (!b) return;
+          theme = b.dataset.t;
+          render();
+        });
+        cardsEl.addEventListener('click', function (e) {
+          var card = e.target.closest('.cdv-card');
+          if (card) flipCard(card);
+        });
+        document.getElementById('cdvAgainBtn').addEventListener('click', render);
+        function closeDivine() {
+          panel.classList.remove('active');
+          backdrop.classList.remove('active');
+        }
+        document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
+        backdrop.addEventListener('click', closeDivine);
+        document.querySelector('.toolbar-item[data-tool="divine"]').addEventListener('click', function (e) {
+          e.stopPropagation();
+          var was = panel.classList.contains('active');
+          closeDivine();
+          document.getElementById('chatLetterPanel').classList.remove('active');
+          document.getElementById('clpBackdrop').classList.remove('active');
+          document.getElementById('emojiModule').classList.remove('active');
+          document.getElementById('toolbarGrid').classList.remove('hidden');
+          if (!was) { panel.classList.add('active'); backdrop.classList.add('active'); render(); }
+        });
+      })();
 
       // 信件详情返回
       cldBackBtn.addEventListener('click', function (e) {
