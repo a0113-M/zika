@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v107')){sessionStorage.setItem('zk_v107','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==107){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v108')){sessionStorage.setItem('zk_v108','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==108){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v107</title>
+  <title>字卡 · 小手机 v108</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9814,6 +9814,10 @@
               开始抽牌
               <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
             </button>
+            <button class="cdp-history-btn" id="cdvQuickBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+              速占 · 免选牌直接出结果
+            </button>
             <button class="cdp-history-btn" id="cdvHistoryBtn">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
               历史记录
@@ -9840,7 +9844,7 @@
               <div class="cdv-drawn" id="cdvDrawn"></div>
               <div class="cdp-draw-actions">
                 <button class="cdp-opt" id="cdvReShuffleBtn">重新抽牌</button>
-                <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">翻开解读</button>
+                <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">确定</button>
                 <button class="cdp-opt" id="cdvBackBtn1">返回</button>
               </div>
             </div>
@@ -9852,7 +9856,6 @@
             <div class="cdp-summary" id="cdvSummary"></div>
             <div class="cdp-draw-actions">
               <button class="cdp-opt" id="cdvCopyBtn">复制结果</button>
-              <button class="cdp-opt" id="cdvQuickBtn">速占 · 一键翻牌</button>
               <button class="cdp-opt" id="cdvBackBtn2">返回</button>
             </div>
           </div>
@@ -18547,9 +18550,14 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('cdvReShuffleBtn').addEventListener('click', function () { pick(); startPickFlow(); });
         document.getElementById('cdvBackBtn1').addEventListener('click', function () { showView('setup'); });
         document.getElementById('cdvQuickBtn').addEventListener('click', function () {
-          cardsEl.querySelectorAll('.cdv-card:not(.flipped)').forEach(function (el, i) {
-            setTimeout(function () { flipCard(el); }, i * 420);
-          });
+          st.question = (document.getElementById('cdvQInput').value || '').trim();
+          pick();
+          renderDrawView();
+          setTimeout(function () {
+            cardsEl.querySelectorAll('.cdv-card:not(.flipped)').forEach(function (el, i) {
+              setTimeout(function () { flipCard(el); }, i * 420);
+            });
+          }, 350);
         });
         document.getElementById('cdvHistoryBtn').addEventListener('click', renderHistory);
         document.getElementById('cdvBackBtn2').addEventListener('click', function () { showView('setup'); });
