@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v106')){sessionStorage.setItem('zk_v106','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==106){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v107')){sessionStorage.setItem('zk_v107','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==107){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v106</title>
+  <title>字卡 · 小手机 v107</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4226,13 +4226,13 @@
     .cdv-fan-wrap {
       overflow-x: auto; overflow-y: hidden;
       -webkit-overflow-scrolling: touch;
-      height: 198px; margin: 0 -6px; padding: 0 6px;
+      height: 150px; margin: 0 -6px; padding: 0 6px;
     }
     .cdv-fan-wrap::-webkit-scrollbar { display: none; }
     .cdv-fan-track { position: relative; height: 100%; }
     .cdv-fcard {
-      position: absolute; bottom: 8px;
-      width: 58px; height: 90px; margin-left: -29px;
+      position: absolute; bottom: 10px; left: 0;
+      width: 58px; height: 90px;
       transform-origin: 50% 50%;
       border-radius: 8px;
       background: linear-gradient(150deg, #5646a8 0%, #7c68d9 50%, #4a3d94 100%);
@@ -18466,31 +18466,23 @@ patText2 = patText2.replace(/你/g, '我');
           fanEl.innerHTML = '';
           var pool = (st.mode === 'tarot') ? TAROT : LENO;
           var N = pool.length;
-          var A = 55, R = 210, W = 58, H = 90;
-          var mid = (N - 1) / 2;
-          var pts = [];
-          for (var i = 0; i < N; i++) {
-            var th = ((i - mid) / mid) * A * Math.PI / 180;
-            pts.push({ x: Math.round(R * Math.sin(th)), y: Math.round(R * (1 - Math.cos(th))), deg: Math.round(th * 180 / Math.PI * 10) / 10 });
-          }
-          var cx = pts[N - 1].x + W / 2 + 10;
-          var trackW = 2 * cx;
+          var STEP = 24, W = 58;
+          var trackW = (N - 1) * STEP + W + 16;
           fanEl.style.width = trackW + 'px';
           pickLock = true;
+          var midX = trackW / 2 - W / 2;
           for (var j = 0; j < N; j++) {
             (function (idx) {
               var el = document.createElement('div');
               el.className = 'cdv-fcard';
-              var p = pts[idx];
-              el.setAttribute('data-deg', p.deg);
-              el.style.left = (cx + p.x) + 'px';
-              el.style.bottom = (8 + p.y) + 'px';
+              var tx = 8 + idx * STEP;
+              el.setAttribute('data-tx', tx);
               el.style.zIndex = String(idx + 1);
-              el.style.transform = 'rotate(0deg)';
+              el.style.transform = 'translateX(' + midX + 'px)';
               el.innerHTML = MOON;
               el.addEventListener('click', function () { onFanPick(el); });
               fanEl.appendChild(el);
-              setTimeout(function () { el.style.transform = 'rotate(' + p.deg + 'deg)'; }, 60 + idx * 9);
+              setTimeout(function () { el.style.transform = 'translateX(' + tx + 'px)'; }, 60 + idx * 9);
             })(j);
           }
           setTimeout(function () { pickLock = false; }, 60 + N * 9 + 340);
@@ -18502,8 +18494,8 @@ patText2 = patText2.replace(/你/g, '我');
           pickCount++;
           el.classList.add('picked');
           el.style.zIndex = String(500 + pickCount);
-          var deg = el.getAttribute('data-deg');
-          el.style.transform = 'rotate(' + deg + 'deg) translateY(-16px) scale(1.08)';
+          var tx = el.getAttribute('data-tx');
+          el.style.transform = 'translateX(' + tx + 'px) translateY(-16px) scale(1.08)';
           var num = document.createElement('span');
           num.className = 'cdv-fnum';
           num.textContent = pickCount;
