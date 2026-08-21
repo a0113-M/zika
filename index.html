@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v94')){sessionStorage.setItem('zk_v94','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==94){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v95')){sessionStorage.setItem('zk_v95','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==95){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v94</title>
+  <title>字卡 · 小手机 v95</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11117,6 +11117,8 @@
         isToolbarOpen = !isToolbarOpen;
         if (isToolbarOpen) {
           chatToolbar.classList.add('open');
+          var _tg2 = document.getElementById('toolbarGrid');
+          if (_tg2) _tg2.classList.remove('hidden');
           setTimeout(() => { chatMessages.scrollTop = chatMessages.scrollHeight; }, 50);
         } else {
           chatToolbar.classList.remove('open');
@@ -19939,7 +19941,7 @@ patText2 = patText2.replace(/你/g, '我');
         '\u54ce\u5440\u4e0d\u597d\u610f\u601d', '\u54c8\u54c8\u54c8\u53ef\u4ee5\u7684', '\u884c\u5427\u884c\u5427'
       ];
 
-      function closeCallTypeModal() { callTypeModal.classList.remove('active'); }
+      function closeCallTypeModal() { callTypeModal.classList.remove('active'); var _tg = document.getElementById('toolbarGrid'); if (_tg) _tg.classList.remove('hidden'); }
 
       function startCall(type) {
         callType = type;
