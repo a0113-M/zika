@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v99')){sessionStorage.setItem('zk_v99','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==99){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v100')){sessionStorage.setItem('zk_v100','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==100){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v99</title>
+  <title>字卡 · 小手机 v100</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4043,6 +4043,8 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 10px;
+      min-height: 180px;
+      align-content: start;
     }
     .toolbar-dots {
       display: flex; justify-content: center; align-items: center;
@@ -18059,6 +18061,7 @@ patText2 = patText2.replace(/你/g, '我');
           }).join('');
           sumEl.classList.remove('show');
           sumEl.innerHTML = '';
+          bindAll();
         }
 
         function showSummary() {
@@ -18092,16 +18095,14 @@ patText2 = patText2.replace(/你/g, '我');
           }
         }
 
-        chipsEl.addEventListener('click', function (e) {
-          var b = e.target.closest('.cdp-chip');
-          if (!b) return;
-          theme = b.dataset.t;
-          render();
-        });
-        cardsEl.addEventListener('click', function (e) {
-          var card = e.target.closest('.cdv-card');
-          if (card) flipCard(card);
-        });
+        function bindAll() {
+          chipsEl.querySelectorAll('.cdp-chip').forEach(function (b) {
+            b.addEventListener('click', function () { theme = b.dataset.t; render(); });
+          });
+          cardsEl.querySelectorAll('.cdv-card').forEach(function (el) {
+            el.addEventListener('click', function () { flipCard(el); });
+          });
+        }
         document.getElementById('cdvAgainBtn').addEventListener('click', render);
         function closeDivine() {
           panel.classList.remove('active');
