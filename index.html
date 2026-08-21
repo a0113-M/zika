@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v109')){sessionStorage.setItem('zk_v109','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==109){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v110')){sessionStorage.setItem('zk_v110','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==110){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v109</title>
+  <title>字卡 · 小手机 v110</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11242,6 +11242,7 @@
 
       let kbHeight = 0;
       let inputFocused = false;
+      let divineInput = false;
       // maxVH 始终记录无键盘时的最大可视高度
       let maxVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 
@@ -11289,7 +11290,7 @@
         // 若浏览器已把页面上推（scroll 模式），强制复位，避免内容错位
         if (window.scrollX !== 0 || window.scrollY !== 0) window.scrollTo(0, 0);
 
-        if (kbHeight > 0) {
+        if (kbHeight > 0 && inputFocused && !divineInput) {
           bw.style.position = 'fixed';
           bw.style.bottom = kbHeight + 'px';
           bw.style.left = '0';
@@ -11306,6 +11307,7 @@
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput');
           inputFocused = true;
           kbHeight = calcKb();
           apply();
@@ -11317,9 +11319,11 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
+          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput'));
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
+            divineInput = false;
             // 等浏览器恢复视口后再应用
             setTimeout(apply, 100);
             setTimeout(apply, 400);
