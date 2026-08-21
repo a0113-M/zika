@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v115')){sessionStorage.setItem('zk_v115','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==115){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v116')){sessionStorage.setItem('zk_v116','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==116){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v115</title>
+  <title>字卡 · 小手机 v116</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -18438,7 +18438,7 @@ patText2 = patText2.replace(/你/g, '我');
         clpCalSelectedDate = null;
         document.getElementById('clpCalDayDetail').style.display = 'none';
         var contact = contacts.find(function(c) { return c.id === currentChatId; });
-        var contactLetters = contact ? letterList.filter(function(l) { return l.from === contact.name; }) : [];
+        var contactLetters = contact ? letterList.filter(function(l) { return l.from === contact.name && !l.anonymous; }) : [];
         renderClpCalendar(contactLetters);
       });
       document.getElementById('clpCalNext').addEventListener('click', function(e) {
@@ -18448,7 +18448,7 @@ patText2 = patText2.replace(/你/g, '我');
         clpCalSelectedDate = null;
         document.getElementById('clpCalDayDetail').style.display = 'none';
         var contact = contacts.find(function(c) { return c.id === currentChatId; });
-        var contactLetters = contact ? letterList.filter(function(l) { return l.from === contact.name; }) : [];
+        var contactLetters = contact ? letterList.filter(function(l) { return l.from === contact.name && !l.anonymous; }) : [];
         renderClpCalendar(contactLetters);
       });
 
@@ -19419,7 +19419,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 筛选该联系人的信件
         var contactLetters = letterList.filter(function (l) {
-          return l.from === contactName;
+          return l.from === contactName && !l.anonymous;
         });
         clpContactLettersCache = contactLetters; // 缓存供日历详情使用
 
