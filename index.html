@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v104')){sessionStorage.setItem('zk_v104','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==104){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v105')){sessionStorage.setItem('zk_v105','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==105){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v104</title>
+  <title>字卡 · 小手机 v105</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9839,7 +9839,7 @@
               <div class="cdv-fan-wrap" id="cdvFanWrap"><div class="cdv-fan-track" id="cdvFan"></div></div>
               <div class="cdv-drawn" id="cdvDrawn"></div>
               <div class="cdp-draw-actions">
-                <button class="cdp-opt" id="cdvReShuffleBtn">重新洗牌</button>
+                <button class="cdp-opt" id="cdvReShuffleBtn">重新抽牌</button>
                 <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">翻开解读</button>
                 <button class="cdp-opt" id="cdvBackBtn1">返回</button>
               </div>
@@ -18425,13 +18425,8 @@ patText2 = patText2.replace(/你/g, '我');
           pickEcho.textContent = (st.mode === 'tarot' ? '塔罗' : '雷诺曼') + ' · ' + (st.target ? '问：' + st.target : '') + (st.question ? (st.target ? ' · ' : '') + q : '');
           fanTip.textContent = '滑动牌堆 · 凭直觉点选 ' + st.count + ' 张牌';
           showView('pick');
-          shuffleStage.style.display = '';
-          fanStage.style.display = 'none';
-          runShuffle(function () {
-            shuffleStage.style.display = 'none';
-            fanStage.style.display = '';
-            renderFan();
-          });
+          fanStage.style.display = '';
+          renderFan();
         }
 
         function runShuffle(done) {
