@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v100')){sessionStorage.setItem('zk_v100','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==100){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v101')){sessionStorage.setItem('zk_v101','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==101){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v100</title>
+  <title>字卡 · 小手机 v101</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4092,29 +4092,26 @@
       font-size: 11.5px; font-weight: 600; text-align: center;
     }
     .cdp-chip.active { background: linear-gradient(135deg, #7c68d9, #9b7ede); color: #fff; border-color: transparent; }
-    .cdp-cards { display: flex; gap: 8px; justify-content: center; perspective: 900px; margin: 4px 0 8px; }
+    .cdp-cards { display: flex; gap: 8px; justify-content: center; margin: 4px 0 8px; }
     .cdv-card { flex: 1; max-width: 108px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
     .cdv-pos { font-size: 10.5px; color: #9b8ec9; font-weight: 600; letter-spacing: 2px; }
-    .cdv-flip { position: relative; width: 100%; aspect-ratio: 5/8; transform-style: preserve-3d; transition: transform 0.65s cubic-bezier(0.4, 0.1, 0.2, 1); cursor: pointer; }
-    .cdv-card.flipped .cdv-flip { transform: rotateY(180deg); }
+    .cdv-flip { position: relative; width: 100%; aspect-ratio: 5/8; cursor: pointer; }
     .cdv-face, .cdv-back {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      backface-visibility: hidden; -webkit-backface-visibility: hidden;
       border-radius: 10px; overflow: hidden;
+      transition: opacity .12s linear;
     }
+    .cdv-face { opacity: 0; }
+    .cdv-card.flipped .cdv-back { opacity: 0; }
+    .cdv-card.flipped .cdv-face { opacity: 1; }
+    .cdv-card.half .cdv-flip { transform: scaleX(0.06); transition: transform .26s ease-in; }
+    .cdv-card.flipped .cdv-flip { transform: scaleX(1); transition: transform .26s ease-out; }
     .cdv-back {
       background: linear-gradient(150deg, #5646a8 0%, #7c68d9 50%, #4a3d94 100%);
       display: flex; align-items: center; justify-content: center;
       box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25), inset 0 0 22px rgba(0,0,0,0.28);
     }
-    .cdv-orbit {
-      position: absolute; top: 10%; left: 10%; right: 10%; bottom: 10%;
-      border: 1px dashed rgba(255,255,255,0.35); border-radius: 50%;
-      animation: cdp-spin 14s linear infinite;
-    }
-    @keyframes cdp-spin { to { transform: rotate(360deg); } }
     .cdv-face {
-      transform: rotateY(180deg);
       background: #fffdf9;
       border: 2px solid #b9a7e8;
       display: flex; align-items: center; justify-content: center;
@@ -18046,7 +18043,7 @@ patText2 = patText2.replace(/你/g, '我');
             return '<div class="cdv-card" data-i="' + i + '">' +
               '<div class="cdv-pos">' + POS[i] + '</div>' +
               '<div class="cdv-flip">' +
-                '<div class="cdv-back"><div class="cdv-orbit"></div>' + MOON + '</div>' +
+                '<div class="cdv-back">' + MOON + '</div>' +
                 '<div class="cdv-face">' +
                   '<div class="cdv-badge">' + (d.r ? '逆位' : '正位') + '</div>' +
                   '<div class="cdv-face-in">' +
@@ -18085,14 +18082,19 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         function flipCard(el) {
-          if (el.classList.contains('flipped')) return;
+          if (el.classList.contains('flipped') || el.classList.contains('half')) return;
           var i = +el.dataset.i;
           var d = draw[i];
-          el.classList.add(d.r ? 'flipped reversed' : 'flipped');
-          el.querySelector('.cdv-note').textContent = LEAD[i] + (d.r ? d.c.revT : d.c.upT);
-          if (cardsEl.querySelectorAll('.cdv-card.flipped').length === 3) {
-            setTimeout(showSummary, 550);
-          }
+          el.classList.add('half');
+          setTimeout(function () {
+            el.classList.remove('half');
+            el.classList.add('flipped');
+            if (d.r) el.classList.add('reversed');
+            el.querySelector('.cdv-note').textContent = LEAD[i] + (d.r ? d.c.revT : d.c.upT);
+            if (cardsEl.querySelectorAll('.cdv-card.flipped').length === 3) {
+              setTimeout(showSummary, 500);
+            }
+          }, 270);
         }
 
         function bindAll() {
