@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v96')){sessionStorage.setItem('zk_v96','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==96){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v97')){sessionStorage.setItem('zk_v97','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==97){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v96</title>
+  <title>字卡 · 小手机 v97</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10885,6 +10885,15 @@
         return window.visualViewport ? window.visualViewport.height : window.innerHeight;
       }
 
+      // 键盘高度探测：visualViewport 缩量、innerHeight 缩量取大者，都不上报时用 30% 估算
+      function calcKb(fallback) {
+        var d1 = maxVH - getVH();
+        var d2 = maxVH - window.innerHeight;
+        var d = Math.max(d1, d2);
+        if (d > 40) return Math.round(d);
+        return (fallback && fallback > 0) ? fallback : Math.round(maxVH * 0.30);
+      }
+
       function apply() {
         var curVH = getVH();
         // 更新最大高度（键盘收起时 curVH 最大）
@@ -10934,11 +10943,10 @@
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
           inputFocused = true;
-          var curVH = getVH();
-          kbHeight = (maxVH - curVH > 40) ? Math.round(maxVH - curVH) : Math.round(maxVH * 0.28);
+          kbHeight = calcKb();
           apply();
-          setTimeout(function() { if (inputFocused) { var v = getVH(); kbHeight = (maxVH - v > 40) ? Math.round(maxVH - v) : kbHeight; apply(); } }, 300);
-          setTimeout(function() { if (inputFocused) { var v = getVH(); kbHeight = (maxVH - v > 40) ? Math.round(maxVH - v) : kbHeight; apply(); } }, 600);
+          setTimeout(function() { if (inputFocused) { kbHeight = calcKb(kbHeight); apply(); } }, 300);
+          setTimeout(function() { if (inputFocused) { kbHeight = calcKb(kbHeight); apply(); } }, 600);
         }
       });
 
@@ -10965,8 +10973,7 @@
             kbHeight = 0;
           }
           if (inputFocused) {
-            var d = maxVH - curVH;
-            kbHeight = d > 40 ? Math.round(d) : kbHeight;
+            kbHeight = calcKb(kbHeight);
           } else {
             kbHeight = 0;
           }
