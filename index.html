@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v113')){sessionStorage.setItem('zk_v113','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==113){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v114')){sessionStorage.setItem('zk_v114','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==114){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v113</title>
+  <title>字卡 · 小手机 v114</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4273,14 +4273,14 @@
 
     /* --- 一起（陪伴系统） --- */
     .acd-panel .cdp-body { background: linear-gradient(180deg, #241b3e 0%, #2e2254 45%, #241b3e 100%); }
-    .acd-sec { font-size: 12px; color: #b9a8ec; letter-spacing: 2px; margin: 14px 0 10px; font-weight: 700; }
-    .acd-scene-grid { display: flex; flex-wrap: wrap; gap: 14px 10px; }
+    .acd-sec { font-size: 12px; color: #b9a8ec; letter-spacing: 2px; margin: 10px 0 8px; font-weight: 700; }
+    .acd-scene-grid { display: flex; flex-wrap: wrap; gap: 10px 8px; }
     .acd-orb {
       flex: 0 0 calc(33.333% - 7px); display: flex; flex-direction: column; align-items: center; gap: 7px;
       background: none; border: none; padding: 0;
     }
     .acd-orb .o {
-      width: 54px; height: 54px; border-radius: 50%;
+      width: 46px; height: 46px; border-radius: 50%;
       background: rgba(255,255,255,0.07); border: 1px solid rgba(177,157,255,0.35);
       display: flex; align-items: center; justify-content: center; color: #d9d0ff;
     }
@@ -4297,7 +4297,7 @@
       color: #e6dfff; font-size: 12.5px; outline: none;
     }
     .acd-cinput::placeholder { color: rgba(230,223,255,0.35); }
-    .acd-set-row { display: flex; gap: 8px; margin-top: 14px; }
+    .acd-set-row { display: flex; gap: 8px; margin-top: 10px; }
     .acd-tile {
       flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(177,157,255,0.28);
       border-radius: 12px; padding: 9px 4px; text-align: center;
@@ -4338,7 +4338,7 @@
     .acd-chip.on { background: rgba(124,104,217,0.35); border-color: #c9b6ff; color: #fff; }
     .acd-char-empty { font-size: 11.5px; color: #9d8ccf; padding: 4px 0; }
     .acd-slider {
-      position: relative; margin-top: 16px; height: 46px; border-radius: 999px;
+      position: relative; margin-top: 12px; height: 42px; border-radius: 999px;
       background: rgba(255,255,255,0.07); border: 1px solid rgba(240,180,255,0.5);
       overflow: hidden; touch-action: none;
     }
@@ -4346,11 +4346,11 @@
     .acd-slider-txt {
       position: absolute; left: 0; right: 0; top: 0; bottom: 0;
       display: flex; align-items: center; justify-content: center;
-      font-size: 12.5px; letter-spacing: 3px; color: #f3c6ff;
+      font-size: 12px; letter-spacing: 3px; color: #f3c6ff;
     }
     .acd-slider.off .acd-slider-txt { color: #8a7bb5; }
     .acd-knob {
-      position: absolute; left: 3px; top: 3px; width: 40px; height: 40px; border-radius: 50%;
+      position: absolute; left: 3px; top: 3px; width: 36px; height: 36px; border-radius: 50%;
       background: linear-gradient(135deg, #c99bf0 0%, #9b6ede 100%);
       display: flex; align-items: center; justify-content: center; color: #fff;
       box-shadow: 0 2px 10px rgba(155,110,222,0.55);
@@ -4374,20 +4374,20 @@
     .acd-live-scroll { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .acd-live-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
     .acd-glow {
-      position: absolute; top: 26%; left: 50%; width: 320px; height: 320px;
-      margin: -160px 0 0 -160px; border-radius: 50%;
+      position: absolute; top: 24%; left: 50%; width: 240px; height: 240px;
+      margin: -120px 0 0 -120px; border-radius: 50%;
       background: radial-gradient(circle, rgba(255,255,255,0.20) 0%, rgba(255,255,255,0) 65%);
     }
-    .acd-live-top { position: relative; padding: 14px; }
+    .acd-live-top { position: relative; padding: 10px; }
     .acd-live-x {
       width: 34px; height: 34px; border-radius: 50%;
       background: rgba(0,0,0,0.28); border: none; color: #fff;
       display: flex; align-items: center; justify-content: center; padding: 0;
     }
-    .acd-live-mid { position: relative; padding: 6px 20px 0; text-align: center; color: #fff; }
-    .acd-halo { position: relative; width: 92px; height: 92px; margin: 0 auto; }
+    .acd-live-mid { position: relative; padding: 2px 16px 0; text-align: center; color: #fff; }
+    .acd-halo { position: relative; width: 70px; height: 70px; margin: 0 auto; }
     .acd-ring {
-      position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px; border-radius: 50%;
+      position: absolute; top: -8px; left: -8px; right: -8px; bottom: -8px; border-radius: 50%;
       border: 1.5px solid rgba(255,255,255,0.55);
       animation: acdring 2.6s ease-out infinite;
     }
@@ -4399,44 +4399,44 @@
     .acd-live-ava {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%;
       background: rgba(255,255,255,0.92); color: #6a5acd;
-      font-size: 34px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 800; display: flex; align-items: center; justify-content: center;
     }
-    .acd-live-name { margin-top: 10px; font-size: 13px; opacity: 0.85; letter-spacing: 2px; }
-    .acd-timer-row { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 6px; }
-    .acd-timer { font-size: 40px; font-weight: 200; letter-spacing: 2px; }
+    .acd-live-name { margin-top: 5px; font-size: 12px; opacity: 0.85; letter-spacing: 2px; }
+    .acd-timer-row { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 4px; }
+    .acd-timer { font-size: 28px; font-weight: 200; letter-spacing: 2px; }
     .acd-pause {
-      width: 40px; height: 40px; border-radius: 50%;
+      width: 32px; height: 32px; border-radius: 50%;
       background: rgba(255,255,255,0.92); border: none; color: #3a3a3a;
       display: flex; align-items: center; justify-content: center; padding: 0;
     }
-    .acd-stat-row { display: flex; gap: 10px; margin-top: 16px; }
+    .acd-stat-row { display: flex; gap: 10px; margin-top: 10px; }
     .acd-stat {
-      flex: 1; border-radius: 14px; background: rgba(255,255,255,0.10);
-      border: 1px solid rgba(255,255,255,0.18); padding: 10px 12px; text-align: left;
+      flex: 1; border-radius: 12px; background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.18); padding: 7px 10px; text-align: left;
     }
-    .acd-stat span { font-size: 16px; font-weight: 700; color: #fff; }
+    .acd-stat span { font-size: 14px; font-weight: 700; color: #fff; }
     .acd-stat b { font-size: 10px; color: rgba(255,255,255,0.6); margin-left: 6px; font-weight: 400; }
-    .acd-wavewrap { margin-top: 6px; height: 16px; overflow: hidden; }
+    .acd-wavewrap { margin-top: 5px; height: 12px; overflow: hidden; }
     .acd-wave { animation: acdwave 1.1s linear infinite; }
     @keyframes acdwave { from { transform: translateX(0); } to { transform: translateX(-36px); } }
-    .acd-bars { display: flex; gap: 3px; margin-top: 8px; align-items: flex-end; height: 16px; }
+    .acd-bars { display: flex; gap: 3px; margin-top: 6px; align-items: flex-end; height: 10px; }
     .acd-bars i { flex: 1; background: rgba(255,255,255,0.5); border-radius: 2px; font-style: normal; }
-    .acd-meta { display: flex; justify-content: center; gap: 18px; margin-top: 14px; font-size: 11px; color: rgba(255,255,255,0.75); }
+    .acd-meta { display: flex; justify-content: center; gap: 16px; margin-top: 10px; font-size: 10.5px; color: rgba(255,255,255,0.75); }
     .acd-meta span { display: flex; align-items: center; gap: 4px; }
     .acd-logbox {
-      position: relative; margin: 20px 14px 0; border-radius: 16px;
+      position: relative; margin: 10px 12px 0; border-radius: 14px;
       background: rgba(0,0,0,0.16); border: 1px solid rgba(255,255,255,0.14);
       overflow: hidden;
     }
-    .acd-log-title { padding: 9px 14px 5px; font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 2px; }
-    .acd-log-list { max-height: 110px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 14px 10px; }
+    .acd-log-title { padding: 7px 12px 4px; font-size: 10.5px; color: rgba(255,255,255,0.7); letter-spacing: 2px; }
+    .acd-log-list { max-height: 76px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 12px 8px; }
     .acd-log-item {
       display: flex; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.88);
       padding: 5px 0; border-top: 1px dashed rgba(255,255,255,0.12);
     }
     .acd-log-t { color: rgba(255,255,255,0.45); flex: 0 0 auto; }
     .acd-end {
-      position: relative; display: flex; margin: 18px auto 26px; padding: 10px 30px;
+      position: relative; display: flex; margin: 10px auto 16px; padding: 8px 26px;
       border-radius: 999px; border: 1px solid rgba(255,255,255,0.5);
       background: rgba(0,0,0,0.22); color: #fff; font-size: 13px; letter-spacing: 2px;
     }
@@ -9930,17 +9930,6 @@
                 </svg></span>
               <span class="toolbar-label">占卜</span>
             </button>
-              <button class="toolbar-item" data-tool="accompany">
-              <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="9" cy="8" r="3.2"/>
-                  <path d="M3.5 19c.6-3 2.9-4.5 5.5-4.5 1 0 2 .2 2.8.6"/>
-                  <circle cx="16.5" cy="9" r="2.5"/>
-                  <path d="M15.5 14.7c.4-.1.7-.1 1-.1 2.2 0 3.9 1.3 4.5 3.9"/>
-                  <path d="M18.5 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="currentColor" stroke="none"/>
-                </svg></span>
-              <span class="toolbar-label">一起</span>
-            </button>
             </div>
           </div>
           <div class="toolbar-dots" id="toolbarDots">
@@ -10149,7 +10138,7 @@
               <div class="acd-stat">
                 <span id="acdHbNum">72次/min</span><b>心跳</b>
                 <div class="acd-wavewrap">
-                  <svg class="acd-wave" width="252" height="16" viewBox="0 0 252 16"><path d="M0 8h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"/></svg>
+                  <svg class="acd-wave" width="252" height="16" viewBox="0 0 252 16" style="height:12px;width:189px;"><path d="M0 8h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24l4-5 4 10 4-5h24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"/></svg>
                 </div>
               </div>
               <div class="acd-stat">
@@ -12137,7 +12126,7 @@
       });
       document.querySelectorAll('.toolbar-item[data-tool]').forEach(item => {
         const tool = item.dataset.tool;
-        if (tool === 'emoji' || tool === 'letter' || tool === 'divine' || tool === 'accompany') return;
+        if (tool === 'emoji' || tool === 'letter' || tool === 'divine' || tool === 'together') return;
         item.addEventListener('click', function () {
           emojiModule.classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
@@ -18867,7 +18856,7 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         // 工具栏入口
-        document.querySelector('.toolbar-item[data-tool="accompany"]').addEventListener('click', function (e) {
+        document.querySelector('.toolbar-item[data-tool="together"]').addEventListener('click', function (e) {
           e.stopPropagation();
           var was = panel.classList.contains('active');
           closePanel();
