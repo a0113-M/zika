@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v117')){sessionStorage.setItem('zk_v117','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==117){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v118')){sessionStorage.setItem('zk_v118','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==118){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v117</title>
+  <title>字卡 · 小手机 v118</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4861,7 +4861,8 @@
       font-size: 11px; color: #bbb; margin-bottom: 8px;
     }
     .chat-letter-detail .cld-words {
-      display: flex; flex-wrap: wrap; gap: 6px;
+      line-height: 1.7;
+      margin-top: 4px;
     }
     .chat-letter-detail .cld-word {
       background: var(--bg-main); border-radius: 8px;
@@ -19689,6 +19690,47 @@ patText2 = patText2.replace(/你/g, '我');
       var cldAnnViewIdx = null;
       var cldDirty = false;
       var CLD_ANN_COLORS = ['#e65100', '#1565c0', '#7b1fa2', '#7b6ea8', '#c62828'];
+      var CLD_CAT_COLORS = {
+        '文字': ['var(--primary)','#333'],
+        '表情': ['#e65100','#e65100'],
+        '图片': ['#1565c0','#1565c0'],
+        '语音': ['#7b1fa2','#7b1fa2'],
+        '拍一拍': ['#c62828','#c62828']
+      };
+
+      function makeCldChip(w, wIdx, annData) {
+        var chipWrap = document.createElement('div');
+        chipWrap.className = 'word-chip-wrap';
+        var hasAnn = !!(annData && annData.text);
+        if (hasAnn) {
+          chipWrap.classList.add('annotated');
+          chipWrap.style.setProperty('--annotation-color', annData.color || '#f9a825');
+        }
+        var cc = CLD_CAT_COLORS[w.category] || ['#f5f5f5','#333'];
+        var chip = document.createElement('span');
+        chip.className = 'letter-word';
+        chip.style.color = cc[1];
+        chip.textContent = w.name || '';
+        chipWrap.appendChild(chip);
+        (function (idx, annotated) {
+          chipWrap.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (cldAnnMode) {
+              var pos = cldAnnSel.indexOf(idx);
+              if (pos >= 0) { cldAnnSel.splice(pos, 1); this.classList.remove('selected'); }
+              else { cldAnnSel.push(idx); this.classList.add('selected'); }
+              updateCldAnnCount();
+            } else if (annotated) {
+              showCldAnnView(idx);
+            }
+          });
+        })(wIdx, hasAnn);
+        if (cldAnnMode) {
+          chipWrap.classList.add('selectable');
+          if (cldAnnSel.indexOf(wIdx) >= 0) chipWrap.classList.add('selected');
+        }
+        return chipWrap;
+      }
 
       function openCldDetail(letter) {
         cldLetter = letter;
@@ -19721,35 +19763,56 @@ patText2 = patText2.replace(/你/g, '我');
         // 称呼
         var greetName = letter.isOutgoing ? (letter.from || '朋友') : (userProfile.name || '我');
         document.getElementById('cldGreeting').textContent = '亲爱的 ' + greetName + '：';
-        // 字卡（带批注标记）
+        // 字卡（信箱同款：chip + 批注下划线分组 + 行内批注小字）
         cldWords.innerHTML = '';
         var annotations = letter.annotations || {};
         if (letter.words && letter.words.length > 0) {
+          // 预计算颜色组：连续同色批注归为一组
+          var colorGroups = [];
+          var wordToGroup = {};
+          var curGroup = null;
           letter.words.forEach(function (w, wIdx) {
-            var wordEl = document.createElement('div');
-            wordEl.className = 'cld-word' + (cldAnnMode ? ' cld-pickable' : '');
-            wordEl.textContent = w.name || '';
-            var ann = annotations[wIdx];
-            var hasAnn = !!(ann && ann.text && ann.color);
-            if (hasAnn) {
-              wordEl.style.borderLeft = '3px solid ' + ann.color;
-              wordEl.style.paddingLeft = '7px';
+            var annData = annotations[wIdx];
+            if (annData && annData.text) {
+              if (curGroup && curGroup.color === annData.color) {
+                curGroup.endIdx = wIdx;
+              } else {
+                curGroup = { color: annData.color, text: annData.text, startIdx: wIdx, endIdx: wIdx };
+                colorGroups.push(curGroup);
+              }
+              wordToGroup[wIdx] = curGroup;
+            } else {
+              curGroup = null;
             }
-            (function (idx, annotated) {
-              wordEl.addEventListener('click', function (e) {
-                e.stopPropagation();
-                if (cldAnnMode) {
-                  var pos = cldAnnSel.indexOf(idx);
-                  if (pos >= 0) { cldAnnSel.splice(pos, 1); this.classList.remove('cld-picked'); }
-                  else { cldAnnSel.push(idx); this.classList.add('cld-picked'); }
-                  updateCldAnnCount();
-                } else if (annotated) {
-                  showCldAnnView(idx);
-                }
-              });
-            })(wIdx, hasAnn);
-            cldWords.appendChild(wordEl);
           });
+          var wi = 0;
+          while (wi < letter.words.length) {
+            var w = letter.words[wi];
+            var wIdx = wi;
+            var group = wordToGroup[wIdx];
+            if (group) {
+              var groupEl = document.createElement('div');
+              groupEl.className = 'annotation-group';
+              var chipsRow = document.createElement('div');
+              chipsRow.className = 'ann-chips-row';
+              for (var j = group.startIdx; j <= group.endIdx; j++) {
+                chipsRow.appendChild(makeCldChip(letter.words[j], j, annotations[j]));
+              }
+              groupEl.appendChild(chipsRow);
+              if (!cldAnnMode) {
+                var annText = document.createElement('span');
+                annText.className = 'inline-ann-text';
+                annText.style.color = group.color;
+                annText.textContent = group.text;
+                groupEl.appendChild(annText);
+              }
+              cldWords.appendChild(groupEl);
+              wi = group.endIdx + 1;
+            } else {
+              cldWords.appendChild(makeCldChip(w, wIdx, annotations[wIdx]));
+              wi++;
+            }
+          }
         } else {
           cldWords.innerHTML = '<span style="color:#bbb;font-size:13px;">无内容</span>';
         }
