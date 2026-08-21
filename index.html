@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v103')){sessionStorage.setItem('zk_v103','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==103){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v104')){sessionStorage.setItem('zk_v104','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==104){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v103</title>
+  <title>字卡 · 小手机 v104</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4223,11 +4223,17 @@
     .cdv-shuffle-tip { margin-top: 13px; font-size: 11.5px; color: #9b8ec9; letter-spacing: 1px; }
     .cdp-fan-stage { padding: 2px 0 0; }
     .cdv-fan-tip { text-align: center; font-size: 11.5px; color: #9b8ec9; margin-bottom: 2px; }
-    .cdv-fan { position: relative; height: 150px; margin: 0 6px; }
+    .cdv-fan-wrap {
+      overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      height: 172px; margin: 0 -6px; padding: 0 6px;
+    }
+    .cdv-fan-wrap::-webkit-scrollbar { display: none; }
+    .cdv-fan-track { position: relative; height: 100%; }
     .cdv-fcard {
-      position: absolute; left: 50%; bottom: 8px;
-      width: 56px; height: 88px; margin-left: -28px;
-      transform-origin: 50% 160%;
+      position: absolute; bottom: 8px;
+      width: 58px; height: 90px; margin-left: -29px;
+      transform-origin: 50% 50%;
       border-radius: 8px;
       background: linear-gradient(150deg, #5646a8 0%, #7c68d9 50%, #4a3d94 100%);
       box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25), inset 0 0 22px rgba(0,0,0,0.28), 0 2px 6px rgba(74,61,148,0.35);
@@ -9824,12 +9830,13 @@
                 <div class="cdv-shcard"></div>
                 <div class="cdv-shcard"></div>
                 <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
               </div>
               <div class="cdv-shuffle-tip" id="cdvShuffleTip">洗牌中…</div>
             </div>
             <div class="cdp-fan-stage" id="cdvFanStage" style="display:none;">
               <div class="cdv-fan-tip" id="cdvFanTip">凭直觉，抽 3 张牌</div>
-              <div class="cdv-fan" id="cdvFan"></div>
+              <div class="cdv-fan-wrap" id="cdvFanWrap"><div class="cdv-fan-track" id="cdvFan"></div></div>
               <div class="cdv-drawn" id="cdvDrawn"></div>
               <div class="cdp-draw-actions">
                 <button class="cdp-opt" id="cdvReShuffleBtn">重新洗牌</button>
@@ -18234,6 +18241,8 @@ patText2 = patText2.replace(/你/g, '我');
         var drawnEl = document.getElementById('cdvDrawn');
         var revealBtn = document.getElementById('cdvRevealBtn');
         var pickCount = 0;
+        var pickLock = false;
+        var fanWrap = document.getElementById('cdvFanWrap');
         var views = {
           setup: document.getElementById('cdvSetupView'),
           draw: document.getElementById('cdvDrawView'),
@@ -18414,7 +18423,7 @@ patText2 = patText2.replace(/你/g, '我');
           revealBtn.style.display = 'none';
           var q = st.question || (st.target ? '想看看与' + st.target + '的指引' : '未写下问题，看看牌想说什么');
           pickEcho.textContent = (st.mode === 'tarot' ? '塔罗' : '雷诺曼') + ' · ' + (st.target ? '问：' + st.target : '') + (st.question ? (st.target ? ' · ' : '') + q : '');
-          fanTip.textContent = '凭直觉，抽 ' + st.count + ' 张牌';
+          fanTip.textContent = '滑动牌堆 · 凭直觉点选 ' + st.count + ' 张牌';
           showView('pick');
           shuffleStage.style.display = '';
           fanStage.style.display = 'none';
@@ -18427,50 +18436,79 @@ patText2 = patText2.replace(/你/g, '我');
 
         function runShuffle(done) {
           var cards = shuffleStage.querySelectorAll('.cdv-shcard');
-          var base = ['rotate(-7deg)', 'rotate(-3deg) translate(3px, -1px)', 'rotate(1deg) translate(-2px, 1px)', 'rotate(4deg) translate(2px, -1px)', 'rotate(8deg)'];
-          cards.forEach(function (c, i) { c.style.transform = base[i]; });
-          shTip.textContent = '洗牌中…';
-          var round = 0;
-          function step() {
-            if (round >= 3) {
-              cards.forEach(function (c, i) { c.style.transform = base[i]; });
-              shTip.textContent = '好了，深呼吸…';
-              setTimeout(done, 420);
+          var n = cards.length;
+          var flat = [];
+          for (var i = 0; i < n; i++) flat.push({ x: (i - (n - 1) / 2) * 1.2, y: (i - (n - 1) / 2) * 0.8, r: (i - (n - 1) / 2) * 2 });
+          function set(el, o) { el.style.transform = 'translate(' + o.x + 'px,' + o.y + 'px) rotate(' + o.r + 'deg)'; }
+          cards.forEach(function (c, i) { set(c, flat[i]); });
+          shTip.textContent = '分牌…';
+          var Lp = { x: -46, y: -9, r: -13 }, Rp = { x: 46, y: -9, r: 13 };
+          setTimeout(function () {
+            cards.forEach(function (c, i) { set(c, i < n / 2 ? Lp : Rp); });
+            shTip.textContent = '洗牌中…';
+          }, 400);
+          var seq = [];
+          for (var a = 0; a < Math.floor(n / 2); a++) { seq.push(a); seq.push(a + Math.ceil(n / 2)); }
+          var k = 0;
+          function drop() {
+            if (k >= seq.length) {
+              setTimeout(function () {
+                cards.forEach(function (c, i) { set(c, flat[i]); });
+                shTip.textContent = '洗好了，深呼吸…';
+                setTimeout(done, 380);
+              }, 260);
               return;
             }
-            cards.forEach(function (c, idx) {
-              c.style.transform = (idx % 2 === 0) ? 'translate(-50px, -9px) rotate(-16deg)' : 'translate(50px, 7px) rotate(13deg)';
-            });
-            round++;
-            if (round === 2) shTip.textContent = '静静感受你的问题…';
-            setTimeout(step, 320);
+            var jitter = Math.random() * 9 - 4.5;
+            set(cards[seq[k]], { x: jitter, y: -Math.random() * 5, r: jitter });
+            k++;
+            setTimeout(drop, 78);
           }
-          setTimeout(step, 300);
+          setTimeout(drop, 920);
         }
 
         function renderFan() {
           fanEl.innerHTML = '';
-          var N = 12;
+          var pool = (st.mode === 'tarot') ? TAROT : LENO;
+          var N = pool.length;
+          var A = 32, R = 430, W = 58, H = 90;
+          var mid = (N - 1) / 2;
+          var pts = [];
           for (var i = 0; i < N; i++) {
+            var th = ((i - mid) / mid) * A * Math.PI / 180;
+            pts.push({ x: Math.round(R * Math.sin(th)), y: Math.round(R * (1 - Math.cos(th))), deg: Math.round(th * 180 / Math.PI * 10) / 10 });
+          }
+          var cx = pts[N - 1].x + W / 2 + 10;
+          var trackW = 2 * cx;
+          fanEl.style.width = trackW + 'px';
+          pickLock = true;
+          for (var j = 0; j < N; j++) {
             (function (idx) {
               var el = document.createElement('div');
               el.className = 'cdv-fcard';
-              var deg = (idx - (N - 1) / 2) * 5;
-              el.setAttribute('data-deg', deg);
-              el.style.transform = 'rotate(' + deg + 'deg)';
+              var p = pts[idx];
+              el.setAttribute('data-deg', p.deg);
+              el.style.left = (cx + p.x) + 'px';
+              el.style.bottom = (8 + p.y) + 'px';
+              el.style.zIndex = String(idx + 1);
+              el.style.transform = 'rotate(0deg)';
               el.innerHTML = MOON;
               el.addEventListener('click', function () { onFanPick(el); });
               fanEl.appendChild(el);
-            })(i);
+              setTimeout(function () { el.style.transform = 'rotate(' + p.deg + 'deg)'; }, 60 + idx * 9);
+            })(j);
           }
+          setTimeout(function () { pickLock = false; }, 60 + N * 9 + 340);
+          setTimeout(function () { fanWrap.scrollLeft = (trackW - fanWrap.clientWidth) / 2; }, 90);
         }
 
         function onFanPick(el) {
-          if (pickCount >= st.count || el.classList.contains('picked')) return;
+          if (pickLock || pickCount >= st.count || el.classList.contains('picked')) return;
           pickCount++;
           el.classList.add('picked');
+          el.style.zIndex = String(500 + pickCount);
           var deg = el.getAttribute('data-deg');
-          el.style.transform = 'rotate(' + deg + 'deg) translateY(-16px) scale(1.06)';
+          el.style.transform = 'rotate(' + deg + 'deg) translateY(-16px) scale(1.08)';
           var num = document.createElement('span');
           num.className = 'cdv-fnum';
           num.textContent = pickCount;
