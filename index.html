@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v110')){sessionStorage.setItem('zk_v110','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==110){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v111')){sessionStorage.setItem('zk_v111','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==111){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v110</title>
+  <title>字卡 · 小手机 v111</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11262,7 +11262,8 @@
       function apply() {
         var curVH = getVH();
         // 更新最大高度（键盘收起时 curVH 最大）
-        if (curVH > maxVH) maxVH = curVH;
+        // 键盘弹出期间浏览器可能隐藏地址栏导致 curVH 虚高，不采信，防止收起后容器过高
+        if (!inputFocused && curVH > maxVH) maxVH = curVH;
 
         // 无键盘时：phone 用最大高度；有键盘时：phone 用当前缩小后的高度
         // 兜底：部分浏览器（如雨见）键盘弹出时不上报视口变化（curVH 不变小），
@@ -11324,6 +11325,7 @@
             inputFocused = false;
             kbHeight = 0;
             divineInput = false;
+            // 键盘收起瞬间视口若仍虚高（地址栏隐藏），等 400ms 稳定后回落
             // 等浏览器恢复视口后再应用
             setTimeout(apply, 100);
             setTimeout(apply, 400);
@@ -11334,7 +11336,7 @@
       if (window.visualViewport) {
         window.visualViewport.addEventListener('resize', function() {
           var curVH = getVH();
-          if (curVH > maxVH) maxVH = curVH;
+          if (!inputFocused && curVH > maxVH) maxVH = curVH;
           // 视口恢复到接近最大值 → 键盘已收起，自动重置（防 focusout 不触发的浏览器）
           if (inputFocused && curVH >= maxVH - 40) {
             inputFocused = false;
