@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(!sessionStorage.getItem('zk_v90')){sessionStorage.setItem('zk_v90','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==90){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}catch(e){}</script>
+  <script>try{if(!sessionStorage.getItem('zk_v91')){sessionStorage.setItem('zk_v90','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==91){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v90</title>
+  <title>字卡 · 小手机 v91</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9107,7 +9107,8 @@
 /* 语音小窗 - 圆角矩形 */
 .call-mini-window {
   position: fixed; z-index: 11200; display: none;
-  width: 120px; height: 36px;
+  width: auto; min-width: 104px; height: 44px;
+  padding: 0 8px; box-sizing: border-box;
   background: rgba(30,20,50,0.7);
   border-radius: 18px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(155,142,196,0.12);
@@ -9120,41 +9121,46 @@
 .call-mini-window:active { transform: scale(0.96); }
 .call-mini-window .cmw-avatar {
   width: 24px; height: 24px; border-radius: 50%; overflow: hidden;
-  margin-left: 6px; flex-shrink: 0;
+  margin: 0; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
   background: var(--primary);
   font-size: 11px; font-weight: 600; color: #fff;
   box-shadow: 0 0 10px rgba(155,142,196,0.4);
 }
 .call-mini-window .cmw-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.call-mini-window .cmw-center {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 1px; margin: 0 6px; flex: 1; min-width: 0;
+}
 .call-mini-window .cmw-wave-mini {
-  display: flex; align-items: center; gap: 1.5px; height: 12px;
-  justify-content: center; margin: 0 6px; flex: 1;
+  display: flex; align-items: center; gap: 2px; height: 16px;
+  justify-content: center;
 }
 .call-mini-window .cmw-wave-bar {
-  width: 1.5px; border-radius: 2px; background: var(--primary-light);
+  width: 2.5px; border-radius: 2px; background: var(--primary-light);
   transition: transform 0.13s ease; transform-origin: center;
 }
-.call-mini-window .cmw-wave-bar:nth-child(1) { height: 3px; }
-.call-mini-window .cmw-wave-bar:nth-child(2) { height: 6px; }
-.call-mini-window .cmw-wave-bar:nth-child(3) { height: 9px; }
-.call-mini-window .cmw-wave-bar:nth-child(4) { height: 5px; }
-.call-mini-window .cmw-wave-bar:nth-child(5) { height: 6px; }
+.call-mini-window .cmw-wave-bar:nth-child(1) { height: 6px; }
+.call-mini-window .cmw-wave-bar:nth-child(2) { height: 11px; }
+.call-mini-window .cmw-wave-bar:nth-child(3) { height: 15px; }
+.call-mini-window .cmw-wave-bar:nth-child(4) { height: 8px; }
+.call-mini-window .cmw-wave-bar:nth-child(5) { height: 12px; }
 .call-mini-window .cmw-timer {
-  font-size: 10px; color: rgba(255,255,255,0.7); margin-right: 8px;
+  font-size: 10px; color: rgba(255,255,255,0.7); margin: 0;
   flex-shrink: 0; font-variant-numeric: tabular-nums;
 }
 .call-mini-window .cmw-close {
-  position: absolute; top: -5px; right: -5px; width: 20px; height: 20px; border-radius: 50%;
-  background: #ff3b30; border: 2px solid rgba(30,20,50,0.9);
+  width: 20px; height: 20px; border-radius: 50%;
+  background: #ff3b30; border: none;
   color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  opacity: 1; z-index: 2; padding: 0;
+  opacity: 1; padding: 0; flex-shrink: 0; margin-left: 2px;
   box-shadow: 0 2px 6px rgba(255,59,48,0.4);
 }
 
 /* 视频通话 mini 矩形小窗 */
 .call-mini-window.video-mode {
-  width: 96px; height: 140px;
+  width: 96px; min-width: 0; height: 140px;
   border-radius: 12px;
   background-color: var(--primary);
   background-size: cover; background-position: center; background-repeat: no-repeat;
@@ -9731,12 +9737,14 @@
     <!-- 语音悬浮小窗 - 圆角矩形 -->
     <div class="call-mini-window" id="callMiniWindow" style="bottom: 200px; right: 16px;">
       <div class="cmw-avatar" id="cmwAvatar">?</div>
-      <div class="cmw-wave-mini" id="cmwWaveMini">
-        <div class="cmw-wave-bar"></div><div class="cmw-wave-bar"></div>
-        <div class="cmw-wave-bar"></div><div class="cmw-wave-bar"></div>
-        <div class="cmw-wave-bar"></div>
+      <div class="cmw-center">
+        <div class="cmw-wave-mini" id="cmwWaveMini">
+          <div class="cmw-wave-bar"></div><div class="cmw-wave-bar"></div>
+          <div class="cmw-wave-bar"></div><div class="cmw-wave-bar"></div>
+          <div class="cmw-wave-bar"></div>
+        </div>
+        <div class="cmw-timer" id="cmwTimer">00:00</div>
       </div>
-      <div class="cmw-timer" id="cmwTimer">00:00</div>
       <button class="cmw-close" id="cmwHangup" title="挂断">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="#fff"><path d="M12 9c-1.6 0-3.15.25-4.6.72v3.1c0 .39-.23.74-.56.9-.98.49-1.87 1.12-2.66 1.85-.18.18-.43.28-.7.28-.28 0-.53-.11-.71-.29L.29 13.08a.96.96 0 0 1 0-1.37C3.46 8.68 7.45 7 12 7s8.54 1.68 11.71 4.71c.18.18.29.44.29.71 0 .28-.11.53-.29.71l-2.48 2.48c-.18.18-.43.29-.71.29-.27 0-.52-.1-.7-.28a11.27 11.27 0 0 0-2.66-1.85.99.99 0 0 1-.56-.9v-3.1C15.15 9.25 13.6 9 12 9z"/></svg>
       </button>
