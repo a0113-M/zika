@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v95')){sessionStorage.setItem('zk_v95','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==95){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v96')){sessionStorage.setItem('zk_v96','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==96){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v95</title>
+  <title>字卡 · 小手机 v96</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11103,6 +11103,21 @@
       const chatToolbarToggle = document.getElementById('chatToolbarToggle');
       const chatToolbar = document.getElementById('chatToolbar');
       let isToolbarOpen = false;
+
+      // 点击输入框：收起工具栏/表情/信件面板，让输入框紧贴键盘
+      chatInput.addEventListener('focus', function () {
+        if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
+        var _em = document.getElementById('emojiModule');
+        if (_em) _em.classList.remove('active');
+        var _tg = document.getElementById('toolbarGrid');
+        if (_tg) _tg.classList.remove('hidden');
+        var _lp = document.getElementById('chatLetterPanel');
+        if (_lp) {
+          _lp.classList.remove('active');
+          var _bk = document.getElementById('clpBackdrop');
+          if (_bk) _bk.classList.remove('active');
+        }
+      });
 
       chatToolbarToggle.addEventListener('click', function (e) {
         e.stopPropagation();
