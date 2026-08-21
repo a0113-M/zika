@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v111')){sessionStorage.setItem('zk_v111','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==111){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v112')){sessionStorage.setItem('zk_v112','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==112){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v111</title>
+  <title>字卡 · 小手机 v112</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -18191,6 +18191,19 @@ patText2 = patText2.replace(/你/g, '我');
         var panel = document.getElementById('chatDivinePanel');
         var backdrop = document.getElementById('cdvBackdrop');
         if (!panel || !backdrop) return;
+
+        // 面板打开时藏起聊天输入栏：白色输入栏透过半透明遮罩会露出一条白边
+        var _bwHide = document.querySelector('.chat-bottom-wrapper');
+        if (_bwHide && 'MutationObserver' in window) {
+          var _bwMo = new MutationObserver(function () {
+            if (backdrop.classList.contains('active')) {
+              _bwHide.style.display = 'none';
+            } else {
+              _bwHide.style.display = '';
+            }
+          });
+          _bwMo.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
+        }
 
         // 22 大阿卡纳
         var MAJORS = [
