@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v118')){sessionStorage.setItem('zk_v118','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==118){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v119')){sessionStorage.setItem('zk_v119','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==119){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v118</title>
+  <title>字卡 · 小手机 v119</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6905,6 +6905,125 @@
 }
 
   
+    /* === 数据统计页面 === */
+    #dataPage { background: var(--bg-main); }
+    #dataPage .feature-header { background: var(--bg-card); border-bottom: 0.5px solid rgba(var(--primary-rgba), 0.15); }
+    #dataPage .feature-title { color: var(--text-main); }
+    .feature-content.data-body {
+      display: block;
+      align-items: stretch;
+      justify-content: flex-start;
+      padding: 14px 14px 30px;
+      background: var(--bg-main);
+    }
+    .dt-hero {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 14px;
+      padding: 18px 16px;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 14px rgba(var(--primary-rgba), 0.35);
+    }
+    .dt-hero-label { font-size: 13px; opacity: 0.92; letter-spacing: 0.06em; }
+    .dt-hero-num { font-size: 42px; font-weight: 700; line-height: 1.25; }
+    .dt-hero-num small { font-size: 14px; font-weight: 400; margin-left: 4px; }
+    .dt-hero-sub { font-size: 11px; opacity: 0.85; }
+    .dt-next {
+      background: var(--bg-card);
+      border: 1px solid rgba(var(--primary-rgba), 0.25);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      display: none;
+    }
+    .dt-next-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .dt-next-row { display: flex; align-items: baseline; justify-content: space-between; }
+    .dt-next-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    .dt-next-days { font-size: 22px; font-weight: 700; color: var(--primary); }
+    .dt-next-days small { font-size: 12px; color: var(--text-secondary); font-weight: 400; margin-left: 2px; }
+    .dt-next-days.today { font-size: 15px; color: #e05656; }
+    .dt-card {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(var(--primary-rgba), 0.15);
+    }
+    .dt-card-title { font-size: 13px; color: var(--primary); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.04em; }
+    .dt-card-hint { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+    .dt-card-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .dt-card-title-row .dt-card-title { margin-bottom: 0; }
+    .dt-ann-add {
+      border: none; background: rgba(var(--primary-rgba), 0.12); color: var(--primary);
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+    }
+    .dt-met-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 0.5px solid rgba(0,0,0,0.05); }
+    .dt-met-row:last-child { border-bottom: none; }
+    .dt-met-avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--primary);
+      color: #fff; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 600; margin-right: 10px; flex-shrink: 0;
+    }
+    .dt-met-info { flex: 1; min-width: 0; }
+    .dt-met-name { font-size: 14px; color: var(--text-main); font-weight: 500; }
+    .dt-met-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .dt-met-days { text-align: right; flex-shrink: 0; }
+    .dt-met-days b { font-size: 18px; color: var(--primary); font-weight: 700; }
+    .dt-met-days b small { font-size: 11px; font-weight: 400; color: var(--text-secondary); }
+    .dt-met-set {
+      font-size: 11px; color: var(--primary); background: rgba(var(--primary-rgba), 0.12);
+      padding: 4px 12px; border-radius: 999px; border: none;
+    }
+    .dt-ann-row { display: flex; align-items: center; padding: 9px 0; border-bottom: 0.5px solid rgba(0,0,0,0.05); }
+    .dt-ann-row:last-child { border-bottom: none; }
+    .dt-ann-info { flex: 1; min-width: 0; }
+    .dt-ann-name { font-size: 14px; color: var(--text-main); font-weight: 500; }
+    .dt-ann-date { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .dt-ann-count { font-size: 12px; color: var(--text-secondary); flex-shrink: 0; margin-right: 6px; }
+    .dt-ann-count.today { color: #e05656; font-weight: 600; }
+    .dt-ann-del { border: none; background: none; color: var(--text-muted); font-size: 17px; padding: 2px 6px; flex-shrink: 0; line-height: 1; }
+    .dt-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .dt-cell {
+      width: calc(50% - 4px);
+      background: var(--bg-soft);
+      border-radius: 10px;
+      padding: 10px 12px;
+      box-sizing: border-box;
+    }
+    .dt-cell-num { font-size: 21px; font-weight: 700; color: var(--text-main); line-height: 1.2; }
+    .dt-cell-num small { font-size: 12px; font-weight: 400; color: var(--text-secondary); }
+    .dt-cell-label { font-size: 12px; color: var(--text-secondary); margin-top: 3px; }
+    .dt-cell-sub { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+    .dt-empty { text-align: center; color: var(--text-muted); font-size: 12px; padding: 14px 0; }
+    .dt-clear {
+      display: block; width: 100%; padding: 12px; margin-top: 2px;
+      border-radius: 12px; border: 1px solid #e74c3c; background: transparent;
+      color: #e74c3c; font-size: 14px;
+    }
+    .dt-ovl {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45); z-index: 20; display: none;
+      align-items: center; justify-content: center;
+    }
+    .dt-ovl.show { display: flex; }
+    .dt-ovl-box {
+      width: 78%; max-width: 300px; background: var(--bg-card);
+      border-radius: 14px; padding: 18px 16px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.18);
+    }
+    .dt-ovl-title { font-size: 15px; font-weight: 600; color: var(--text-main); text-align: center; margin-bottom: 14px; }
+    .dt-ovl-box input {
+      width: 100%; box-sizing: border-box; padding: 10px 12px;
+      border: 1px solid rgba(var(--primary-rgba), 0.3); border-radius: 10px;
+      font-size: 14px; background: var(--bg-soft); color: var(--text-main);
+      margin-bottom: 10px; outline: none;
+    }
+    .dt-ovl-btns { display: flex; gap: 10px; margin-top: 4px; }
+    .dt-ovl-btns button { flex: 1; padding: 10px 0; border-radius: 10px; font-size: 14px; border: none; }
+    #dtMetCancel, #dtAnnCancel { background: var(--bg-soft2); color: var(--text-secondary); }
+    #dtMetSave, #dtAnnSave { background: var(--primary); color: #fff; font-weight: 600; }
+
     /* === 设置页面样式 === */
     .feature-content.settings-body {
       display: block;
@@ -11403,6 +11522,60 @@
   </div>
 
     <!-- 设置页面 -->
+    <!-- 数据统计页面 -->
+    <div class="feature-page" id="dataPage">
+      <div class="feature-header">
+        <button class="feature-back" id="dataBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
+        <span class="feature-title">数据</span>
+      </div>
+      <div class="feature-content data-body">
+        <div class="dt-hero">
+          <div class="dt-hero-label">小手机已陪伴你</div>
+          <div class="dt-hero-num"><span id="dtDays">0</span><small>天</small></div>
+          <div class="dt-hero-sub" id="dtHeroSub">从今天开始记录</div>
+        </div>
+        <div class="dt-next" id="dtNext"></div>
+        <div class="dt-card">
+          <div class="dt-card-title">认识的日子</div>
+          <div class="dt-card-hint">点击联系人设置认识日期，看看你们认识多久了</div>
+          <div id="dtMetList"></div>
+        </div>
+        <div class="dt-card">
+          <div class="dt-card-title-row">
+            <div class="dt-card-title">纪念日</div>
+            <button class="dt-ann-add" id="dtAnnAdd">＋ 添加</button>
+          </div>
+          <div id="dtAnnList"></div>
+        </div>
+        <div class="dt-card">
+          <div class="dt-card-title">统计总览</div>
+          <div class="dt-grid" id="dtGrid"></div>
+        </div>
+        <button class="dt-clear" id="dtClearBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>清除缓存</button>
+      </div>
+      <div class="dt-ovl" id="dtMetOvl">
+        <div class="dt-ovl-box">
+          <div class="dt-ovl-title" id="dtMetOvlName">设置认识日期</div>
+          <input type="date" id="dvMetDateInput">
+          <div class="dt-ovl-btns">
+            <button id="dtMetCancel">取消</button>
+            <button id="dtMetSave">保存</button>
+          </div>
+        </div>
+      </div>
+      <div class="dt-ovl" id="dtAnnOvl">
+        <div class="dt-ovl-box">
+          <div class="dt-ovl-title">添加纪念日</div>
+          <input type="text" id="dvAnnNameInput" placeholder="名称，如：生日（每年循环）" maxlength="10">
+          <input type="date" id="dvAnnDateInput">
+          <div class="dt-ovl-btns">
+            <button id="dtAnnCancel">取消</button>
+            <button id="dtAnnSave">保存</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
       <div class="feature-page" id="settingsPage">
         <div class="feature-header">
           <button class="feature-back" id="settingsBackBtn">
@@ -11751,7 +11924,7 @@
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput');
+          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput');
           inputFocused = true;
           kbHeight = calcKb();
           apply();
@@ -11763,7 +11936,7 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput'));
+          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput'));
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
@@ -13677,6 +13850,7 @@
       function addContact(name) {
         if (!name.trim()) return false;
         contacts.push({ id: nextId++, name: name.trim(), isGroup: false, lastMsg: '新联系人', time: '刚刚' });
+        _dtAutoRecordMet();
         refreshList();
         return true;
       }
@@ -13685,6 +13859,7 @@
         const existIds = contacts.filter(c => !c.isGroup).map(c => c.id);
         if (!memberIds.every(id => existIds.includes(id))) return false;
         contacts.push({ id: nextId++, name: name.trim(), isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [...memberIds] });
+        _dtAutoRecordMet();
         refreshList();
         return true;
       }
@@ -13929,6 +14104,11 @@
             if (typeof openThemeView === 'function') openThemeView();
             return;
           }
+          if (action === 'data') {
+            sidebarOverlay.classList.remove('show');
+            openDataPage();
+            return;
+          }
           const info = featureMap[action];
           if (!info) return;
           document.getElementById('featureTitle').textContent = info.title;
@@ -13941,6 +14121,254 @@
           document.getElementById('featurePage').classList.add('show');
           sidebarOverlay.classList.remove('show');
         });
+      });
+
+      // ===== 数据统计页 =====
+      function _dtGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
+      function _dtSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
+      function _dtGetAnns() { try { return JSON.parse(localStorage.getItem('anniversaries') || '[]'); } catch (e) { return []; } }
+      function _dtSaveAnns(a) { try { localStorage.setItem('anniversaries', JSON.stringify(a)); } catch (e) {} }
+      function _dtDayStart(t) { var d = new Date(t); d.setHours(0, 0, 0, 0); return d.getTime(); }
+      function _dtDaysSince(ts) { return Math.round((_dtDayStart(Date.now()) - _dtDayStart(ts)) / 86400000) + 1; }
+      function _dtFmt(ts) { var d = new Date(ts); return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日'; }
+      function _dtToDateStr(ts) { var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+      function _dtParseDate(sv) { var pp = (sv || '').split('-'); if (pp.length !== 3) return null; var y = parseInt(pp[0], 10), m = parseInt(pp[1], 10), dd = parseInt(pp[2], 10); if (!y || !m || !dd) return null; return new Date(y, m - 1, dd).getTime(); }
+      function _dtNextInfo(dateStr) {
+        var pp = dateStr.split('-'); var mo = parseInt(pp[1], 10) - 1, dd = parseInt(pp[2], 10);
+        var today = _dtDayStart(Date.now()); var now = new Date();
+        var t = new Date(now.getFullYear(), mo, dd).getTime();
+        if (t < today) t = new Date(now.getFullYear() + 1, mo, dd).getTime();
+        return { ts: t, daysLeft: Math.round((t - today) / 86400000) };
+      }
+      var _dtMetEditingId = null;
+
+      function _dtAutoRecordMet() {
+        try {
+          var c = contacts[contacts.length - 1];
+          if (c && !c.isGroup) {
+            var md = _dtGetMetDates();
+            if (!md[c.id]) { md[c.id] = Date.now(); _dtSaveMetDates(md); }
+          }
+        } catch (e) {}
+      }
+
+      function openDataPage() {
+        document.getElementById('dataPage').classList.add('show');
+        renderDataStats();
+      }
+
+      function _dtEarliestTs() {
+        var min = null, t;
+        try {
+          var llist = (typeof letterList !== 'undefined' && letterList) ? letterList : [];
+          llist.forEach(function (l) { if (l.timestamp && (min === null || l.timestamp < min)) min = l.timestamp; });
+          var mlist = (typeof moments !== 'undefined' && moments) ? moments : [];
+          mlist.forEach(function (m) { if (m.timestamp && (min === null || m.timestamp < min)) min = m.timestamp; });
+          JSON.parse(localStorage.getItem('diaryEntries') || '[]').forEach(function (d) { t = d.date ? new Date(d.date).getTime() : 0; if (t && (min === null || t < min)) min = t; });
+          JSON.parse(localStorage.getItem('divineHistory') || '[]').forEach(function (h) { if (h.t && (min === null || h.t < min)) min = h.t; });
+        } catch (e) {}
+        return min;
+      }
+
+      function renderDataStats() {
+        // ---- 陪伴天数 ----
+        var inst = localStorage.getItem('zkFirstDate');
+        if (!inst) { inst = String(Date.now()); try { localStorage.setItem('zkFirstDate', inst); } catch (e) {} }
+        var base = parseInt(inst, 10);
+        var earliest = _dtEarliestTs();
+        if (earliest && earliest < base) base = earliest;
+        document.getElementById('dtDays').textContent = _dtDaysSince(base);
+        document.getElementById('dtHeroSub').textContent = '从 ' + _dtFmt(base) + ' 开始';
+
+        // ---- 认识的日子 ----
+        var met = _dtGetMetDates();
+        var metListEl = document.getElementById('dtMetList');
+        metListEl.innerHTML = '';
+        var nonGroup = contacts.filter(function (c) { return !c.isGroup; });
+        if (!nonGroup.length) {
+          metListEl.innerHTML = '<div class="dt-empty">还没有联系人</div>';
+        }
+        nonGroup.forEach(function (c) {
+          var row = document.createElement('div');
+          row.className = 'dt-met-row';
+          var av = document.createElement('div');
+          av.className = 'dt-met-avatar';
+          av.textContent = (c.name || '?').charAt(0).toUpperCase();
+          var info = document.createElement('div');
+          info.className = 'dt-met-info';
+          var nm = document.createElement('div');
+          nm.className = 'dt-met-name';
+          nm.textContent = c.name;
+          var sub = document.createElement('div');
+          sub.className = 'dt-met-sub';
+          var right = document.createElement('div');
+          right.className = 'dt-met-days';
+          if (met[c.id]) {
+            sub.textContent = '相识于 ' + _dtFmt(met[c.id]);
+            var b = document.createElement('div');
+            b.innerHTML = '<b>' + _dtDaysSince(met[c.id]) + '</b><small>天</small>';
+            right.appendChild(b);
+          } else {
+            sub.textContent = '还没记录认识日期';
+            var setBtn = document.createElement('button');
+            setBtn.className = 'dt-met-set';
+            setBtn.textContent = '设置';
+            right.appendChild(setBtn);
+          }
+          info.appendChild(nm); info.appendChild(sub);
+          row.appendChild(av); row.appendChild(info); row.appendChild(right);
+          row.addEventListener('click', function () {
+            _dtMetEditingId = c.id;
+            document.getElementById('dtMetOvlName').textContent = '与 ' + c.name + ' 相识于';
+            document.getElementById('dvMetDateInput').value = met[c.id] ? _dtToDateStr(met[c.id]) : '';
+            document.getElementById('dtMetOvl').classList.add('show');
+          });
+          metListEl.appendChild(row);
+        });
+
+        // ---- 纪念日（相识周年 + 自定义）----
+        var annItems = [];
+        nonGroup.forEach(function (c) {
+          if (!met[c.id]) return;
+          var ds = _dtToDateStr(met[c.id]);
+          var ni = _dtNextInfo(ds);
+          var nthYear = new Date(ni.ts).getFullYear() - new Date(met[c.id]).getFullYear() + 1;
+          annItems.push({ name: '与' + c.name + '相识', dateStr: ds, daysLeft: ni.daysLeft, nth: '第' + nthYear + '年', metId: c.id });
+        });
+        _dtGetAnns().forEach(function (a, i) {
+          if (!a || !a.date) return;
+          var ni = _dtNextInfo(a.date);
+          annItems.push({ name: a.name || '纪念日', dateStr: a.date, daysLeft: ni.daysLeft, nth: '', customIdx: i });
+        });
+        annItems.sort(function (a, b) { return a.daysLeft - b.daysLeft; });
+
+        var nextEl = document.getElementById('dtNext');
+        if (annItems.length) {
+          var nx = annItems[0];
+          nextEl.style.display = 'block';
+          nextEl.innerHTML = '<div class="dt-next-label">下一个纪念日' + (nx.nth ? ' · ' + nx.nth : '') + '</div>' +
+            '<div class="dt-next-row"><span class="dt-next-name">' + nx.name + '</span>' +
+            (nx.daysLeft === 0 ? '<span class="dt-next-days today">就是今天</span>' : '<span class="dt-next-days">' + nx.daysLeft + '<small>天后</small></span>') + '</div>';
+        } else {
+          nextEl.style.display = 'none';
+        }
+
+        var annListEl = document.getElementById('dtAnnList');
+        annListEl.innerHTML = '';
+        if (!annItems.length) {
+          annListEl.innerHTML = '<div class="dt-empty">还没有纪念日，添加一个吧</div>';
+        }
+        annItems.forEach(function (it) {
+          var row = document.createElement('div');
+          row.className = 'dt-ann-row';
+          var info = document.createElement('div');
+          info.className = 'dt-ann-info';
+          var nm = document.createElement('div');
+          nm.className = 'dt-ann-name';
+          nm.textContent = it.name + (it.nth ? '（' + it.nth + '）' : '');
+          var dt = document.createElement('div');
+          dt.className = 'dt-ann-date';
+          var pp = it.dateStr.split('-');
+          dt.textContent = '每年 ' + parseInt(pp[1], 10) + '月' + parseInt(pp[2], 10) + '日';
+          info.appendChild(nm); info.appendChild(dt);
+          var cnt = document.createElement('div');
+          cnt.className = 'dt-ann-count' + (it.daysLeft === 0 ? ' today' : '');
+          cnt.textContent = it.daysLeft === 0 ? '就是今天' : '还有 ' + it.daysLeft + ' 天';
+          row.appendChild(info); row.appendChild(cnt);
+          if (it.customIdx !== undefined) {
+            var del = document.createElement('button');
+            del.className = 'dt-ann-del';
+            del.textContent = '×';
+            del.addEventListener('click', function (e) {
+              e.stopPropagation();
+              var arr = _dtGetAnns();
+              var keep = [];
+              arr.forEach(function (x, j) { if (j !== it.customIdx) keep.push(x); });
+              _dtSaveAnns(keep);
+              renderDataStats();
+            });
+            row.appendChild(del);
+          }
+          annListEl.appendChild(row);
+        });
+
+        // ---- 统计总览 ----
+        var llist2 = (typeof letterList !== 'undefined' && letterList) ? letterList : [];
+        var nonAnon = llist2.filter(function (l) { return !l.anonymous; });
+        var recv = 0, sent = 0, pend = 0;
+        nonAnon.forEach(function (l) {
+          if (l.isOutgoing) { sent++; if (l.replyScheduled && !l.replyReceived) pend++; }
+          else { recv++; if (!(l.replies && l.replies.length) && !l.userReplied) pend++; }
+        });
+        var msgTotal = 0, msgMe = 0;
+        for (var ck in chatHistories) {
+          (chatHistories[ck] || []).forEach(function (m) { msgTotal++; if (m.from === 'me') msgMe++; });
+        }
+        var mlist2 = (typeof moments !== 'undefined' && moments) ? moments : [];
+        var likeCnt = 0, cmtCnt = 0;
+        mlist2.forEach(function (m) { likeCnt += (m.likes ? m.likes.length : 0); cmtCnt += (m.comments ? m.comments.length : 0); });
+        var de = []; try { de = JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch (e) {}
+        var dWords = 0; de.forEach(function (d) { dWords += (d.content || '').length; });
+        var td = []; try { td = JSON.parse(localStorage.getItem('todos') || '[]'); } catch (e) {}
+        var tdDone = td.filter(function (t) { return t.done; }).length;
+        var dv = []; try { dv = JSON.parse(localStorage.getItem('divineHistory') || '[]'); } catch (e) {}
+        var dvTarot = dv.filter(function (h) { return h.mode === '塔罗'; }).length;
+        var ac = []; try { ac = JSON.parse(localStorage.getItem('accompanyLog') || '[]'); } catch (e) {}
+        var grpCnt = contacts.filter(function (c) { return c.isGroup; }).length;
+
+        var cells = [
+          { num: recv + sent, unit: '封', label: '信件', sub: '收' + recv + ' · 寄' + sent + ' · 待回' + pend },
+          { num: msgTotal, unit: '条', label: '聊天消息', sub: '我' + msgMe + ' · TA' + (msgTotal - msgMe) },
+          { num: mlist2.length, unit: '条', label: '朋友圈', sub: '获赞' + likeCnt + ' · 评论' + cmtCnt },
+          { num: de.length, unit: '篇', label: '日记', sub: dWords >= 1000 ? '共' + (dWords / 1000).toFixed(1) + '千字' : '共' + dWords + '字' },
+          { num: td.length, unit: '项', label: '待办', sub: '已完成 ' + tdDone },
+          { num: dv.length, unit: '次', label: '占卜', sub: '塔罗' + dvTarot + ' · 雷诺曼' + (dv.length - dvTarot) },
+          { num: ac.length, unit: '次', label: '陪伴', sub: '一起度过的时光' },
+          { num: nonGroup.length, unit: '位', label: '联系人', sub: '另有群聊 ' + grpCnt + ' 个' }
+        ];
+        var gridEl = document.getElementById('dtGrid');
+        gridEl.innerHTML = '';
+        cells.forEach(function (c) {
+          var cell = document.createElement('div');
+          cell.className = 'dt-cell';
+          cell.innerHTML = '<div class="dt-cell-num">' + c.num + '<small> ' + c.unit + '</small></div><div class="dt-cell-label">' + c.label + '</div><div class="dt-cell-sub">' + c.sub + '</div>';
+          gridEl.appendChild(cell);
+        });
+      }
+
+      document.getElementById('dataBackBtn').addEventListener('click', function () {
+        document.getElementById('dataPage').classList.remove('show');
+      });
+      document.getElementById('dtMetCancel').addEventListener('click', function () { document.getElementById('dtMetOvl').classList.remove('show'); });
+      document.getElementById('dtMetSave').addEventListener('click', function () {
+        if (_dtMetEditingId === null) return;
+        var ts = _dtParseDate(document.getElementById('dvMetDateInput').value);
+        if (!ts) { showToast('请选择日期'); return; }
+        var md = _dtGetMetDates();
+        md[_dtMetEditingId] = ts;
+        _dtSaveMetDates(md);
+        document.getElementById('dtMetOvl').classList.remove('show');
+        renderDataStats();
+      });
+      document.getElementById('dtAnnAdd').addEventListener('click', function () {
+        document.getElementById('dvAnnNameInput').value = '';
+        document.getElementById('dvAnnDateInput').value = '';
+        document.getElementById('dtAnnOvl').classList.add('show');
+      });
+      document.getElementById('dtAnnCancel').addEventListener('click', function () { document.getElementById('dtAnnOvl').classList.remove('show'); });
+      document.getElementById('dtAnnSave').addEventListener('click', function () {
+        var name = (document.getElementById('dvAnnNameInput').value || '').trim();
+        var ts = _dtParseDate(document.getElementById('dvAnnDateInput').value);
+        if (!name) { showToast('请输入名称'); return; }
+        if (!ts) { showToast('请选择日期'); return; }
+        var arr = _dtGetAnns();
+        arr.push({ name: name, date: _dtToDateStr(ts) });
+        _dtSaveAnns(arr);
+        document.getElementById('dtAnnOvl').classList.remove('show');
+        renderDataStats();
+      });
+      document.getElementById('dtClearBtn').addEventListener('click', function () {
+        if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) { localStorage.clear(); location.reload(); }
       });
 
       // ----- 个人信息 -----
