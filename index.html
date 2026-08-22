@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v120')){sessionStorage.setItem('zk_v120','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==120){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v121')){sessionStorage.setItem('zk_v121','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==121){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v120</title>
+  <title>字卡 · 小手机 v121</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6957,6 +6957,66 @@
     #cstMetCancel { background: var(--bg-soft2); color: var(--text-secondary); }
     #cstMetSave { background: var(--primary); color: #fff; font-weight: 600; }
 
+    /* === 联系人活动页 === */
+    #activityPage { background: var(--bg-main); }
+    #activityPage .feature-header { background: var(--bg-card); border-bottom: 0.5px solid rgba(var(--primary-rgba), 0.15); }
+    #activityPage .feature-title { color: var(--text-main); }
+    .feature-content.act-body {
+      display: block;
+      align-items: stretch;
+      justify-content: flex-start;
+      padding: 14px 14px 30px;
+      background: var(--bg-main);
+    }
+    .act-cbar-wrap { margin-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .act-cbar { display: flex; gap: 10px; padding: 2px 2px 6px; width: max-content; min-width: 100%; }
+    .act-citem { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 52px; cursor: pointer; }
+    .act-cavatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--bg-soft2); color: var(--text-secondary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 17px; font-weight: 600;
+      border: 2px solid transparent; box-sizing: border-box;
+    }
+    .act-citem.active .act-cavatar { border-color: var(--primary); color: var(--primary); background: rgba(var(--primary-rgba), 0.12); }
+    .act-cname { font-size: 11px; color: var(--text-muted); max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .act-citem.active .act-cname { color: var(--primary); }
+    .act-now {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 14px; padding: 14px 16px; color: #fff;
+      margin-bottom: 6px; box-shadow: 0 4px 14px rgba(var(--primary-rgba), 0.35);
+    }
+    .act-now-top { display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700; line-height: 1.3; }
+    .act-now-top .an-icon { flex: 0 0 auto; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    .act-now-meta { font-size: 11px; opacity: 0.85; margin-top: 5px; }
+    .act-now-desc { font-size: 12px; opacity: 0.92; margin-top: 3px; line-height: 1.5; }
+    .act-now-next { font-size: 11px; opacity: 0.8; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.25); }
+    .act-sum { font-size: 11px; color: var(--text-muted); text-align: center; margin: 4px 0 10px; }
+    .act-tl { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.2); border-radius: 12px; padding: 12px 10px 2px; }
+    .act-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 30px 0; }
+    .tl-item { display: flex; align-items: stretch; }
+    .tl-time { flex: 0 0 42px; font-size: 11px; color: var(--text-muted); padding-top: 8px; text-align: right; padding-right: 8px; box-sizing: border-box; }
+    .tl-col { flex: 0 0 26px; display: flex; flex-direction: column; align-items: center; }
+    .tl-node { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: 0 0 26px; box-sizing: border-box; }
+    .tl-item.now .tl-node { box-shadow: 0 0 0 3px rgba(var(--primary-rgba), 0.3); }
+    .tl-rod { flex: 1 1 auto; min-height: 14px; width: 2px; background: rgba(var(--primary-rgba), 0.22); margin: 2px 0; }
+    .tl-item:last-child .tl-rod { display: none; }
+    .tl-card { flex: 1 1 auto; min-width: 0; padding: 3px 4px 16px 8px; }
+    .tl-name-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .tl-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
+    .tl-tag { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: rgba(var(--primary-rgba), 0.15); color: var(--primary); }
+    .tl-nowtag { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: var(--primary); color: #fff; }
+    .tl-desc { font-size: 11.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.5; }
+    .tl-item.now .tl-card { background: rgba(var(--primary-rgba), 0.08); border-radius: 8px; }
+    .tl-item.future { opacity: 0.5; }
+    .tl-real-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); margin-right: 4px; vertical-align: 1px; }
+    .act-reroll {
+      display: block; width: 100%; margin-top: 14px; padding: 10px 0;
+      background: var(--bg-card); color: var(--text-secondary);
+      border: 1px solid rgba(var(--primary-rgba), 0.25); border-radius: 12px;
+      font-size: 13px; cursor: pointer;
+    }
+    .act-reroll:active { opacity: 0.7; }
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
     #dataPage .feature-header { background: var(--bg-card); border-bottom: 0.5px solid rgba(var(--primary-rgba), 0.15); }
@@ -11189,6 +11249,9 @@
                 <path d="M9 11l3 3L22 4" />
                 <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
               </svg></span><span class="item-text">待办</span></div>
+          <div class="sidebar-menu-item" data-action="activity"><span class="item-icon"><svg viewBox="0 0 24 24">
+                <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
+              </svg></span><span class="item-text">活动</span></div>
           <div class="sidebar-menu-item" data-action="theme"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -11619,6 +11682,21 @@
 
     <!-- 设置页面 -->
     <!-- 数据统计页面 -->
+    <!-- 联系人活动页 -->
+    <div class="feature-page" id="activityPage">
+      <div class="feature-header">
+        <button class="feature-back" id="actBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
+        <span class="feature-title">活动</span>
+      </div>
+      <div class="feature-content act-body">
+        <div class="act-cbar-wrap"><div class="act-cbar" id="actCbar"></div></div>
+        <div class="act-now" id="actNow"></div>
+        <div class="act-sum" id="actSum"></div>
+        <div class="act-tl" id="actTl"></div>
+        <button class="act-reroll" id="actReroll"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>重抽今天的活动</button>
+      </div>
+    </div>
+
     <div class="feature-page" id="dataPage">
       <div class="feature-header">
         <button class="feature-back" id="dataBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
@@ -14212,6 +14290,11 @@
             openDataPage();
             return;
           }
+          if (action === 'activity') {
+            sidebarOverlay.classList.remove('show');
+            openActivityPage();
+            return;
+          }
           const info = featureMap[action];
           if (!info) return;
           document.getElementById('featureTitle').textContent = info.title;
@@ -14472,6 +14555,336 @@
       });
       document.getElementById('dtClearBtn').addEventListener('click', function () {
         if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) { localStorage.clear(); location.reload(); }
+      });
+
+      // ===== 联系人活动页 =====
+      var ACT_POOL = {
+        morning: [
+          { name: '起床', desc: '迷迷糊糊爬起来，头发乱糟糟', cat: 'rest' },
+          { name: '赖床', desc: '闹钟响了好几遍，还想再眯五分钟', cat: 'rest' },
+          { name: '吃早餐', desc: '一杯热牛奶配吐司，慢慢悠悠', cat: 'eat' },
+          { name: '晨跑', desc: '沿着河边跑了两圈，出了点汗', cat: 'move' },
+          { name: '洗漱', desc: '刷完牙对着镜子发了一会儿呆', cat: 'rest' },
+          { name: '通勤路上', desc: '耳机里放着歌，看着窗外发呆', cat: 'move' }
+        ],
+        forenoon: [
+          { name: '上班中', desc: '盯着电脑干活，偶尔偷偷摸鱼', cat: 'work' },
+          { name: '上课中', desc: '一边记笔记一边打哈欠', cat: 'work' },
+          { name: '开会', desc: '会开得有点长，偷偷看了眼时间', cat: 'work' },
+          { name: '喝咖啡', desc: '给自己泡了杯咖啡提神', cat: 'eat' },
+          { name: '学习', desc: '啃书做笔记，进度有点慢', cat: 'work' },
+          { name: '忙家务', desc: '把屋子收拾了一遍，累但舒心', cat: 'work' }
+        ],
+        noon: [
+          { name: '吃午饭', desc: '今天的菜有点咸，但还是很香', cat: 'eat' },
+          { name: '午睡', desc: '趴在桌上眯了半个小时', cat: 'rest' },
+          { name: '散步', desc: '吃完饭在附近慢慢走了一圈', cat: 'move' },
+          { name: '刷手机', desc: '刷着刷着一个小时就没了', cat: 'play' }
+        ],
+        afternoon: [
+          { name: '上班中', desc: '下午有点困，靠咖啡续命', cat: 'work' },
+          { name: '健身', desc: '练了一组深蹲，腿有点酸', cat: 'move' },
+          { name: '下午茶', desc: '奶茶三分糖，心情不错', cat: 'eat' },
+          { name: '看书', desc: '看了一章小说，意犹未尽', cat: 'play' },
+          { name: '逛街', desc: '买了点小东西，钱包变瘦了', cat: 'play' },
+          { name: '上课中', desc: '下午的课听得迷迷糊糊', cat: 'work' }
+        ],
+        evening: [
+          { name: '下班通勤', desc: '终于下班了，一路哼着歌回家', cat: 'move' },
+          { name: '做晚饭', desc: '厨房里叮叮当当，做了两个菜', cat: 'eat' },
+          { name: '吃晚饭', desc: '边吃边看下饭视频', cat: 'eat' },
+          { name: '买菜', desc: '在市场里挑了些新鲜蔬菜', cat: 'eat' }
+        ],
+        night: [
+          { name: '洗澡', desc: '洗完澡整个人都轻松了', cat: 'rest' },
+          { name: '看剧', desc: '追的剧更新了，一口气看两集', cat: 'play' },
+          { name: '打游戏', desc: '手感不错，赢多输少', cat: 'play' },
+          { name: '听歌', desc: '单曲循环那首老歌', cat: 'rest' },
+          { name: '和朋友聊天', desc: '闲聊八卦，笑个不停', cat: 'social' },
+          { name: '夜跑', desc: '晚风很舒服，跑得很尽兴', cat: 'move' },
+          { name: '画画', desc: '涂涂改改，画了一小张', cat: 'play' }
+        ],
+        late: [
+          { name: '准备睡觉', desc: '定好闹钟，钻进被窝', cat: 'sleep' },
+          { name: '睡前刷手机', desc: '再刷五分钟就睡（大概）', cat: 'play' },
+          { name: '听歌入眠', desc: '戴上耳机，把声音调到最小', cat: 'sleep' }
+        ]
+      };
+      var ACT_CARE = [
+        { name: '想起你了', desc: '突然想起你，翻了翻你们的聊天记录', cat: 'care' },
+        { name: '想你了', desc: '看到有趣的东西，第一个想到你', cat: 'care' },
+        { name: '给你写信中', desc: '正在给你写信，写写又删删', cat: 'care' },
+        { name: '翻你们的朋友圈', desc: '翻到你们的合照，嘴角上扬', cat: 'care' }
+      ];
+      var ACT_SVG = {
+        eat: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16a8 8 0 01-16 0z"/><path d="M8 7c0-1 .5-1 .5-2"/><path d="M12 7c0-1 .5-1 .5-2"/><path d="M16 7c0-1 .5-1 .5-2"/></svg>',
+        work: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>',
+        move: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+        rest: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v6a4 4 0 01-4 4H6a4 4 0 01-4-4z"/><line x1="6" y1="1" x2="6" y2="3"/><line x1="10" y1="1" x2="10" y2="3"/><line x1="14" y1="1" x2="14" y2="3"/></svg>',
+        play: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
+        social: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
+        sleep: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>',
+        care: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>'
+      };
+      var ACT_CAT_COLORS = { eat: '#d98a4a', work: '#5a7db0', move: '#4aaa80', rest: '#8a7ab8', play: '#c76e90', social: '#5a8cc0', sleep: '#6b7fa8', care: '#e05656' };
+      var _actCurrentId = null;
+
+      function _actRng(seedNum) {
+        return function () {
+          seedNum |= 0; seedNum = (seedNum + 0x6D2B79F5) | 0;
+          var t = Math.imul(seedNum ^ (seedNum >>> 15), 1 | seedNum);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+      function _actHash(str) {
+        var h = 2166136261;
+        for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+        return h >>> 0;
+      }
+      function _actTodayStr() {
+        var d = new Date();
+        return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      }
+      function _actGetStore() { try { return JSON.parse(localStorage.getItem('contactDailyActs') || '{}'); } catch (e) { return {}; } }
+      function _actSaveStore(st) {
+        var ks = Object.keys(st).sort();
+        while (ks.length > 7) { delete st[ks.shift()]; }
+        localStorage.setItem('contactDailyActs', JSON.stringify(st));
+      }
+      function _actBumpKey() { try { return JSON.parse(localStorage.getItem('contactActBump') || '{}'); } catch (e) { return {}; } }
+
+      function _actGenDay(dateStr, contactId, bump) {
+        var rnd = _actRng(_actHash(dateStr + '|' + contactId + '|' + bump));
+        var used = [];
+        function pick(arr) {
+          var pool = arr.filter(function (a) { return used.indexOf(a.name) < 0; });
+          if (!pool.length) pool = arr;
+          return pool[Math.floor(rnd() * pool.length)];
+        }
+        function tt(mA, mB) { return mA + Math.floor(rnd() * (mB - mA)); }
+        var list = [];
+        var m1 = pick(ACT_POOL.morning); used.push(m1.name);
+        list.push({ t: tt(370, 465), name: m1.name, desc: m1.desc, cat: m1.cat });
+        var m2 = pick(ACT_POOL.morning); used.push(m2.name);
+        list.push({ t: tt(475, 535), name: m2.name, desc: m2.desc, cat: m2.cat });
+        var f1 = pick(ACT_POOL.forenoon); used.push(f1.name);
+        list.push({ t: tt(545, 690), name: f1.name, desc: f1.desc, cat: f1.cat });
+        var n1 = pick(ACT_POOL.noon); used.push(n1.name);
+        list.push({ t: tt(725, 815), name: n1.name, desc: n1.desc, cat: n1.cat });
+        var a1 = pick(ACT_POOL.afternoon); used.push(a1.name);
+        list.push({ t: tt(850, 1045), name: a1.name, desc: a1.desc, cat: a1.cat });
+        var e1 = pick(ACT_POOL.evening); used.push(e1.name);
+        list.push({ t: tt(1090, 1180), name: e1.name, desc: e1.desc, cat: e1.cat });
+        var g1 = pick(ACT_POOL.night); used.push(g1.name);
+        list.push({ t: tt(1210, 1350), name: g1.name, desc: g1.desc, cat: g1.cat });
+        var l1 = pick(ACT_POOL.late); used.push(l1.name);
+        list.push({ t: tt(1390, 1430), name: l1.name, desc: l1.desc, cat: l1.cat });
+        if (rnd() < 0.45) {
+          var cc = ACT_CARE[Math.floor(rnd() * ACT_CARE.length)];
+          list.push({ t: tt(600, 1330), name: cc.name, desc: cc.desc, cat: cc.cat });
+        }
+        list.sort(function (x, y) { return x.t - y.t; });
+        return list;
+      }
+      function _actGetDay(dateStr, contactId) {
+        var st = _actGetStore();
+        if (!st[dateStr]) st[dateStr] = {};
+        if (!st[dateStr][contactId]) {
+          var b = _actBumpKey();
+          st[dateStr][contactId] = _actGenDay(dateStr, contactId, b[dateStr + '|' + contactId] || 0);
+          _actSaveStore(st);
+        }
+        return st[dateStr][contactId];
+      }
+      function _actReroll(dateStr, contactId) {
+        var b = _actBumpKey();
+        var k = dateStr + '|' + contactId;
+        b[k] = (b[k] || 0) + 1;
+        localStorage.setItem('contactActBump', JSON.stringify(b));
+        var st = _actGetStore();
+        if (!st[dateStr]) st[dateStr] = {};
+        st[dateStr][contactId] = _actGenDay(dateStr, contactId, b[k]);
+        _actSaveStore(st);
+      }
+      function _actFmtT(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+
+      function openActivityPage() {
+        document.getElementById('activityPage').classList.add('show');
+        var persons = contacts.filter(function (c) { return !c.isGroup; });
+        if (persons.length) {
+          var ok = persons.some(function (c) { return c.id === _actCurrentId; });
+          if (!ok) {
+            var cur = contacts.filter(function (c) { return c.id === currentChatId && !c.isGroup; })[0];
+            _actCurrentId = cur ? cur.id : persons[0].id;
+          }
+        }
+        renderActivity();
+      }
+
+      function renderActivity() {
+        var bar = document.getElementById('actCbar');
+        var nowEl = document.getElementById('actNow');
+        var sumEl = document.getElementById('actSum');
+        var tlEl = document.getElementById('actTl');
+        var persons = contacts.filter(function (c) { return !c.isGroup; });
+        bar.innerHTML = '';
+        if (!persons.length) {
+          nowEl.style.display = 'none';
+          sumEl.style.display = 'none';
+          tlEl.innerHTML = '<div class="act-empty">还没有联系人，先去添加一个吧</div>';
+          return;
+        }
+        nowEl.style.display = '';
+        sumEl.style.display = '';
+        persons.forEach(function (c) {
+          var it = document.createElement('div');
+          it.className = 'act-citem' + (c.id === _actCurrentId ? ' active' : '');
+          var av = document.createElement('div');
+          av.className = 'act-cavatar';
+          av.textContent = (c.name || '?').charAt(0).toUpperCase();
+          var nm = document.createElement('div');
+          nm.className = 'act-cname';
+          nm.textContent = c.name;
+          it.appendChild(av); it.appendChild(nm);
+          it.addEventListener('click', function () { _actCurrentId = c.id; renderActivity(); });
+          bar.appendChild(it);
+        });
+        var c = persons.filter(function (x) { return x.id === _actCurrentId; })[0];
+        if (!c) c = persons[0];
+
+        var dateStr = _actTodayStr();
+        var acts = _actGetDay(dateStr, String(c.id)).map(function (a) { return a; });
+        var dayStart = _dtDayStart(Date.now());
+        try {
+          var ms = JSON.parse(localStorage.getItem('moments') || '[]');
+          ms.forEach(function (m) {
+            if (m.author === c.name && m.timestamp >= dayStart) {
+              var dd = new Date(m.timestamp);
+              acts.push({ t: dd.getHours() * 60 + dd.getMinutes(), name: '发了一条朋友圈', desc: (m.text || '').replace(/\n/g, ' ').slice(0, 30), cat: 'social', real: true });
+            }
+          });
+        } catch (e) {}
+        try {
+          var ls = JSON.parse(localStorage.getItem('letterList') || '[]');
+          ls.forEach(function (L) {
+            if (L.from === c.name && !L.isOutgoing && !L.anonymous && L.timestamp >= dayStart) {
+              var d2 = new Date(L.timestamp);
+              acts.push({ t: d2.getHours() * 60 + d2.getMinutes(), name: '给你写了一封信', desc: (L.words || '').replace(/\n/g, ' ').slice(0, 30), cat: 'social', real: true });
+            }
+          });
+        } catch (e) {}
+        acts.sort(function (x, y) { return x.t - y.t; });
+
+        var nd = new Date();
+        var nowMin = nd.getHours() * 60 + nd.getMinutes();
+        var curIdx = -1;
+        for (var i = 0; i < acts.length; i++) {
+          var end = (i + 1 < acts.length) ? acts[i + 1].t : 1440;
+          if (nowMin >= acts[i].t && nowMin < end) { curIdx = i; break; }
+        }
+
+        // ---- 现在 ----
+        var iconHtml = function (cat, size, color) {
+          var base = ACT_SVG[cat] || ACT_SVG.rest;
+          return base.replace('width="13"', 'width="' + size + '"').replace('height="13"', 'height="' + size + '"').replace('width="14"', 'width="' + size + '"').replace('height="14"', 'height="' + size + '"');
+        };
+        var nowHtml = '';
+        if (curIdx >= 0) {
+          var ca = acts[curIdx];
+          var dur = nowMin - ca.t;
+          var title = ca.real ? ca.name : ('正在' + ca.name);
+          var nextHtml = '';
+          if (curIdx + 1 < acts.length) {
+            nextHtml = '<div class="act-now-next">接下来 · ' + acts[curIdx + 1].name + ' ' + _actFmtT(acts[curIdx + 1].t) + '</div>';
+          }
+          nowHtml = '<div class="act-now-top"><span class="an-icon">' + iconHtml(ca.cat, 22) + '</span><span>' + title + '</span></div>' +
+            '<div class="act-now-meta">开始于 ' + _actFmtT(ca.t) + ' · 已进行 ' + dur + ' 分钟</div>' +
+            '<div class="act-now-desc">' + ca.desc + '</div>' + nextHtml;
+        } else {
+          nowHtml = '<div class="act-now-top"><span class="an-icon">' + iconHtml('sleep', 22) + '</span><span>TA 还在睡</span></div>' +
+            '<div class="act-now-meta">今天的第一件事 ' + _actFmtT(acts.length ? acts[0].t : 375) + ' 开始</div>' +
+            '<div class="act-now-desc">夜深了，让 TA 再睡一会儿吧</div>';
+        }
+        nowEl.innerHTML = nowHtml;
+
+        var done = curIdx >= 0 ? curIdx : 0;
+        sumEl.textContent = c.name + ' 的今天 · 共 ' + acts.length + ' 件事 · 已完成 ' + done + ' 件';
+
+        // ---- 时间轴 ----
+        tlEl.innerHTML = '';
+        var nowNode = null;
+        acts.forEach(function (a, idx) {
+          var state = idx === curIdx ? 'now' : (idx < curIdx ? 'past' : 'future');
+          var item = document.createElement('div');
+          item.className = 'tl-item ' + state;
+          var tm = document.createElement('div');
+          tm.className = 'tl-time';
+          tm.textContent = _actFmtT(a.t);
+          var col = document.createElement('div');
+          col.className = 'tl-col';
+          var node = document.createElement('div');
+          node.className = 'tl-node';
+          node.style.background = ACT_CAT_COLORS[a.cat] || ACT_CAT_COLORS.rest;
+          node.style.color = '#fff';
+          node.innerHTML = ACT_SVG[a.cat] || ACT_SVG.rest;
+          var rod = document.createElement('div');
+          rod.className = 'tl-rod';
+          col.appendChild(node); col.appendChild(rod);
+          var card = document.createElement('div');
+          card.className = 'tl-card';
+          var nrow = document.createElement('div');
+          nrow.className = 'tl-name-row';
+          var nn = document.createElement('span');
+          nn.className = 'tl-name';
+          nn.textContent = a.name;
+          nrow.appendChild(nn);
+          if (a.real) {
+            var tg = document.createElement('span');
+            tg.className = 'tl-tag';
+            tg.textContent = '动态';
+            nrow.appendChild(tg);
+          }
+          if (state === 'now') {
+            var nt = document.createElement('span');
+            nt.className = 'tl-nowtag';
+            nt.textContent = '现在';
+            nrow.appendChild(nt);
+          }
+          card.appendChild(nrow);
+          if (a.desc) {
+            var ds = document.createElement('div');
+            ds.className = 'tl-desc';
+            ds.textContent = a.desc;
+            card.appendChild(ds);
+          }
+          item.appendChild(tm); item.appendChild(col); item.appendChild(card);
+          tlEl.appendChild(item);
+          if (state === 'now') nowNode = item;
+        });
+        try {
+          var wrap = document.querySelector('#activityPage .feature-content');
+          if (wrap) {
+            wrap.scrollTop = 0;
+            if (nowNode) {
+              var wr = wrap.getBoundingClientRect();
+              var ir = nowNode.getBoundingClientRect();
+              wrap.scrollTop += ir.top - wr.top - 100;
+            }
+          }
+        } catch (e) {}
+      }
+
+      document.getElementById('actBackBtn').addEventListener('click', function () {
+        document.getElementById('activityPage').classList.remove('show');
+      });
+      document.getElementById('actReroll').addEventListener('click', function () {
+        var persons = contacts.filter(function (c) { return !c.isGroup; });
+        var c = persons.filter(function (x) { return x.id === _actCurrentId; })[0] || persons[0];
+        if (!c) { showToast('还没有联系人'); return; }
+        _actReroll(_actTodayStr(), String(c.id));
+        renderActivity();
+        showToast('已为 ' + c.name + ' 重抽今天的活动');
       });
 
       // ----- 个人信息 -----
