@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v125')){sessionStorage.setItem('zk_v125','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==125){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v126')){sessionStorage.setItem('zk_v126','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==126){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v125</title>
+  <title>字卡 · 小手机 v126</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7032,12 +7032,13 @@
       padding: 18px 16px;
     }
     .act-ovl.show { opacity: 1; pointer-events: auto; }
-    .act-ovl-box { width: 100%; max-width: 360px; background: var(--bg-card); border-radius: 14px; padding: 16px; box-sizing: border-box; }
+    .act-ovl-box { width: 100%; max-width: 360px; background: var(--bg-card); border-radius: 18px; padding: 18px 16px; box-sizing: border-box; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22); transform: scale(0.94); opacity: 0; transition: transform 0.18s ease, opacity 0.18s ease; }
+    .act-ovl.show .act-ovl-box { transform: scale(1); opacity: 1; }
     .act-card-box { max-height: 82vh; display: flex; flex-direction: column; }
     .act-ovl-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .act-ovl-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
     .act-ovl-x { background: none; border: none; color: var(--text-muted); padding: 4px; cursor: pointer; }
-    .act-card-hint { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+    .act-card-hint { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; background: var(--bg-soft); border-radius: 10px; padding: 8px 10px; }
     .act-card-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px; }
     .ac-row { border: 1px solid rgba(var(--primary-rgba), 0.18); border-radius: 10px; margin-bottom: 8px; overflow: hidden; background: var(--bg-soft); }
     .ac-main { display: flex; align-items: center; gap: 8px; padding: 10px 10px; cursor: pointer; }
@@ -7063,16 +7064,25 @@
       background: var(--bg-soft); color: var(--text-main); border-radius: 10px;
       padding: 10px 12px; font-size: 14px; outline: none; box-sizing: border-box; margin-top: 10px;
     }
-    .act-sel-row { display: flex; gap: 8px; margin-top: 10px; }
-    .act-sel-item { flex: 1 1 0; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-    .act-sel-label { font-size: 11px; color: var(--text-muted); padding-left: 2px; }
-    .act-sel-item select { flex: 0 0 auto; margin-top: 0; }
-    .act-sel-hint { font-size: 10.5px; color: var(--text-muted); line-height: 1.5; margin-top: 8px; }
-    .act-ovl-btns { display: flex; gap: 8px; margin-top: 14px; }
-    .act-ovl-btns button { flex: 1 1 auto; padding: 9px 0; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; }
+    .act-sel-row { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+    .act-sel-label { font-size: 11px; color: var(--text-muted); padding-left: 2px; margin-bottom: 6px; }
+    .act-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .act-chip {
+      display: flex; align-items: center; gap: 5px;
+      padding: 6px 11px; border-radius: 999px; cursor: pointer;
+      border: 1px solid rgba(var(--primary-rgba), 0.22);
+      background: var(--bg-soft); color: var(--text-secondary);
+      font-size: 12px;
+    }
+    .act-chip.on { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.12); color: var(--primary); font-weight: 600; }
+    .act-chip-ic { display: flex; align-items: center; justify-content: center; }
+    .act-sel-hint { font-size: 10.5px; color: var(--text-muted); line-height: 1.5; margin-top: 10px; background: var(--bg-soft); border-radius: 10px; padding: 8px 10px; }
+    .act-ovl-btns { display: flex; gap: 8px; margin-top: 16px; }
+    .act-ovl-btns button { flex: 1 1 auto; padding: 11px 0; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
     #actEditCancel { background: var(--bg-soft2); color: var(--text-secondary); }
-    #actEditSave { background: var(--primary); color: #fff; }
+    #actEditSave { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; box-shadow: 0 4px 12px rgba(var(--primary-rgba), 0.35); }
     #actEditDel { flex: 0 0 40%; background: rgba(224, 86, 86, 0.12); color: #e05656; }
+    .act-edit-box .act-ovl-title { text-align: center; display: block; font-size: 17px; margin-bottom: 2px; }
 
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
@@ -11766,8 +11776,7 @@
           <div class="act-ovl-box act-edit-box">
             <div class="act-ovl-title" id="actEditTitle">添加主字卡</div>
             <input type="text" id="actNameInput" placeholder="主字卡名，如：学习" maxlength="8">
-            <div class="act-sel-row"><div class="act-sel-item"><div class="act-sel-label">时段（什么时候会出现）</div><select id="actPeriodSel"><option value="morning">早晨</option><option value="forenoon">上午</option><option value="noon">中午</option><option value="afternoon">下午</option><option value="evening">傍晚</option><option value="night">晚上</option><option value="late">深夜</option><option value="any">不限时段</option></select>
-              </div><div class="act-sel-item"><div class="act-sel-label">分类（时间轴图标）</div><select id="actCatSel"><option value="eat">吃饭</option><option value="work">工作</option><option value="move">运动</option><option value="rest">休息</option><option value="play">娱乐</option><option value="social">社交</option><option value="sleep">睡觉</option></select></div></div><div class="act-sel-hint">时段决定这张卡在一天中哪个时间段被抽到；分类决定时间轴上显示的图标。</div>
+            <div class="act-sel-row"><div class="act-sel-item"><div class="act-sel-label">时段 · 什么时候会出现</div><div class="act-chips" id="actPeriodChips"></div></div><div class="act-sel-item"><div class="act-sel-label">分类 · 时间轴上的图标</div><div class="act-chips" id="actCatChips"></div></div></div><div class="act-sel-hint">时段决定这张卡在一天中哪个时间段被抽到；分类决定时间轴上显示的图标。</div>
             <div class="act-ovl-btns">
               <button id="actEditDel">删除</button>
               <button id="actEditCancel">取消</button>
@@ -12179,7 +12188,7 @@
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput' || e.target.id === 'cstMetDateInput' || e.target.id === 'actNameInput' || e.target.id === 'actSubInput' || e.target.id === 'actPeriodSel' || e.target.id === 'actCatSel');
+          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput' || e.target.id === 'cstMetDateInput' || e.target.id === 'actNameInput' || e.target.id === 'actSubInput');
           inputFocused = true;
           kbHeight = calcKb();
           apply();
@@ -12191,7 +12200,7 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput' || el.id === 'cstMetDateInput' || el.id === 'actNameInput' || el.id === 'actSubInput' || el.id === 'actPeriodSel' || el.id === 'actCatSel'));
+          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput' || el.id === 'cstMetDateInput' || el.id === 'actNameInput' || el.id === 'actSubInput'));
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
@@ -14690,9 +14699,10 @@
         play: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
         social: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>',
         sleep: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>',
-        care: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>'
+        care: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>',
+        other: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9L17 7M7 17l-2.1 2.1"/></svg>'
       };
-      var ACT_CAT_COLORS = { eat: '#d98a4a', work: '#5a7db0', move: '#4aaa80', rest: '#8a7ab8', play: '#c76e90', social: '#5a8cc0', sleep: '#6b7fa8', care: '#e05656' };
+      var ACT_CAT_COLORS = { eat: '#d98a4a', work: '#5a7db0', move: '#4aaa80', rest: '#8a7ab8', play: '#c76e90', social: '#5a8cc0', sleep: '#6b7fa8', care: '#e05656', other: '#8a92a0' };
       var _actCurrentId = null;
 
       function _actRng(seedNum) {
@@ -14721,11 +14731,24 @@
       function _actBumpKey() { try { return JSON.parse(localStorage.getItem('contactActBump') || '{}'); } catch (e) { return {}; } }
 
       function _actCardLib() {
+        var patched = false;
+        try { patched = localStorage.getItem('actLibPatched') === '1'; } catch (e) {}
+        var lib = null;
         try {
           var v = JSON.parse(localStorage.getItem('actCardLib') || 'null');
-          if (Array.isArray(v)) return v;
+          if (Array.isArray(v)) lib = v;
         } catch (e) {}
-        return JSON.parse(JSON.stringify(ACT_DEFAULT));
+        if (!lib) lib = JSON.parse(JSON.stringify(ACT_DEFAULT));
+        if (!patched) {
+          var has = lib.some(function (c) { return c && c.main === '\u8d77\u5e8a'; });
+          if (!has) {
+            lib.unshift({ main: '\u8d77\u5e8a', cat: 'rest', period: 'morning', subs: ['\u8ff7\u8ff7\u7cca\u7cca\u722c\u8d77\u6765\uff0c\u5934\u53d1\u4e71\u7cdf\u7cdf', '\u95f9\u949f\u4e00\u54cd\u5c31\u7cbe\u795e\u4e86\uff0c\u96be\u5f97', '\u4f38\u4e86\u4e2a\u5927\u61d2\u8170\uff0c\u6162\u541e\u541e\u8d77\u8eab'] });
+            _actSaveLib(lib);
+            _actLibChanged();
+          }
+          try { localStorage.setItem('actLibPatched', '1'); } catch (e) {}
+        }
+        return lib;
       }
       function _actSaveLib(arr) { localStorage.setItem('actCardLib', JSON.stringify(arr)); }
       function _actLibChanged() {
@@ -15088,23 +15111,53 @@
         });
       }
 
-      function _openActEdit(idx) {
+      var ACT_PERIODS = [['morning', '\u65e9\u6668'], ['forenoon', '\u4e0a\u5348'], ['noon', '\u4e2d\u5348'], ['afternoon', '\u4e0b\u5348'], ['evening', '\u508d\u665a'], ['night', '\u665a\u4e0a'], ['late', '\u6df1\u591c'], ['any', '\u4e0d\u9650\u65f6\u6bb5']];
+      var ACT_CATS = [['eat', '\u5403\u996d'], ['work', '\u5de5\u4f5c'], ['move', '\u8fd0\u52a8'], ['rest', '\u4f11\u606f'], ['play', '\u5a31\u4e50'], ['social', '\u793e\u4ea4'], ['sleep', '\u7761\u89c9'], ['care', '\u60f3\u4f60'], ['other', '\u5176\u4ed6']];
+      var _actSelPeriod = 'any', _actSelCat = 'rest';
+      function _renderActChips() {
+        var pc = document.getElementById('actPeriodChips');
+        var cc = document.getElementById('actCatChips');
+        if (!pc || !cc) return;
+        pc.innerHTML = ''; cc.innerHTML = '';
+        ACT_PERIODS.forEach(function (pp) {
+          var d = document.createElement('div');
+          d.className = 'act-chip' + (pp[0] === _actSelPeriod ? ' on' : '');
+          d.textContent = pp[1];
+          d.addEventListener('click', function () { _actSelPeriod = pp[0]; _renderActChips(); });
+          pc.appendChild(d);
+        });
+        ACT_CATS.forEach(function (c) {
+          var d = document.createElement('div');
+          d.className = 'act-chip' + (c[0] === _actSelCat ? ' on' : '');
+          var ic = document.createElement('span');
+          ic.className = 'act-chip-ic';
+          ic.style.color = ACT_CAT_COLORS[c[0]] || '#8a92a0';
+          ic.innerHTML = ACT_SVG[c[0]] || ACT_SVG.other;
+          var tx = document.createElement('span');
+          tx.textContent = c[1];
+          d.appendChild(ic); d.appendChild(tx);
+          d.addEventListener('click', function () { _actSelCat = c[0]; _renderActChips(); });
+          cc.appendChild(d);
+        });
+      }
+            function _openActEdit(idx) {
         _actEditingIdx = idx;
         if (idx === null) {
           document.getElementById('actEditTitle').textContent = '添加主字卡';
           document.getElementById('actNameInput').value = '';
-          document.getElementById('actPeriodSel').value = 'any';
-          document.getElementById('actCatSel').value = 'rest';
+          _actSelPeriod = 'any';
+          _actSelCat = 'rest';
           document.getElementById('actEditDel').style.display = 'none';
         } else {
           var c = _actCardLib()[idx];
           if (!c) return;
           document.getElementById('actEditTitle').textContent = '编辑主字卡';
           document.getElementById('actNameInput').value = c.main;
-          document.getElementById('actPeriodSel').value = c.period || 'any';
-          document.getElementById('actCatSel').value = c.cat || 'rest';
+          _actSelPeriod = c.period || 'any';
+          _actSelCat = c.cat || 'rest';
           document.getElementById('actEditDel').style.display = '';
         }
+        _renderActChips();
         document.getElementById('actEditOvl').classList.add('show');
         try { document.getElementById('actNameInput').focus(); } catch (e) {}
       }
@@ -15123,8 +15176,8 @@
       document.getElementById('actEditSave').addEventListener('click', function () {
         var name = (document.getElementById('actNameInput').value || '').trim();
         if (!name) { showToast('写个主字卡名吧'); return; }
-        var period = document.getElementById('actPeriodSel').value;
-        var cat = document.getElementById('actCatSel').value;
+        var period = _actSelPeriod;
+        var cat = _actSelCat;
         var lib = _actCardLib();
         if (_actEditingIdx === null) {
           lib.push({ main: name, cat: cat, period: period, subs: [] });
