@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v119')){sessionStorage.setItem('zk_v119','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==119){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v120')){sessionStorage.setItem('zk_v120','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==120){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v119</title>
+  <title>字卡 · 小手机 v120</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6905,6 +6905,58 @@
 }
 
   
+    /* === 聊天统计面板 === */
+    .cst-together {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      border-radius: 14px; padding: 14px 16px; color: #fff; margin: 0 14px 12px;
+      box-shadow: 0 4px 12px rgba(var(--primary-rgba), 0.3);
+    }
+    .cst-together-row { display: flex; align-items: center; justify-content: space-between; }
+    .cst-together-num { font-size: 30px; font-weight: 700; line-height: 1.25; }
+    .cst-together-num small { font-size: 13px; font-weight: 400; margin-left: 3px; }
+    .cst-together-sub { font-size: 11px; opacity: 0.9; margin-top: 3px; }
+    .cst-together-ann { text-align: right; }
+    .cst-together-ann b { font-size: 21px; font-weight: 700; display: block; line-height: 1.2; }
+    .cst-together-ann span { font-size: 10px; opacity: 0.9; }
+    .cst-together-set {
+      margin-top: 2px; border: none; border-radius: 999px;
+      background: rgba(255,255,255,0.24); color: #fff; font-size: 12px; padding: 6px 18px;
+    }
+    .cst-card { background: var(--bg-soft); border-radius: 12px; padding: 12px 14px; margin: 0 14px 12px; }
+    .cst-card-title { font-size: 13px; color: var(--primary); font-weight: 600; margin-bottom: 8px; letter-spacing: 0.04em; }
+    .cst-card-sub { font-size: 11px; color: var(--text-muted); margin: -3px 0 8px; }
+    .cst-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cst-cell { width: calc(50% - 4px); background: var(--bg-card); border-radius: 10px; padding: 9px 12px; box-sizing: border-box; }
+    .cst-cell-num { font-size: 19px; font-weight: 700; color: var(--text-main); }
+    .cst-cell-num small { font-size: 11px; font-weight: 400; color: var(--text-secondary); }
+    .cst-cell-label { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+    .cst-rank-row { display: flex; align-items: center; padding: 6px 0; }
+    .cst-rank-idx { width: 18px; height: 18px; border-radius: 6px; background: rgba(var(--primary-rgba), 0.15); color: var(--primary); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-right: 8px; flex-shrink: 0; }
+    .cst-rank-name { flex: 1; min-width: 0; font-size: 13px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cst-rank-bar { height: 6px; flex: 2.2; margin: 0 8px; border-radius: 3px; background: rgba(var(--primary-rgba), 0.12); overflow: hidden; }
+    .cst-rank-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--primary), var(--primary-light)); }
+    .cst-rank-num { flex: 0 0 auto; font-size: 11px; color: var(--text-secondary); }
+    .cst-ann-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 0.5px solid rgba(0,0,0,0.05); }
+    .cst-ann-row:last-child { border-bottom: none; }
+    .cst-ann-name { font-size: 13px; color: var(--text-main); font-weight: 500; }
+    .cst-ann-name small { color: var(--text-muted); font-weight: 400; margin-left: 4px; }
+    .cst-ann-days { font-size: 12px; color: var(--text-secondary); }
+    .cst-ann-days.today { color: #e05656; font-weight: 600; }
+    .cst-act-row { display: flex; align-items: center; padding: 7px 0; }
+    .cst-act-badge { width: 22px; height: 22px; border-radius: 50%; color: #fff; font-size: 10px; display: flex; align-items: center; justify-content: center; margin-right: 9px; flex-shrink: 0; }
+    .cst-act-txt { flex: 1; min-width: 0; font-size: 12px; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cst-act-t { font-size: 10px; color: var(--text-muted); flex-shrink: 0; margin-left: 6px; }
+    .cst-empty { text-align: center; color: var(--text-muted); font-size: 12px; padding: 10px 0; }
+    .cst-ovl { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 30; display: none; align-items: center; justify-content: center; }
+    .cst-ovl.show { display: flex; }
+    .cst-ovl-box { width: 76%; max-width: 280px; background: var(--bg-card); border-radius: 14px; padding: 18px 16px; box-shadow: 0 8px 28px rgba(0,0,0,0.18); }
+    .cst-ovl-title { font-size: 15px; font-weight: 600; color: var(--text-main); text-align: center; margin-bottom: 14px; }
+    .cst-ovl-box input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid rgba(var(--primary-rgba), 0.3); border-radius: 10px; font-size: 14px; background: var(--bg-soft); color: var(--text-main); margin-bottom: 10px; outline: none; }
+    .cst-ovl-btns { display: flex; gap: 10px; }
+    .cst-ovl-btns button { flex: 1; padding: 10px 0; border-radius: 10px; font-size: 14px; border: none; }
+    #cstMetCancel { background: var(--bg-soft2); color: var(--text-secondary); }
+    #cstMetSave { background: var(--primary); color: #fff; font-weight: 600; }
+
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
     #dataPage .feature-header { background: var(--bg-card); border-bottom: 0.5px solid rgba(var(--primary-rgba), 0.15); }
@@ -10404,6 +10456,50 @@
       </div>
 
       <!-- 信件面板遮罩 + 居中弹窗 -->
+      <div class="clp-backdrop" id="cstBackdrop"></div>
+      <div class="chat-letter-panel" id="chatStatsPanel">
+        <div class="clp-header-hero">
+          <div class="clp-avatar" id="cstAvatar">统</div>
+          <div class="clp-hero-info">
+            <div class="clp-hero-name" id="cstTitle">统计</div>
+            <div class="clp-hero-sub"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12v-2a5 5 0 0 0-5-5H8a5 5 0 0 0-5 5v2"/><circle cx="12" cy="16" r="5"/><path d="M12 11v5"/><path d="M9 13l3 3 3-3"/></svg><span id="cstSubline">在一起的点点滴滴</span></div>
+          </div>
+          <button class="clp-close-btn" id="cstBackBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="clp-scroll-body" id="cstScrollBody">
+          <div class="cst-together" id="cstTogether"></div>
+          <div class="cst-card">
+            <div class="cst-card-title">和 TA 的互动</div>
+            <div class="cst-grid" id="cstInteract"></div>
+          </div>
+          <div class="cst-card">
+            <div class="cst-card-title">字卡使用</div>
+            <div class="cst-card-sub" id="cstCardTotal"></div>
+            <div id="cstCardTop"></div>
+          </div>
+          <div class="cst-card">
+            <div class="cst-card-title">纪念日</div>
+            <div id="cstAnnList"></div>
+          </div>
+          <div class="cst-card">
+            <div class="cst-card-title">最近活动</div>
+            <div id="cstActs"></div>
+          </div>
+        </div>
+        <div class="cst-ovl" id="cstMetOvl">
+          <div class="cst-ovl-box">
+            <div class="cst-ovl-title" id="cstMetOvlName">设置认识日期</div>
+            <input type="date" id="cstMetDateInput">
+            <div class="cst-ovl-btns">
+              <button id="cstMetCancel">取消</button>
+              <button id="cstMetSave">保存</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="clp-backdrop" id="clpBackdrop"></div>
       <div class="chat-letter-panel" id="chatLetterPanel">
         <div class="clp-header-hero">
@@ -11924,7 +12020,7 @@
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput');
+          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput' || e.target.id === 'cstMetDateInput');
           inputFocused = true;
           kbHeight = calcKb();
           apply();
@@ -11936,7 +12032,7 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput'));
+          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput' || el.id === 'cstMetDateInput'));
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
@@ -12460,7 +12556,7 @@
       });
       document.querySelectorAll('.toolbar-item[data-tool]').forEach(item => {
         const tool = item.dataset.tool;
-        if (tool === 'emoji' || tool === 'letter' || tool === 'divine' || tool === 'together') return;
+        if (tool === 'emoji' || tool === 'letter' || tool === 'divine' || tool === 'together' || tool === 'stats') return;
         item.addEventListener('click', function () {
           emojiModule.classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
@@ -13817,17 +13913,24 @@
         }
       }
       function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } return array; }
+      function _bumpCardUseCount(isRole, category, name) {
+        var u = {};
+        try { u = JSON.parse(localStorage.getItem('cardUseCounts') || '{}'); } catch (e) {}
+        var key = (isRole ? 'role|' : 'gen|') + category + '|' + name;
+        u[key] = (u[key] || 0) + 1;
+        try { localStorage.setItem('cardUseCounts', JSON.stringify(u)); } catch (e) {}
+      }
       function updateCardUseCount(category, name) {
         const items = cardData.general[category];
         if (items) {
           const found = items.find(item => (item.name || item) === name);
-          if (found) { if (!found.useCount) found.useCount = 0; found.useCount++; return; }
+          if (found) { if (!found.useCount) found.useCount = 0; found.useCount++; _bumpCardUseCount(false, category, name); return; }
         }
         Object.keys(cardData.role).forEach(type => {
           const roleItems = cardData.role[type];
           if (roleItems) {
             const found = roleItems.find(item => (item.name || item) === name);
-            if (found) { if (!found.useCount) found.useCount = 0; found.useCount++; }
+            if (found) { if (!found.useCount) found.useCount = 0; found.useCount++; _bumpCardUseCount(true, type, name); }
           }
         });
       }
@@ -20419,6 +20522,194 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('cldAnnOvl').classList.remove('show');
         renderCldDetail();
         showToast('已删除批注');
+      });
+
+      // ===== 聊天统计面板 =====
+      var CST_ACT_BADGES = { letter: ['信', '#7b6ea8'], moment: ['圈', '#5a8cc0'], diary: ['记', '#4aaa80'], divine: ['卜', '#c76e90'] };
+      function _cstFmtTime(ts) {
+        var d = new Date(ts);
+        var md = (d.getMonth() + 1) + '/' + d.getDate();
+        var hm = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        return md + ' ' + hm;
+      }
+      function openChatStatsPanel() {
+        var contact = contacts.find(function (c) { return c.id === currentChatId; });
+        if (!contact) { showToast('请先打开一个聊天'); return; }
+        renderChatStats();
+        document.getElementById('cstBackdrop').classList.add('active');
+        document.getElementById('chatStatsPanel').classList.add('active');
+      }
+      function closeChatStatsPanel() {
+        document.getElementById('cstBackdrop').classList.remove('active');
+        document.getElementById('chatStatsPanel').classList.remove('active');
+        document.getElementById('cstMetOvl').classList.remove('show');
+      }
+      function renderChatStats() {
+        var contact = contacts.find(function (c) { return c.id === currentChatId; });
+        if (!contact) return;
+        var name = contact.name || 'TA';
+        document.getElementById('cstAvatar').textContent = contact.isGroup ? '群' : name.charAt(0).toUpperCase();
+        document.getElementById('cstTitle').textContent = '和 ' + name + ' 的统计';
+
+        // ---- 在一起 ----
+        var met = _dtGetMetDates();
+        var togEl = document.getElementById('cstTogether');
+        if (contact.isGroup) {
+          togEl.innerHTML = '<div class="cst-together-sub" style="text-align:center;">群聊还没有认识的日子，去和 TA 单聊吧</div>';
+        } else if (met[currentChatId]) {
+          var days = _dtDaysSince(met[currentChatId]);
+          var ni = _dtNextInfo(_dtToDateStr(met[currentChatId]));
+          var nth = new Date(ni.ts).getFullYear() - new Date(met[currentChatId]).getFullYear() + 1;
+          togEl.innerHTML = '<div class="cst-together-row">' +
+            '<div><div class="cst-together-num">' + days + '<small>天</small></div><div class="cst-together-sub">相识于 ' + _dtFmt(met[currentChatId]) + '</div></div>' +
+            '<div class="cst-together-ann">' + (ni.daysLeft === 0 ? '<b style="font-size:15px;">今天！</b><span>相识' + nth + '周年</span>' : '<b>' + ni.daysLeft + '</b><span>天后 · 相识' + nth + '周年</span>') + '</div>' +
+            '</div>';
+        } else {
+          togEl.innerHTML = '<div class="cst-together-sub" style="text-align:center;margin-bottom:10px;">还没记录你们认识的日子</div><div style="text-align:center;"><button class="cst-together-set" id="cstMetSetBtn">设置认识日期</button></div>';
+          document.getElementById('cstMetSetBtn').addEventListener('click', function () {
+            document.getElementById('cstMetOvlName').textContent = '与 ' + name + ' 相识于';
+            document.getElementById('cstMetDateInput').value = met[currentChatId] ? _dtToDateStr(met[currentChatId]) : '';
+            document.getElementById('cstMetOvl').classList.add('show');
+          });
+        }
+
+        // ---- 和 TA 的互动 ----
+        var msgs = chatHistories[currentChatId] || [];
+        var taMsgs = 0, myMsgs = 0;
+        msgs.forEach(function (m) { if (m.from === 'me') myMsgs++; else taMsgs++; });
+        var taLetters = letterList.filter(function (l) { return !l.anonymous && !l.isOutgoing && l.from === name; }).length;
+        var cells = [
+          { num: msgs.length, unit: '条', label: '聊天消息' },
+          { num: taMsgs, unit: '条', label: 'TA 发的' },
+          { num: myMsgs, unit: '条', label: '我发的' },
+          { num: taLetters, unit: '封', label: 'TA 的来信' }
+        ];
+        var iaEl = document.getElementById('cstInteract');
+        iaEl.innerHTML = '';
+        cells.forEach(function (c) {
+          var cell = document.createElement('div');
+          cell.className = 'cst-cell';
+          cell.innerHTML = '<div class="cst-cell-num">' + c.num + '<small> ' + c.unit + '</small></div><div class="cst-cell-label">' + c.label + '</div>';
+          iaEl.appendChild(cell);
+        });
+
+        // ---- 字卡使用 ----
+        var uc = {}; try { uc = JSON.parse(localStorage.getItem('cardUseCounts') || '{}'); } catch (e) {}
+        var ucArr = [];
+        var totalUc = 0;
+        for (var uk in uc) { totalUc += uc[uk] || 0; ucArr.push([uk, uc[uk] || 0]); }
+        ucArr.sort(function (a, b) { return b[1] - a[1]; });
+        document.getElementById('cstCardTotal').textContent = '累计使用 ' + totalUc + ' 次';
+        var topEl = document.getElementById('cstCardTop');
+        topEl.innerHTML = '';
+        if (!ucArr.length) {
+          topEl.innerHTML = '<div class="cst-empty">还没有字卡使用记录，和 TA 聊聊天吧</div>';
+        }
+        var maxV = ucArr.length ? ucArr[0][1] : 1;
+        ucArr.slice(0, 5).forEach(function (it, i) {
+          var pp = it[0].split('|');
+          var nm = pp.slice(2).join('|');
+          var row = document.createElement('div');
+          row.className = 'cst-rank-row';
+          row.innerHTML = '<div class="cst-rank-idx">' + (i + 1) + '</div><div class="cst-rank-name">' + nm + '</div>' +
+            '<div class="cst-rank-bar"><div class="cst-rank-fill" style="width:' + Math.max(8, Math.round(it[1] / maxV * 100)) + '%;"></div></div>' +
+            '<div class="cst-rank-num">' + it[1] + '次</div>';
+          topEl.appendChild(row);
+        });
+
+        // ---- 纪念日 ----
+        var annItems = [];
+        if (!contact.isGroup && met[currentChatId]) {
+          var ds0 = _dtToDateStr(met[currentChatId]);
+          var ni0 = _dtNextInfo(ds0);
+          var nth0 = new Date(ni0.ts).getFullYear() - new Date(met[currentChatId]).getFullYear() + 1;
+          annItems.push({ name: '与' + name + '相识', nth: '第' + nth0 + '年', daysLeft: ni0.daysLeft });
+        }
+        _dtGetAnns().forEach(function (a) {
+          if (!a || !a.date) return;
+          var ni1 = _dtNextInfo(a.date);
+          annItems.push({ name: a.name || '纪念日', nth: '', daysLeft: ni1.daysLeft });
+        });
+        annItems.sort(function (a, b) { return a.daysLeft - b.daysLeft; });
+        var annEl = document.getElementById('cstAnnList');
+        annEl.innerHTML = '';
+        if (!annItems.length) annEl.innerHTML = '<div class="cst-empty">还没有纪念日，去侧边栏「数据」添加</div>';
+        annItems.slice(0, 5).forEach(function (it) {
+          var row = document.createElement('div');
+          row.className = 'cst-ann-row';
+          row.innerHTML = '<div class="cst-ann-name">' + it.name + (it.nth ? '<small>' + it.nth + '</small>' : '') + '</div>' +
+            '<div class="cst-ann-days' + (it.daysLeft === 0 ? ' today' : '') + '">' + (it.daysLeft === 0 ? '就是今天' : '还有 ' + it.daysLeft + ' 天') + '</div>';
+          annEl.appendChild(row);
+        });
+
+        // ---- 最近活动 ----
+        var acts = [];
+        try {
+          (letterList || []).forEach(function (l) {
+            if (!l.timestamp) return;
+            var txt = l.anonymous ? '匿名信箱收到一封信' : (l.isOutgoing ? '寄出一封信' : '收到来自 ' + l.from + ' 的信');
+            acts.push({ t: l.timestamp, type: 'letter', txt: txt });
+          });
+          (moments || []).forEach(function (m) {
+            if (!m.timestamp) return;
+            acts.push({ t: m.timestamp, type: 'moment', txt: m.author + ' 发了朋友圈' });
+          });
+          JSON.parse(localStorage.getItem('diaryEntries') || '[]').forEach(function (d) {
+            var t = d.date ? new Date(d.date).getTime() : 0;
+            if (t) acts.push({ t: t, type: 'diary', txt: '写日记：' + (d.title || '') });
+          });
+          JSON.parse(localStorage.getItem('divineHistory') || '[]').forEach(function (h) {
+            if (h.t) acts.push({ t: h.t, type: 'divine', txt: '占卜：' + (h.q || h.mode || '') });
+          });
+        } catch (e) {}
+        acts.sort(function (a, b) { return b.t - a.t; });
+        var actEl = document.getElementById('cstActs');
+        actEl.innerHTML = '';
+        if (!acts.length) actEl.innerHTML = '<div class="cst-empty">还没有活动记录</div>';
+        acts.slice(0, 8).forEach(function (a) {
+          var bg = CST_ACT_BADGES[a.type] || ['动', '#999'];
+          var row = document.createElement('div');
+          row.className = 'cst-act-row';
+          row.innerHTML = '<div class="cst-act-badge" style="background:' + bg[1] + ';">' + bg[0] + '</div>' +
+            '<div class="cst-act-txt">' + a.txt + '</div><div class="cst-act-t">' + _cstFmtTime(a.t) + '</div>';
+          actEl.appendChild(row);
+        });
+      }
+
+      document.querySelector('.toolbar-item[data-tool="stats"]').addEventListener('click', function (e) {
+        e.stopPropagation();
+        var isActive = document.getElementById('chatStatsPanel').classList.contains('active');
+        emojiModule.classList.remove('active');
+        document.getElementById('toolbarGrid').classList.remove('hidden');
+        document.getElementById('chatLetterPanel').classList.remove('active');
+        document.getElementById('clpBackdrop').classList.remove('active');
+        var _dp5 = document.getElementById('chatDivinePanel');
+        if (_dp5) _dp5.classList.remove('active');
+        var _db5 = document.getElementById('cdvBackdrop');
+        if (_db5) _db5.classList.remove('active');
+        var _ap5 = document.getElementById('chatAccompanyPanel');
+        if (_ap5) _ap5.classList.remove('active');
+        var _ab5 = document.getElementById('acdBackdrop');
+        if (_ab5) _ab5.classList.remove('active');
+        if (isActive) {
+          closeChatStatsPanel();
+        } else {
+          openChatStatsPanel();
+        }
+      });
+      document.getElementById('cstBackBtn').addEventListener('click', closeChatStatsPanel);
+      document.getElementById('cstBackdrop').addEventListener('click', closeChatStatsPanel);
+      document.getElementById('cstMetCancel').addEventListener('click', function () { document.getElementById('cstMetOvl').classList.remove('show'); });
+      document.getElementById('cstMetSave').addEventListener('click', function () {
+        var contact = contacts.find(function (c) { return c.id === currentChatId; });
+        if (!contact) return;
+        var ts = _dtParseDate(document.getElementById('cstMetDateInput').value);
+        if (!ts) { showToast('请选择日期'); return; }
+        var md = _dtGetMetDates();
+        md[currentChatId] = ts;
+        _dtSaveMetDates(md);
+        document.getElementById('cstMetOvl').classList.remove('show');
+        renderChatStats();
       });
 
       // ===== 联系人自动发朋友圈 =====
