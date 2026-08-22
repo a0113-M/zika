@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v128')){sessionStorage.setItem('zk_v128','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==128){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v129')){sessionStorage.setItem('zk_v129','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==129){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v128</title>
+  <title>字卡 · 小手机 v129</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7010,13 +7010,6 @@
     .tl-item.now .tl-card { background: rgba(var(--primary-rgba), 0.08); border-radius: 8px; }
     .tl-item.future { opacity: 0.5; }
     .tl-real-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); margin-right: 4px; vertical-align: 1px; }
-    .act-reroll {
-      display: block; width: 100%; margin-top: 14px; padding: 10px 0;
-      background: var(--bg-card); color: var(--text-secondary);
-      border: 1px solid rgba(var(--primary-rgba), 0.25); border-radius: 12px;
-      font-size: 13px; cursor: pointer;
-    }
-    .act-reroll:active { opacity: 0.7; }
     .act-hbtn {
       flex: 0 0 auto; display: flex; align-items: center; gap: 5px;
       padding: 6px 11px; border-radius: 14px; cursor: pointer;
@@ -11760,7 +11753,6 @@
         <div class="act-now" id="actNow"></div>
         <div class="act-sum" id="actSum"></div>
         <div class="act-tl" id="actTl"></div>
-        <button class="act-reroll" id="actReroll"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>重抽今天的活动</button>
         <div class="act-ovl" id="actCardOvl">
           <div class="act-ovl-box act-card-box">
             <div class="act-ovl-head">
@@ -14705,9 +14697,9 @@
         { main: '和朋友视频', cat: 'social', period: 'evening', subs: ['和朋友视频聊了会儿天', '隔着屏幕一起看了个搞笑视频', '聊到一半笑到肚子疼'] },
         { main: '语音连麦', cat: 'social', period: 'evening', subs: ['开黑打了两把，配合默契', '连麦闲聊，东扯西扯', '边打游戏边唠嗑'] },
         { main: '拉伸', cat: 'move', period: 'evening', subs: ['跟视频做了一组拉伸', '肩膀终于不那么酸了', '拉伸完浑身舒展'] },
-        { main: '想你', cat: 'care', period: 'any', subs: ['突然很想你，也不知道为什么', '翻你们的聊天记录，看着看着就笑了', '想给你发消息，打了又删，最后发了个表情'] },
-        { main: '回忆你们', cat: 'care', period: 'evening', subs: ['翻到以前的照片，想起那天的事', '想起你说过的一句话，忍不住笑了', '梦到你了，醒来还有点恍惚'] },
-        { main: '想见你', cat: 'care', period: 'night', subs: ['要是你在就好了', '数着下次见面的日子', '路过你们常去的地方，放慢了脚步'] }
+        { main: '想你', cat: 'other', period: 'any', subs: ['突然很想你，也不知道为什么', '翻你们的聊天记录，看着看着就笑了', '想给你发消息，打了又删，最后发了个表情'] },
+        { main: '回忆你们', cat: 'other', period: 'evening', subs: ['翻到以前的照片，想起那天的事', '想起你说过的一句话，忍不住笑了', '梦到你了，醒来还有点恍惚'] },
+        { main: '想见你', cat: 'other', period: 'night', subs: ['要是你在就好了', '数着下次见面的日子', '路过你们常去的地方，放慢了脚步'] }
       ];
       var ACT_NEW_CARDS = [
         { main: '点外卖', cat: 'eat', period: 'any', subs: ['翻了好久菜单，最后还是点了老几家', '凑满减凑了十分钟', '外卖到了，是熟悉的味道'] },
@@ -14734,9 +14726,9 @@
         { main: '拉伸', cat: 'move', period: 'evening', subs: ['跟视频做了一组拉伸', '肩膀终于不那么酸了', '拉伸完浑身舒展'] }
       ];
       var ACT_NEW_CARDS2 = [
-        { main: '想你', cat: 'care', period: 'any', subs: ['突然很想你，也不知道为什么', '翻你们的聊天记录，看着看着就笑了', '想给你发消息，打了又删，最后发了个表情'] },
-        { main: '回忆你们', cat: 'care', period: 'evening', subs: ['翻到以前的照片，想起那天的事', '想起你说过的一句话，忍不住笑了', '梦到你了，醒来还有点恍惚'] },
-        { main: '想见你', cat: 'care', period: 'night', subs: ['要是你在就好了', '数着下次见面的日子', '路过你们常去的地方，放慢了脚步'] }
+        { main: '想你', cat: 'other', period: 'any', subs: ['突然很想你，也不知道为什么', '翻你们的聊天记录，看着看着就笑了', '想给你发消息，打了又删，最后发了个表情'] },
+        { main: '回忆你们', cat: 'other', period: 'evening', subs: ['翻到以前的照片，想起那天的事', '想起你说过的一句话，忍不住笑了', '梦到你了，醒来还有点恍惚'] },
+        { main: '想见你', cat: 'other', period: 'night', subs: ['要是你在就好了', '数着下次见面的日子', '路过你们常去的地方，放慢了脚步'] }
       ];
       var ACT_PERIOD_NAMES = { morning: '早晨', forenoon: '上午', noon: '中午', afternoon: '下午', evening: '傍晚', night: '晚上', late: '深夜', any: '不限' };
       var ACT_CARE = [
@@ -14826,6 +14818,17 @@
           if (added2) { _actSaveLib(lib); _actLibChanged(); }
           try { localStorage.setItem('actLibPatchV128', '1'); } catch (e) {}
         }
+        var patched129 = false;
+        try { patched129 = localStorage.getItem('actLibPatchV129') === '1'; } catch (e) {}
+        if (!patched129) {
+          var fixNames = ['想你', '回忆你们', '想见你'];
+          var fixed = false;
+          lib.forEach(function (c) {
+            if (c && fixNames.indexOf(c.main) >= 0 && c.cat === 'care') { c.cat = 'other'; fixed = true; }
+          });
+          if (fixed) { _actSaveLib(lib); _actLibChanged(); }
+          try { localStorage.setItem('actLibPatchV129', '1'); } catch (e) {}
+        }
         return lib;
       }
       function _actSaveLib(arr) { localStorage.setItem('actCardLib', JSON.stringify(arr)); }
@@ -14886,16 +14889,6 @@
           _actSaveStore(st);
         }
         return st[dateStr][contactId];
-      }
-      function _actReroll(dateStr, contactId) {
-        var b = _actBumpKey();
-        var k = dateStr + '|' + contactId;
-        b[k] = (b[k] || 0) + 1;
-        localStorage.setItem('contactActBump', JSON.stringify(b));
-        var st = _actGetStore();
-        if (!st[dateStr]) st[dateStr] = {};
-        st[dateStr][contactId] = _actGenDay(dateStr, contactId, b[k]);
-        _actSaveStore(st);
       }
       function _actFmtT(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
       function _actRecorded(dateStr, contactId, t) {
@@ -15082,14 +15075,6 @@
 
       document.getElementById('actBackBtn').addEventListener('click', function () {
         document.getElementById('activityPage').classList.remove('show');
-      });
-      document.getElementById('actReroll').addEventListener('click', function () {
-        var persons = contacts.filter(function (c) { return !c.isGroup; });
-        var c = persons.filter(function (x) { return x.id === _actCurrentId; })[0] || persons[0];
-        if (!c) { showToast('还没有联系人'); return; }
-        _actReroll(_actTodayStr(), String(c.id));
-        renderActivity();
-        showToast('已为 ' + c.name + ' 重抽今天的活动');
       });
 
       // ---- 活动字卡管理 ----
