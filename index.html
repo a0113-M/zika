@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v126')){sessionStorage.setItem('zk_v126','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==126){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v127')){sessionStorage.setItem('zk_v127','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==127){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v126</title>
+  <title>字卡 · 小手机 v127</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14682,7 +14682,53 @@
         { main: '画画', cat: 'play', period: 'night', subs: ['涂涂改改，画了一小张', '画到一半不满意，重来', '完成了一张小画，很有成就感'] },
         { main: '准备睡觉', cat: 'sleep', period: 'late', subs: ['定好闹钟，钻进被窝', '关灯前又刷了会儿手机', '被子很软，很快就困了'] },
         { main: '睡前刷手机', cat: 'play', period: 'late', subs: ['再刷五分钟就睡（大概）', '看了一堆没用的知识', '困得手机砸脸上'] },
-        { main: '听歌入眠', cat: 'sleep', period: 'late', subs: ['戴上耳机，把声音调到最小', '听着听着就睡着了', '歌单放到一半，人已经迷糊'] }
+        { main: '听歌入眠', cat: 'sleep', period: 'late', subs: ['戴上耳机，把声音调到最小', '听着听着就睡着了', '歌单放到一半，人已经迷糊'] },
+        { main: '点外卖', cat: 'eat', period: 'any', subs: ['翻了好久菜单，最后还是点了老几家', '凑满减凑了十分钟', '外卖到了，是熟悉的味道'] },
+        { main: '吃零食', cat: 'eat', period: 'afternoon', subs: ['拆了一包薯片，咔嚓咔嚓', '边看剧边吃小饼干', '翻出一颗糖，甜甜的'] },
+        { main: '泡杯热饮', cat: 'eat', period: 'afternoon', subs: ['泡了杯奶茶，甜甜的', '煮了壶花茶，香气慢慢散开', '冲了杯咖啡，续命'] },
+        { main: '吃宵夜', cat: 'eat', period: 'late', subs: ['点了份小烧烤解馋', '泡了碗面，加了个蛋', '冰箱里翻出半块蛋糕'] },
+        { main: '工作', cat: 'work', period: 'any', subs: ['埋头处理一堆待办', '对着电脑敲敲打打，键盘响个不停', '刚开完一个会，脑子还在转'] },
+        { main: '摸鱼', cat: 'work', period: 'afternoon', subs: ['假装在看文档，其实在放空', '带薪喝水，顺便逛了会儿网页', '工作间隙偷偷刷了会儿手机'] },
+        { main: '加班', cat: 'work', period: 'night', subs: ['办公室只剩自己一个人了', '改了三遍方案，终于过了', '加班到这个点，眼睛都花了'] },
+        { main: '赶工', cat: 'work', period: 'forenoon', subs: ['deadline 快到了，疯狂赶进度', '集中精力冲刺了一小时', '总算交出去了，长舒一口气'] },
+        { main: '洗衣服', cat: 'work', period: 'afternoon', subs: ['攒了一堆衣服扔进洗衣机', '晾衣服的时候晒到了太阳', '叠衣服叠到手酸'] },
+        { main: '大扫除', cat: 'work', period: 'afternoon', subs: ['把桌子擦得干干净净', '整理了一下午房间', '扫出一堆不知道哪来的东西'] },
+        { main: '打个盹', cat: 'rest', period: 'afternoon', subs: ['趴在桌上眯了二十分钟', '靠在沙发上午后小憩', '睡了一小觉，精神好多了'] },
+        { main: '发呆', cat: 'rest', period: 'any', subs: ['对着窗外发了一会儿呆', '放空十分钟，什么都没想', '盯着天花板神游'] },
+        { main: '晒太阳', cat: 'rest', period: 'forenoon', subs: ['搬了把椅子坐在阳台上', '阳光晒得人懒洋洋的', '闭着眼睛晒了一会儿'] },
+        { main: '网购', cat: 'play', period: 'evening', subs: ['购物车加了三件，纠结要不要买', '蹲到了想买很久的折扣', '手指一滑，又下了一单'] },
+        { main: '逛超市', cat: 'play', period: 'afternoon', subs: ['推着购物车闲逛，看到啥都想拿', '在零食区纠结了半天', '买了一袋计划外的小东西'] },
+        { main: '拍照', cat: 'play', period: 'any', subs: ['随手拍了张天空，很好看', '给窗边的光拍了张照', '翻相册翻了好久'] },
+        { main: '追番', cat: 'play', period: 'evening', subs: ['追的新番更新了，火速点开', '一口气看了两集，停不下来', '片尾曲都舍不得跳'] },
+        { main: '唱歌', cat: 'play', period: 'evening', subs: ['戴着耳机哼歌，越哼越大声', '在房间里开了一场个人演唱会', '练了练那首总唱不好的歌'] },
+        { main: '做手工', cat: 'play', period: 'afternoon', subs: ['拼了一小块，成就感满满', '手指都快拼花了', '完成三分之一，继续加油'] },
+        { main: '和朋友视频', cat: 'social', period: 'evening', subs: ['和朋友视频聊了会儿天', '隔着屏幕一起看了个搞笑视频', '聊到一半笑到肚子疼'] },
+        { main: '语音连麦', cat: 'social', period: 'evening', subs: ['开黑打了两把，配合默契', '连麦闲聊，东扯西扯', '边打游戏边唠嗑'] },
+        { main: '拉伸', cat: 'move', period: 'evening', subs: ['跟视频做了一组拉伸', '肩膀终于不那么酸了', '拉伸完浑身舒展'] }
+      ];
+      var ACT_NEW_CARDS = [
+        { main: '点外卖', cat: 'eat', period: 'any', subs: ['翻了好久菜单，最后还是点了老几家', '凑满减凑了十分钟', '外卖到了，是熟悉的味道'] },
+        { main: '吃零食', cat: 'eat', period: 'afternoon', subs: ['拆了一包薯片，咔嚓咔嚓', '边看剧边吃小饼干', '翻出一颗糖，甜甜的'] },
+        { main: '泡杯热饮', cat: 'eat', period: 'afternoon', subs: ['泡了杯奶茶，甜甜的', '煮了壶花茶，香气慢慢散开', '冲了杯咖啡，续命'] },
+        { main: '吃宵夜', cat: 'eat', period: 'late', subs: ['点了份小烧烤解馋', '泡了碗面，加了个蛋', '冰箱里翻出半块蛋糕'] },
+        { main: '工作', cat: 'work', period: 'any', subs: ['埋头处理一堆待办', '对着电脑敲敲打打，键盘响个不停', '刚开完一个会，脑子还在转'] },
+        { main: '摸鱼', cat: 'work', period: 'afternoon', subs: ['假装在看文档，其实在放空', '带薪喝水，顺便逛了会儿网页', '工作间隙偷偷刷了会儿手机'] },
+        { main: '加班', cat: 'work', period: 'night', subs: ['办公室只剩自己一个人了', '改了三遍方案，终于过了', '加班到这个点，眼睛都花了'] },
+        { main: '赶工', cat: 'work', period: 'forenoon', subs: ['deadline 快到了，疯狂赶进度', '集中精力冲刺了一小时', '总算交出去了，长舒一口气'] },
+        { main: '洗衣服', cat: 'work', period: 'afternoon', subs: ['攒了一堆衣服扔进洗衣机', '晾衣服的时候晒到了太阳', '叠衣服叠到手酸'] },
+        { main: '大扫除', cat: 'work', period: 'afternoon', subs: ['把桌子擦得干干净净', '整理了一下午房间', '扫出一堆不知道哪来的东西'] },
+        { main: '打个盹', cat: 'rest', period: 'afternoon', subs: ['趴在桌上眯了二十分钟', '靠在沙发上午后小憩', '睡了一小觉，精神好多了'] },
+        { main: '发呆', cat: 'rest', period: 'any', subs: ['对着窗外发了一会儿呆', '放空十分钟，什么都没想', '盯着天花板神游'] },
+        { main: '晒太阳', cat: 'rest', period: 'forenoon', subs: ['搬了把椅子坐在阳台上', '阳光晒得人懒洋洋的', '闭着眼睛晒了一会儿'] },
+        { main: '网购', cat: 'play', period: 'evening', subs: ['购物车加了三件，纠结要不要买', '蹲到了想买很久的折扣', '手指一滑，又下了一单'] },
+        { main: '逛超市', cat: 'play', period: 'afternoon', subs: ['推着购物车闲逛，看到啥都想拿', '在零食区纠结了半天', '买了一袋计划外的小东西'] },
+        { main: '拍照', cat: 'play', period: 'any', subs: ['随手拍了张天空，很好看', '给窗边的光拍了张照', '翻相册翻了好久'] },
+        { main: '追番', cat: 'play', period: 'evening', subs: ['追的新番更新了，火速点开', '一口气看了两集，停不下来', '片尾曲都舍不得跳'] },
+        { main: '唱歌', cat: 'play', period: 'evening', subs: ['戴着耳机哼歌，越哼越大声', '在房间里开了一场个人演唱会', '练了练那首总唱不好的歌'] },
+        { main: '做手工', cat: 'play', period: 'afternoon', subs: ['拼了一小块，成就感满满', '手指都快拼花了', '完成三分之一，继续加油'] },
+        { main: '和朋友视频', cat: 'social', period: 'evening', subs: ['和朋友视频聊了会儿天', '隔着屏幕一起看了个搞笑视频', '聊到一半笑到肚子疼'] },
+        { main: '语音连麦', cat: 'social', period: 'evening', subs: ['开黑打了两把，配合默契', '连麦闲聊，东扯西扯', '边打游戏边唠嗑'] },
+        { main: '拉伸', cat: 'move', period: 'evening', subs: ['跟视频做了一组拉伸', '肩膀终于不那么酸了', '拉伸完浑身舒展'] }
       ];
       var ACT_PERIOD_NAMES = { morning: '早晨', forenoon: '上午', noon: '中午', afternoon: '下午', evening: '傍晚', night: '晚上', late: '深夜', any: '不限' };
       var ACT_CARE = [
@@ -14747,6 +14793,18 @@
             _actLibChanged();
           }
           try { localStorage.setItem('actLibPatched', '1'); } catch (e) {}
+        }
+        var patched127 = false;
+        try { patched127 = localStorage.getItem('actLibPatchV127') === '1'; } catch (e) {}
+        if (!patched127) {
+          var names = {};
+          lib.forEach(function (c) { if (c && c.main) names[c.main] = 1; });
+          var added = false;
+          ACT_NEW_CARDS.forEach(function (nc) {
+            if (!names[nc.main]) { lib.push(nc); added = true; }
+          });
+          if (added) { _actSaveLib(lib); _actLibChanged(); }
+          try { localStorage.setItem('actLibPatchV127', '1'); } catch (e) {}
         }
         return lib;
       }
