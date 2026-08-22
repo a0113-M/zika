@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v130')){sessionStorage.setItem('zk_v130','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==130){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v131')){sessionStorage.setItem('zk_v131','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==131){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v130</title>
+  <title>字卡 · 小手机 v131</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6992,6 +6992,21 @@
     .act-now-desc { font-size: 12px; opacity: 0.92; margin-top: 3px; line-height: 1.5; }
     .act-now-next { font-size: 11px; opacity: 0.8; margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.25); }
     .act-sum { font-size: 11px; color: var(--text-muted); text-align: center; margin: 4px 0 10px; }
+    .act-stats { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.2); border-radius: 12px; padding: 12px 12px 8px; margin-top: 12px; }
+    .act-stats-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .act-stats-title { font-size: 13px; font-weight: 700; }
+    .act-stats-tabs { display: flex; gap: 4px; background: rgba(var(--primary-rgba), 0.08); border-radius: 9px; padding: 3px; }
+    .act-stab { font-size: 11px; padding: 4px 10px; border-radius: 7px; color: var(--text-muted); }
+    .act-stab.on { background: var(--primary); color: #fff; }
+    .act-stats-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+    .act-stat-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; }
+    .act-stat-rank { flex: 0 0 17px; width: 17px; height: 17px; border-radius: 5px; background: rgba(var(--primary-rgba), 0.12); color: var(--text-muted); font-size: 10px; display: flex; align-items: center; justify-content: center; }
+    .act-stat-name { flex: 0 0 auto; max-width: 96px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+    .act-stat-bar { flex: 1 1 auto; min-width: 30px; height: 5px; border-radius: 3px; background: rgba(var(--primary-rgba), 0.1); overflow: hidden; }
+    .act-stat-bar > span { display: block; height: 100%; border-radius: 3px; }
+    .act-stat-count { flex: 0 0 auto; font-size: 11px; color: var(--text-muted); }
+    .act-stats-empty { text-align: center; color: var(--text-muted); font-size: 12px; padding: 14px 0; }
+    .act-stat-more { font-size: 10px; color: var(--text-muted); text-align: center; padding: 4px 0 3px; }
     .act-tl { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.2); border-radius: 12px; padding: 12px 10px 2px; }
     .act-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 30px 0; }
     .tl-item { display: flex; align-items: stretch; }
@@ -11753,6 +11768,7 @@
         <div class="act-now" id="actNow"></div>
         <div class="act-sum" id="actSum"></div>
         <div class="act-tl" id="actTl"></div>
+        <div class="act-stats" id="actStats"></div>
         <div class="act-ovl" id="actCardOvl">
           <div class="act-ovl-box act-card-box">
             <div class="act-ovl-head">
@@ -14771,7 +14787,7 @@
       function _actGetStore() { try { return JSON.parse(localStorage.getItem('contactDailyActs') || '{}'); } catch (e) { return {}; } }
       function _actSaveStore(st) {
         var ks = Object.keys(st).sort();
-        while (ks.length > 7) { delete st[ks.shift()]; }
+        while (ks.length > 35) { delete st[ks.shift()]; }
         localStorage.setItem('contactDailyActs', JSON.stringify(st));
       }
 
@@ -14879,6 +14895,71 @@
         }
         return st[dateStr][contactId];
       }
+      var _actStatDays = 7;
+      var _actStatsCid = null;
+      var _actStatsName = '';
+      function _actEsc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      function _actStatRange(days, cid) {
+        var counts = {};
+        var total = 0, dayCount = 0;
+        var today = new Date();
+        var nowMin = today.getHours() * 60 + today.getMinutes();
+        for (var i = 0; i < days; i++) {
+          var dt = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
+          var ds = dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+          var list = _actGetDay(ds, cid);
+          if (!list || !list.length) continue;
+          var hit = false;
+          list.forEach(function (a) {
+            if (!a || !a.name) return;
+            if (i === 0 && a.t > nowMin) return;
+            if (!_actRecorded(ds, cid, a.t)) return;
+            hit = true;
+            if (!counts[a.name]) counts[a.name] = { name: a.name, cat: a.cat || 'rest', count: 0 };
+            counts[a.name].count++;
+            total++;
+          });
+          if (hit) dayCount++;
+        }
+        var arr = [];
+        Object.keys(counts).forEach(function (k) { arr.push(counts[k]); });
+        arr.sort(function (x, y) { return y.count - x.count; });
+        return { list: arr, total: total, days: dayCount };
+      }
+      function _renderActStats(cid, cname) {
+        var el = document.getElementById('actStats');
+        if (!el) return;
+        if (arguments.length >= 1) { _actStatsCid = cid; _actStatsName = cname || ''; }
+        var h = '<div class="act-stats-head"><div class="act-stats-title">活动统计</div><div class="act-stats-tabs">' +
+          '<div class="act-stab' + (_actStatDays === 7 ? ' on' : '') + '" id="actStatTab7">近7天</div>' +
+          '<div class="act-stab' + (_actStatDays === 30 ? ' on' : '') + '" id="actStatTab30">近30天</div></div></div>';
+        if (!_actStatsCid) {
+          h += '<div class="act-stats-empty">还没有联系人，先去添加一个吧</div>';
+        } else {
+          var r = _actStatRange(_actStatDays, _actStatsCid);
+          if (!r.list.length) {
+            h += '<div class="act-stats-empty">近' + _actStatDays + '天还没有记录</div>';
+          } else {
+            h += '<div class="act-stats-meta">' + _actEsc(_actStatsName) + ' · 近' + _actStatDays + '天 · 共 ' + r.total + ' 件事 · 日均 ' + (r.total / _actStatDays).toFixed(1) + ' 件</div>';
+            var max = r.list[0].count;
+            var top = r.list.slice(0, 8);
+            top.forEach(function (it, i) {
+              var col = ACT_CAT_COLORS[it.cat] || '#8a92a0';
+              h += '<div class="act-stat-row">' +
+                '<span class="act-stat-rank"' + (i < 3 ? ' style="background:' + col + ';color:#fff"' : '') + '>' + (i + 1) + '</span>' +
+                '<span class="act-stat-name">' + _actEsc(it.name) + '</span>' +
+                '<span class="act-stat-bar"><span style="display:block;width:' + Math.max(Math.round(it.count / max * 100), 8) + '%;background:' + col + '"></span></span>' +
+                '<span class="act-stat-count">' + it.count + ' 次</span></div>';
+            });
+            if (r.list.length > 8) h += '<div class="act-stat-more">还有 ' + (r.list.length - 8) + ' 件事没上榜</div>';
+          }
+        }
+        el.innerHTML = h;
+        var t7 = document.getElementById('actStatTab7');
+        var t30 = document.getElementById('actStatTab30');
+        if (t7) t7.addEventListener('click', function () { if (_actStatDays !== 7) { _actStatDays = 7; _renderActStats(); } });
+        if (t30) t30.addEventListener('click', function () { if (_actStatDays !== 30) { _actStatDays = 30; _renderActStats(); } });
+      }
       function _actFmtT(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
       function _actRecorded(dateStr, contactId, t) {
         return (_actHash(dateStr + '|' + contactId + '|rec|' + t) % 100) < 88;
@@ -14908,6 +14989,7 @@
           nowEl.style.display = 'none';
           sumEl.style.display = 'none';
           tlEl.innerHTML = '<div class="act-empty">还没有联系人，先去添加一个吧</div>';
+          _renderActStats(null, '');
           return;
         }
         nowEl.style.display = '';
@@ -14927,6 +15009,7 @@
         });
         var c = persons.filter(function (x) { return x.id === _actCurrentId; })[0];
         if (!c) c = persons[0];
+        _renderActStats(String(c.id), c.name);
 
         var dateStr = _actTodayStr();
         var nd = new Date();
