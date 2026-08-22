@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v122')){sessionStorage.setItem('zk_v122','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==122){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v123')){sessionStorage.setItem('zk_v123','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==123){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v122</title>
+  <title>字卡 · 小手机 v123</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7017,6 +7017,63 @@
       font-size: 13px; cursor: pointer;
     }
     .act-reroll:active { opacity: 0.7; }
+    .act-cbar-wrap { display: flex; align-items: flex-start; overflow: visible; }
+    .act-cbar { flex: 1 1 auto; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .act-cbtn { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 54px; cursor: pointer; margin-left: 6px; }
+    .act-cbtn-icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1.5px dashed rgba(var(--primary-rgba), 0.55);
+      color: var(--primary); background: rgba(var(--primary-rgba), 0.06);
+      display: flex; align-items: center; justify-content: center; box-sizing: border-box;
+    }
+    .act-cbtn-name { font-size: 11px; color: var(--primary); white-space: nowrap; }
+    .act-ovl {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.45); z-index: 1200;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
+      padding: 18px 16px;
+    }
+    .act-ovl.show { opacity: 1; pointer-events: auto; }
+    .act-ovl-box { width: 100%; max-width: 360px; background: var(--bg-card); border-radius: 14px; padding: 16px; box-sizing: border-box; }
+    .act-card-box { max-height: 82vh; display: flex; flex-direction: column; }
+    .act-ovl-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .act-ovl-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
+    .act-ovl-x { background: none; border: none; color: var(--text-muted); padding: 4px; cursor: pointer; }
+    .act-card-hint { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 10px; }
+    .act-card-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px; }
+    .ac-row { border: 1px solid rgba(var(--primary-rgba), 0.18); border-radius: 10px; margin-bottom: 8px; overflow: hidden; background: var(--bg-soft); }
+    .ac-main { display: flex; align-items: center; gap: 8px; padding: 10px 10px; cursor: pointer; }
+    .ac-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
+    .ac-name { font-size: 14px; font-weight: 600; color: var(--text-main); flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ac-period { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: rgba(var(--primary-rgba), 0.12); color: var(--primary); flex: 0 0 auto; }
+    .ac-count { font-size: 10px; color: var(--text-muted); flex: 0 0 auto; }
+    .ac-edit-btn { background: none; border: none; color: var(--text-muted); padding: 4px; cursor: pointer; flex: 0 0 auto; }
+    .ac-subs { padding: 0 10px 10px 26px; }
+    .ac-sub { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 8px; background: var(--bg-card); margin-bottom: 6px; }
+    .ac-sub-text { flex: 1 1 auto; font-size: 12px; color: var(--text-secondary); line-height: 1.5; min-width: 0; }
+    .ac-sub-x { flex: 0 0 auto; background: none; border: none; color: var(--text-muted); padding: 2px 6px; font-size: 15px; cursor: pointer; }
+    .ac-sub-add { display: flex; gap: 6px; }
+    .ac-sub-add input {
+      flex: 1 1 auto; min-width: 0; border: 1px solid rgba(var(--primary-rgba), 0.3);
+      background: var(--bg-card); color: var(--text-main); border-radius: 8px;
+      padding: 7px 10px; font-size: 12px; outline: none; box-sizing: border-box;
+    }
+    .ac-sub-add button { flex: 0 0 auto; border: none; background: var(--primary); color: #fff; border-radius: 8px; padding: 0 12px; font-size: 12px; cursor: pointer; }
+    .act-card-add { display: block; width: 100%; margin-top: 4px; padding: 10px 0; border: 1px dashed rgba(var(--primary-rgba), 0.45); background: none; color: var(--primary); border-radius: 10px; font-size: 13px; cursor: pointer; flex: 0 0 auto; }
+    .act-edit-box input[type="text"], .act-edit-box select {
+      width: 100%; border: 1px solid rgba(var(--primary-rgba), 0.3);
+      background: var(--bg-soft); color: var(--text-main); border-radius: 10px;
+      padding: 10px 12px; font-size: 14px; outline: none; box-sizing: border-box; margin-top: 10px;
+    }
+    .act-sel-row { display: flex; gap: 8px; }
+    .act-sel-row select { flex: 1 1 0; }
+    .act-ovl-btns { display: flex; gap: 8px; margin-top: 14px; }
+    .act-ovl-btns button { flex: 1 1 auto; padding: 9px 0; border: none; border-radius: 10px; font-size: 14px; cursor: pointer; }
+    #actEditCancel { background: var(--bg-soft2); color: var(--text-secondary); }
+    #actEditSave { background: var(--primary); color: #fff; }
+    #actEditDel { flex: 0 0 40%; background: rgba(224, 86, 86, 0.12); color: #e05656; }
+
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
     #dataPage .feature-header { background: var(--bg-card); border-bottom: 0.5px solid rgba(var(--primary-rgba), 0.15); }
@@ -11689,11 +11746,37 @@
         <span class="feature-title">活动</span>
       </div>
       <div class="feature-content act-body">
-        <div class="act-cbar-wrap"><div class="act-cbar" id="actCbar"></div></div>
+        <div class="act-cbar-wrap"><div class="act-cbar" id="actCbar"></div><div class="act-cbtn" id="actCardBtn"><div class="act-cbtn-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M3 11h18"/></svg></div><div class="act-cbtn-name">字卡</div></div></div>
         <div class="act-now" id="actNow"></div>
         <div class="act-sum" id="actSum"></div>
         <div class="act-tl" id="actTl"></div>
         <button class="act-reroll" id="actReroll"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:5px;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>重抽今天的活动</button>
+        <div class="act-ovl" id="actCardOvl">
+          <div class="act-ovl-box act-card-box">
+            <div class="act-ovl-head">
+              <span class="act-ovl-title">活动字卡</span>
+              <button class="act-ovl-x" id="actCardClose"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            </div>
+            <div class="act-card-hint">记录活动时，先随机抽一张主字卡，再从它下面的次字卡里随机抽一条。点主字卡展开管理次字卡。</div>
+            <div class="act-card-list" id="actCardList"></div>
+            <button class="act-card-add" id="actCardAdd">＋ 添加主字卡</button>
+          </div>
+        </div>
+        <div class="act-ovl" id="actEditOvl">
+          <div class="act-ovl-box act-edit-box">
+            <div class="act-ovl-title" id="actEditTitle">添加主字卡</div>
+            <input type="text" id="actNameInput" placeholder="主字卡名，如：学习" maxlength="8">
+            <div class="act-sel-row">
+              <select id="actPeriodSel"><option value="morning">早晨</option><option value="forenoon">上午</option><option value="noon">中午</option><option value="afternoon">下午</option><option value="evening">傍晚</option><option value="night">晚上</option><option value="late">深夜</option><option value="any">不限时段</option></select>
+              <select id="actCatSel"><option value="eat">吃饭</option><option value="work">工作</option><option value="move">运动</option><option value="rest">休息</option><option value="play">娱乐</option><option value="social">社交</option><option value="sleep">睡觉</option></select>
+            </div>
+            <div class="act-ovl-btns">
+              <button id="actEditDel">删除</button>
+              <button id="actEditCancel">取消</button>
+              <button id="actEditSave">保存</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -12098,7 +12181,7 @@
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput' || e.target.id === 'cstMetDateInput');
+          divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput' || e.target.id === 'cstMetDateInput' || e.target.id === 'actNameInput' || e.target.id === 'actSubInput' || e.target.id === 'actPeriodSel' || e.target.id === 'actCatSel');
           inputFocused = true;
           kbHeight = calcKb();
           apply();
@@ -12110,7 +12193,7 @@
       document.addEventListener('focusout', function() {
         setTimeout(function() {
           var el = document.activeElement;
-          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput' || el.id === 'cstMetDateInput'));
+          divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput' || el.id === 'cstMetDateInput' || el.id === 'actNameInput' || el.id === 'actSubInput' || el.id === 'actPeriodSel' || el.id === 'actCatSel'));
           if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
             inputFocused = false;
             kbHeight = 0;
@@ -14558,58 +14641,43 @@
       });
 
       // ===== 联系人活动页 =====
-      var ACT_POOL = {
-        morning: [
-          { name: '起床', desc: '迷迷糊糊爬起来，头发乱糟糟', cat: 'rest' },
-          { name: '赖床', desc: '闹钟响了好几遍，还想再眯五分钟', cat: 'rest' },
-          { name: '吃早餐', desc: '一杯热牛奶配吐司，慢慢悠悠', cat: 'eat' },
-          { name: '晨跑', desc: '沿着河边跑了两圈，出了点汗', cat: 'move' },
-          { name: '洗漱', desc: '刷完牙对着镜子发了一会儿呆', cat: 'rest' },
-          { name: '通勤路上', desc: '耳机里放着歌，看着窗外发呆', cat: 'move' }
-        ],
-        forenoon: [
-          { name: '上班中', desc: '盯着电脑干活，偶尔偷偷摸鱼', cat: 'work' },
-          { name: '上课中', desc: '一边记笔记一边打哈欠', cat: 'work' },
-          { name: '开会', desc: '会开得有点长，偷偷看了眼时间', cat: 'work' },
-          { name: '喝咖啡', desc: '给自己泡了杯咖啡提神', cat: 'eat' },
-          { name: '学习', desc: '啃书做笔记，进度有点慢', cat: 'work' },
-          { name: '忙家务', desc: '把屋子收拾了一遍，累但舒心', cat: 'work' }
-        ],
-        noon: [
-          { name: '吃午饭', desc: '今天的菜有点咸，但还是很香', cat: 'eat' },
-          { name: '午睡', desc: '趴在桌上眯了半个小时', cat: 'rest' },
-          { name: '散步', desc: '吃完饭在附近慢慢走了一圈', cat: 'move' },
-          { name: '刷手机', desc: '刷着刷着一个小时就没了', cat: 'play' }
-        ],
-        afternoon: [
-          { name: '上班中', desc: '下午有点困，靠咖啡续命', cat: 'work' },
-          { name: '健身', desc: '练了一组深蹲，腿有点酸', cat: 'move' },
-          { name: '下午茶', desc: '奶茶三分糖，心情不错', cat: 'eat' },
-          { name: '看书', desc: '看了一章小说，意犹未尽', cat: 'play' },
-          { name: '逛街', desc: '买了点小东西，钱包变瘦了', cat: 'play' },
-          { name: '上课中', desc: '下午的课听得迷迷糊糊', cat: 'work' }
-        ],
-        evening: [
-          { name: '下班通勤', desc: '终于下班了，一路哼着歌回家', cat: 'move' },
-          { name: '做晚饭', desc: '厨房里叮叮当当，做了两个菜', cat: 'eat' },
-          { name: '吃晚饭', desc: '边吃边看下饭视频', cat: 'eat' },
-          { name: '买菜', desc: '在市场里挑了些新鲜蔬菜', cat: 'eat' }
-        ],
-        night: [
-          { name: '洗澡', desc: '洗完澡整个人都轻松了', cat: 'rest' },
-          { name: '看剧', desc: '追的剧更新了，一口气看两集', cat: 'play' },
-          { name: '打游戏', desc: '手感不错，赢多输少', cat: 'play' },
-          { name: '听歌', desc: '单曲循环那首老歌', cat: 'rest' },
-          { name: '和朋友聊天', desc: '闲聊八卦，笑个不停', cat: 'social' },
-          { name: '夜跑', desc: '晚风很舒服，跑得很尽兴', cat: 'move' },
-          { name: '画画', desc: '涂涂改改，画了一小张', cat: 'play' }
-        ],
-        late: [
-          { name: '准备睡觉', desc: '定好闹钟，钻进被窝', cat: 'sleep' },
-          { name: '睡前刷手机', desc: '再刷五分钟就睡（大概）', cat: 'play' },
-          { name: '听歌入眠', desc: '戴上耳机，把声音调到最小', cat: 'sleep' }
-        ]
-      };
+      var ACT_DEFAULT = [
+        { main: '起床', cat: 'rest', period: 'morning', subs: ['迷迷糊糊爬起来，头发乱糟糟', '闹钟一响就精神了，难得', '伸了个大懒腰，慢吞吞起身'] },
+        { main: '赖床', cat: 'rest', period: 'morning', subs: ['闹钟响了好几遍，还想再眯五分钟', '把被子裹得更紧了', '半梦半醒刷了会儿手机'] },
+        { main: '吃早餐', cat: 'eat', period: 'morning', subs: ['一杯热牛奶配吐司，慢慢悠悠', '豆浆油条，老搭配', '煎了个蛋，有点糊但不难吃'] },
+        { main: '晨跑', cat: 'move', period: 'morning', subs: ['沿着河边跑了两圈，出了点汗', '跑完步浑身舒畅', '今天有点懒得动，只走了一段'] },
+        { main: '洗漱', cat: 'rest', period: 'morning', subs: ['刷完牙对着镜子发了一会儿呆', '洗了把脸，清醒多了', '吹头发的时候哼了首歌'] },
+        { main: '通勤路上', cat: 'move', period: 'morning', subs: ['耳机里放着歌，看着窗外发呆', '路上有点堵，刷了会儿手机', '车上打了个盹'] },
+        { main: '上班中', cat: 'work', period: 'forenoon', subs: ['盯着电脑干活，偶尔偷偷摸鱼', '事情有点多，忙得晕头转向', '摸鱼的间隙喝了口水'] },
+        { main: '上课中', cat: 'work', period: 'forenoon', subs: ['一边记笔记一边打哈欠', '老师讲得飞快，笔记有点乱', '偷偷在课本边角画小人'] },
+        { main: '开会', cat: 'work', period: 'forenoon', subs: ['会开得有点长，偷偷看了眼时间', '会上走神想别的事', '记了一堆待办，头大'] },
+        { main: '喝咖啡', cat: 'eat', period: 'forenoon', subs: ['给自己泡了杯咖啡提神', '买了杯拿铁，热乎乎的', '咖啡有点苦，配了块饼干'] },
+        { main: '学习', cat: 'work', period: 'forenoon', subs: ['啃书做笔记，进度有点慢', '看了一章教程，懂了一半', '背了会儿单词，记了又忘'] },
+        { main: '忙家务', cat: 'work', period: 'forenoon', subs: ['把屋子收拾了一遍，累但舒心', '洗了一堆积衣服', '给阳台的花浇了水'] },
+        { main: '吃午饭', cat: 'eat', period: 'noon', subs: ['今天的菜有点咸，但还是很香', '点了个外卖，等了好久', '自己煮了碗面，加了个蛋'] },
+        { main: '午睡', cat: 'rest', period: 'noon', subs: ['趴在桌上眯了半个小时', '躺椅上睡过头了一点点', '拉上窗帘睡得很沉'] },
+        { main: '散步', cat: 'move', period: 'noon', subs: ['吃完饭在附近慢慢走了一圈', '晒着太阳散步，很舒服', '路过便利店买了瓶水'] },
+        { main: '刷手机', cat: 'play', period: 'noon', subs: ['刷着刷着一个小时就没了', '看了会儿短视频，笑出声', '热搜吃了个瓜'] },
+        { main: '健身', cat: 'move', period: 'afternoon', subs: ['练了一组深蹲，腿有点酸', '跑了五公里，配速不错', '做了组拉伸，浑身放松'] },
+        { main: '下午茶', cat: 'eat', period: 'afternoon', subs: ['奶茶三分糖，心情不错', '蛋糕有点甜，但很好吃', '泡了壶茶，配点小饼干'] },
+        { main: '看书', cat: 'play', period: 'afternoon', subs: ['看了一章小说，意犹未尽', '书里有个句子很喜欢，抄了下来', '在书店蹭了一下午'] },
+        { main: '逛街', cat: 'play', period: 'afternoon', subs: ['买了点小东西，钱包变瘦了', '试了件衣服，犹豫要不要买', '橱窗里的小玩意很好看'] },
+        { main: '下班通勤', cat: 'move', period: 'evening', subs: ['终于下班了，一路哼着歌回家', '路上买了点水果', '挤车挤丢了半条命'] },
+        { main: '做晚饭', cat: 'eat', period: 'evening', subs: ['厨房里叮叮当当，做了两个菜', '煮了个汤，火候刚好', '跟着视频学做了道新菜'] },
+        { main: '吃晚饭', cat: 'eat', period: 'evening', subs: ['边吃边看下饭视频', '今天的饭格外香', '吃完瘫在沙发上不想动'] },
+        { main: '买菜', cat: 'eat', period: 'evening', subs: ['在市场里挑了些新鲜蔬菜', '买了点排骨，晚上炖汤', '水果摊的橘子很甜'] },
+        { main: '洗澡', cat: 'rest', period: 'night', subs: ['洗完澡整个人都轻松了', '热水澡冲走了疲惫', '吹头发的时候听了首歌'] },
+        { main: '看剧', cat: 'play', period: 'night', subs: ['追的剧更新了，一口气看两集', '看到感人处，眼眶有点湿', '弃了部烂剧，换了一部'] },
+        { main: '打游戏', cat: 'play', period: 'night', subs: ['手感不错，赢多输少', '连跪之后终于赢了一把', '和队友配合默契，爽'] },
+        { main: '听歌', cat: 'rest', period: 'night', subs: ['单曲循环那首老歌', '随机播放到了惊喜的歌', '戴着耳机轻轻哼歌'] },
+        { main: '和朋友聊天', cat: 'social', period: 'night', subs: ['闲聊八卦，笑个不停', '煲了会儿电话粥', '群里聊得热火朝天'] },
+        { main: '夜跑', cat: 'move', period: 'night', subs: ['晚风很舒服，跑得很尽兴', '夜跑三公里，微微出汗', '跑完在楼下拉伸'] },
+        { main: '画画', cat: 'play', period: 'night', subs: ['涂涂改改，画了一小张', '画到一半不满意，重来', '完成了一张小画，很有成就感'] },
+        { main: '准备睡觉', cat: 'sleep', period: 'late', subs: ['定好闹钟，钻进被窝', '关灯前又刷了会儿手机', '被子很软，很快就困了'] },
+        { main: '睡前刷手机', cat: 'play', period: 'late', subs: ['再刷五分钟就睡（大概）', '看了一堆没用的知识', '困得手机砸脸上'] },
+        { main: '听歌入眠', cat: 'sleep', period: 'late', subs: ['戴上耳机，把声音调到最小', '听着听着就睡着了', '歌单放到一半，人已经迷糊'] }
+      ];
+      var ACT_PERIOD_NAMES = { morning: '早晨', forenoon: '上午', noon: '中午', afternoon: '下午', evening: '傍晚', night: '晚上', late: '深夜', any: '不限' };
       var ACT_CARE = [
         { name: '想起你了', desc: '突然想起你，翻了翻你们的聊天记录', cat: 'care' },
         { name: '想你了', desc: '看到有趣的东西，第一个想到你', cat: 'care' },
@@ -14654,32 +14722,55 @@
       }
       function _actBumpKey() { try { return JSON.parse(localStorage.getItem('contactActBump') || '{}'); } catch (e) { return {}; } }
 
+      function _actCardLib() {
+        try {
+          var v = JSON.parse(localStorage.getItem('actCardLib') || 'null');
+          if (Array.isArray(v)) return v;
+        } catch (e) {}
+        return JSON.parse(JSON.stringify(ACT_DEFAULT));
+      }
+      function _actSaveLib(arr) { localStorage.setItem('actCardLib', JSON.stringify(arr)); }
+      function _actLibChanged() {
+        var st = _actGetStore();
+        delete st[_actTodayStr()];
+        _actSaveStore(st);
+        try {
+          var b = _actBumpKey();
+          var pre = _actTodayStr() + '|';
+          Object.keys(b).forEach(function (k) { if (k.indexOf(pre) === 0) delete b[k]; });
+          localStorage.setItem('contactActBump', JSON.stringify(b));
+        } catch (e) {}
+        var pg = document.getElementById('activityPage');
+        if (pg && pg.classList.contains('show')) renderActivity();
+      }
       function _actGenDay(dateStr, contactId, bump) {
         var rnd = _actRng(_actHash(dateStr + '|' + contactId + '|' + bump));
-        var used = [];
-        function pick(arr) {
-          var pool = arr.filter(function (a) { return used.indexOf(a.name) < 0; });
-          if (!pool.length) pool = arr;
-          return pool[Math.floor(rnd() * pool.length)];
+        var lib = _actCardLib();
+        var usedMains = [];
+        function pickCard(period) {
+          var pool = lib.filter(function (c) { return c.period === period || c.period === 'any'; });
+          if (!pool.length) return null;
+          var avail = pool.filter(function (c) { return usedMains.indexOf(c.main) < 0; });
+          if (!avail.length) avail = pool;
+          var card = avail[Math.floor(rnd() * avail.length)];
+          usedMains.push(card.main);
+          var sub = (card.subs && card.subs.length) ? card.subs[Math.floor(rnd() * card.subs.length)] : '';
+          return { name: card.main, desc: sub, cat: card.cat || 'rest' };
         }
         function tt(mA, mB) { return mA + Math.floor(rnd() * (mB - mA)); }
         var list = [];
-        var m1 = pick(ACT_POOL.morning); used.push(m1.name);
-        list.push({ t: tt(370, 465), name: m1.name, desc: m1.desc, cat: m1.cat });
-        var m2 = pick(ACT_POOL.morning); used.push(m2.name);
-        list.push({ t: tt(475, 535), name: m2.name, desc: m2.desc, cat: m2.cat });
-        var f1 = pick(ACT_POOL.forenoon); used.push(f1.name);
-        list.push({ t: tt(545, 690), name: f1.name, desc: f1.desc, cat: f1.cat });
-        var n1 = pick(ACT_POOL.noon); used.push(n1.name);
-        list.push({ t: tt(725, 815), name: n1.name, desc: n1.desc, cat: n1.cat });
-        var a1 = pick(ACT_POOL.afternoon); used.push(a1.name);
-        list.push({ t: tt(850, 1045), name: a1.name, desc: a1.desc, cat: a1.cat });
-        var e1 = pick(ACT_POOL.evening); used.push(e1.name);
-        list.push({ t: tt(1090, 1180), name: e1.name, desc: e1.desc, cat: e1.cat });
-        var g1 = pick(ACT_POOL.night); used.push(g1.name);
-        list.push({ t: tt(1210, 1350), name: g1.name, desc: g1.desc, cat: g1.cat });
-        var l1 = pick(ACT_POOL.late); used.push(l1.name);
-        list.push({ t: tt(1390, 1430), name: l1.name, desc: l1.desc, cat: l1.cat });
+        function push(period, mA, mB) {
+          var a = pickCard(period);
+          if (a) list.push({ t: tt(mA, mB), name: a.name, desc: a.desc, cat: a.cat });
+        }
+        push('morning', 370, 465);
+        push('morning', 475, 535);
+        push('forenoon', 545, 690);
+        push('noon', 725, 815);
+        push('afternoon', 850, 1045);
+        push('evening', 1090, 1180);
+        push('night', 1210, 1350);
+        push('late', 1390, 1430);
         if (rnd() < 0.45) {
           var cc = ACT_CARE[Math.floor(rnd() * ACT_CARE.length)];
           list.push({ t: tt(600, 1330), name: cc.name, desc: cc.desc, cat: cc.cat });
@@ -14900,6 +14991,167 @@
         _actReroll(_actTodayStr(), String(c.id));
         renderActivity();
         showToast('已为 ' + c.name + ' 重抽今天的活动');
+      });
+
+      // ---- 活动字卡管理 ----
+      var _actExpanded = null;
+      var _actEditingIdx = null;
+
+      function _renderActCards() {
+        var lib = _actCardLib();
+        var listEl = document.getElementById('actCardList');
+        listEl.innerHTML = '';
+        if (!lib.length) {
+          listEl.innerHTML = '<div class="act-empty">还没有主字卡，点下方按钮添加</div>';
+          return;
+        }
+        lib.forEach(function (card, idx) {
+          var row = document.createElement('div');
+          row.className = 'ac-row';
+          var main = document.createElement('div');
+          main.className = 'ac-main';
+          var dot = document.createElement('div');
+          dot.className = 'ac-dot';
+          dot.style.background = ACT_CAT_COLORS[card.cat] || '#999';
+          var nm = document.createElement('div');
+          nm.className = 'ac-name';
+          nm.textContent = card.main;
+          var pd = document.createElement('span');
+          pd.className = 'ac-period';
+          pd.textContent = ACT_PERIOD_NAMES[card.period] || '不限';
+          var ct = document.createElement('span');
+          ct.className = 'ac-count';
+          ct.textContent = (card.subs ? card.subs.length : 0) + ' 条';
+          var eb = document.createElement('button');
+          eb.className = 'ac-edit-btn';
+          eb.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+          eb.addEventListener('click', function (ev) { ev.stopPropagation(); _openActEdit(idx); });
+          main.appendChild(dot); main.appendChild(nm); main.appendChild(pd); main.appendChild(ct); main.appendChild(eb);
+          main.addEventListener('click', function () {
+            _actExpanded = (_actExpanded === idx) ? null : idx;
+            _renderActCards();
+          });
+          row.appendChild(main);
+          if (_actExpanded === idx) {
+            var subs = document.createElement('div');
+            subs.className = 'ac-subs';
+            var arr = card.subs || [];
+            arr.forEach(function (st, si) {
+              var sr = document.createElement('div');
+              sr.className = 'ac-sub';
+              var stx = document.createElement('div');
+              stx.className = 'ac-sub-text';
+              stx.textContent = st;
+              var xb = document.createElement('button');
+              xb.className = 'ac-sub-x';
+              xb.textContent = '×';
+              xb.addEventListener('click', function () {
+                var lib2 = _actCardLib();
+                if (lib2[idx] && lib2[idx].subs) {
+                  lib2[idx].subs.splice(si, 1);
+                  _actSaveLib(lib2);
+                  _actLibChanged();
+                  _renderActCards();
+                }
+              });
+              sr.appendChild(stx); sr.appendChild(xb);
+              subs.appendChild(sr);
+            });
+            var addRow = document.createElement('div');
+            addRow.className = 'ac-sub-add';
+            var inp = document.createElement('input');
+            inp.type = 'text';
+            inp.id = 'actSubInput';
+            inp.placeholder = '添加次字卡，如：看了一章书';
+            inp.maxLength = 40;
+            var btn = document.createElement('button');
+            btn.textContent = '添加';
+            btn.addEventListener('click', function () {
+              var v = (inp.value || '').trim();
+              if (!v) { showToast('先写点什么吧'); return; }
+              var lib2 = _actCardLib();
+              if (!lib2[idx].subs) lib2[idx].subs = [];
+              lib2[idx].subs.push(v);
+              _actSaveLib(lib2);
+              _actLibChanged();
+              _renderActCards();
+            });
+            addRow.appendChild(inp); addRow.appendChild(btn);
+            subs.appendChild(addRow);
+            if (!arr.length) {
+              var em = document.createElement('div');
+              em.className = 'ac-sub-empty';
+              em.textContent = '还没有次字卡，抽到这张卡时会只显示主字卡';
+              subs.insertBefore(em, addRow);
+            }
+            row.appendChild(subs);
+          }
+          listEl.appendChild(row);
+        });
+      }
+
+      function _openActEdit(idx) {
+        _actEditingIdx = idx;
+        if (idx === null) {
+          document.getElementById('actEditTitle').textContent = '添加主字卡';
+          document.getElementById('actNameInput').value = '';
+          document.getElementById('actPeriodSel').value = 'any';
+          document.getElementById('actCatSel').value = 'rest';
+          document.getElementById('actEditDel').style.display = 'none';
+        } else {
+          var c = _actCardLib()[idx];
+          if (!c) return;
+          document.getElementById('actEditTitle').textContent = '编辑主字卡';
+          document.getElementById('actNameInput').value = c.main;
+          document.getElementById('actPeriodSel').value = c.period || 'any';
+          document.getElementById('actCatSel').value = c.cat || 'rest';
+          document.getElementById('actEditDel').style.display = '';
+        }
+        document.getElementById('actEditOvl').classList.add('show');
+        try { document.getElementById('actNameInput').focus(); } catch (e) {}
+      }
+
+      document.getElementById('actCardBtn').addEventListener('click', function () {
+        _renderActCards();
+        document.getElementById('actCardOvl').classList.add('show');
+      });
+      document.getElementById('actCardClose').addEventListener('click', function () {
+        document.getElementById('actCardOvl').classList.remove('show');
+      });
+      document.getElementById('actCardAdd').addEventListener('click', function () { _openActEdit(null); });
+      document.getElementById('actEditCancel').addEventListener('click', function () {
+        document.getElementById('actEditOvl').classList.remove('show');
+      });
+      document.getElementById('actEditSave').addEventListener('click', function () {
+        var name = (document.getElementById('actNameInput').value || '').trim();
+        if (!name) { showToast('写个主字卡名吧'); return; }
+        var period = document.getElementById('actPeriodSel').value;
+        var cat = document.getElementById('actCatSel').value;
+        var lib = _actCardLib();
+        if (_actEditingIdx === null) {
+          lib.push({ main: name, cat: cat, period: period, subs: [] });
+          _actExpanded = lib.length - 1;
+        } else {
+          lib[_actEditingIdx].main = name;
+          lib[_actEditingIdx].cat = cat;
+          lib[_actEditingIdx].period = period;
+        }
+        _actSaveLib(lib);
+        _actLibChanged();
+        document.getElementById('actEditOvl').classList.remove('show');
+        _renderActCards();
+        showToast('已保存，今天会按新字卡重新抽取');
+      });
+      document.getElementById('actEditDel').addEventListener('click', function () {
+        if (_actEditingIdx === null) return;
+        var lib = _actCardLib();
+        lib.splice(_actEditingIdx, 1);
+        _actSaveLib(lib);
+        _actExpanded = null;
+        _actLibChanged();
+        document.getElementById('actEditOvl').classList.remove('show');
+        _renderActCards();
+        showToast('已删除');
       });
 
       // ----- 个人信息 -----
