@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v136')){sessionStorage.setItem('zk_v136','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==136){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v137')){sessionStorage.setItem('zk_v137','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==137){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v136</title>
+  <title>字卡 · 小手机 v137</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4475,6 +4475,22 @@
     .chat-letter-panel.active {
       display: flex;
       animation: clp-scale-in 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+    }
+    /* 占卜面板全屏模式（首页侧边栏进入，v137） */
+    .chat-letter-panel.cdp-full {
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      max-width: none; max-height: none;
+      transform: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .chat-letter-panel.cdp-full.active {
+      animation: cdp-full-in 0.25s ease forwards;
+    }
+    @keyframes cdp-full-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
     /* Header with avatar */
     .chat-letter-panel .clp-header-hero {
@@ -20912,16 +20928,23 @@ patText2 = patText2.replace(/你/g, '我');
         });
 
         function closeDivine() {
-          panel.classList.remove('active');
+          panel.classList.remove('active', 'cdp-full');
           backdrop.classList.remove('active');
           showView('setup');
         }
-        // 供首页侧边栏打开占卜面板（v136）
+        // 供首页侧边栏打开占卜面板（v136；v137 起侧边栏进入为全屏模式）
         window.openDivineFromSidebar = function () {
-          panel.classList.add('active');
+          panel.classList.add('active', 'cdp-full');
           backdrop.classList.add('active');
           renderSetup();
         };
+        // 任何路径关闭面板时同步清掉全屏标记，避免残留到聊天工具栏打开场景（v137）
+        if ('MutationObserver' in window) {
+          var _dfMo = new MutationObserver(function () {
+            if (!panel.classList.contains('active')) panel.classList.remove('cdp-full');
+          });
+          _dfMo.observe(panel, { attributes: true, attributeFilter: ['class'] });
+        }
         document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
         backdrop.addEventListener('click', closeDivine);
         document.querySelector('.toolbar-item[data-tool="divine"]').addEventListener('click', function (e) {
