@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v132')){sessionStorage.setItem('zk_v132','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==132){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v133')){sessionStorage.setItem('zk_v133','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==133){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v132</title>
+  <title>字卡 · 小手机 v133</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21412,6 +21412,7 @@ patText2 = patText2.replace(/你/g, '我');
 
       // ===== 聊天统计面板 =====
       var CST_ACT_BADGES = { letter: ['信', '#7b6ea8'], moment: ['圈', '#5a8cc0'], diary: ['记', '#4aaa80'], divine: ['卜', '#c76e90'] };
+      var CST_ACT_CHARS = { eat: '食', work: '作', move: '动', rest: '休', play: '玩', social: '社', sleep: '眠', care: '念', other: '他' };
       function _cstFmtTime(ts) {
         var d = new Date(ts);
         var md = (d.getMonth() + 1) + '/' + d.getDate();
@@ -21528,36 +21529,53 @@ patText2 = patText2.replace(/你/g, '我');
           annEl.appendChild(row);
         });
 
-        // ---- 最近活动 ----
+        // ---- 最近活动（TA 的动态）----
         var acts = [];
         try {
-          (letterList || []).forEach(function (l) {
-            if (!l.timestamp) return;
-            var txt = l.anonymous ? '匿名信箱收到一封信' : (l.isOutgoing ? '寄出一封信' : '收到来自 ' + l.from + ' 的信');
-            acts.push({ t: l.timestamp, type: 'letter', txt: txt });
-          });
+          var _cid = String(currentChatId);
+          var _now = new Date();
+          for (var _di = 0; _di < 3; _di++) {
+            var _dt = new Date(_now.getFullYear(), _now.getMonth(), _now.getDate() - _di);
+            var _ds = _dt.getFullYear() + '-' + String(_dt.getMonth() + 1).padStart(2, '0') + '-' + String(_dt.getDate()).padStart(2, '0');
+            var _list = _actGetDay(_ds, _cid);
+            if (!_list) continue;
+            var _nmin = _di === 0 ? _now.getHours() * 60 + _now.getMinutes() : 1439;
+            _list.forEach(function (a) {
+              if (!a || !a.name) return;
+              if (a.t > _nmin) return;
+              if (!_actRecorded(_ds, _cid, a.t)) return;
+              acts.push({
+                t: new Date(_dt.getFullYear(), _dt.getMonth(), _dt.getDate(), Math.floor(a.t / 60), a.t % 60).getTime(),
+                type: 'act:' + (a.cat || 'rest'),
+                txt: a.name
+              });
+            });
+          }
           (moments || []).forEach(function (m) {
-            if (!m.timestamp) return;
-            acts.push({ t: m.timestamp, type: 'moment', txt: m.author + ' 发了朋友圈' });
+            if (!m.timestamp || m.author !== name) return;
+            acts.push({ t: m.timestamp, type: 'moment', txt: '发了朋友圈' });
           });
-          JSON.parse(localStorage.getItem('diaryEntries') || '[]').forEach(function (d) {
-            var t = d.date ? new Date(d.date).getTime() : 0;
-            if (t) acts.push({ t: t, type: 'diary', txt: '写日记：' + (d.title || '') });
-          });
-          JSON.parse(localStorage.getItem('divineHistory') || '[]').forEach(function (h) {
-            if (h.t) acts.push({ t: h.t, type: 'divine', txt: '占卜：' + (h.q || h.mode || '') });
+          (letterList || []).forEach(function (l) {
+            if (!l.timestamp || l.isOutgoing || l.anonymous || l.from !== name) return;
+            acts.push({ t: l.timestamp, type: 'letter', txt: '给你写了一封信' });
           });
         } catch (e) {}
         acts.sort(function (a, b) { return b.t - a.t; });
         var actEl = document.getElementById('cstActs');
         actEl.innerHTML = '';
-        if (!acts.length) actEl.innerHTML = '<div class="cst-empty">还没有活动记录</div>';
+        if (!acts.length) actEl.innerHTML = '<div class="cst-empty">还没有 TA 的活动记录，等 TA 有了动静再来看看吧</div>';
         acts.slice(0, 8).forEach(function (a) {
-          var bg = CST_ACT_BADGES[a.type] || ['动', '#999'];
+          var bg = CST_ACT_BADGES[a.type];
+          if (!bg && a.type.indexOf('act:') === 0) {
+            var cat = a.type.slice(4);
+            bg = [CST_ACT_CHARS[cat] || '动', ACT_CAT_COLORS[cat] || '#8a92a0'];
+          }
+          if (!bg) bg = ['动', '#999'];
           var row = document.createElement('div');
           row.className = 'cst-act-row';
+          var safeTxt = String(a.txt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
           row.innerHTML = '<div class="cst-act-badge" style="background:' + bg[1] + ';">' + bg[0] + '</div>' +
-            '<div class="cst-act-txt">' + a.txt + '</div><div class="cst-act-t">' + _cstFmtTime(a.t) + '</div>';
+            '<div class="cst-act-txt">' + safeTxt + '</div><div class="cst-act-t">' + _cstFmtTime(a.t) + '</div>';
           actEl.appendChild(row);
         });
       }
