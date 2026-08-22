@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v146')){sessionStorage.setItem('zk_v146','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==146){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v147')){sessionStorage.setItem('zk_v147','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==147){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v146</title>
+  <title>字卡 · 小手机 v147</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21030,7 +21030,12 @@ patText2 = patText2.replace(/你/g, '我');
           _dfMo.observe(panel, { attributes: true, attributeFilter: ['class'] });
         }
         document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
-        document.getElementById('cdvBackBtn0').addEventListener('click', closeDivine);
+        // v147: 全屏返回箭头改"淡出+刷新"——彻底绕开 display 切换路径（真机触摸层死锁）
+        document.getElementById('cdvBackBtn0').addEventListener('click', function () {
+          try { var ae = document.activeElement; if (ae && ae.blur) ae.blur(); } catch (e) {}
+          try { panel.style.transition = 'opacity .22s ease'; panel.style.opacity = '0'; } catch (e) {}
+          setTimeout(function () { location.reload(); }, 240);
+        });
         backdrop.addEventListener('click', closeDivine);
         document.querySelector('.toolbar-item[data-tool="divine"]').addEventListener('click', function (e) {
           e.stopPropagation();
