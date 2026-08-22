@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v131')){sessionStorage.setItem('zk_v131','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==131){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v132')){sessionStorage.setItem('zk_v132','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==132){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v131</title>
+  <title>字卡 · 小手机 v132</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7021,6 +7021,7 @@
     .tl-name { font-size: 14px; font-weight: 600; color: var(--text-main); }
     .tl-tag { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: rgba(var(--primary-rgba), 0.15); color: var(--primary); }
     .tl-nowtag { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: var(--primary); color: #fff; }
+    .tl-dur { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: rgba(var(--primary-rgba), 0.08); color: var(--text-muted); }
     .tl-desc { font-size: 11.5px; color: var(--text-secondary); margin-top: 2px; line-height: 1.5; }
     .tl-item.now .tl-card { background: rgba(var(--primary-rgba), 0.08); border-radius: 8px; }
     .tl-item.future { opacity: 0.5; }
@@ -14960,6 +14961,12 @@
         if (t7) t7.addEventListener('click', function () { if (_actStatDays !== 7) { _actStatDays = 7; _renderActStats(); } });
         if (t30) t30.addEventListener('click', function () { if (_actStatDays !== 30) { _actStatDays = 30; _renderActStats(); } });
       }
+      function _actDurTxt(m) {
+        if (m < 1) return '片刻';
+        if (m < 60) return m + ' 分钟';
+        var h = Math.floor(m / 60), r = m % 60;
+        return h + ' 小时' + (r ? ' ' + r + ' 分' : '');
+      }
       function _actFmtT(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
       function _actRecorded(dateStr, contactId, t) {
         return (_actHash(dateStr + '|' + contactId + '|rec|' + t) % 100) < 88;
@@ -15120,6 +15127,19 @@
             nt.className = 'tl-nowtag';
             nt.textContent = '最近';
             nrow.appendChild(nt);
+          }
+          var durTxt = '';
+          if (state === 'now') {
+            var gapN = nowMin - a.t;
+            if (gapN >= 0 && gapN <= 180) durTxt = '已 ' + _actDurTxt(gapN);
+          } else if (acts[idx + 1]) {
+            durTxt = _actDurTxt(acts[idx + 1].t - a.t);
+          }
+          if (durTxt) {
+            var du = document.createElement('span');
+            du.className = 'tl-dur';
+            du.textContent = durTxt;
+            nrow.appendChild(du);
           }
           card.appendChild(nrow);
           if (a.desc) {
