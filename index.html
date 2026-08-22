@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v129')){sessionStorage.setItem('zk_v129','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==129){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v130')){sessionStorage.setItem('zk_v130','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==130){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v129</title>
+  <title>字卡 · 小手机 v130</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14774,7 +14774,6 @@
         while (ks.length > 7) { delete st[ks.shift()]; }
         localStorage.setItem('contactDailyActs', JSON.stringify(st));
       }
-      function _actBumpKey() { try { return JSON.parse(localStorage.getItem('contactActBump') || '{}'); } catch (e) { return {}; } }
 
       function _actCardLib() {
         var patched = false;
@@ -14833,20 +14832,11 @@
       }
       function _actSaveLib(arr) { localStorage.setItem('actCardLib', JSON.stringify(arr)); }
       function _actLibChanged() {
-        var st = _actGetStore();
-        delete st[_actTodayStr()];
-        _actSaveStore(st);
-        try {
-          var b = _actBumpKey();
-          var pre = _actTodayStr() + '|';
-          Object.keys(b).forEach(function (k) { if (k.indexOf(pre) === 0) delete b[k]; });
-          localStorage.setItem('contactActBump', JSON.stringify(b));
-        } catch (e) {}
         var pg = document.getElementById('activityPage');
         if (pg && pg.classList.contains('show')) renderActivity();
       }
-      function _actGenDay(dateStr, contactId, bump) {
-        var rnd = _actRng(_actHash(dateStr + '|' + contactId + '|' + bump));
+      function _actGenDay(dateStr, contactId) {
+        var rnd = _actRng(_actHash(dateStr + '|' + contactId));
         var lib = _actCardLib();
         var usedMains = [];
         function pickCard(period) {
@@ -14884,8 +14874,7 @@
         var st = _actGetStore();
         if (!st[dateStr]) st[dateStr] = {};
         if (!st[dateStr][contactId]) {
-          var b = _actBumpKey();
-          st[dateStr][contactId] = _actGenDay(dateStr, contactId, b[dateStr + '|' + contactId] || 0);
+          st[dateStr][contactId] = _actGenDay(dateStr, contactId);
           _actSaveStore(st);
         }
         return st[dateStr][contactId];
