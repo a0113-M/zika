@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v121')){sessionStorage.setItem('zk_v121','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==121){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v122')){sessionStorage.setItem('zk_v122','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==122){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v121</title>
+  <title>字卡 · 小手机 v122</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14708,6 +14708,9 @@
         _actSaveStore(st);
       }
       function _actFmtT(m) { return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); }
+      function _actRecorded(dateStr, contactId, t) {
+        return (_actHash(dateStr + '|' + contactId + '|rec|' + t) % 100) < 88;
+      }
 
       function openActivityPage() {
         document.getElementById('activityPage').classList.add('show');
@@ -14754,14 +14757,22 @@
         if (!c) c = persons[0];
 
         var dateStr = _actTodayStr();
-        var acts = _actGetDay(dateStr, String(c.id)).map(function (a) { return a; });
+        var nd = new Date();
+        var nowMin = nd.getHours() * 60 + nd.getMinutes();
+
+        // 只显示已到时间且被记录的活动（每件约 88% 概率被记录，没记录就缺失）
+        var acts = [];
+        _actGetDay(dateStr, String(c.id)).forEach(function (a) {
+          if (a.t <= nowMin && _actRecorded(dateStr, String(c.id), a.t)) acts.push(a);
+        });
         var dayStart = _dtDayStart(Date.now());
         try {
           var ms = JSON.parse(localStorage.getItem('moments') || '[]');
           ms.forEach(function (m) {
             if (m.author === c.name && m.timestamp >= dayStart) {
               var dd = new Date(m.timestamp);
-              acts.push({ t: dd.getHours() * 60 + dd.getMinutes(), name: '发了一条朋友圈', desc: (m.text || '').replace(/\n/g, ' ').slice(0, 30), cat: 'social', real: true });
+              var mt = dd.getHours() * 60 + dd.getMinutes();
+              if (mt <= nowMin) acts.push({ t: mt, name: '发了一条朋友圈', desc: (m.text || '').replace(/\n/g, ' ').slice(0, 30), cat: 'social', real: true });
             }
           });
         } catch (e) {}
@@ -14770,52 +14781,56 @@
           ls.forEach(function (L) {
             if (L.from === c.name && !L.isOutgoing && !L.anonymous && L.timestamp >= dayStart) {
               var d2 = new Date(L.timestamp);
-              acts.push({ t: d2.getHours() * 60 + d2.getMinutes(), name: '给你写了一封信', desc: (L.words || '').replace(/\n/g, ' ').slice(0, 30), cat: 'social', real: true });
+              var lt = d2.getHours() * 60 + d2.getMinutes();
+              if (lt <= nowMin) acts.push({ t: lt, name: '给你写了一封信', desc: (L.words || '').replace(/\n/g, ' ').slice(0, 30), cat: 'social', real: true });
             }
           });
         } catch (e) {}
         acts.sort(function (x, y) { return x.t - y.t; });
 
-        var nd = new Date();
-        var nowMin = nd.getHours() * 60 + nd.getMinutes();
-        var curIdx = -1;
-        for (var i = 0; i < acts.length; i++) {
-          var end = (i + 1 < acts.length) ? acts[i + 1].t : 1440;
-          if (nowMin >= acts[i].t && nowMin < end) { curIdx = i; break; }
-        }
-
-        // ---- 现在 ----
-        var iconHtml = function (cat, size, color) {
+        var iconHtml = function (cat, size) {
           var base = ACT_SVG[cat] || ACT_SVG.rest;
           return base.replace('width="13"', 'width="' + size + '"').replace('height="13"', 'height="' + size + '"').replace('width="14"', 'width="' + size + '"').replace('height="14"', 'height="' + size + '"');
         };
+
+        // ---- 现在卡：只显示最近一条已记录的动态 ----
         var nowHtml = '';
-        if (curIdx >= 0) {
-          var ca = acts[curIdx];
-          var dur = nowMin - ca.t;
-          var title = ca.real ? ca.name : ('正在' + ca.name);
-          var nextHtml = '';
-          if (curIdx + 1 < acts.length) {
-            nextHtml = '<div class="act-now-next">接下来 · ' + acts[curIdx + 1].name + ' ' + _actFmtT(acts[curIdx + 1].t) + '</div>';
-          }
-          nowHtml = '<div class="act-now-top"><span class="an-icon">' + iconHtml(ca.cat, 22) + '</span><span>' + title + '</span></div>' +
-            '<div class="act-now-meta">开始于 ' + _actFmtT(ca.t) + ' · 已进行 ' + dur + ' 分钟</div>' +
-            '<div class="act-now-desc">' + ca.desc + '</div>' + nextHtml;
-        } else {
+        if (acts.length) {
+          var last = acts[acts.length - 1];
+          var gap = nowMin - last.t;
+          var title;
+          if (last.real) title = last.name;
+          else if (gap <= 180) title = '正在' + last.name;
+          else title = last.name;
+          var meta;
+          if (gap <= 180) meta = '开始于 ' + _actFmtT(last.t) + ' · 已进行 ' + gap + ' 分钟';
+          else meta = _actFmtT(last.t) + ' 记录 · 之后还没有新动态';
+          nowHtml = '<div class="act-now-top"><span class="an-icon">' + iconHtml(last.cat, 22) + '</span><span>' + title + '</span></div>' +
+            '<div class="act-now-meta">' + meta + '</div>' +
+            '<div class="act-now-desc">' + last.desc + '</div>';
+        } else if (nowMin < 375) {
           nowHtml = '<div class="act-now-top"><span class="an-icon">' + iconHtml('sleep', 22) + '</span><span>TA 还在睡</span></div>' +
-            '<div class="act-now-meta">今天的第一件事 ' + _actFmtT(acts.length ? acts[0].t : 375) + ' 开始</div>' +
-            '<div class="act-now-desc">夜深了，让 TA 再睡一会儿吧</div>';
+            '<div class="act-now-meta">天还没亮，TA 还没有动静</div>' +
+            '<div class="act-now-desc">TA 醒了以后，今天的动态会陆续出现在下面</div>';
+        } else {
+          nowHtml = '<div class="act-now-top"><span class="an-icon">' + iconHtml('rest', 22) + '</span><span>今天还没有动态</span></div>' +
+            '<div class="act-now-meta">TA 还没记录今天的任何事</div>' +
+            '<div class="act-now-desc">等 TA 有了动静，时间轴上就会显示</div>';
         }
         nowEl.innerHTML = nowHtml;
 
-        var done = curIdx >= 0 ? curIdx : 0;
-        sumEl.textContent = c.name + ' 的今天 · 共 ' + acts.length + ' 件事 · 已完成 ' + done + ' 件';
+        sumEl.textContent = c.name + ' 的今天 · 已记录 ' + acts.length + ' 件事';
 
-        // ---- 时间轴 ----
+        // ---- 时间轴：全部是已发生/已记录，最后一项高亮 ----
         tlEl.innerHTML = '';
         var nowNode = null;
+        if (!acts.length) {
+          tlEl.innerHTML = '<div class="act-empty">还没有记录，等 TA 有了动静再来看看吧</div>';
+          return;
+        }
+        var lastIdx = acts.length - 1;
         acts.forEach(function (a, idx) {
-          var state = idx === curIdx ? 'now' : (idx < curIdx ? 'past' : 'future');
+          var state = idx === lastIdx ? 'now' : 'past';
           var item = document.createElement('div');
           item.className = 'tl-item ' + state;
           var tm = document.createElement('div');
@@ -14848,7 +14863,7 @@
           if (state === 'now') {
             var nt = document.createElement('span');
             nt.className = 'tl-nowtag';
-            nt.textContent = '现在';
+            nt.textContent = '最近';
             nrow.appendChild(nt);
           }
           card.appendChild(nrow);
