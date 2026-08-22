@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v135')){sessionStorage.setItem('zk_v135','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==135){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v136')){sessionStorage.setItem('zk_v136','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==136){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v135</title>
+  <title>字卡 · 小手机 v136</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10374,110 +10374,6 @@
 
         </div>
       </div>
-      <!-- 塔罗占卜面板（星语占卜） -->
-      <div class="clp-backdrop" id="cdvBackdrop"></div>
-      <div class="chat-letter-panel cdp-panel" id="chatDivinePanel">
-        <div class="cdp-header">
-          <div class="cdp-title-wrap">
-            <span class="cdp-title">
-              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-              星语占卜
-              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-            </span>
-            <span class="cdp-sub">以牌为桥 · 连接彼此</span>
-          </div>
-          <button class="cdp-close-btn" id="cdvCloseBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <div class="cdp-body">
-          <!-- 设置视图 -->
-          <div class="cdp-view" id="cdvSetupView">
-            <div class="cdp-tabs" id="cdvModeTabs">
-              <button class="cdp-tab active" data-m="tarot">塔罗牌</button>
-              <button class="cdp-tab" data-m="leno">雷诺曼牌</button>
-            </div>
-            <div class="cdp-mode-sub" id="cdvModeSub">78张塔罗 · 带正逆位</div>
-            <div class="cdp-sec-label">抽牌数量</div>
-            <div class="cdp-row" id="cdvCountRow">
-              <button class="cdp-opt active" data-c="1">抽1张</button>
-              <button class="cdp-opt" data-c="3">抽3张</button>
-            </div>
-            <div class="cdp-sec-label">
-              <svg class="cdp-star" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-              占卜对象
-            </div>
-            <div class="cdp-row cdp-targets" id="cdvTargetRow"></div>
-            <div class="cdp-sec-label">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8db3e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 4v7l2-2 2 2V4"/></svg>
-              想问TA什么？输入你的问题
-            </div>
-            <input class="cdp-qinput" id="cdvQInput" placeholder="例如：TA现在对我是什么感觉？" maxlength="50">
-            <button class="cdp-start" id="cdvStartBtn">
-              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
-              开始抽牌
-              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
-            </button>
-            <button class="cdp-history-btn" id="cdvQuickBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
-              速占 · 免选牌直接出结果
-            </button>
-            <button class="cdp-history-btn" id="cdvHistoryBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-              历史记录
-            </button>
-            <div class="cdp-copyright">本占卜功能仅供学习、交流与娱乐参考。</div>
-          </div>
-          <!-- 洗牌抽牌视图 -->
-          <div class="cdp-view" id="cdvPickView" style="display:none;">
-            <div class="cdp-qecho" id="cdvPickEcho"></div>
-            <div class="cdp-shuffle-stage" id="cdvShuffleStage">
-              <div class="cdv-shuffle-pile">
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-              </div>
-              <div class="cdv-shuffle-tip" id="cdvShuffleTip">洗牌中…</div>
-            </div>
-            <div class="cdp-fan-stage" id="cdvFanStage" style="display:none;">
-              <div class="cdv-fan-tip" id="cdvFanTip">凭直觉，抽 3 张牌</div>
-              <div class="cdv-goto-row">
-                <input type="number" class="cdv-goto-input" id="cdvGotoInput" placeholder="输入序号" min="1">
-                <button class="cdp-opt" id="cdvGotoBtn">抽这张</button>
-              </div>
-              <div class="cdv-fan-wrap" id="cdvFanWrap"><div class="cdv-fan-track" id="cdvFan"></div></div>
-              <div class="cdv-drawn" id="cdvDrawn"></div>
-              <div class="cdp-draw-actions">
-                <button class="cdp-opt" id="cdvReShuffleBtn">重新抽牌</button>
-                <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">确定</button>
-                <button class="cdp-opt" id="cdvBackBtn1">返回</button>
-              </div>
-            </div>
-          </div>
-          <!-- 抽牌视图 -->
-          <div class="cdp-view" id="cdvDrawView" style="display:none;">
-            <div class="cdp-qecho" id="cdvQEcho"></div>
-            <div class="cdp-cards" id="cdvCards"></div>
-            <div class="cdp-summary" id="cdvSummary"></div>
-            <div class="cdp-draw-actions">
-              <button class="cdp-opt" id="cdvCopyBtn">复制结果</button>
-              <button class="cdp-opt" id="cdvBackBtn2">返回</button>
-            </div>
-          </div>
-          <!-- 历史视图 -->
-          <div class="cdp-view" id="cdvHistoryView" style="display:none;">
-            <div class="cdp-hlist" id="cdvHList"></div>
-            <div class="cdp-draw-actions">
-              <button class="cdp-opt" id="cdvClearHBtn">清空记录</button>
-              <button class="cdp-opt" id="cdvBackBtn3">返回</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- 陪伴面板（一起） -->
       <div class="clp-backdrop" id="acdBackdrop"></div>
       <div class="chat-letter-panel cdp-panel acd-panel" id="chatAccompanyPanel">
@@ -10736,6 +10632,109 @@
       </div>
     </div>
 
+          <!-- 塔罗占卜面板（星语占卜） -->
+      <div class="clp-backdrop" id="cdvBackdrop"></div>
+      <div class="chat-letter-panel cdp-panel" id="chatDivinePanel">
+        <div class="cdp-header">
+          <div class="cdp-title-wrap">
+            <span class="cdp-title">
+              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
+              星语占卜
+              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
+            </span>
+            <span class="cdp-sub">以牌为桥 · 连接彼此</span>
+          </div>
+          <button class="cdp-close-btn" id="cdvCloseBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="cdp-body">
+          <!-- 设置视图 -->
+          <div class="cdp-view" id="cdvSetupView">
+            <div class="cdp-tabs" id="cdvModeTabs">
+              <button class="cdp-tab active" data-m="tarot">塔罗牌</button>
+              <button class="cdp-tab" data-m="leno">雷诺曼牌</button>
+            </div>
+            <div class="cdp-mode-sub" id="cdvModeSub">78张塔罗 · 带正逆位</div>
+            <div class="cdp-sec-label">抽牌数量</div>
+            <div class="cdp-row" id="cdvCountRow">
+              <button class="cdp-opt active" data-c="1">抽1张</button>
+              <button class="cdp-opt" data-c="3">抽3张</button>
+            </div>
+            <div class="cdp-sec-label">
+              <svg class="cdp-star" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
+              占卜对象
+            </div>
+            <div class="cdp-row cdp-targets" id="cdvTargetRow"></div>
+            <div class="cdp-sec-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8db3e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 4v7l2-2 2 2V4"/></svg>
+              想问TA什么？输入你的问题
+            </div>
+            <input class="cdp-qinput" id="cdvQInput" placeholder="例如：TA现在对我是什么感觉？" maxlength="50">
+            <button class="cdp-start" id="cdvStartBtn">
+              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
+              开始抽牌
+              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
+            </button>
+            <button class="cdp-history-btn" id="cdvQuickBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+              速占 · 免选牌直接出结果
+            </button>
+            <button class="cdp-history-btn" id="cdvHistoryBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+              历史记录
+            </button>
+            <div class="cdp-copyright">本占卜功能仅供学习、交流与娱乐参考。</div>
+          </div>
+          <!-- 洗牌抽牌视图 -->
+          <div class="cdp-view" id="cdvPickView" style="display:none;">
+            <div class="cdp-qecho" id="cdvPickEcho"></div>
+            <div class="cdp-shuffle-stage" id="cdvShuffleStage">
+              <div class="cdv-shuffle-pile">
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+              </div>
+              <div class="cdv-shuffle-tip" id="cdvShuffleTip">洗牌中…</div>
+            </div>
+            <div class="cdp-fan-stage" id="cdvFanStage" style="display:none;">
+              <div class="cdv-fan-tip" id="cdvFanTip">凭直觉，抽 3 张牌</div>
+              <div class="cdv-goto-row">
+                <input type="number" class="cdv-goto-input" id="cdvGotoInput" placeholder="输入序号" min="1">
+                <button class="cdp-opt" id="cdvGotoBtn">抽这张</button>
+              </div>
+              <div class="cdv-fan-wrap" id="cdvFanWrap"><div class="cdv-fan-track" id="cdvFan"></div></div>
+              <div class="cdv-drawn" id="cdvDrawn"></div>
+              <div class="cdp-draw-actions">
+                <button class="cdp-opt" id="cdvReShuffleBtn">重新抽牌</button>
+                <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">确定</button>
+                <button class="cdp-opt" id="cdvBackBtn1">返回</button>
+              </div>
+            </div>
+          </div>
+          <!-- 抽牌视图 -->
+          <div class="cdp-view" id="cdvDrawView" style="display:none;">
+            <div class="cdp-qecho" id="cdvQEcho"></div>
+            <div class="cdp-cards" id="cdvCards"></div>
+            <div class="cdp-summary" id="cdvSummary"></div>
+            <div class="cdp-draw-actions">
+              <button class="cdp-opt" id="cdvCopyBtn">复制结果</button>
+              <button class="cdp-opt" id="cdvBackBtn2">返回</button>
+            </div>
+          </div>
+          <!-- 历史视图 -->
+          <div class="cdp-view" id="cdvHistoryView" style="display:none;">
+            <div class="cdp-hlist" id="cdvHList"></div>
+            <div class="cdp-draw-actions">
+              <button class="cdp-opt" id="cdvClearHBtn">清空记录</button>
+              <button class="cdp-opt" id="cdvBackBtn3">返回</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
     <!-- 通话类型选择弹窗 -->
     <div class="call-type-modal" id="callTypeModal">
@@ -11328,6 +11327,10 @@
           <div class="sidebar-menu-item" data-action="activity"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
               </svg></span><span class="item-text">活动</span></div>
+          <div class="sidebar-menu-item" data-action="divine"><span class="item-icon"><svg viewBox="0 0 24 24">
+                <path d="M20 13.5A8 8 0 0 1 10.5 4a7 7 0 1 0 9.5 9.5z" />
+                <path d="M17 4.2l.4 1.2 1.2.4-1.2.4-.4 1.2-.4-1.2-1.2-.4 1.2-.4z" />
+              </svg></span><span class="item-text">占卜</span></div>
           <div class="sidebar-menu-item" data-action="theme"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -14392,6 +14395,11 @@
           if (action === 'activity') {
             sidebarOverlay.classList.remove('show');
             openActivityPage();
+            return;
+          }
+          if (action === 'divine') {
+            sidebarOverlay.classList.remove('show');
+            if (typeof window.openDivineFromSidebar === 'function') window.openDivineFromSidebar();
             return;
           }
           const info = featureMap[action];
@@ -20908,6 +20916,12 @@ patText2 = patText2.replace(/你/g, '我');
           backdrop.classList.remove('active');
           showView('setup');
         }
+        // 供首页侧边栏打开占卜面板（v136）
+        window.openDivineFromSidebar = function () {
+          panel.classList.add('active');
+          backdrop.classList.add('active');
+          renderSetup();
+        };
         document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
         backdrop.addEventListener('click', closeDivine);
         document.querySelector('.toolbar-item[data-tool="divine"]').addEventListener('click', function (e) {
