@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v143')){sessionStorage.setItem('zk_v143','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==143){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v144')){sessionStorage.setItem('zk_v144','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==144){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v143</title>
+  <title>字卡 · 小手机 v144</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -24804,6 +24804,57 @@ patText2 = patText2.replace(/你/g, '我');
         d.body.appendChild(box);
         setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, 15000);
       });
+    })();
+    /* v144: 黑匣子（卡死诊断）——持续记录触摸/点击/焦点/视口事件到本地；异常关闭后下次打开自动弹报告 */
+    (function () {
+      var LSK = 'zk_bb_log', CLN = 'zk_bb_clean';
+      var buf = [], oldLog = [], wasClean = null;
+      try { oldLog = JSON.parse(localStorage.getItem(LSK) || '[]') || []; } catch (e) { oldLog = []; }
+      try { wasClean = localStorage.getItem(CLN); } catch (e) {}
+      buf = [];
+      function esc(x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+      function ts() { var n = new Date(); return ('0' + n.getHours()).slice(-2) + ':' + ('0' + n.getMinutes()).slice(-2) + ':' + ('0' + n.getSeconds()).slice(-2); }
+      function rec(tag, t) {
+        buf.push(ts() + ' ' + tag + (t ? ' ' + t : ''));
+        if (buf.length > 60) buf = buf.slice(-60);
+        try { localStorage.setItem(LSK, JSON.stringify(buf)); } catch (e) {}
+      }
+      var lastBeat = Date.now();
+      function beat() {
+        var now = Date.now();
+        if (now - lastBeat > 1500) rec('!LAG ' + (now - lastBeat) + 'ms');
+        lastBeat = now;
+        try { localStorage.setItem(LSK, JSON.stringify(buf)); } catch (e) {}
+        setTimeout(beat, 500);
+      }
+      setTimeout(beat, 500);
+      function tname(e) {
+        var t = e.target;
+        if (!t) return '?';
+        if (t.id) return '#' + t.id;
+        var c = t.className && String(t.className).split(' ')[0];
+        return c ? '.' + c : t.tagName;
+      }
+      ['touchstart', 'pointerdown', 'mousedown'].forEach(function (ev) {
+        document.addEventListener(ev, function (e) { rec(ev, tname(e)); }, true);
+      });
+      document.addEventListener('click', function (e) { rec('click', tname(e)); }, true);
+      window.addEventListener('resize', function () { rec('resize', 'h=' + window.innerHeight); }, true);
+      if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { rec('vvResize', 'h=' + Math.round(window.visualViewport.height)); });
+      document.addEventListener('focusin', function (e) { rec('focusin', e.target ? (e.target.id || e.target.tagName) : ''); }, true);
+      document.addEventListener('focusout', function () { rec('focusout'); }, true);
+      window.addEventListener('pagehide', function () {
+        try { localStorage.setItem(CLN, '1'); } catch (e) {}
+      });
+      if (wasClean !== '1' && oldLog.length > 0) {
+        var box = document.createElement('div');
+        box.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;z-index:100001;background:rgba(0,0,0,.82);overflow:auto;';
+        box.innerHTML = '<div style="max-width:430px;margin:40px auto 20px;background:#fff;color:#111;border-radius:10px;padding:14px 16px;font:12px/1.7 monospace;white-space:pre-wrap;word-break:break-all;">' +
+          '<b>上次页面异常关闭 · 黑匣子报告</b><br>（请截图发给阿云，点此框关闭）<br><br>' +
+          oldLog.map(function (x) { return esc(x); }).join('<br>') + '</div>';
+        box.addEventListener('click', function () { if (box.parentNode) box.parentNode.removeChild(box); });
+        document.body.appendChild(box);
+      }
     })();
 </script>
 
