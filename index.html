@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v139')){sessionStorage.setItem('zk_v139','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==139){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v140')){sessionStorage.setItem('zk_v140','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==140){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v139</title>
+  <title>字卡 · 小手机 v140</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4111,6 +4111,21 @@
     .theme-header button, .feature-header .act-hbtn {
       position: relative; z-index: 1;
     }
+    /* v140: 全屏占卜顶栏改为标准功能页样式（白底、"占卜"居中、无×；卡片弹窗保持紫色原样） */
+    #chatDivinePanel.cdp-full .cdp-header {
+      background: #ffffff;
+      border-bottom: 0.5px solid var(--border-light);
+    }
+    #chatDivinePanel.cdp-full .cdp-close-btn { display: none; }
+    #chatDivinePanel.cdp-full .cdp-title { display: none; }
+    #chatDivinePanel.cdp-full .cdp-sub { display: none; }
+    .cdp-title-full {
+      display: none;
+      font-size: 17px; font-weight: 600; letter-spacing: 2px; color: #1a1a1a;
+    }
+    #chatDivinePanel.cdp-full .cdp-title-full { display: flex; align-items: center; }
+    #chatDivinePanel.cdp-full .cdp-back-btn { background: transparent; }
+    #chatDivinePanel.cdp-full .cdp-back-btn svg { stroke: #333; }
     .cdp-body {
       flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
       padding: 14px 16px 6px;
@@ -10704,6 +10719,7 @@
               <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
             </span>
             <span class="cdp-sub">以牌为桥 · 连接彼此</span>
+            <span class="cdp-title-full">占卜</span>
           </div>
           <button class="cdp-close-btn" id="cdvCloseBtn">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
