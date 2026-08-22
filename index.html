@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v141')){sessionStorage.setItem('zk_v141','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==141){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v142')){sessionStorage.setItem('zk_v142','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==142){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v141</title>
+  <title>字卡 · 小手机 v142</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4530,6 +4530,7 @@
       transform: none;
       border-radius: 0;
       box-shadow: none;
+      z-index: 350;
     }
     /* v141: 全屏占卜不跑任何动画——雨见老内核动画合成层吞触摸/命中错乱 */
     .chat-letter-panel.cdp-full.active { animation: none; }
@@ -20996,7 +20997,7 @@ patText2 = patText2.replace(/你/g, '我');
         // 供首页侧边栏打开占卜面板（v136；v137 起侧边栏进入为全屏模式）
         window.openDivineFromSidebar = function () {
           panel.classList.add('active', 'cdp-full');
-          backdrop.classList.add('active');
+          backdrop.classList.remove('active');
           renderSetup();
         };
         // 任何路径关闭面板时同步清掉全屏标记，避免残留到聊天工具栏打开场景（v137）
