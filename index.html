@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v134')){sessionStorage.setItem('zk_v134','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==134){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v135')){sessionStorage.setItem('zk_v135','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==135){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v134</title>
+  <title>字卡 · 小手机 v135</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14129,7 +14129,7 @@
       // ----- 添加联系人 / 群聊 -----
       function addContact(name) {
         if (!name.trim()) return false;
-        contacts.push({ id: nextId++, name: name.trim(), isGroup: false, lastMsg: '新联系人', time: '刚刚' });
+        contacts.push({ id: nextId++, name: name.trim(), isGroup: false, lastMsg: '新联系人', time: '刚刚', createdAt: Date.now() });
         _dtAutoRecordMet();
         refreshList();
         return true;
@@ -14888,6 +14888,21 @@
         return list;
       }
       function _actGetDay(dateStr, contactId) {
+        // 新建联系人在创建当天（含当天）之前不生成活动记录，明天起才有 TA 的动态
+        try {
+          if (typeof contacts !== 'undefined' && contacts && contacts.length) {
+            for (var _gi = 0; _gi < contacts.length; _gi++) {
+              if (String(contacts[_gi].id) === String(contactId)) {
+                if (contacts[_gi].createdAt) {
+                  var _cd = new Date(contacts[_gi].createdAt);
+                  var _cds = _cd.getFullYear() + '-' + String(_cd.getMonth() + 1).padStart(2, '0') + '-' + String(_cd.getDate()).padStart(2, '0');
+                  if (dateStr <= _cds) return [];
+                }
+                break;
+              }
+            }
+          }
+        } catch (e) {}
         var st = _actGetStore();
         if (!st[dateStr]) st[dateStr] = {};
         if (!st[dateStr][contactId]) {
@@ -20559,9 +20574,10 @@ patText2 = patText2.replace(/你/g, '我');
           var names = ['不选对象'];
           try {
             if (typeof contacts !== 'undefined' && contacts && contacts.length) {
-              contacts.forEach(function (c) { if (c && c.name) names.push(c.name); });
+              contacts.forEach(function (c) { if (c && c.name && !c.isGroup) names.push(c.name); });
             }
           } catch (e) {}
+          if (st.target && names.indexOf(st.target) < 0) st.target = '';
           var row = document.getElementById('cdvTargetRow');
           row.innerHTML = names.map(function (n, i) {
             var val = i === 0 ? '' : n;
