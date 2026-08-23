@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v151')){sessionStorage.setItem('zk_v151','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==151){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v152')){sessionStorage.setItem('zk_v152','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==152){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v151</title>
+  <title>字卡 · 小手机 v152</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12403,8 +12403,10 @@
           div.dataset.id = item.id;
           const avatar = document.createElement('div');
           avatar.className = 'contact-avatar';
-          avatar.textContent = item.name.charAt(0).toUpperCase() || '?';
-          avatar.style.background = item.isGroup ? '#9b9b9b' : 'var(--primary)';
+          if (!applyContactAvatar(avatar, item.id)) {
+            avatar.textContent = item.name.charAt(0).toUpperCase() || '?';
+            avatar.style.background = item.isGroup ? '#9b9b9b' : 'var(--primary)';
+          }
           const info = document.createElement('div');
           info.className = 'contact-info';
           const nameDiv = document.createElement('div');
@@ -13190,12 +13192,12 @@
         let text = `聊天记录 - ${name}\n`;
         text += `导出时间：${dateStr}\n`;
         text += `共 ${selectedMsgs.length} 条消息\n`;
-        text += `${'─'.repeat(30)}\n\n`;
+        text += `${'╌'.repeat(20)}\n\n`;
         selectedMsgs.forEach(msg => {
-          const sender = msg.from === 'me' ? '我' : (msg.from === 'other' ? '对方' : (msg.from || '对方'));
+          const sender = msg.from === 'me' ? '我' : name;
           text += `[${msg.time}] ${sender}：${msg.text}\n`;
         });
-        text += `\n${'─'.repeat(30)}\n`;
+        text += `\n${'╌'.repeat(20)}\n`;
         text += `导出方式：多选导出`;
 
         // 保存到日记（使用 localStorage）
@@ -13266,7 +13268,7 @@
           const contact = contacts.find(c => c.id === currentChatId);
           const name = contact ? contact.name : '未知';
           const text = selectedMsgs.map(msg => {
-            return `[${msg.time}] ${msg.from === 'me' ? '我' : (msg.from === 'other' ? '对方' : msg.from)}：${msg.text}`;
+            return `[${msg.time}] ${msg.from === 'me' ? '我' : name}：${msg.text}`;
           }).join('\n');
           const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
           const url = URL.createObjectURL(blob);
@@ -13369,6 +13371,106 @@
       }
 
       // ----- 渲染消息 -----
+      // ----- v152: 联系人头像（localStorage 持久化 + 点击消息头像弹窗修改） -----
+      function getContactAvatars() {
+        try { return JSON.parse(localStorage.getItem('zk_contact_avatars') || '{}'); } catch (e) { return {}; }
+      }
+      function setContactAvatar(id, dataUrl) {
+        var store = getContactAvatars();
+        if (dataUrl) store[id] = dataUrl; else delete store[id];
+        try { localStorage.setItem('zk_contact_avatars', JSON.stringify(store)); } catch (e) {}
+      }
+      // 有自定义头像时填充图片并返回 true；否则返回 false 由调用方回退文字头像
+      function applyContactAvatar(avatarEl, contactId) {
+        if (contactId === null || contactId === undefined) return false;
+        var av = getContactAvatars()[contactId];
+        if (!av) return false;
+        avatarEl.innerHTML = '';
+        avatarEl.style.background = 'transparent';
+        avatarEl.style.overflow = 'hidden';
+        var im = document.createElement('img');
+        im.src = av;
+        im.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;';
+        avatarEl.appendChild(im);
+        return true;
+      }
+      (function initContactAvatarModal() {
+        var box = null, fileInput = null, curId = null, previewEl = null, nameEl = null;
+        function ensureBox() {
+          if (box) return;
+          box = document.createElement('div');
+          box.style.cssText = 'position:fixed;inset:0;z-index:12000;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;';
+          var card = document.createElement('div');
+          card.style.cssText = 'background:#fff;border-radius:16px;padding:20px 22px;width:78%;max-width:300px;text-align:center;';
+          nameEl = document.createElement('div');
+          nameEl.style.cssText = 'font-size:15px;font-weight:600;color:#333;margin-bottom:14px;';
+          previewEl = document.createElement('div');
+          previewEl.style.cssText = 'width:76px;height:76px;border-radius:12px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:#fff;overflow:hidden;background:var(--primary);';
+          var btnRow = document.createElement('div');
+          btnRow.style.cssText = 'display:flex;gap:10px;justify-content:center;';
+          function mkBtn(t, filled, cb) {
+            var b = document.createElement('button');
+            b.textContent = t;
+            b.style.cssText = 'flex:1;padding:9px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;' + (filled ? 'color:#fff;background:var(--primary);' : 'color:var(--primary);background:var(--bg-soft,#eee);');
+            b.addEventListener('click', cb);
+            return b;
+          }
+          btnRow.appendChild(mkBtn('选图片', true, function () { fileInput.click(); }));
+          btnRow.appendChild(mkBtn('恢复默认', false, function () {
+            if (curId !== null) {
+              setContactAvatar(curId, null);
+              refreshAfterAvatarChange();
+              closeBox();
+            }
+          }));
+          card.appendChild(nameEl); card.appendChild(previewEl); card.appendChild(btnRow);
+          box.appendChild(card);
+          box.addEventListener('click', function (e) { if (e.target === box) closeBox(); });
+          document.body.appendChild(box);
+          fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.accept = 'image/*';
+          fileInput.style.display = 'none';
+          fileInput.addEventListener('change', function () {
+            var file = this.files[0];
+            if (!file || curId === null) return;
+            var r = new FileReader();
+            r.onload = function (ev) {
+              setContactAvatar(curId, ev.target.result);
+              refreshAfterAvatarChange();
+              closeBox();
+            };
+            r.readAsDataURL(file);
+            this.value = '';
+          });
+          document.body.appendChild(fileInput);
+        }
+        function closeBox() { if (box) box.style.display = 'none'; }
+        function refreshAfterAvatarChange() {
+          renderContacts(searchInput.value);
+          if (typeof currentChatId !== 'undefined' && currentChatId !== null) renderMessages(currentChatId);
+        }
+        window.openContactAvatarModal = function (id) {
+          var c = contacts.find(function (x) { return x.id === id; });
+          if (!c) return;
+          ensureBox();
+          curId = id;
+          nameEl.textContent = c.name + ' · 修改头像';
+          previewEl.innerHTML = '';
+          var av = getContactAvatars()[id];
+          if (av) {
+            var im = document.createElement('img');
+            im.src = av;
+            im.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            previewEl.appendChild(im);
+            previewEl.style.background = 'transparent';
+          } else {
+            previewEl.textContent = c.name.charAt(0).toUpperCase();
+            previewEl.style.background = c.isGroup ? '#9b9b9b' : 'var(--primary)';
+          }
+          box.style.display = 'flex';
+        };
+      })();
       function renderMessages(contactId) {
         const messages = chatHistories[contactId] || [];
         chatMessages.innerHTML = '';
@@ -13434,7 +13536,14 @@
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+              if (contact) {
+                if (!applyContactAvatar(avatar, contact.id)) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+                avatar.style.cursor = 'pointer';
+                avatar.addEventListener('click', function (e) {
+                  e.stopPropagation();
+                  window.openContactAvatarModal(contactId);
+                });
+              }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const img = document.createElement('img');
@@ -13466,7 +13575,14 @@
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+              if (contact) {
+                if (!applyContactAvatar(avatar, contact.id)) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+                avatar.style.cursor = 'pointer';
+                avatar.addEventListener('click', function (e) {
+                  e.stopPropagation();
+                  window.openContactAvatarModal(contactId);
+                });
+              }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const videoWrap = document.createElement('div');
@@ -13523,10 +13639,24 @@
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; avatar.style.display = 'flex'; avatar.style.alignItems = 'center'; avatar.style.justifyContent = 'center'; }
             } else if (contact && contact.isGroup && senderName !== 'me' && senderName !== 'other') {
               const member = contacts.find(c => c.name === senderName);
-              if (member) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = 'var(--primary)'; }
+              if (member) { if (!applyContactAvatar(avatar, member.id)) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = 'var(--primary)'; } }
               else { avatar.textContent = senderName.charAt(0).toUpperCase(); avatar.style.background = '#9b9b9b'; }
-            } else if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+            } else if (contact) { if (!applyContactAvatar(avatar, contact.id)) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; } }
             else { avatar.textContent = '?'; avatar.style.background = '#999'; }
+            if (msg.from !== 'me') {
+              avatar.style.cursor = 'pointer';
+              avatar.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var ct = contacts.find(function (c) { return c.id === contactId; });
+                var cid = contactId;
+                if (ct && ct.isGroup) {
+                  var m = contacts.find(function (c) { return c.name === senderName; });
+                  if (m) cid = m.id;
+                  else { showToast('该成员不在联系人列表中'); return; }
+                }
+                if (cid !== null && cid !== undefined) window.openContactAvatarModal(cid);
+              });
+            }
 
             const bubble = document.createElement('div');
             bubble.className = 'msg-bubble';
