@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v155')){sessionStorage.setItem('zk_v155','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==155){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v156')){sessionStorage.setItem('zk_v156','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==156){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v155</title>
+  <title>字卡 · 小手机 v156</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -403,7 +403,6 @@
       align-items: center;
       justify-content: center;
       z-index: 100;
-      backdrop-filter: blur(2px);
     }
 
     .modal-overlay.show {
@@ -512,7 +511,7 @@
     /* --- 动态编辑弹窗 --- */
     .moment-edit-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
+      background: rgba(30,25,50,0.75);
       display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; align-items: center; justify-content: center;
       z-index: 500;
     }
@@ -555,7 +554,7 @@
     /* --- 动态删除确认弹窗 --- */
     .moment-del-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
+      background: rgba(30,25,50,0.75);
       display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; align-items: center; justify-content: center;
       z-index: 500;
     }
@@ -986,7 +985,6 @@
     .chat-msg-context-menu {
       position: fixed;
       background: rgba(50, 50, 50, 0.95);
-      backdrop-filter: blur(8px);
       border-radius: 16px;
       padding: 8px 12px;
       min-width: auto;
@@ -5421,7 +5419,6 @@
       transition: opacity 0.3s ease;
       text-align: center;
       max-width: 260px;
-      backdrop-filter: blur(4px);
     }
 
     .toast.show {
@@ -6243,7 +6240,6 @@
       display: none;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(4px);
     }
 
     .export-chat-modal.show {
@@ -6529,7 +6525,6 @@
   font-size: 18px;
   font-weight: 600;
   color: #fff;
-  backdrop-filter: blur(4px);
 }
 
 .moments-feed {
@@ -6667,8 +6662,7 @@
   align-items: center;
   padding: 3px 5px;
   gap: 2px;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  -webkit-
 }
 
 
@@ -6794,7 +6788,6 @@
   display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: flex-end;
   justify-content: center;
-  backdrop-filter: blur(2px);
 }
 
 .moments-post-overlay.show {
@@ -8246,7 +8239,6 @@
   display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(2px);
 }
 .diary-overlay.show { opacity: 1; pointer-events: auto; }
 
@@ -9468,8 +9460,7 @@
 }
 .call-overlay.active { opacity: 1; pointer-events: auto; }
 .call-overlay.ringing-mode {
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.5); -webkit-
   justify-content: center; align-items: center;
 }
 
@@ -9477,7 +9468,7 @@
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   z-index: 11500; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: rgba(0,0,0,0.5); -webkit-
 }
 .call-type-modal.active { opacity: 1; pointer-events: auto; }
 .call-type-card {
@@ -9504,7 +9495,7 @@
   color: var(--text-muted); font-size: 13px; cursor: pointer;
 }
 
-.call-ringing { display: none; flex-direction: column; align-items: stretch; width: 100%; max-width: 280px; padding: 24px 20px; padding-bottom: 24px; background: rgba(30,20,50,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+.call-ringing { display: none; flex-direction: column; align-items: stretch; width: 100%; max-width: 280px; padding: 24px 20px; padding-bottom: 24px; background: rgba(30,20,50,0.95); -webkit- border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
 .call-ringing.active { display: flex; animation: callCardIn 0.3s ease; }
 .call-ringing-center {
   flex: 1;
@@ -9603,8 +9594,7 @@
 @keyframes csFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .cs-card {
   width: 100%; max-width: 320px; max-height: 80vh;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.95); -webkit-
   border-radius: 16px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.2);
   overflow: hidden; display: flex; flex-direction: column;
@@ -9758,7 +9748,6 @@
   border-radius: 50%;
   pointer-events: none;
   opacity: 0;
-  will-change: transform, opacity;
   animation: callRingAppear ease-out forwards;
 }
 .call-dynamic-ring.ring-solid {
@@ -9869,8 +9858,7 @@
 .call-video-bg-btn:active { background: rgba(255,255,255,0.2); }
 .video-bg-menu {
   position: absolute; top: 56px; right: 12px;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.95); -webkit-
   border-radius: 12px; padding: 6px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.25);
   z-index: 150; display: none;
@@ -9899,8 +9887,7 @@
   padding-top: 6px;
   padding-bottom: 4px;
   position: relative; z-index: 5;
-  background: rgba(255,255,255,0.62);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.62); -webkit-
   border-radius: 14px;
 }
 .call-overlay.video-mode .call-chat-input-bar,
@@ -9912,8 +9899,7 @@
 .call-overlay.video-mode .call-top-bar .call-bg-btn,
 .call-overlay.video-mode .call-top-bar .call-minimize-btn,
 .call-overlay.video-mode .call-top-bar .call-video-bg-btn {
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  background: rgba(255,255,255,0.18); -webkit-
 }
 .call-overlay.video-mode .call-top-bar .call-bg-btn:active,
 .call-overlay.video-mode .call-top-bar .call-minimize-btn:active,
@@ -9951,14 +9937,12 @@
   padding: 6px 0;
   overflow: hidden;
   position: relative; z-index: 5;
-  background: rgba(255,255,255,0.62);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  background: rgba(255,255,255,0.62); -webkit-
   border-radius: 14px;
 }
 /* 视频模式：白底由 call-chat-area 承担，消息容器不重复套白 */
 .call-overlay.video-mode .call-chat-messages {
-  background: none;
-  backdrop-filter: none; -webkit-backdrop-filter: none;
+  background: none; -webkit-
   border-radius: 0;
 }
 /* 第1行：联系人消息（居中） */
@@ -10036,8 +10020,7 @@
   width: 100%; min-width: 0;
   background: rgba(255,255,255,var(--input-opacity)); border: 1px solid rgba(255,255,255,0.25);
   border-radius: 20px; padding: 12px 18px; color: var(--call-msg-color-self); font-size: 14px; outline: none;
-  transition: border-color 0.2s, background 0.2s; box-sizing: border-box;
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  transition: border-color 0.2s, background 0.2s; box-sizing: border-box; -webkit-
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(60,60,60,0.35); }
@@ -10058,8 +10041,7 @@
   padding: 0 8px; box-sizing: border-box;
   background: rgba(30,20,50,0.7);
   border-radius: 18px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(155,142,196,0.12);
-  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(155,142,196,0.12); -webkit-
   touch-action: none; cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   overflow: hidden; align-items: center;
@@ -12239,7 +12221,7 @@
 </div>
 
 <script>
-    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
+    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);-webkit-opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);-webkit-opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
     // ===== 键盘跟随 + 视口适配 =====
     (function () {
       const phone = document.querySelector('.phone');
