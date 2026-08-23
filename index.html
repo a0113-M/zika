@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v150')){sessionStorage.setItem('zk_v150','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==150){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v151')){sessionStorage.setItem('zk_v151','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==151){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v150</title>
+  <title>字卡 · 小手机 v151</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4131,25 +4131,6 @@
     }
     #chatDivinePanel.cdp-full .cdp-back-btn { background: transparent; }
     #chatDivinePanel.cdp-full .cdp-back-btn svg { stroke: #333; }
-    /* v143: 占卜卡死急救按钮（诊断+脱困），仅在占卜面板打开时出现 */
-    #cdvRescueBtn {
-      display: none;
-      position: fixed;
-      right: 14px; bottom: 96px;
-      width: 52px; height: 52px;
-      border-radius: 50%;
-      border: none;
-      background: #ff5252;
-      color: #fff;
-      font-size: 14px; font-weight: 700;
-      letter-spacing: 1px;
-      box-shadow: 0 4px 14px rgba(255,82,82,0.5);
-      z-index: 99999;
-      align-items: center; justify-content: center;
-      padding: 0;
-    }
-    #chatDivinePanel.active ~ #cdvRescueBtn { display: flex; }
-    #cdvRescueBtn:active { opacity: 0.8; }
     .cdp-body {
       flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
       padding: 14px 16px 6px;
@@ -10833,7 +10814,6 @@
         </div>
       </div>
 
-    <button id="cdvRescueBtn" aria-label="急救">急救</button>
     <!-- 通话类型选择弹窗 -->
     <div class="call-type-modal" id="callTypeModal">
       <div class="call-type-card">
@@ -21022,8 +21002,6 @@ patText2 = patText2.replace(/你/g, '我');
           panel.classList.add('active', 'cdp-full');
           backdrop.classList.remove('active');
           try { panel.style.pointerEvents = ''; panel.style.transition = 'transform .28s ease'; panel.style.transform = 'translateX(0)'; } catch (e) {}
-          var _rb = document.getElementById('cdvRescueBtn');
-          if (_rb) _rb.style.display = '';
           showView('setup');
           renderSetup();
         };
@@ -21035,15 +21013,13 @@ patText2 = patText2.replace(/你/g, '我');
           _dfMo.observe(panel, { attributes: true, attributeFilter: ['class'] });
         }
         document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
-        // v150: 全屏返回箭头改"滑出屏幕"——面板永不隐藏（内联 transform 控制，class 保留，无 display 切换）
+        // v150/v151: 全屏返回箭头改"滑出屏幕"——面板永不隐藏（内联 transform 控制，class 保留，无 display 切换）；v151 改右滑出
         document.getElementById('cdvBackBtn0').addEventListener('click', function () {
           try { var ae = document.activeElement; if (ae && ae.blur) ae.blur(); } catch (e) {}
           try {
             panel.style.transition = 'transform .28s ease';
-            panel.style.transform = 'translateX(-102%)';
+            panel.style.transform = 'translateX(102%)';
           } catch (e) {}
-          var _rb = document.getElementById('cdvRescueBtn');
-          if (_rb) _rb.style.display = 'none';
           setTimeout(function () {
             try { panel.style.pointerEvents = 'none'; } catch (e) {}
           }, 320);
@@ -24783,47 +24759,6 @@ patText2 = patText2.replace(/你/g, '我');
   window.applyTheme = applyTheme;
 })();
 
-    /* v143: 占卜卡死急救诊断+脱困（卡死时点右下角急救钮，可恢复并显示原因） */
-    (function () {
-      var btn = document.getElementById('cdvRescueBtn');
-      if (!btn) return;
-      btn.addEventListener('click', function () {
-        var d = document;
-        function st(id) {
-          var el = d.getElementById(id);
-          if (!el) return id + ':不存在';
-          return id + '{cls=' + (el.getAttribute('class') || '').slice(0, 30) + ' disp=' + (el.style.display || '默认') + '}';
-        }
-        var ph = d.getElementById('app');
-        var info = [
-          '【急救诊断 ' + new Date().toLocaleTimeString() + '】',
-          st('chatDivinePanel'),
-          st('cdvBackdrop'),
-          st('callOverlay'),
-          st('callMiniWindow'),
-          st('callTypeModal'),
-          st('sidebarOverlay'),
-          '焦点=' + (d.activeElement ? (d.activeElement.id || d.activeElement.tagName) : '无'),
-          'phone高=' + (ph ? (ph.style.height || '默认') : '?') + ' 屏高=' + window.innerHeight
-        ].join('\n');
-        var p = d.getElementById('chatDivinePanel');
-        if (p) p.classList.remove('active', 'cdp-full');
-        ['cdvBackdrop', 'clpBackdrop', 'acdBackdrop', 'sidebarOverlay', 'callTypeModal'].forEach(function (i) {
-          var el = d.getElementById(i);
-          if (el) el.classList.remove('active', 'show');
-        });
-        var co = d.getElementById('callOverlay');
-        if (co) co.classList.remove('active', 'ringing-mode', 'call-keyboard-open', 'kb-open');
-        var cm = d.getElementById('callMiniWindow');
-        if (cm) cm.classList.remove('show', 'open', 'active');
-        if (ph) ph.style.height = '';
-        var box = d.createElement('div');
-        box.style.cssText = 'position:fixed;left:8px;right:8px;top:8px;z-index:100000;background:#fff;color:#111;font:12px/1.7 monospace;padding:10px 12px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,.35);white-space:pre-wrap;word-break:break-all;';
-        box.textContent = info + '\n\n（弹层已重置。请截图发给阿云，谢谢！）';
-        d.body.appendChild(box);
-        setTimeout(function () { if (box.parentNode) box.parentNode.removeChild(box); }, 15000);
-      });
-    })();
     /* v144: 黑匣子（卡死诊断）——持续记录触摸/点击/焦点/视口事件到本地；异常关闭后下次打开自动弹报告 */
     (function () {
       var LSK = 'zk_bb_log', CLN = 'zk_bb_clean';
