@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v153')){sessionStorage.setItem('zk_v153','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==153){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v154')){sessionStorage.setItem('zk_v154','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==154){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v153</title>
+  <title>字卡 · 小手机 v154</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -396,7 +396,10 @@
       width: 100%;
       height: 100%;
       background: rgba(30, 25, 50, 0.55);
-      display: none;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
       align-items: center;
       justify-content: center;
       z-index: 100;
@@ -404,7 +407,8 @@
     }
 
     .modal-overlay.show {
-      display: flex;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .modal-box {
@@ -509,10 +513,10 @@
     .moment-edit-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
-      display: none; align-items: center; justify-content: center;
+      display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; align-items: center; justify-content: center;
       z-index: 500;
     }
-    .moment-edit-overlay.show { display: flex; }
+    .moment-edit-overlay.show { opacity: 1; pointer-events: auto; }
     .moment-edit-box {
       width: 90%; max-width: 380px; background: #fff;
       border-radius: 18px; padding: 24px 20px 20px;
@@ -552,10 +556,10 @@
     .moment-del-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
-      display: none; align-items: center; justify-content: center;
+      display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; align-items: center; justify-content: center;
       z-index: 500;
     }
-    .moment-del-overlay.show { display: flex; }
+    .moment-del-overlay.show { opacity: 1; pointer-events: auto; }
     .moment-del-box {
       width: 82%; max-width: 300px; background: #fff;
       border-radius: 18px; padding: 28px 22px 22px;
@@ -4420,10 +4424,10 @@
     .acd-hitem-r { font-size: 10.5px; color: rgba(255,255,255,0.5); margin-top: 4px; }
     .acd-hempty { text-align: center; color: rgba(255,255,255,0.5); font-size: 12px; padding: 30px 0; }
     .acd-live {
-      display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s ease; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       z-index: 1300; overflow: hidden;
     }
-    .acd-live.open { display: block; }
+    .acd-live.open { opacity: 1; pointer-events: auto; }
     .acd-live-scroll { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .acd-live-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
     .acd-glow {
@@ -4494,14 +4498,17 @@
       background: rgba(0,0,0,0.22); color: #fff; font-size: 13px; letter-spacing: 2px;
     }
     .clp-backdrop {
-      display: none;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.35);
       z-index: 260;
     }
     .clp-backdrop.active {
-      display: block;
+      opacity: 1;
+      pointer-events: auto;
     }
     .chat-letter-panel {
       display: none;
@@ -5038,12 +5045,13 @@
       width: 100%;
       height: 100%;
       z-index: 300;
-      display: none;
+      opacity: 0;
       pointer-events: none;
+      transition: opacity 0.2s ease;
     }
 
     .sidebar-overlay.show {
-      display: block;
+      opacity: 1;
       pointer-events: auto;
     }
 
@@ -6756,7 +6764,7 @@
   inset: 0;
   background: rgba(0,0,0,0.4);
   z-index: 200;
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: flex-end;
   justify-content: center;
   backdrop-filter: blur(2px);
@@ -7782,7 +7790,7 @@
 .diary-cat-settings:active { background: var(--bg-soft); }
 
 .diary-cat-manage-overlay {
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -7791,7 +7799,7 @@
   align-items: flex-end;
   justify-content: center;
 }
-.diary-cat-manage-overlay.show { display: flex; }
+.diary-cat-manage-overlay.show { opacity: 1; pointer-events: auto; }
 .diary-cat-manage-panel {
   background: #fff;
   border-radius: 16px 16px 0 0;
@@ -7909,12 +7917,12 @@
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.35);
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: center;
   justify-content: center;
   z-index: 10002;
 }
-.diary-cat-del-overlay.show { display: flex; }
+.diary-cat-del-overlay.show { opacity: 1; pointer-events: auto; }
 .diary-cat-del-box {
   background: #fff;
   border-radius: 16px;
@@ -8208,12 +8216,12 @@
   inset: 0;
   background: rgba(0,0,0,0.4);
   z-index: 200;
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(2px);
 }
-.diary-overlay.show { display: flex; }
+.diary-overlay.show { opacity: 1; pointer-events: auto; }
 
 .diary-modal {
   width: 90%;
@@ -8749,11 +8757,11 @@
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.3);
   z-index: 9999;
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: flex-end;
   justify-content: center;
 }
-.todo-prio-overlay.show { display: flex; }
+.todo-prio-overlay.show { opacity: 1; pointer-events: auto; }
 .todo-prio-popup {
   background: #fff;
   border-radius: 16px 16px 0 0;
@@ -8876,12 +8884,12 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.35);
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   justify-content: center;
   align-items: flex-end;
   z-index: 10000;
 }
-.todo-datetime-overlay.show { display: flex; }
+.todo-datetime-overlay.show { opacity: 1; pointer-events: auto; }
 .todo-datetime-popup {
   width: 92%;
   max-height: 55%;
@@ -9061,12 +9069,12 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.35);
-  display: none;
+  display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   justify-content: center;
   align-items: flex-end;
   z-index: 10000;
 }
-.todo-contact-overlay.show { display: flex; }
+.todo-contact-overlay.show { opacity: 1; pointer-events: auto; }
 .todo-contact-popup {
   width: 92%;
   max-height: 60%;
@@ -9421,17 +9429,17 @@
   margin: 0 auto;
   height: 100vh;
   height: 100dvh;
-  z-index: 11000; display: none; flex-direction: column;
+  z-index: 11000; display: flex; opacity: 0; pointer-events: none; flex-direction: column;
   background: transparent;
   color: #fff; overflow: hidden;
-  transition: background 0.4s ease;
+  transition: background 0.4s ease, opacity 0.3s ease;
   --call-msg-color: rgba(60,60,60,0.85);
   --call-msg-color-self: rgba(60,60,60,0.85);
   --halo-r: 255; --halo-g: 215; --halo-b: 0;
   --halo-opacity: 1;
   --input-opacity: 0.25;
 }
-.call-overlay.active { display: flex; }
+.call-overlay.active { opacity: 1; pointer-events: auto; }
 .call-overlay.ringing-mode {
   background: rgba(0,0,0,0.5);
   backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
@@ -9440,10 +9448,11 @@
 
 .call-type-modal {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 11500; display: none; align-items: center; justify-content: center;
+  z-index: 11500; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+  align-items: center; justify-content: center;
   background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
-.call-type-modal.active { display: flex; }
+.call-type-modal.active { opacity: 1; pointer-events: auto; }
 .call-type-card {
   background: var(--bg-card, #fff); border-radius: 16px; padding: 28px 24px;
   width: 280px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -9559,11 +9568,11 @@
 .cs-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.45);
-  z-index: 200; display: none;
+  z-index: 200; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   align-items: center; justify-content: center;
   padding: 20px;
 }
-.cs-overlay.active { display: flex; animation: csFadeIn 0.2s ease; }
+.cs-overlay.active { opacity: 1; pointer-events: auto; }
 @keyframes csFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .cs-card {
   width: 100%; max-width: 320px; max-height: 80vh;
@@ -10017,7 +10026,7 @@
 
 /* 语音小窗 - 圆角矩形 */
 .call-mini-window {
-  position: fixed; z-index: 11200; display: none;
+  position: fixed; z-index: 11200; display: flex; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   width: auto; min-width: 92px; height: 40px;
   padding: 0 8px; box-sizing: border-box;
   background: rgba(30,20,50,0.7);
@@ -10028,7 +10037,7 @@
   transition: transform 0.15s, box-shadow 0.15s;
   overflow: hidden; align-items: center;
 }
-.call-mini-window.active { display: flex; }
+.call-mini-window.active { opacity: 1; pointer-events: auto; }
 .call-mini-window:active { transform: scale(0.96); }
 .call-mini-window .cmw-avatar {
   width: 24px; height: 24px; border-radius: 50%; overflow: hidden;
@@ -24895,60 +24904,6 @@ patText2 = patText2.replace(/你/g, '我');
   window.applyTheme = applyTheme;
 })();
 
-    /* v144: 黑匣子（卡死诊断）——持续记录触摸/点击/焦点/视口事件到本地；异常关闭后下次打开自动弹报告 */
-    (function () {
-      var LSK = 'zk_bb_log', CLN = 'zk_bb_clean';
-      var buf = [], oldLog = [], wasClean = null, oldHb = 0;
-      try { oldLog = JSON.parse(localStorage.getItem(LSK) || '[]') || []; } catch (e) { oldLog = []; }
-      try { oldHb = parseInt(localStorage.getItem('zk_bb_hb') || '0', 10) || 0; } catch (e) {}
-      try { wasClean = localStorage.getItem(CLN); } catch (e) {}
-      buf = [];
-      function esc(x) { return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
-      function ts() { var n = new Date(); return ('0' + n.getHours()).slice(-2) + ':' + ('0' + n.getMinutes()).slice(-2) + ':' + ('0' + n.getSeconds()).slice(-2); }
-      function rec(tag, t) {
-        buf.push(ts() + ' ' + tag + (t ? ' ' + t : ''));
-        if (buf.length > 60) buf = buf.slice(-60);
-        try { localStorage.setItem(LSK, JSON.stringify(buf)); } catch (e) {}
-      }
-      var lastBeat = Date.now();
-      function beat() {
-        var now = Date.now();
-        if (now - lastBeat > 1500) rec('!LAG ' + (now - lastBeat) + 'ms');
-        lastBeat = now;
-        try { localStorage.setItem(LSK, JSON.stringify(buf)); } catch (e) {}
-        try { localStorage.setItem('zk_bb_hb', String(now)); } catch (e) {}
-        setTimeout(beat, 500);
-      }
-      setTimeout(beat, 500);
-      function tname(e) {
-        var t = e.target;
-        if (!t) return '?';
-        if (t.id) return '#' + t.id;
-        var c = t.className && String(t.className).split(' ')[0];
-        return c ? '.' + c : t.tagName;
-      }
-      ['touchstart', 'pointerdown', 'mousedown'].forEach(function (ev) {
-        document.addEventListener(ev, function (e) { rec(ev, tname(e)); }, true);
-      });
-      document.addEventListener('click', function (e) { rec('click', tname(e)); }, true);
-      window.addEventListener('resize', function () { rec('resize', 'h=' + window.innerHeight); }, true);
-      if (window.visualViewport) window.visualViewport.addEventListener('resize', function () { rec('vvResize', 'h=' + Math.round(window.visualViewport.height)); });
-      document.addEventListener('focusin', function (e) { rec('focusin', e.target ? (e.target.id || e.target.tagName) : ''); }, true);
-      document.addEventListener('focusout', function () { rec('focusout'); }, true);
-      window.addEventListener('pagehide', function () {
-        try { localStorage.setItem(CLN, '1'); } catch (e) {}
-      });
-      if (wasClean !== '1' && oldLog.length > 0) {
-        var box = document.createElement('div');
-        box.style.cssText = 'position:fixed;left:0;top:0;right:0;bottom:0;z-index:100001;background:rgba(0,0,0,.82);overflow:auto;';
-        box.innerHTML = '<div style="max-width:430px;margin:40px auto 20px;background:#fff;color:#111;border-radius:10px;padding:14px 16px;font:12px/1.7 monospace;white-space:pre-wrap;word-break:break-all;">' +
-          '<b>上次页面异常关闭 · 黑匣子报告</b><br>（请截图发给阿云，点此框关闭）<br>' +
-          '<b>最后心跳: ' + (oldHb > 0 ? new Date(oldHb).toLocaleTimeString() : '无') + '</b>（心跳时间比下面最后一条日志晚5秒以上=页面活着但触摸失效；接近=脚本卡死）<br><br>' +
-          oldLog.map(function (x) { return esc(x); }).join('<br>') + '</div>';
-        box.addEventListener('click', function () { if (box.parentNode) box.parentNode.removeChild(box); });
-        document.body.appendChild(box);
-      }
-    })();
 </script>
 
 </body>
