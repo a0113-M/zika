@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v154')){sessionStorage.setItem('zk_v154','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==154){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v155')){sessionStorage.setItem('zk_v155','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==155){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v154</title>
+  <title>字卡 · 小手机 v155</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -712,7 +712,9 @@
 
     /* --- 聊天界面 --- */
     .chat-view {
-      display: none;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
       flex-direction: column;
       background: #ededed;
       position: absolute;
@@ -724,7 +726,8 @@
     }
 
     .chat-view.show {
-      display: flex;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .chat-header {
@@ -1208,15 +1211,21 @@
 
     /* --- 聊天工具栏 --- */
     .chat-toolbar {
-      display: none;
+      display: flex;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
       background: #f7f7f7;
       position: relative;
       flex-direction: column;
+      transition: opacity 0.2s ease;
     }
 
     .chat-toolbar.open {
-      display: flex;
       height: calc(35vh);
+      opacity: 1;
+      pointer-events: auto;
       padding: 10px 12px 10px 12px;
       overflow: hidden;
       justify-content: flex-start;
@@ -3897,20 +3906,26 @@
 
     /* --- 表情包模块 --- */
     .emoji-module {
-      display: none;
+      display: flex;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
       padding: 8px 8px 4px 8px;
       background: #f7f7f7;
       position: relative;
       width: 100%;
-      height: 100%;
       flex-direction: column;
-      overflow: hidden;
       min-height: 0;
-      flex: 1;
+      flex: 0 0 0;
+      transition: opacity 0.2s ease;
     }
 
     .emoji-module.active {
-      display: flex;
+      height: 100%;
+      flex: 1;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .emoji-header {
@@ -4066,7 +4081,7 @@
       display: flex; justify-content: center; align-items: center;
       gap: 5px; margin-top: 10px;
     }
-    .toolbar-dots.hidden { display: none; }
+    .toolbar-dots.hidden { opacity: 0; height: 0; overflow: hidden; margin: 0; pointer-events: none; }
     .toolbar-dot {
       width: 5px; height: 5px; border-radius: 50%;
       background: rgba(0,0,0,0.18); border: none; padding: 0;
@@ -4511,7 +4526,9 @@
       pointer-events: auto;
     }
     .chat-letter-panel {
-      display: none;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -4526,7 +4543,8 @@
       z-index: 261;
     }
     .chat-letter-panel.active {
-      display: flex;
+      opacity: 1;
+      pointer-events: auto;
       animation: clp-scale-in 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
     }
     /* 占卜面板全屏模式（首页侧边栏进入，v137） */
@@ -4884,7 +4902,9 @@
 
         /* 信件详情弹窗（在信件面板内） */
     .chat-letter-detail {
-      display: none;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: #f7f7f7;
@@ -4894,7 +4914,7 @@
       padding: 10px;
       border-radius: 16px;
     }
-    .chat-letter-detail.active { display: flex; }
+    .chat-letter-detail.active { opacity: 1; pointer-events: auto; }
     .chat-letter-detail .cld-header {
       display: flex;
       align-items: center;
@@ -6343,19 +6363,26 @@
 
     /* 多选底部工具栏 */
     .chat-select-toolbar {
-      display: none;
+      display: flex;
+      height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 16px;
+      padding: 0 16px;
       background: #f7f7f7;
       border-top: 0.5px solid #d9d9d9;
       flex-shrink: 0;
-      min-height: 52px;
       gap: 12px;
     }
 
     .chat-select-toolbar.show {
-      display: flex;
+      height: auto;
+      min-height: 52px;
+      opacity: 1;
+      pointer-events: auto;
+      padding: 8px 16px;
     }
 
     .chat-select-toolbar .select-info {
@@ -12852,12 +12879,12 @@
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
         }
         chatView.classList.add('show');
-        var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
+        var bn=document.querySelector('.bottom-nav');if(bn){bn.style.opacity='0';bn.style.pointerEvents='none';bn.style.height='0';bn.style.overflow='hidden';}
         renderMessages(contactId);
       }
       function closeChat() {
         chatView.classList.remove('show');
-        var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='';
+        var bn=document.querySelector('.bottom-nav');if(bn){bn.style.opacity='';bn.style.pointerEvents='';bn.style.height='';bn.style.overflow='';}
         currentChatId = null;
         refreshList();
       }
