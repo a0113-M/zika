@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
+<title>测试页 - 最小聊天</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; overflow: hidden; background: #fff; font-family: -apple-system, sans-serif; }
+
+.phone {
+  width: 100%; max-width: 500px; margin: 0 auto;
+  height: 100%; height: 100dvh;
+  background: #fff; overflow-y: auto; overflow-x: hidden;
+  display: flex; flex-direction: column; position: relative;
+}
+
+.app-container { display: flex; flex-direction: column; height: 100%; position: relative; }
+
+/* 模拟字卡列表（极简） */
+.card-view { flex: 1; display: flex; flex-direction: column; }
+.card-view.hidden { visibility: hidden !important; max-height: 0 !important; overflow: hidden !important; flex: 0 0 0 !important; pointer-events: none !important; }
+.list-header { padding: 12px 16px; background: #ededed; font-size: 16px; font-weight: 600; }
+.contact-item { padding: 14px 16px; border-bottom: 0.5px solid #e0e0e0; display: flex; align-items: center; gap: 10px; }
+.contact-avatar { width: 40px; height: 40px; border-radius: 6px; background: #9b8ec4; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.contact-name { font-size: 15px; color: #333; }
+.contact-item:active { background: #f5f5f5; }
+
+/* 聊天视图 */
+.chat-view {
+  display: flex; flex-direction: column;
+  visibility: hidden; pointer-events: none;
+  background: #ededed; position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%; z-index: 200;
+}
+.chat-view.show { visibility: visible; pointer-events: auto; }
+
+.chat-header { display: flex; align-items: center; padding: 10px 12px; background: #ededed; border-bottom: 0.5px solid #d9d9d9; flex-shrink: 0; gap: 8px; }
+.chat-back { background: none; border: none; padding: 4px; cursor: pointer; display: flex; align-items: center; color: #333; }
+.chat-title { font-size: 16px; font-weight: 600; }
+
+.chat-messages { flex: 1; overflow-y: auto; padding: 12px; }
+.msg { max-width: 75%; margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; font-size: 15px; line-height: 1.4; word-break: break-word; }
+.msg.me { background: #95ec69; margin-left: auto; border-radius: 8px 2px 8px 8px; }
+.msg.them { background: #fff; border-radius: 2px 8px 8px 8px; }
+
+.chat-bottom-wrapper {
+  display: flex; flex-direction: column; background: #f7f7f7;
+  border-top: 0.5px solid #d9d9d9; position: relative;
+  flex-shrink: 0; padding-bottom: env(safe-area-inset-bottom, 2px);
+}
+.chat-input-bar {
+  display: flex; align-items: center; padding: 4px 12px; background: #f7f7f7;
+  gap: 8px; flex-shrink: 0; min-height: 44px;
+}
+.input-left-btn { background: none; border: none; padding: 4px; cursor: pointer; display: flex; align-items: center; color: #333; flex-shrink: 0; }
+.input-left-btn:active { opacity: 0.6; }
+#chatInput { flex: 1; border: none; background: #fff; border-radius: 6px; padding: 8px 10px; font-size: 15px; outline: none; }
+.chat-send-btn { background: #07c160; color: #fff; border: none; border-radius: 6px; padding: 6px 14px; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+
+.chat-toolbar {
+  display: flex; height: 0; overflow: hidden; visibility: hidden;
+  pointer-events: none; background: #f7f7f7; flex-direction: column;
+  transition: height 0.2s ease;
+}
+.chat-toolbar.open { height: 200px; visibility: visible; pointer-events: auto; padding: 10px; overflow-y: auto; }
+.toolbar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.toolbar-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; cursor: pointer; padding: 8px; }
+.toolbar-item:active { background: rgba(0,0,0,0.06); border-radius: 8px; }
+.toolbar-icon { width: 48px; height: 48px; border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.toolbar-label { font-size: 12px; color: #888; }
+
+/* 状态显示 */
+#status-log { position: fixed; top: 4px; left: 4px; right: 4px; z-index: 99999; font-size: 10px; color: #c44; background: rgba(255,255,255,0.9); padding: 4px 8px; border-radius: 6px; pointer-events: none; max-height: 60px; overflow: hidden; }
+</style>
+</head>
+<body>
+
+<div id="status-log">测试页加载中...</div>
+
+<div class="phone" id="app">
+  <div class="app-container">
+    <!-- 字卡列表 -->
+    <div id="cardView" class="card-view">
+      <div class="list-header">测试联系人</div>
+      <div class="contact-item" data-id="1">
+        <div class="contact-avatar">A</div>
+        <div class="contact-name">测试联系人A</div>
+      </div>
+      <div class="contact-item" data-id="2">
+        <div class="contact-avatar">B</div>
+        <div class="contact-name">测试联系人B</div>
+      </div>
+    </div>
+
+    <!-- 聊天视图 -->
+    <div class="chat-view" id="chatView">
+      <div class="chat-header">
+        <button class="chat-back" id="chatBack">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <span class="chat-title" id="chatTitle">测试联系人A</span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg them">你好，这是测试消息</div>
+        <div class="msg me">收到，测试中</div>
+        <div class="msg them">点击底部区域试试看卡不卡</div>
+      </div>
+      <div class="chat-bottom-wrapper">
+        <div class="chat-input-bar">
+          <button class="input-left-btn" id="chatToolbarToggle">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <input type="text" id="chatInput" placeholder="输入消息..." />
+          <button class="chat-send-btn" id="chatSendBtn">发送</button>
+        </div>
+        <div class="chat-toolbar" id="chatToolbar">
+          <div class="toolbar-grid">
+            <button class="toolbar-item"><div class="toolbar-icon">E</div><div class="toolbar-label">表情</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">P</div><div class="toolbar-label">相册</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">D</div><div class="toolbar-label">占卜</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">L</div><div class="toolbar-label">信件</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">C</div><div class="toolbar-label">通话</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">T</div><div class="toolbar-label">陪伴</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">F</div><div class="toolbar-label">拍一拍</div></button>
+            <button class="toolbar-item"><div class="toolbar-icon">S</div><div class="toolbar-label">决策</div></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var log = document.getElementById('status-log');
+  var logs = [];
+  function addLog(msg) {
+    logs.unshift(new Date().toLocaleTimeString() + ' ' + msg);
+    if (logs.length > 5) logs.pop();
+    log.textContent = logs.join(' | ');
+  }
+  addLog('页面就绪');
+
+  var phone = document.getElementById('app');
+  var cardView = document.getElementById('cardView');
+  var chatView = document.getElementById('chatView');
+  var chatBack = document.getElementById('chatBack');
+  var chatInput = document.getElementById('chatInput');
+  var chatToolbarToggle = document.getElementById('chatToolbarToggle');
+  var chatToolbar = document.getElementById('chatToolbar');
+  var chatSendBtn = document.getElementById('chatSendBtn');
+  var chatMessages = document.getElementById('chatMessages');
+  var bw = document.querySelector('.chat-bottom-wrapper');
+
+  // 进入聊天
+  document.querySelectorAll('.contact-item').forEach(function(item){
+    item.addEventListener('click', function(){
+      cardView.classList.add('hidden');
+      chatView.classList.add('show');
+      addLog('进入聊天');
+    });
+  });
+  chatBack.addEventListener('click', function(){
+    chatView.classList.remove('show');
+    cardView.classList.remove('hidden');
+    addLog('返回列表');
+  });
+
+  // 工具栏开关
+  var isToolbarOpen = false;
+  chatToolbarToggle.addEventListener('click', function(e){
+    e.stopPropagation();
+    isToolbarOpen = !isToolbarOpen;
+    if (isToolbarOpen) {
+      chatToolbar.classList.add('open');
+      addLog('工具栏开');
+    } else {
+      chatToolbar.classList.remove('open');
+      addLog('工具栏关');
+    }
+  });
+
+  // 输入框聚焦时收起工具栏
+  chatInput.addEventListener('focus', function(){
+    if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
+    addLog('输入框聚焦');
+  });
+
+  // 发送
+  chatSendBtn.addEventListener('click', function(){
+    var text = chatInput.value.trim();
+    if (!text) return;
+    var msg = document.createElement('div');
+    msg.className = 'msg me';
+    msg.textContent = text;
+    chatMessages.appendChild(msg);
+    chatInput.value = '';
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    addLog('发送消息');
+  });
+
+  // ===== 键盘适配器（从原文件移植，简化版） =====
+  var kbHeight = 0;
+  var inputFocused = false;
+  var maxVH = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+
+  function getVH() { return window.visualViewport ? window.visualViewport.height : window.innerHeight; }
+  function calcKb(fb) {
+    var d1 = maxVH - getVH();
+    var d2 = maxVH - window.innerHeight;
+    var d = Math.max(d1, d2);
+    if (d > 40) return Math.round(d);
+    return (fb && fb > 0) ? fb : Math.round(maxVH * 0.30);
+  }
+
+  function apply() {
+    var curVH = getVH();
+    if (!inputFocused && curVH > maxVH) maxVH = curVH;
+    var targetH;
+    if (inputFocused) {
+      targetH = (curVH < maxVH - 40) ? curVH : Math.round(maxVH - kbHeight);
+    } else {
+      targetH = maxVH;
+    }
+    phone.style.height = targetH + 'px';
+    if (window.scrollX !== 0 || window.scrollY !== 0) window.scrollTo(0, 0);
+    if (kbHeight > 0 && inputFocused) {
+      bw.style.position = 'fixed';
+      bw.style.bottom = kbHeight + 'px';
+      bw.style.left = '0';
+      bw.style.right = '0';
+      bw.style.zIndex = '1000';
+    } else {
+      bw.style.position = 'relative';
+      bw.style.bottom = 'auto';
+      bw.style.left = 'auto';
+      bw.style.right = 'auto';
+      bw.style.zIndex = 'auto';
+    }
+  }
+
+  document.addEventListener('focusin', function(e){
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      inputFocused = true;
+      kbHeight = calcKb();
+      apply();
+      setTimeout(function(){ if(inputFocused){ kbHeight = calcKb(kbHeight); apply(); } }, 50);
+      setTimeout(function(){ if(inputFocused){ kbHeight = calcKb(kbHeight); apply(); } }, 150);
+      addLog('focusin apply x3');
+    }
+  });
+
+  document.addEventListener('focusout', function(){
+    setTimeout(function(){
+      var el = document.activeElement;
+      if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+        inputFocused = false;
+        kbHeight = 0;
+        setTimeout(apply, 100);
+        setTimeout(apply, 400);
+        addLog('focusout apply');
+      }
+    }, 100);
+  });
+
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function(){
+      var curVH = getVH();
+      if (!inputFocused && curVH > maxVH) maxVH = curVH;
+      if (inputFocused && curVH >= maxVH - 40) { inputFocused = false; kbHeight = 0; }
+      if (inputFocused) { kbHeight = calcKb(kbHeight); } else { kbHeight = 0; }
+      apply();
+    });
+  }
+
+  window.addEventListener('resize', function(){ apply(); });
+
+  setInterval(function(){
+    if (inputFocused) {
+      var el = document.activeElement;
+      if (!el || (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA')) {
+        inputFocused = false; kbHeight = 0; apply();
+      }
+    }
+  }, 500);
+
+  apply();
+  addLog('键盘适配器就绪');
+})();
+</script>
+</body>
+</html>
