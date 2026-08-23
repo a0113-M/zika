@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v152')){sessionStorage.setItem('zk_v152','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==152){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v153')){sessionStorage.setItem('zk_v153','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==153){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v152</title>
+  <title>字卡 · 小手机 v153</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21122,8 +21122,13 @@ patText2 = patText2.replace(/你/g, '我');
 
         function closeDivine() {
           try { var _ae = document.activeElement; if (_ae && _ae.blur && panel.contains(_ae)) _ae.blur(); } catch (e) {}
+          var _locked = (panel.style.display === 'flex');
           panel.classList.remove('active', 'cdp-full');
-          try { panel.style.transform = ''; panel.style.transition = ''; panel.style.pointerEvents = ''; } catch (e) {}
+          if (_locked) {
+            try { panel.style.transition = 'transform .28s ease'; panel.style.transform = 'translateX(102%)'; panel.style.pointerEvents = 'none'; } catch (e) {}
+          } else {
+            try { panel.style.transform = ''; panel.style.transition = ''; panel.style.pointerEvents = ''; panel.style.display = ''; } catch (e) {}
+          }
           backdrop.classList.remove('active');
           showView('setup');
         }
@@ -21131,7 +21136,7 @@ patText2 = patText2.replace(/你/g, '我');
         window.openDivineFromSidebar = function () {
           panel.classList.add('active', 'cdp-full');
           backdrop.classList.remove('active');
-          try { panel.style.pointerEvents = ''; panel.style.transition = 'transform .28s ease'; panel.style.transform = 'translateX(0)'; } catch (e) {}
+          try { panel.style.display = ''; panel.style.pointerEvents = ''; panel.style.transition = 'transform .28s ease'; panel.style.transform = 'translateX(0)'; } catch (e) {}
           showView('setup');
           renderSetup();
         };
@@ -21149,6 +21154,7 @@ patText2 = patText2.replace(/你/g, '我');
           try {
             panel.style.transition = 'transform .28s ease';
             panel.style.transform = 'translateX(102%)';
+            panel.style.display = 'flex';
           } catch (e) {}
           setTimeout(function () {
             try { panel.style.pointerEvents = 'none'; } catch (e) {}
@@ -21157,7 +21163,7 @@ patText2 = patText2.replace(/你/g, '我');
         backdrop.addEventListener('click', closeDivine);
         document.querySelector('.toolbar-item[data-tool="divine"]').addEventListener('click', function (e) {
           e.stopPropagation();
-          var was = panel.classList.contains('active');
+          var was = panel.classList.contains('active') && panel.style.display !== 'flex';
           closeDivine();
           document.getElementById('chatLetterPanel').classList.remove('active');
           document.getElementById('clpBackdrop').classList.remove('active');
@@ -21167,7 +21173,7 @@ patText2 = patText2.replace(/你/g, '我');
           if (_ap5) _ap5.classList.remove('active');
           var _ab5 = document.getElementById('acdBackdrop');
           if (_ab5) _ab5.classList.remove('active');
-          if (!was) { panel.classList.add('active'); backdrop.classList.add('active'); renderSetup(); }
+          if (!was) { panel.classList.add('active'); panel.style.display = ''; panel.style.transform = ''; panel.style.transition = ''; panel.style.pointerEvents = ''; backdrop.classList.add('active'); renderSetup(); }
         });
       })();
 
