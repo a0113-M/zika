@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v159')){sessionStorage.setItem('zk_v159','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==159){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v160')){sessionStorage.setItem('zk_v160','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==160){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v159</title>
+  <title>字卡 · 小手机 v160</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8326,6 +8326,59 @@
 }
 .diary-modal-confirm:active { opacity: 0.85; }
 
+/* v160: 日记搜索栏 */
+.diary-search-wrap {
+  display: flex; align-items: center;
+  padding: 6px 16px 8px; background: #fff;
+  border-bottom: 0.5px solid #e0e0e0; flex-shrink: 0; position: relative;
+}
+.diary-search-icon {
+  position: absolute; left: 26px; width: 15px; height: 15px;
+  color: #bbb; pointer-events: none;
+}
+.diary-search-wrap input {
+  flex: 1; border: none; background: var(--bg-soft);
+  border-radius: 8px; padding: 7px 32px 7px 34px; font-size: 14px;
+  outline: none; color: #333;
+}
+.diary-search-wrap input::placeholder { color: #bbb; }
+.diary-search-clear {
+  position: absolute; right: 24px; width: 18px; height: 18px;
+  border: none; background: #ccc; color: #fff; border-radius: 50%;
+  font-size: 13px; line-height: 1; display: none;
+  align-items: center; justify-content: center; cursor: pointer;
+}
+.diary-search-clear.show { display: flex; }
+
+/* v160: 日记详情全屏页 */
+.diary-detail-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg-main); z-index: 360; display: none; flex-direction: column;
+}
+.diary-detail-overlay.show { display: flex; }
+.diary-detail-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px; background: #fff;
+  border-bottom: 0.5px solid #e0e0e0; min-height: 56px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+}
+.diary-detail-back {
+  background: none; border: none; padding: 4px 8px;
+  cursor: pointer; color: var(--primary);
+}
+.diary-detail-header span {
+  font-size: 17px; font-weight: 600; color: #1a1a1a;
+}
+.diary-detail-scroll { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
+.diary-detail-scroll .diary-text { font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
+.diary-detail-time { font-size: 12px; color: #aaa; margin-top: 12px; }
+.diary-detail-title {
+  font-size: 17px; font-weight: 600; color: #1a1a1a;
+  margin-bottom: 12px; line-height: 1.4;
+}
+.diary-item { cursor: pointer; }
+
+
 
 /* ===== 待办优先级 & 联系人 ===== */
 .todo-prio-dot {
@@ -11771,6 +11824,11 @@
         </div>
       </div>
     </div>
+    <div class="diary-search-wrap" id="diarySearchWrap">
+      <svg class="diary-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input type="text" id="diarySearchInput" placeholder="搜索日记内容...">
+      <button class="diary-search-clear" id="diarySearchClear">×</button>
+    </div>
     <div class="diary-scroll" id="diaryScroll">
       <div class="diary-feed" id="diaryFeed">
         <div class="diary-empty" id="diaryEmpty">
@@ -11843,6 +11901,16 @@
           <button class="diary-modal-confirm" id="diaryDeleteConfirm" style="background:linear-gradient(135deg,#ff6b6b,#e55a5a);">删除</button>
         </div>
       </div>
+    </div>
+    <!-- v160: 日记详情全屏页 -->
+    <div class="diary-detail-overlay" id="diaryDetailOverlay">
+      <div class="diary-detail-header">
+        <button class="diary-detail-back" id="diaryDetailBack">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+        </button>
+        <span>日记详情</span>
+      </div>
+      <div class="diary-detail-scroll" id="diaryDetailScroll"></div>
     </div>
   </div>
 
@@ -13254,7 +13322,8 @@
           title: `聊天记录 - ${name} (${selectedMsgs.length}条)`,
           content: text,
           date: new Date().toISOString(),
-          type: 'chat'
+          type: 'chat',
+          category: '聊天记录'
         };
         diaryEntries.unshift(entry);
         try { localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries)); } catch(e) {}
@@ -21977,12 +22046,14 @@ patText2 = patText2.replace(/你/g, '我');
       // ===== 日记模块 =====
       // 分类管理
       var _diaryCurrentCategory = 'all';
+      var _diarySearchText = '';
       function getDiaryCategories() {
         try {
           var cats = JSON.parse(localStorage.getItem('diaryCategories') || 'null');
-          if (!cats || !Array.isArray(cats) || cats.length === 0) cats = ['生活'];
+          if (!cats || !Array.isArray(cats) || cats.length === 0) cats = ['生活', '聊天记录'];
+          if (cats.indexOf('聊天记录') === -1) { cats.push('聊天记录'); saveDiaryCategories(cats); }
           return cats;
-        } catch(e) { return ['生活']; }
+        } catch(e) { return ['生活', '聊天记录']; }
       }
       function saveDiaryCategories(cats) {
         try { localStorage.setItem('diaryCategories', JSON.stringify(cats)); } catch(e) {}
@@ -22248,6 +22319,56 @@ patText2 = patText2.replace(/你/g, '我');
         diaryPage.classList.remove('show');
       });
 
+      // v160: 搜索功能
+      var diarySearchInput = document.getElementById('diarySearchInput');
+      var diarySearchClear = document.getElementById('diarySearchClear');
+      if (diarySearchInput) {
+        diarySearchInput.addEventListener('input', function() {
+          _diarySearchText = this.value.trim();
+          if (diarySearchClear) diarySearchClear.classList.toggle('show', !!_diarySearchText);
+          renderDiary();
+        });
+      }
+      if (diarySearchClear) {
+        diarySearchClear.addEventListener('click', function() {
+          if (diarySearchInput) diarySearchInput.value = '';
+          _diarySearchText = '';
+          diarySearchClear.classList.remove('show');
+          renderDiary();
+        });
+      }
+
+      // v160: 日记详情页
+      function openDiaryDetail(id) {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === id; });
+        if (!entry) return;
+        var overlay = document.getElementById('diaryDetailOverlay');
+        var scroll = document.getElementById('diaryDetailScroll');
+        if (!overlay || !scroll) return;
+        var titleHtml = entry.title ? '<div class="diary-detail-title">' + escapeDiaryHtml(entry.title) + '</div>' : '';
+        var displayText = entry.content || '';
+        var escapedText = escapeDiaryHtml(displayText);
+        var catBadge = entry.category ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
+        var imageHtml = '';
+        var images = entry.images || [];
+        if (images.length > 0) {
+          var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
+          imageHtml = '<div class="' + gridClass + '">';
+          images.forEach(function(img) { imageHtml += '<img src="' + img + '" onclick="window._openDiaryImage(this.src)">'; });
+          imageHtml += '</div>';
+        }
+        var timeStr = formatDiaryTime(entry.date);
+        scroll.innerHTML = catBadge + titleHtml + '<div class="diary-text">' + escapedText + '</div>' + imageHtml + '<div class="diary-detail-time">' + timeStr + '</div>';
+        overlay.classList.add('show');
+      }
+      var diaryDetailBack = document.getElementById('diaryDetailBack');
+      if (diaryDetailBack) {
+        diaryDetailBack.addEventListener('click', function() {
+          document.getElementById('diaryDetailOverlay').classList.remove('show');
+        });
+      }
+
       function getDiaryEntries() {
         try { return JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch(e) { return []; }
       }
@@ -22385,10 +22506,19 @@ patText2 = patText2.replace(/你/g, '我');
         if (_diaryCurrentCategory && _diaryCurrentCategory !== 'all') {
           entries = entries.filter(function(e) { return e.category === _diaryCurrentCategory; });
         }
+        if (_diarySearchText) {
+          var st = _diarySearchText.toLowerCase();
+          entries = entries.filter(function(e) {
+            return (e.content && e.content.toLowerCase().indexOf(st) >= 0) ||
+                   (e.title && e.title.toLowerCase().indexOf(st) >= 0) ||
+                   (e.category && e.category.toLowerCase().indexOf(st) >= 0);
+          });
+        }
         diaryFeed.innerHTML = '';
 
         if (entries.length === 0) {
-          diaryFeed.innerHTML = '<div class="diary-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><div>还没有日记，写下第一篇吧</div></div>';
+          var emptyMsg = _diarySearchText ? '没有找到匹配的日记' : '还没有日记，写下第一篇吧';
+          diaryFeed.innerHTML = '<div class="diary-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><div>' + emptyMsg + '</div></div>';
           return;
         }
 
@@ -22402,6 +22532,7 @@ patText2 = patText2.replace(/你/g, '我');
           item.className = 'diary-item';
 
           var catBadge = (entry.category && entry.category !== '生活') ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
+          var titleHtml = entry.title ? '<div class="diary-detail-title" style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px;">' + escapeDiaryHtml(entry.title) + '</div>' : '';
 
           var isPrivate = entry.visibility === 'private';
           var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
@@ -22442,6 +22573,7 @@ patText2 = patText2.replace(/你/g, '我');
 
           item.innerHTML =
             catBadge +
+            titleHtml +
             visibilityHtml +
             '<div class="diary-text">' + escapedText + '</div>' +
             imageHtml +
@@ -22510,6 +22642,16 @@ patText2 = patText2.replace(/你/g, '我');
         commentInputs.forEach(function(inp) {
           inp.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') { sendDiaryComment(parseInt(this.dataset.commentInputId)); }
+          });
+        });
+
+        // v160: 点击日记卡片打开详情
+        var diaryItems = diaryFeed.querySelectorAll('.diary-item');
+        diaryItems.forEach(function(item) {
+          item.addEventListener('click', function(e) {
+            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.diary-comment-area') || e.target.closest('img')) return;
+            var editBtn = this.querySelector('[data-edit-id]');
+            if (editBtn) openDiaryDetail(parseInt(editBtn.dataset.editId));
           });
         });
 
