@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v166')){sessionStorage.setItem('zk_v166','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==166){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v167')){sessionStorage.setItem('zk_v167','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==167){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v166</title>
+  <title>字卡 · 小手机 v167</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8458,6 +8458,7 @@
   border-radius: 4px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; background: #fafafa;
+  -webkit-tap-highlight-color: transparent;
 }
 .diary-wc-add svg { width: 28px; height: 28px; color: #ccc; }
 .diary-edit-scroll .diary-category-select {
@@ -11944,7 +11945,7 @@
       <div class="diary-edit-scroll">
         <textarea class="diary-wc-textarea" id="diaryWriteTextarea" placeholder="这一刻的想法..."></textarea>
         <div class="diary-wc-grid" id="diaryWriteImagePreview"></div>
-        <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="display:none">
+        <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden">
         <div class="diary-category-select">
           <label>分类：</label>
           <select id="diaryWriteCategory"></select>
@@ -11963,7 +11964,7 @@
       <div class="diary-edit-scroll">
         <textarea class="diary-wc-textarea" id="diaryEditTextarea" placeholder="这一刻的想法..."></textarea>
         <div class="diary-wc-grid" id="diaryEditImagePreview"></div>
-        <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="display:none">
+        <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden">
         <div class="diary-category-select">
           <label>分类：</label>
           <select id="diaryEditCategory"></select>
@@ -22597,7 +22598,6 @@ patText2 = patText2.replace(/你/g, '我');
 
       function fileToBase64(file) {
         return new Promise(function(resolve, reject) {
-          if (!file.type.startsWith('image/')) { resolve(''); return; }
           var reader = new FileReader();
           reader.onload = function() {
             var img = new Image();
@@ -22636,10 +22636,10 @@ patText2 = patText2.replace(/你/g, '我');
           diaryWriteImagePreview.appendChild(div);
         });
         if (_diaryPendingImages.length < 9) {
-          var addBtn = document.createElement('div');
+          var addBtn = document.createElement('label');
           addBtn.className = 'diary-wc-add';
+          addBtn.htmlFor = 'diaryWriteImageInput';
           addBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-          addBtn.addEventListener('click', function() { diaryWriteImageInput.click(); });
           diaryWriteImagePreview.appendChild(addBtn);
         }
       }
@@ -22658,10 +22658,10 @@ patText2 = patText2.replace(/你/g, '我');
           diaryEditImagePreview.appendChild(div);
         });
         if (_diaryEditPendingImages.length < 9) {
-          var addBtn = document.createElement('div');
+          var addBtn = document.createElement('label');
           addBtn.className = 'diary-wc-add';
+          addBtn.htmlFor = 'diaryEditImageInput';
           addBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
-          addBtn.addEventListener('click', function() { diaryEditImageInput.click(); });
           diaryEditImagePreview.appendChild(addBtn);
         }
       }
