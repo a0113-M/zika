@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v161')){sessionStorage.setItem('zk_v161','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==161){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v162')){sessionStorage.setItem('zk_v162','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==162){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v161</title>
+  <title>字卡 · 小手机 v162</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8388,6 +8388,41 @@
   font-size: 13px; color: #888; font-weight: 600; margin-bottom: 8px;
 }
 .diary-detail-comment-list .diary-comment-item { padding: 6px 0; }
+/* v162: 日记编辑全屏页 */
+.diary-edit-fullscreen {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: var(--bg-main); z-index: 370; display: none; flex-direction: column;
+}
+.diary-edit-fullscreen.show { display: flex; }
+.diary-edit-header {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 16px; background: #fff;
+  border-bottom: 0.5px solid #e0e0e0; min-height: 56px;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+}
+.diary-edit-header .diary-detail-back { background: none; border: none; padding: 4px 8px; cursor: pointer; color: var(--primary); }
+.diary-edit-header span {
+  flex: 1; font-size: 17px; font-weight: 600; color: #1a1a1a;
+}
+.diary-edit-save-btn {
+  background: linear-gradient(135deg, var(--primary), #7b6eb4);
+  color: #fff; border: none; border-radius: 8px;
+  padding: 6px 18px; font-size: 14px; cursor: pointer; white-space: nowrap;
+}
+.diary-edit-save-btn:active { opacity: 0.85; }
+.diary-edit-scroll {
+  flex: 1; overflow-y: auto; padding: 16px;
+  -webkit-overflow-scrolling: touch;
+}
+.diary-edit-scroll .diary-category-select { margin-bottom: 16px; }
+.diary-edit-textarea {
+  width: 100%; min-height: 240px;
+  border: 1px solid #d4c8e8; border-radius: 12px;
+  padding: 14px; font-size: 15px; resize: none; outline: none;
+  color: #333; background: #fff; box-sizing: border-box; margin-bottom: 16px;
+  line-height: 1.7;
+}
+.diary-edit-scroll .diary-image-upload-area { margin-bottom: 16px; }
 
 
 
@@ -11879,15 +11914,21 @@
         </div>
       </div>
     </div>
-    <!-- 编辑日记弹窗 -->
-    <div class="diary-overlay" id="diaryEditOverlay">
-      <div class="diary-modal">
-        <h3>编辑日记</h3>
+    <!-- 编辑日记全屏页 -->
+    <div class="diary-edit-fullscreen" id="diaryEditOverlay">
+      <div class="diary-edit-header">
+        <button class="diary-detail-back" id="diaryEditCancel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+        </button>
+        <span>编辑日记</span>
+        <button class="diary-edit-save-btn" id="diaryEditConfirm">保存</button>
+      </div>
+      <div class="diary-edit-scroll">
         <div class="diary-category-select">
           <label>分类：</label>
           <select id="diaryEditCategory"></select>
         </div>
-        <textarea class="diary-modal-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
+        <textarea class="diary-edit-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
         <div class="diary-image-upload-area">
           <button type="button" class="diary-image-upload-btn" id="diaryEditUploadBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -11895,10 +11936,6 @@
           </button>
           <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="display:none">
           <div class="diary-image-preview" id="diaryEditImagePreview"></div>
-        </div>
-        <div class="diary-modal-actions">
-          <button class="diary-modal-cancel" id="diaryEditCancel">取消</button>
-          <button class="diary-modal-confirm" id="diaryEditConfirm">保存</button>
         </div>
       </div>
     </div>
@@ -13314,23 +13351,19 @@
         }
 
         // 格式化聊天记录
-        const dateStr = new Date().toLocaleString('zh-CN');
         let text = `聊天记录 - ${name}\n`;
-        text += `导出时间：${dateStr}\n`;
-        text += `共 ${selectedMsgs.length} 条消息\n`;
-        text += `${'╌'.repeat(20)}\n\n`;
+        text += `${'╌'.repeat(20)}\n`;
         selectedMsgs.forEach(msg => {
           const sender = msg.from === 'me' ? '我' : name;
           text += `[${msg.time}] ${sender}：${msg.text}\n`;
         });
-        text += `\n${'╌'.repeat(20)}\n`;
-        text += `导出方式：多选导出`;
+        text += `${'╌'.repeat(20)}`;
 
         // 保存到日记（使用 localStorage）
         let diaryEntries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
         const entry = {
           id: Date.now(),
-          title: `聊天记录 - ${name} (${selectedMsgs.length}条)`,
+          title: `聊天记录 - ${name}`,
           content: text,
           date: new Date().toISOString(),
           type: 'chat',
