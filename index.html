@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v160')){sessionStorage.setItem('zk_v160','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==160){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v161')){sessionStorage.setItem('zk_v161','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==161){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v160</title>
+  <title>字卡 · 小手机 v161</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8377,6 +8377,17 @@
   margin-bottom: 12px; line-height: 1.4;
 }
 .diary-item { cursor: pointer; }
+/* v161: 日记详情页操作栏 */
+.diary-detail-action-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; padding-top: 12px; margin-top: 8px;
+  border-top: 0.5px solid var(--border-light);
+}
+.diary-detail-comments { margin-top: 12px; }
+.diary-detail-comments-title {
+  font-size: 13px; color: #888; font-weight: 600; margin-bottom: 8px;
+}
+.diary-detail-comment-list .diary-comment-item { padding: 6px 0; }
 
 
 
@@ -22359,8 +22370,97 @@ patText2 = patText2.replace(/你/g, '我');
           imageHtml += '</div>';
         }
         var timeStr = formatDiaryTime(entry.date);
-        scroll.innerHTML = catBadge + titleHtml + '<div class="diary-text">' + escapedText + '</div>' + imageHtml + '<div class="diary-detail-time">' + timeStr + '</div>';
+        var isLiked = entry.likes && entry.likes.indexOf('me') >= 0;
+        var likeCount = entry.likes ? entry.likes.length : 0;
+        var commentCount = entry.comments ? entry.comments.length : 0;
+        var accentVar = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+        var likeFill = isLiked ? accentVar : 'none';
+        var likeStroke = isLiked ? accentVar : 'currentColor';
+        var commentListHtml = '';
+        if (commentCount > 0) {
+          commentListHtml = '<div class="diary-detail-comment-list">';
+          entry.comments.forEach(function(c) {
+            commentListHtml += '<div class="diary-comment-item"><span class="comment-author">' + escapeDiaryHtml(c.author) + '</span>：' + escapeDiaryHtml(c.text) + '</div>';
+          });
+          commentListHtml += '</div>';
+        }
+        var actionHtml =
+          '<div class="diary-detail-action-bar">' +
+          '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" id="detailLikeBtn">' +
+          '<svg viewBox="0 0 24 24" fill="' + likeFill + '" stroke="' + likeStroke + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
+          (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
+          '</button>' +
+          '<button class="diary-comment-toggle" id="detailCommentBtn">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
+          (commentCount > 0 ? '<span>' + commentCount + '</span>' : '') +
+          '</button>' +
+          '<button class="diary-edit-btn" id="detailEditBtn">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+          '</button>' +
+          '<button class="diary-delete-btn" id="detailDeleteBtn">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>' +
+          '</button>' +
+          '</div>';
+        var commentAreaHtml =
+          '<div class="diary-detail-comments">' +
+          '<div class="diary-detail-comments-title">评论 (' + commentCount + ')</div>' +
+          commentListHtml +
+          '<div class="diary-comment-input-wrap">' +
+          '<input class="diary-comment-input" id="detailCommentInput" placeholder="写评论...">' +
+          '<button class="diary-comment-send" id="detailCommentSend">发送</button>' +
+          '</div>' +
+          '</div>';
+        scroll.innerHTML = catBadge + titleHtml + '<div class="diary-text">' + escapedText + '</div>' + imageHtml + '<div class="diary-detail-time">' + timeStr + '</div>' + actionHtml + commentAreaHtml;
         overlay.classList.add('show');
+
+        var dLikeBtn = document.getElementById('detailLikeBtn');
+        if (dLikeBtn) dLikeBtn.addEventListener('click', function() {
+          var es = getDiaryEntries();
+          var en = es.find(function(e) { return e.id === id; });
+          if (!en) return;
+          if (!en.likes) en.likes = [];
+          var idx = en.likes.indexOf('me');
+          if (idx >= 0) en.likes.splice(idx, 1); else en.likes.push('me');
+          saveDiaryEntries(es);
+          openDiaryDetail(id);
+          renderDiary();
+        });
+        var dCommentBtn = document.getElementById('detailCommentBtn');
+        if (dCommentBtn) dCommentBtn.addEventListener('click', function() {
+          var inp = document.getElementById('detailCommentInput');
+          if (inp) { inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+        });
+        var dCommentSend = document.getElementById('detailCommentSend');
+        var sendFn = function() {
+          var inp = document.getElementById('detailCommentInput');
+          if (!inp) return;
+          var text = inp.value.trim();
+          if (!text) return;
+          var es = getDiaryEntries();
+          var en = es.find(function(e) { return e.id === id; });
+          if (!en) return;
+          if (!en.comments) en.comments = [];
+          en.comments.push({ author: getDiaryUserInfo().name, text: text, date: new Date().toISOString() });
+          saveDiaryEntries(es);
+          openDiaryDetail(id);
+          renderDiary();
+        };
+        if (dCommentSend) dCommentSend.addEventListener('click', sendFn);
+        var dCommentInput = document.getElementById('detailCommentInput');
+        if (dCommentInput) dCommentInput.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') sendFn();
+        });
+        var dEditBtn = document.getElementById('detailEditBtn');
+        if (dEditBtn) dEditBtn.addEventListener('click', function() {
+          overlay.classList.remove('show');
+          openDiaryEdit(id);
+        });
+        var dDeleteBtn = document.getElementById('detailDeleteBtn');
+        if (dDeleteBtn) dDeleteBtn.addEventListener('click', function() {
+          overlay.classList.remove('show');
+          _diaryDeleteId = id;
+          diaryDeleteOverlay.classList.add('show');
+        });
       }
       var diaryDetailBack = document.getElementById('diaryDetailBack');
       if (diaryDetailBack) {
