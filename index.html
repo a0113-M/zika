@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v162')){sessionStorage.setItem('zk_v162','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==162){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v163')){sessionStorage.setItem('zk_v163','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==163){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v162</title>
+  <title>字卡 · 小手机 v163</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11892,14 +11892,20 @@
       </svg>
     </button>
     <!-- 写日记弹窗 -->
-    <div class="diary-overlay" id="diaryWriteOverlay">
-      <div class="diary-modal">
-        <h3>写日记</h3>
+    <div class="diary-edit-fullscreen" id="diaryWriteOverlay">
+      <div class="diary-edit-header">
+        <button class="diary-detail-back" id="diaryWriteCancel">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+        </button>
+        <span>写日记</span>
+        <button class="diary-edit-save-btn" id="diaryWriteConfirm">发布</button>
+      </div>
+      <div class="diary-edit-scroll">
         <div class="diary-category-select">
           <label>分类：</label>
           <select id="diaryWriteCategory"></select>
         </div>
-        <textarea class="diary-modal-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
+        <textarea class="diary-edit-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
         <div class="diary-image-upload-area">
           <button type="button" class="diary-image-upload-btn" id="diaryWriteUploadBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -11907,10 +11913,6 @@
           </button>
           <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="display:none">
           <div class="diary-image-preview" id="diaryWriteImagePreview"></div>
-        </div>
-        <div class="diary-modal-actions">
-          <button class="diary-modal-cancel" id="diaryWriteCancel">取消</button>
-          <button class="diary-modal-confirm" id="diaryWriteConfirm">发布</button>
         </div>
       </div>
     </div>
@@ -13367,7 +13369,8 @@
           content: text,
           date: new Date().toISOString(),
           type: 'chat',
-          category: '聊天记录'
+          category: '聊天记录',
+          visibility: 'private'
         };
         diaryEntries.unshift(entry);
         try { localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries)); } catch(e) {}
@@ -22667,8 +22670,7 @@ patText2 = patText2.replace(/你/g, '我');
           var catBadge = (entry.category && entry.category !== '生活') ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
           var titleHtml = entry.title ? '<div class="diary-detail-title" style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px;">' + escapeDiaryHtml(entry.title) + '</div>' : '';
 
-          var isPrivate = entry.visibility === 'private';
-          var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
+
 
           var displayText = entry.content || '';
           if (displayText.length > 500) displayText = displayText.substring(0, 500) + '...';
@@ -22707,7 +22709,6 @@ patText2 = patText2.replace(/你/g, '我');
           item.innerHTML =
             catBadge +
             titleHtml +
-            visibilityHtml +
             '<div class="diary-text">' + escapedText + '</div>' +
             imageHtml +
             '\u003cdiv class="diary-action-bar"\u003e' +
@@ -22802,12 +22803,7 @@ patText2 = patText2.replace(/你/g, '我');
           });
         });
 
-        var visBtns = diaryFeed.querySelectorAll('.diary-visibility-btn');
-        visBtns.forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            toggleDiaryVisibility(parseInt(this.dataset.visId));
-          });
-        });
+
       }
 
 
