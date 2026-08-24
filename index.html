@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v165')){sessionStorage.setItem('zk_v165','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==165){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v166')){sessionStorage.setItem('zk_v166','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==166){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v165</title>
+  <title>字卡 · 小手机 v166</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22597,9 +22597,31 @@ patText2 = patText2.replace(/你/g, '我');
 
       function fileToBase64(file) {
         return new Promise(function(resolve, reject) {
+          if (!file.type.startsWith('image/')) { resolve(''); return; }
           var reader = new FileReader();
-          reader.onload = function() { resolve(reader.result); };
-          reader.onerror = reject;
+          reader.onload = function() {
+            var img = new Image();
+            img.onload = function() {
+              var maxDim = 800;
+              var w = img.width, h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                else { w = Math.round(w * maxDim / h); h = maxDim; }
+              }
+              try {
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                resolve(canvas.toDataURL('image/jpeg', 0.7));
+              } catch(err) {
+                resolve(reader.result);
+              }
+            };
+            img.onerror = function() { resolve(reader.result); };
+            img.src = reader.result;
+          };
+          reader.onerror = function() { resolve(''); };
           reader.readAsDataURL(file);
         });
       }
@@ -22652,24 +22674,36 @@ patText2 = patText2.replace(/你/g, '我');
       if (diaryWriteImageInput) {
         diaryWriteImageInput.addEventListener('change', function(e) {
           var files = Array.from(e.target.files);
-          var promises = files.map(function(f) { return fileToBase64(f); });
-          Promise.all(promises).then(function(results) {
-            _diaryPendingImages = _diaryPendingImages.concat(results);
-            renderWriteImagePreview();
-          });
           e.target.value = '';
+          var idx = 0;
+          function processNext() {
+            if (idx >= files.length) { renderWriteImagePreview(); return; }
+            var f = files[idx++];
+            fileToBase64(f).then(function(result) {
+              if (result) { _diaryPendingImages.push(result); }
+              if (_diaryPendingImages.length >= 9) { renderWriteImagePreview(); return; }
+              processNext();
+            }).catch(function() { processNext(); });
+          }
+          processNext();
         });
       }
 
       if (diaryEditImageInput) {
         diaryEditImageInput.addEventListener('change', function(e) {
           var files = Array.from(e.target.files);
-          var promises = files.map(function(f) { return fileToBase64(f); });
-          Promise.all(promises).then(function(results) {
-            _diaryEditPendingImages = _diaryEditPendingImages.concat(results);
-            renderEditImagePreview();
-          });
           e.target.value = '';
+          var idx = 0;
+          function processNext() {
+            if (idx >= files.length) { renderEditImagePreview(); return; }
+            var f = files[idx++];
+            fileToBase64(f).then(function(result) {
+              if (result) { _diaryEditPendingImages.push(result); }
+              if (_diaryEditPendingImages.length >= 9) { renderEditImagePreview(); return; }
+              processNext();
+            }).catch(function() { processNext(); });
+          }
+          processNext();
         });
       }
 
