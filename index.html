@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v158')){sessionStorage.setItem('zk_v158','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==158){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v159')){sessionStorage.setItem('zk_v159','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==159){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v158</title>
+  <title>字卡 · 小手机 v159</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12462,6 +12462,23 @@
       const chatToolbar = document.getElementById('chatToolbar');
       let isToolbarOpen = false;
 
+      // v159: 替换 4 个 MutationObserver 的直接回调（MO 是冻死根因）
+      function syncChatUI() {
+        var _tg = document.getElementById('toolbarGrid');
+        var _td = document.getElementById('toolbarDots');
+        if (_tg && _td) _td.classList.toggle('hidden', _tg.classList.contains('hidden'));
+        var _bw = document.querySelector('.chat-bottom-wrapper');
+        if (_bw) {
+          var _acd = document.getElementById('acdBackdrop');
+          var _cdv = document.getElementById('cdvBackdrop');
+          var _hide = (_acd && _acd.classList.contains('active')) || (_cdv && _cdv.classList.contains('active'));
+          _bw.style.visibility = _hide ? 'hidden' : '';
+        }
+        var _dp = document.getElementById('chatDivinePanel');
+        if (_dp && !_dp.classList.contains('active')) _dp.classList.remove('cdp-full');
+      }
+
+
       // 点击输入框：收起工具栏/表情/信件面板，让输入框紧贴键盘
       chatInput.addEventListener('focus', function () {
         if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
@@ -12483,6 +12500,7 @@
         if (_ap3) _ap3.classList.remove('active');
         var _ab3 = document.getElementById('acdBackdrop');
         if (_ab3) _ab3.classList.remove('active');
+        syncChatUI();
       });
 
       // ----- 工具栏翻页（微信式） -----
@@ -12500,9 +12518,7 @@
           var p = Math.round(pages.scrollLeft / Math.max(1, pages.clientWidth));
           dots.forEach(function (d, i) { d.classList.toggle('active', i === p); });
         }, { passive: true });
-        new MutationObserver(function () {
-          dotsWrap.classList.toggle('hidden', pages.classList.contains('hidden'));
-        }).observe(pages, { attributes: true, attributeFilter: ['class'] });
+        // v159: removed MO#1 (toolbarDots)
       })();
 
       chatToolbarToggle.addEventListener('click', function (e) {
@@ -12524,6 +12540,7 @@
         } else {
           chatToolbar.classList.remove('open');
         }
+        syncChatUI();
       });
 
       // ----- 聊天顶部信息更新（每天随机更换）-----
@@ -12794,6 +12811,7 @@
         emojiModule.classList.remove('active');
         document.getElementById('toolbarGrid').classList.remove('hidden');
         if (!isToolbarOpen) { isToolbarOpen = true; chatToolbar.classList.add('open'); }
+        syncChatUI();
       });
       document.querySelector('.toolbar-item[data-tool="emoji"]').addEventListener('click', function (e) {
         e.stopPropagation();
@@ -12822,6 +12840,7 @@
           if (!isToolbarOpen) { isToolbarOpen = true; chatToolbar.classList.add('open'); }
           setTimeout(() => { chatMessages.scrollTop = chatMessages.scrollHeight; }, 50);
         }
+        syncChatUI();
       });
       document.querySelectorAll('.toolbar-item[data-tool]').forEach(item => {
         const tool = item.dataset.tool;
@@ -12839,6 +12858,7 @@
           if (_ap) _ap.classList.remove('active');
           var _ab = document.getElementById('acdBackdrop');
           if (_ab) _ab.classList.remove('active');
+          syncChatUI();
         });
       });
 
@@ -12857,9 +12877,27 @@
       }
       function closeChat() {
         chatView.classList.remove('show');
+        if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
+        var _tg = document.getElementById('toolbarGrid');
+        if (_tg) _tg.classList.add('hidden');
+        var _em = document.getElementById('emojiModule');
+        if (_em) _em.classList.remove('active');
+        var _lp = document.getElementById('chatLetterPanel');
+        if (_lp) _lp.classList.remove('active');
+        var _bk = document.getElementById('clpBackdrop');
+        if (_bk) _bk.classList.remove('active');
+        var _dp = document.getElementById('chatDivinePanel');
+        if (_dp) _dp.classList.remove('active');
+        var _db = document.getElementById('cdvBackdrop');
+        if (_db) _db.classList.remove('active');
+        var _ap = document.getElementById('chatAccompanyPanel');
+        if (_ap) _ap.classList.remove('active');
+        var _ab = document.getElementById('acdBackdrop');
+        if (_ab) _ab.classList.remove('active');
         var bn=document.querySelector('.bottom-nav');if(bn){bn.style.visibility='';bn.style.pointerEvents='';bn.style.height='';bn.style.overflow='';}
         currentChatId = null;
         refreshList();
+        syncChatUI();
       }
 
       // ----- 聊天顶部菜单 -----
@@ -20285,6 +20323,7 @@ patText2 = patText2.replace(/你/g, '我');
           document.getElementById('clpBackdrop').classList.add('active');
           renderChatLetterPanel();
         }
+        syncChatUI();
       });
 
       // 关闭按钮
@@ -20293,6 +20332,7 @@ patText2 = patText2.replace(/你/g, '我');
         chatLetterPanel.classList.remove('active');
         chatLetterDetail.classList.remove('active');
         document.getElementById('clpBackdrop').classList.remove('active');
+        syncChatUI();
       });
 
       // 遮罩层点击关闭面板
@@ -20300,6 +20340,7 @@ patText2 = patText2.replace(/你/g, '我');
         chatLetterPanel.classList.remove('active');
         chatLetterDetail.classList.remove('active');
         this.classList.remove('active');
+        syncChatUI();
       });
 
       // ----- 一起（陪伴系统） -----
@@ -20638,10 +20679,12 @@ patText2 = patText2.replace(/你/g, '我');
           customRow.style.display = cfg.scene === 'custom' ? 'block' : 'none';
           customInput.value = cfg.custom || '';
           renderScenes(); renderChars(); renderCharCard(); refreshSlider(); refreshTitle(); renderSetSubs();
+          syncChatUI();
         }
         function closePanel() {
           panel.classList.remove('active');
           backdrop.classList.remove('active');
+          syncChatUI();
         }
         backdrop.addEventListener('click', closePanel);
         document.getElementById('acdCloseBtn').addEventListener('click', closePanel);
@@ -20663,15 +20706,7 @@ patText2 = patText2.replace(/你/g, '我');
           charRow.style.display = charRow.style.display === 'none' ? 'flex' : 'none';
         });
 
-        // 面板打开时藏起聊天输入栏（同 v112 占卜面板）
-        var bwHide = document.querySelector('.chat-bottom-wrapper');
-        if (bwHide && 'MutationObserver' in window) {
-          var bwMo = new MutationObserver(function () {
-            if (backdrop.classList.contains('active')) bwHide.style.visibility = 'hidden';
-            else bwHide.style.visibility = '';
-          });
-          bwMo.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
-        }
+        // v159: removed MO#2 (bwMo/accompany)
 
         // 工具栏入口
         document.querySelector('.toolbar-item[data-tool="together"]').addEventListener('click', function (e) {
@@ -20685,6 +20720,7 @@ patText2 = patText2.replace(/你/g, '我');
           document.getElementById('emojiModule').classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
           if (!was) openPanel();
+          syncChatUI();
         });
       })();
 
@@ -20694,18 +20730,7 @@ patText2 = patText2.replace(/你/g, '我');
         var backdrop = document.getElementById('cdvBackdrop');
         if (!panel || !backdrop) return;
 
-        // 面板打开时藏起聊天输入栏：白色输入栏透过半透明遮罩会露出一条白边
-        var _bwHide = document.querySelector('.chat-bottom-wrapper');
-        if (_bwHide && 'MutationObserver' in window) {
-          var _bwMo = new MutationObserver(function () {
-            if (backdrop.classList.contains('active')) {
-              _bwHide.style.visibility = 'hidden';
-            } else {
-              _bwHide.style.visibility = '';
-            }
-          });
-          _bwMo.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
-        }
+        // v159: removed MO#3 (_bwMo/divine)
 
         // 22 大阿卡纳
         var MAJORS = [
@@ -21140,6 +21165,7 @@ patText2 = patText2.replace(/你/g, '我');
           }
           backdrop.classList.remove('active');
           showView('setup');
+          syncChatUI();
         }
         // 供首页侧边栏打开占卜面板（v136；v137 起侧边栏进入为全屏模式）
         window.openDivineFromSidebar = function () {
@@ -21149,13 +21175,7 @@ patText2 = patText2.replace(/你/g, '我');
           showView('setup');
           renderSetup();
         };
-        // 任何路径关闭面板时同步清掉全屏标记，避免残留到聊天工具栏打开场景（v137）
-        if ('MutationObserver' in window) {
-          var _dfMo = new MutationObserver(function () {
-            if (!panel.classList.contains('active')) panel.classList.remove('cdp-full');
-          });
-          _dfMo.observe(panel, { attributes: true, attributeFilter: ['class'] });
-        }
+        // v159: removed MO#4 (_dfMo/cdp-full)
         document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
         // v150/v151: 全屏返回箭头改"滑出屏幕"——面板永不隐藏（内联 transform 控制，class 保留，无 display 切换）；v151 改右滑出
         document.getElementById('cdvBackBtn0').addEventListener('click', function () {
@@ -21183,6 +21203,7 @@ patText2 = patText2.replace(/你/g, '我');
           var _ab5 = document.getElementById('acdBackdrop');
           if (_ab5) _ab5.classList.remove('active');
           if (!was) { panel.classList.add('active'); panel.style.display = ''; panel.style.transform = ''; panel.style.transition = ''; panel.style.pointerEvents = ''; backdrop.classList.add('active'); renderSetup(); }
+          syncChatUI();
         });
       })();
 
@@ -21706,6 +21727,7 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('cstBackdrop').classList.remove('active');
         document.getElementById('chatStatsPanel').classList.remove('active');
         document.getElementById('cstMetOvl').classList.remove('show');
+        syncChatUI();
       }
       function renderChatStats() {
         var contact = contacts.find(function (c) { return c.id === currentChatId; });
@@ -21876,6 +21898,7 @@ patText2 = patText2.replace(/你/g, '我');
         } else {
           openChatStatsPanel();
         }
+        syncChatUI();
       });
       document.getElementById('cstBackBtn').addEventListener('click', closeChatStatsPanel);
       document.getElementById('cstBackdrop').addEventListener('click', closeChatStatsPanel);
@@ -23870,7 +23893,7 @@ patText2 = patText2.replace(/你/g, '我');
         '\u54ce\u5440\u4e0d\u597d\u610f\u601d', '\u54c8\u54c8\u54c8\u53ef\u4ee5\u7684', '\u884c\u5427\u884c\u5427'
       ];
 
-      function closeCallTypeModal() { callTypeModal.classList.remove('active'); var _tg = document.getElementById('toolbarGrid'); if (_tg) _tg.classList.remove('hidden'); }
+      function closeCallTypeModal() { callTypeModal.classList.remove('active'); var _tg = document.getElementById('toolbarGrid'); if (_tg) _tg.classList.remove('hidden'); syncChatUI(); }
 
       function startCall(type) {
         callType = type;
@@ -24445,6 +24468,7 @@ patText2 = patText2.replace(/你/g, '我');
           var toolbarGrid = document.getElementById('toolbarGrid');
           if (toolbarGrid) toolbarGrid.classList.add('hidden');
           openCallTypeModal();
+          syncChatUI();
         });
       }
 
