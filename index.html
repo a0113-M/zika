@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v171')){sessionStorage.setItem('zk_v171','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==171){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v172')){sessionStorage.setItem('zk_v172','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==172){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v171</title>
+  <title>字卡 · 小手机 v172</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12105,6 +12105,10 @@
               <textarea id="settingApiPrompt" placeholder="留空使用系统默认指令" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid rgba(155,142,196,0.3);font-size:11.5px;min-height:70px;resize:vertical;line-height:1.5;background:#fafafa;"></textarea>
             </div>
             <div class="settings-save-hint">配置后在占卜结果页点"解读"即可调用</div>
+            <div style="margin-top:10px;display:flex;align-items:center;gap:10px;">
+              <button id="settingApiTestBtn" style="padding:7px 16px;border-radius:6px;border:none;background:linear-gradient(135deg,#9b8ec4,#7b6ba8);color:#fff;font-size:12px;font-weight:600;cursor:pointer;">测试连接</button>
+              <span id="settingApiTestResult" style="font-size:12px;color:#888;"></span>
+            </div>
           </div>
         </div>
       </div>
@@ -15651,6 +15655,50 @@
               }
             });
             loadApiSetting();
+            // v172: 测试 API 连接按钮
+            var testBtn = document.getElementById('settingApiTestBtn');
+            var testResult = document.getElementById('settingApiTestResult');
+            if (testBtn) {
+              testBtn.addEventListener('click', function() {
+                var cfg = {
+                  url: (document.getElementById('settingApiUrl').value || '').trim(),
+                  key: (document.getElementById('settingApiKey').value || '').trim(),
+                  model: (document.getElementById('settingApiModel').value || '').trim()
+                };
+                if (!cfg.url || !cfg.key || !cfg.model) {
+                  testResult.textContent = '请先填写 API 地址、Key 和模型';
+                  testResult.style.color = '#e07a7a';
+                  return;
+                }
+                testBtn.disabled = true;
+                testBtn.textContent = '测试中...';
+                testResult.textContent = '';
+                testResult.style.color = '#888';
+                fetch(cfg.url, {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+                  body: JSON.stringify({ model: cfg.model, messages: [{ role: 'user', content: '你好' }], max_tokens: 10 })
+                }).then(function(res) {
+                  if (res.ok) {
+                    testResult.textContent = '✓ 连接成功';
+                    testResult.style.color = '#4caf50';
+                  } else {
+                    return res.json().then(function(data) {
+                      var msg = (data.error && data.error.message) ? data.error.message : ('HTTP ' + res.status);
+                      throw new Error(msg);
+                    }).catch(function() {
+                      throw new Error('HTTP ' + res.status);
+                    });
+                  }
+                }).catch(function(err) {
+                  testResult.textContent = '✗ 失败：' + (err.message || err.toString());
+                  testResult.style.color = '#e07a7a';
+                }).finally(function() {
+                  testBtn.disabled = false;
+                  testBtn.textContent = '测试连接';
+                });
+              });
+            }
           }, 300);
         })();
 
