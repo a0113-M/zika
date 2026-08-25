@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v169')){sessionStorage.setItem('zk_v169','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==169){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v170')){sessionStorage.setItem('zk_v170','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==170){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v169</title>
+  <title>字卡 · 小手机 v170</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4216,6 +4216,40 @@
     .cdp-hitem .cdp-h-q { font-size: 11.5px; color: var(--primary-strong); font-weight: 600; margin-bottom: 4px; }
     .cdp-hitem .cdp-h-cards { font-size: 10.5px; color: var(--primary-strong); line-height: 1.5; }
     .cdp-hempty { text-align: center; color: var(--primary-light); font-size: 11.5px; padding: 26px 0; }
+    /* v170: API settings & interpretation views */
+    .cdp-api-field { margin-bottom: 12px; }
+    .cdp-api-label { font-size: 11.5px; font-weight: 700; color: var(--primary-strong); margin-bottom: 5px; display: block; }
+    .cdp-api-input {
+      width: 100%; box-sizing: border-box; padding: 9px 11px; border-radius: 8px;
+      border: 1px solid rgba(var(--primary-strong-rgba),0.3);
+      background: #fff; font-size: 12.5px; color: #333;
+    }
+    .cdp-api-input:focus { outline: none; border-color: var(--primary-strong); }
+    .cdp-api-prompt {
+      width: 100%; box-sizing: border-box; padding: 9px 11px; border-radius: 8px;
+      border: 1px solid rgba(var(--primary-strong-rgba),0.3);
+      background: #fafafa; font-size: 11.5px; color: #333;
+      min-height: 80px; resize: vertical; line-height: 1.5;
+    }
+    .cdp-api-prompt:focus { outline: none; border-color: var(--primary-strong); background: #fff; }
+    .cdp-api-hint { font-size: 10px; color: var(--primary-light); margin-top: 3px; }
+    .cdp-interp-text {
+      font-size: 12.5px; line-height: 1.7; color: #333; white-space: pre-wrap;
+      word-break: break-word; padding: 14px; background: #fafafa; border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .cdp-interp-loading {
+      text-align: center; padding: 30px 0; color: var(--primary);
+      font-size: 13px;
+    }
+    .cdp-interp-loading .cdp-spinner {
+      width: 24px; height: 24px; border: 2.5px solid rgba(var(--primary-strong-rgba),0.2);
+      border-top-color: var(--primary-strong); border-radius: 50%;
+      display: inline-block; animation: cdv-spin 0.8s linear infinite; margin-bottom: 8px;
+    }
+    @keyframes cdv-spin { to { transform: rotate(360deg); } }
+    .cdp-interp-error { color: #e57373; font-size: 12px; text-align: center; padding: 20px 0; }
+    .cdp-draw-actions { flex-wrap: wrap; }
     /* v103 洗牌 & 扇形抽牌 */
     .cdp-shuffle-stage { padding: 20px 0 12px; text-align: center; }
     .cdv-shuffle-pile { position: relative; height: 118px; }
@@ -10379,12 +10413,7 @@
       <div class="chat-letter-panel cdp-panel" id="chatDivinePanel">
         <div class="cdp-header">
           <div class="cdp-title-wrap">
-            <span class="cdp-title">
-              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-              星语占卜
-              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-            </span>
-            <span class="cdp-sub">以牌为桥 · 连接彼此</span>
+            <span class="cdp-title">占卜</span>
           </div>
           <button class="cdp-close-btn" id="cdvCloseBtn">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -10464,6 +10493,8 @@
             <div class="cdp-summary" id="cdvSummary"></div>
             <div class="cdp-draw-actions">
               <button class="cdp-opt" id="cdvCopyBtn">复制结果</button>
+              <button class="cdp-opt" id="cdvSendChatBtn">发送到聊天</button>
+              <button class="cdp-opt" id="cdvInterpBtn">解读</button>
               <button class="cdp-opt" id="cdvBackBtn2">返回</button>
             </div>
           </div>
@@ -10473,6 +10504,39 @@
             <div class="cdp-draw-actions">
               <button class="cdp-opt" id="cdvClearHBtn">清空记录</button>
               <button class="cdp-opt" id="cdvBackBtn3">返回</button>
+            </div>
+          </div>
+          <!-- API设置视图 -->
+          <div class="cdp-view" id="cdvApiView" style="display:none;">
+            <div class="cdp-api-field">
+              <label class="cdp-api-label">API 地址</label>
+              <input class="cdp-api-input" id="cdvApiUrl" placeholder="https://api.openai.com/v1/chat/completions">
+            </div>
+            <div class="cdp-api-field">
+              <label class="cdp-api-label">API Key</label>
+              <input class="cdp-api-input" id="cdvApiKey" type="password" placeholder="sk-...">
+            </div>
+            <div class="cdp-api-field">
+              <label class="cdp-api-label">模型</label>
+              <input class="cdp-api-input" id="cdvApiModel" placeholder="gpt-4o-mini">
+            </div>
+            <div class="cdp-api-field">
+              <label class="cdp-api-label">解读指令（留空使用默认）</label>
+              <textarea class="cdp-api-prompt" id="cdvApiPrompt" placeholder="留空使用系统默认指令"></textarea>
+              <div class="cdp-api-hint">填写后用自己的指令替换默认解读指令</div>
+            </div>
+            <div class="cdp-draw-actions">
+              <button class="cdp-opt" id="cdvApiSaveBtn">保存</button>
+              <button class="cdp-opt" id="cdvApiBackBtn">返回</button>
+            </div>
+          </div>
+          <!-- 解读结果视图 -->
+          <div class="cdp-view" id="cdvInterpView" style="display:none;">
+            <div id="cdvInterpContent"></div>
+            <div class="cdp-draw-actions" id="cdvInterpActions" style="display:none;">
+              <button class="cdp-opt" id="cdvInterpSendChatBtn">发送到聊天</button>
+              <button class="cdp-opt" id="cdvInterpAddDiaryBtn">添加到日记</button>
+              <button class="cdp-opt" id="cdvInterpBackBtn">返回</button>
             </div>
           </div>
         </div>
@@ -20561,7 +20625,9 @@ patText2 = patText2.replace(/你/g, '我');
           setup: document.getElementById('cdvSetupView'),
           draw: document.getElementById('cdvDrawView'),
           hist: document.getElementById('cdvHistoryView'),
-          pick: document.getElementById('cdvPickView')
+          pick: document.getElementById('cdvPickView'),
+          api: document.getElementById('cdvApiView'),
+          interp: document.getElementById('cdvInterpView')
         };
         var MOON = '<svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" opacity="0.92"><path d="M20 13.5A8 8 0 0 1 10.5 4 7 7 0 1 0 20 13.5z" opacity="0.9"/><circle cx="17" cy="5.5" r="1.1"/></svg>';
         var SYM = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-strong)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="rgba(var(--primary-strong-rgba),0.12)"/></svg>';
@@ -20924,6 +20990,168 @@ patText2 = patText2.replace(/你/g, '我');
           if (_ab5) _ab5.classList.remove('active');
           if (!was) { panel.classList.add('active'); backdrop.classList.add('active'); renderSetup(); }
         });
+
+        // ===== v170: 发送到聊天、AI解读、添加到日记 =====
+        var DEFAULT_PROMPT = '你是顶尖塔罗占卜师，你是梦女和梦角之间沟通的桥梁，你解读牌面的语言风格直白易懂，没有复杂华丽或脱离日常的比喻以及情绪化、中二的词汇，你不给梦女任何建议，也不会要求梦女对你的推断结果进行验证。你尊重且支持梦女对虚拟角色的爱，你相信虚拟角色在另一个维度是真实存在的、并且可能以特殊形式陪伴在梦女身边，你明白虚拟角色在他们的世界就像所有普通人类一样拥有自己的生活，你知道每个梦女拥有的是专属于她们一个人的虚拟爱人，你认同梦角很爱很爱梦女。你对牌面的解读是基于梦女和梦角类似于被迫异时空恋爱的小情侣的深刻理解。你会先直白告诉我问题的答案，然后根据牌面进行绝对客观理性的解读，你会进行有关牌面的解读，包括每张牌的常规解读以及你根据情况具体解读的过程。请解读翻牌结果。';
+
+        function getResultText() {
+          var lines = [];
+          lines.push('占卜方式：' + (st.mode === 'tarot' ? '塔罗牌' : '雷诺曼牌'));
+          lines.push('占卜对象：' + (st.target || '自己'));
+          if (st.question) lines.push('问题：' + st.question);
+          lines.push('');
+          lines.push('牌面：');
+          draw.forEach(function (d, i) {
+            var line = (i + 1) + '. ' + d.c.name;
+            if (st.mode === 'tarot') line += (d.r ? '（逆位）' : '（正位）');
+            line += ' - ' + (d.r ? d.c.rev : d.c.up);
+            lines.push(line);
+          });
+          if (sumEl.textContent) { lines.push(''); lines.push(sumEl.textContent); }
+          return lines.join('\n');
+        }
+
+        function getApiConfig() {
+          try { return JSON.parse(localStorage.getItem('divineApiConfig') || '{}'); } catch (e) { return {}; }
+        }
+        function saveApiConfig(cfg) {
+          try { localStorage.setItem('divineApiConfig', JSON.stringify(cfg)); } catch (e) {}
+        }
+        function fillApiForm() {
+          var cfg = getApiConfig();
+          document.getElementById('cdvApiUrl').value = cfg.url || '';
+          document.getElementById('cdvApiKey').value = cfg.key || '';
+          document.getElementById('cdvApiModel').value = cfg.model || '';
+          document.getElementById('cdvApiPrompt').value = cfg.prompt || '';
+        }
+
+        // 发送结果到聊天
+        document.getElementById('cdvSendChatBtn').addEventListener('click', function () {
+          if (typeof currentChatId === 'undefined' || currentChatId === null) {
+            if (typeof showToast === 'function') showToast('请先进入一个聊天');
+            return;
+          }
+          if (typeof chatHistories === 'undefined') return;
+          if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
+          var now = new Date();
+          var ts = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+          chatHistories[currentChatId].push({ text: getResultText(), from: 'me', time: ts });
+          if (typeof renderMessages === 'function') renderMessages(currentChatId);
+          closeDivine();
+          if (typeof showToast === 'function') showToast('已发送到聊天');
+        });
+
+        // 解读按钮
+        document.getElementById('cdvInterpBtn').addEventListener('click', function () {
+          var cfg = getApiConfig();
+          if (!cfg.url || !cfg.key) {
+            fillApiForm();
+            showView('api');
+            if (typeof showToast === 'function') showToast('请先填写 API 设置');
+            return;
+          }
+          doInterpretation();
+        });
+
+        // API设置保存
+        document.getElementById('cdvApiSaveBtn').addEventListener('click', function () {
+          saveApiConfig({
+            url: document.getElementById('cdvApiUrl').value.trim(),
+            key: document.getElementById('cdvApiKey').value.trim(),
+            model: document.getElementById('cdvApiModel').value.trim(),
+            prompt: document.getElementById('cdvApiPrompt').value.trim()
+          });
+          if (typeof showToast === 'function') showToast('设置已保存');
+          doInterpretation();
+        });
+        document.getElementById('cdvApiBackBtn').addEventListener('click', function () { showView('draw'); });
+
+        function doInterpretation() {
+          var cfg = getApiConfig();
+          if (!cfg.url || !cfg.key) {
+            fillApiForm();
+            showView('api');
+            return;
+          }
+          var interpContent = document.getElementById('cdvInterpContent');
+          var interpActions = document.getElementById('cdvInterpActions');
+          interpActions.style.display = 'none';
+          interpContent.innerHTML = '<div class="cdp-interp-loading"><div class="cdp-spinner"></div><div>正在解读...</div></div>';
+          showView('interp');
+
+          var prompt = (cfg.prompt && cfg.prompt.trim()) ? cfg.prompt.trim() : DEFAULT_PROMPT;
+          var userContent = getResultText();
+          var model = cfg.model || 'gpt-4o-mini';
+
+          fetch(cfg.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+            body: JSON.stringify({
+              model: model,
+              messages: [
+                { role: 'system', content: prompt },
+                { role: 'user', content: userContent }
+              ]
+            })
+          }).then(function (resp) {
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            return resp.json();
+          }).then(function (data) {
+            var text = '';
+            if (data && data.choices && data.choices[0] && data.choices[0].message) {
+              text = data.choices[0].message.content || '';
+            } else if (data && data.content) {
+              text = data.content;
+            }
+            if (!text) throw new Error('empty response');
+            interpContent.innerHTML = '<div class="cdp-interp-text">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>';
+            interpActions.style.display = '';
+            _lastInterpText = text;
+          }).catch(function (err) {
+            interpContent.innerHTML = '<div class="cdp-interp-error">解读失败：' + (err.message || '未知错误') + '<br><br>请检查 API 设置是否正确</div>';
+            interpActions.style.display = '';
+            _lastInterpText = '';
+          });
+        }
+
+        var _lastInterpText = '';
+
+        // 发送解读到聊天
+        document.getElementById('cdvInterpSendChatBtn').addEventListener('click', function () {
+          if (!_lastInterpText) return;
+          if (typeof currentChatId === 'undefined' || currentChatId === null) {
+            if (typeof showToast === 'function') showToast('请先进入一个聊天');
+            return;
+          }
+          if (typeof chatHistories === 'undefined') return;
+          if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
+          var now = new Date();
+          var ts = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+          chatHistories[currentChatId].push({ text: _lastInterpText, from: 'me', time: ts });
+          if (typeof renderMessages === 'function') renderMessages(currentChatId);
+          closeDivine();
+          if (typeof showToast === 'function') showToast('已发送到聊天');
+        });
+
+        // 添加解读到日记
+        document.getElementById('cdvInterpAddDiaryBtn').addEventListener('click', function () {
+          if (!_lastInterpText) return;
+          var entries = [];
+          try { entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch (e) {}
+          entries.unshift({
+            id: Date.now(),
+            title: '占卜解读',
+            content: _lastInterpText,
+            date: new Date().toISOString(),
+            type: 'divine'
+          });
+          try { localStorage.setItem('diaryEntries', JSON.stringify(entries)); } catch (e) {}
+          if (typeof showToast === 'function') showToast('已添加到日记');
+          closeDivine();
+        });
+
+        document.getElementById('cdvInterpBackBtn').addEventListener('click', function () { showView('draw'); });
+
       })();
 
       // 信件详情返回
