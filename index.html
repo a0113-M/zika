@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v170')){sessionStorage.setItem('zk_v170','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==170){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v171')){sessionStorage.setItem('zk_v171','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==171){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v170</title>
+  <title>字卡 · 小手机 v171</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10506,31 +10506,7 @@
               <button class="cdp-opt" id="cdvBackBtn3">返回</button>
             </div>
           </div>
-          <!-- API设置视图 -->
-          <div class="cdp-view" id="cdvApiView" style="display:none;">
-            <div class="cdp-api-field">
-              <label class="cdp-api-label">API 地址</label>
-              <input class="cdp-api-input" id="cdvApiUrl" placeholder="https://api.openai.com/v1/chat/completions">
-            </div>
-            <div class="cdp-api-field">
-              <label class="cdp-api-label">API Key</label>
-              <input class="cdp-api-input" id="cdvApiKey" type="password" placeholder="sk-...">
-            </div>
-            <div class="cdp-api-field">
-              <label class="cdp-api-label">模型</label>
-              <input class="cdp-api-input" id="cdvApiModel" placeholder="gpt-4o-mini">
-            </div>
-            <div class="cdp-api-field">
-              <label class="cdp-api-label">解读指令（留空使用默认）</label>
-              <textarea class="cdp-api-prompt" id="cdvApiPrompt" placeholder="留空使用系统默认指令"></textarea>
-              <div class="cdp-api-hint">填写后用自己的指令替换默认解读指令</div>
-            </div>
-            <div class="cdp-draw-actions">
-              <button class="cdp-opt" id="cdvApiSaveBtn">保存</button>
-              <button class="cdp-opt" id="cdvApiBackBtn">返回</button>
-            </div>
-          </div>
-          <!-- 解读结果视图 -->
+<!-- 解读结果视图 -->
           <div class="cdp-view" id="cdvInterpView" style="display:none;">
             <div id="cdvInterpContent"></div>
             <div class="cdp-draw-actions" id="cdvInterpActions" style="display:none;">
@@ -12099,6 +12075,37 @@
             </div>
           </div>
           <div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
+          <!-- v171: 占卜解读 API 设置 -->
+          <div class="settings-section">
+            <div class="settings-section-title">占卜解读</div>
+            <div class="settings-item" style="display:block;">
+              <div class="settings-item-left" style="margin-bottom:5px;">
+                <span class="settings-item-label">API 地址</span>
+                <span class="settings-item-hint">OpenAI 兼容格式</span>
+              </div>
+              <input class="cdp-api-input" id="settingApiUrl" placeholder="https://api.openai.com/v1/chat/completions" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid rgba(155,142,196,0.3);font-size:12px;">
+            </div>
+            <div class="settings-item" style="display:block;">
+              <div class="settings-item-left" style="margin-bottom:5px;">
+                <span class="settings-item-label">API Key</span>
+              </div>
+              <input class="cdp-api-input" id="settingApiKey" type="password" placeholder="sk-..." style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid rgba(155,142,196,0.3);font-size:12px;">
+            </div>
+            <div class="settings-item" style="display:block;">
+              <div class="settings-item-left" style="margin-bottom:5px;">
+                <span class="settings-item-label">模型</span>
+              </div>
+              <input class="cdp-api-input" id="settingApiModel" placeholder="gpt-4o-mini" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid rgba(155,142,196,0.3);font-size:12px;">
+            </div>
+            <div class="settings-item" style="display:block;">
+              <div class="settings-item-left" style="margin-bottom:5px;">
+                <span class="settings-item-label">解读指令</span>
+                <span class="settings-item-hint">留空使用系统默认</span>
+              </div>
+              <textarea id="settingApiPrompt" placeholder="留空使用系统默认指令" style="width:100%;box-sizing:border-box;padding:8px 10px;border-radius:6px;border:1px solid rgba(155,142,196,0.3);font-size:11.5px;min-height:70px;resize:vertical;line-height:1.5;background:#fafafa;"></textarea>
+            </div>
+            <div class="settings-save-hint">配置后在占卜结果页点"解读"即可调用</div>
+          </div>
         </div>
       </div>
         </div>
@@ -15612,6 +15619,41 @@
 
       // 设置返回按钮
       if (document.getElementById('settingsBackBtn')) {
+        // v171: 占卜 API 设置加载/保存
+        (function() {
+          function loadApiSetting() {
+            var cfg = {};
+            try { cfg = JSON.parse(localStorage.getItem('divineApiConfig') || '{}'); } catch (e) {}
+            var url = document.getElementById('settingApiUrl');
+            var key = document.getElementById('settingApiKey');
+            var model = document.getElementById('settingApiModel');
+            var prompt = document.getElementById('settingApiPrompt');
+            if (url) url.value = cfg.url || '';
+            if (key) key.value = cfg.key || '';
+            if (model) model.value = cfg.model || '';
+            if (prompt) prompt.value = cfg.prompt || '';
+          }
+          function saveApiSetting() {
+            var cfg = {
+              url: (document.getElementById('settingApiUrl').value || '').trim(),
+              key: (document.getElementById('settingApiKey').value || '').trim(),
+              model: (document.getElementById('settingApiModel').value || '').trim(),
+              prompt: (document.getElementById('settingApiPrompt').value || '').trim()
+            };
+            try { localStorage.setItem('divineApiConfig', JSON.stringify(cfg)); } catch (e) {}
+          }
+          setTimeout(function() {
+            ['settingApiUrl', 'settingApiKey', 'settingApiModel', 'settingApiPrompt'].forEach(function(id) {
+              var el = document.getElementById(id);
+              if (el) {
+                el.addEventListener('change', saveApiSetting);
+                el.addEventListener('blur', saveApiSetting);
+              }
+            });
+            loadApiSetting();
+          }, 300);
+        })();
+
         document.getElementById('settingsBackBtn').addEventListener('click', function() {
           document.getElementById('settingsPage').classList.remove('show');
         });
@@ -20626,7 +20668,6 @@ patText2 = patText2.replace(/你/g, '我');
           draw: document.getElementById('cdvDrawView'),
           hist: document.getElementById('cdvHistoryView'),
           pick: document.getElementById('cdvPickView'),
-          api: document.getElementById('cdvApiView'),
           interp: document.getElementById('cdvInterpView')
         };
         var MOON = '<svg width="30" height="30" viewBox="0 0 24 24" fill="#fff" opacity="0.92"><path d="M20 13.5A8 8 0 0 1 10.5 4 7 7 0 1 0 20 13.5z" opacity="0.9"/><circle cx="17" cy="5.5" r="1.1"/></svg>';
@@ -21017,14 +21058,6 @@ patText2 = patText2.replace(/你/g, '我');
         function saveApiConfig(cfg) {
           try { localStorage.setItem('divineApiConfig', JSON.stringify(cfg)); } catch (e) {}
         }
-        function fillApiForm() {
-          var cfg = getApiConfig();
-          document.getElementById('cdvApiUrl').value = cfg.url || '';
-          document.getElementById('cdvApiKey').value = cfg.key || '';
-          document.getElementById('cdvApiModel').value = cfg.model || '';
-          document.getElementById('cdvApiPrompt').value = cfg.prompt || '';
-        }
-
         // 发送结果到聊天
         document.getElementById('cdvSendChatBtn').addEventListener('click', function () {
           if (typeof currentChatId === 'undefined' || currentChatId === null) {
@@ -21045,32 +21078,16 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('cdvInterpBtn').addEventListener('click', function () {
           var cfg = getApiConfig();
           if (!cfg.url || !cfg.key) {
-            fillApiForm();
-            showView('api');
-            if (typeof showToast === 'function') showToast('请先填写 API 设置');
+            if (typeof showToast === 'function') showToast('请先在设置中配置 API');
             return;
           }
           doInterpretation();
         });
 
-        // API设置保存
-        document.getElementById('cdvApiSaveBtn').addEventListener('click', function () {
-          saveApiConfig({
-            url: document.getElementById('cdvApiUrl').value.trim(),
-            key: document.getElementById('cdvApiKey').value.trim(),
-            model: document.getElementById('cdvApiModel').value.trim(),
-            prompt: document.getElementById('cdvApiPrompt').value.trim()
-          });
-          if (typeof showToast === 'function') showToast('设置已保存');
-          doInterpretation();
-        });
-        document.getElementById('cdvApiBackBtn').addEventListener('click', function () { showView('draw'); });
-
         function doInterpretation() {
           var cfg = getApiConfig();
           if (!cfg.url || !cfg.key) {
-            fillApiForm();
-            showView('api');
+            if (typeof showToast === 'function') showToast('请先在设置中配置 API');
             return;
           }
           var interpContent = document.getElementById('cdvInterpContent');
