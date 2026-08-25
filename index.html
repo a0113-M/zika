@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v168')){sessionStorage.setItem('zk_v168','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==168){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v169')){sessionStorage.setItem('zk_v169','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==169){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v168</title>
+  <title>字卡 · 小手机 v169</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -124,6 +124,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
+      -webkit-overflow-scrolling: touch;
       background: #ece9f4;
     }
 
@@ -395,18 +396,15 @@
       width: 100%;
       height: 100%;
       background: rgba(30, 25, 50, 0.55);
-      display: flex;
-      visibility: hidden;
-      pointer-events: none;
-      
+      display: none;
       align-items: center;
       justify-content: center;
       z-index: 100;
+      backdrop-filter: blur(2px);
     }
 
     .modal-overlay.show {
-      visibility: visible;
-      pointer-events: auto;
+      display: flex;
     }
 
     .modal-box {
@@ -426,7 +424,7 @@
 
       100% {
         transform: scale(1);
-        visibility: visible;
+        opacity: 1;
       }
     }
 
@@ -510,11 +508,11 @@
     /* --- 动态编辑弹窗 --- */
     .moment-edit-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(30,25,50,0.75);
-      display: flex; visibility: hidden; pointer-events: none;  align-items: center; justify-content: center;
+      background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
+      display: none; align-items: center; justify-content: center;
       z-index: 500;
     }
-    .moment-edit-overlay.show { visibility: visible; pointer-events: auto; }
+    .moment-edit-overlay.show { display: flex; }
     .moment-edit-box {
       width: 90%; max-width: 380px; background: #fff;
       border-radius: 18px; padding: 24px 20px 20px;
@@ -553,11 +551,11 @@
     /* --- 动态删除确认弹窗 --- */
     .moment-del-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(30,25,50,0.75);
-      display: flex; visibility: hidden; pointer-events: none;  align-items: center; justify-content: center;
+      background: rgba(30,25,50,0.55); backdrop-filter: blur(2px);
+      display: none; align-items: center; justify-content: center;
       z-index: 500;
     }
-    .moment-del-overlay.show { visibility: visible; pointer-events: auto; }
+    .moment-del-overlay.show { display: flex; }
     .moment-del-box {
       width: 82%; max-width: 300px; background: #fff;
       border-radius: 18px; padding: 28px 22px 22px;
@@ -606,13 +604,7 @@
     }
 
     .hidden {
-      visibility: hidden !important;
-      pointer-events: none !important;
-      max-height: 0 !important;
-      overflow: hidden !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      flex: 0 0 0 !important;
+      display: none !important;
     }
 
     /* --- 添加菜单 --- */
@@ -716,9 +708,7 @@
 
     /* --- 聊天界面 --- */
     .chat-view {
-      display: flex;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       flex-direction: column;
       background: #ededed;
       position: absolute;
@@ -730,8 +720,7 @@
     }
 
     .chat-view.show {
-      visibility: visible;
-      pointer-events: auto;
+      display: flex;
     }
 
     .chat-header {
@@ -990,6 +979,7 @@
     .chat-msg-context-menu {
       position: fixed;
       background: rgba(50, 50, 50, 0.95);
+      backdrop-filter: blur(8px);
       border-radius: 16px;
       padding: 8px 12px;
       min-width: auto;
@@ -1007,7 +997,7 @@
 
       100% {
         transform: scale(1);
-        visibility: visible;
+        opacity: 1;
       }
     }
 
@@ -1214,21 +1204,15 @@
 
     /* --- 聊天工具栏 --- */
     .chat-toolbar {
-      display: flex;
-      height: 0;
-      overflow: hidden;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       background: #f7f7f7;
       position: relative;
       flex-direction: column;
-      
     }
 
     .chat-toolbar.open {
+      display: flex;
       height: calc(35vh);
-      visibility: visible;
-      pointer-events: auto;
       padding: 10px 12px 10px 12px;
       overflow: hidden;
       justify-content: flex-start;
@@ -1325,7 +1309,6 @@
       display: flex;
     }
     .letter-header {
-      position: relative;
       display: flex;
       align-items: center;
       padding: 12px 16px;
@@ -1353,10 +1336,6 @@
       opacity: 0.5;
     }
     .letter-header .letter-title {
-      position: absolute;
-      top: 0; bottom: 0; left: 0; right: 0;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
       font-size: 17px;
       font-weight: 600;
       color: #1a1a1a;
@@ -1561,6 +1540,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 16px 16px 24px;
+      -webkit-overflow-scrolling: touch;
     }
     /* 信纸效果 */
     .letter-paper {
@@ -2432,12 +2412,12 @@
     .letter-checkbox svg {
       width: 14px;
       height: 14px;
-      visibility: hidden;
+      opacity: 0;
       transform: scale(0.5);
       transition: all 0.15s;
     }
     .letter-checkbox.checked svg {
-      visibility: visible;
+      opacity: 1;
       transform: scale(1);
     }
     .letter-fav-star svg {
@@ -2916,7 +2896,7 @@
       width: 100%;
       min-height: 140px;
       overflow: hidden;
-      
+      transition: opacity 0.2s;
     }
     /* 信封翻盖：圆角三角形 */
     .anonymous-mailbox-btn-large::before {
@@ -3069,11 +3049,11 @@
       z-index: 1;
       pointer-events: none;
       opacity: 0.6;
-      
+      transition: opacity 0.4s ease;
     }
     /* 打开动画 */
     .mystery-letter-card.opening::before {
-      visibility: hidden;
+      opacity: 0;
       animation: envelopeOpen 0.5s ease forwards;
     }
     @keyframes envelopeOpen {
@@ -3353,7 +3333,7 @@
       flex-shrink: 0;
     }
     .toggle-switch input {
-      visibility: hidden;
+      opacity: 0;
       width: 0;
       height: 0;
     }
@@ -3543,6 +3523,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 16px;
+      -webkit-overflow-scrolling: touch;
     }
     .stats-card {
       background: #fff;
@@ -3778,6 +3759,7 @@
       flex: 1;
       overflow-y: auto;
       padding: 16px;
+      -webkit-overflow-scrolling: touch;
     }
     .contact-profile-card {
       background: #fff;
@@ -3906,26 +3888,20 @@
 
     /* --- 表情包模块 --- */
     .emoji-module {
-      display: flex;
-      height: 0;
-      overflow: hidden;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       padding: 8px 8px 4px 8px;
       background: #f7f7f7;
       position: relative;
       width: 100%;
+      height: 100%;
       flex-direction: column;
+      overflow: hidden;
       min-height: 0;
-      flex: 0 0 0;
-      
+      flex: 1;
     }
 
     .emoji-module.active {
-      height: 100%;
-      flex: 1;
-      visibility: visible;
-      pointer-events: auto;
+      display: flex;
     }
 
     .emoji-header {
@@ -4064,6 +4040,7 @@
       display: flex;
       overflow-x: auto;
       scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
     .chat-toolbar .toolbar-pages::-webkit-scrollbar { display: none; }
@@ -4080,7 +4057,7 @@
       display: flex; justify-content: center; align-items: center;
       gap: 5px; margin-top: 10px;
     }
-    .toolbar-dots.hidden { visibility: hidden; height: 0; overflow: hidden; margin: 0; pointer-events: none; }
+    .toolbar-dots.hidden { display: none; }
     .toolbar-dot {
       width: 5px; height: 5px; border-radius: 50%;
       background: rgba(0,0,0,0.18); border: none; padding: 0;
@@ -4091,7 +4068,6 @@
     /* --- 塔罗占卜面板（星语占卜） --- */
     .cdp-panel { z-index: 271; }
     .cdp-header {
-      position: relative;
       flex-shrink: 0;
       display: flex; align-items: center; justify-content: space-between;
       gap: 10px;
@@ -4099,58 +4075,18 @@
       background: linear-gradient(135deg, var(--primary-deep) 0%, var(--primary-strong) 55%, var(--primary-light) 100%);
       color: #fff;
     }
-    .cdp-title-wrap {
-      position: absolute;
-      top: 0; bottom: 0; left: 0; right: 0;
-      display: flex; flex-direction: column; gap: 3px;
-      align-items: center; justify-content: center;
-      pointer-events: none;
-    }
+    .cdp-title-wrap { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
     .cdp-title { font-size: 17px; font-weight: 700; letter-spacing: 2px; display: flex; align-items: center; gap: 6px; }
     .cdp-title .cdp-star { color: #ffe08a; }
     .cdp-sub { font-size: 11px; opacity: 0.9; letter-spacing: 1px; }
-    .cdp-back-btn {
-      display: none;
-      width: 28px; height: 28px; border-radius: 50%;
-      align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.2); border: none; padding: 0; flex-shrink: 0;
-    }
-    .chat-letter-panel.cdp-full .cdp-back-btn { display: flex; }
     .cdp-close-btn {
-      margin-left: auto;
       width: 28px; height: 28px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       background: rgba(255,255,255,0.2); border: none; padding: 0; flex-shrink: 0;
     }
     .cdp-close-btn:active { background: rgba(255,255,255,0.35); }
-    /* 顶栏按钮提升到绝对定位标题层之上（v139：雨见老内核 pointer-events:none 不可靠，防标题层挡按钮导致关不掉） */
-    .letter-header button, .diary-header button, .card-feature-header button,
-    .todo-header button, .feature-header button, .cdp-header button,
-    .theme-header button, .feature-header .act-hbtn {
-      position: relative; z-index: 1;
-    }
-    /* v141: 全屏占卜顶栏纯流内布局（雨见老内核 pe:none/z-index 提层均不可靠，标题层全铺整个移除） */
-    #chatDivinePanel.cdp-full .cdp-header {
-      background: #ffffff;
-      border-bottom: 0.5px solid var(--border-light);
-      gap: 0;
-    }
-    #chatDivinePanel.cdp-full .cdp-close-btn { display: none; }
-    #chatDivinePanel.cdp-full .cdp-title-wrap { display: none; }
-    .cdp-title-full {
-      display: none;
-      font-size: 17px; font-weight: 600; letter-spacing: 2px; color: #1a1a1a;
-    }
-    #chatDivinePanel.cdp-full .cdp-title-full {
-      display: block;
-      flex: 1;
-      margin-right: 28px;
-      text-align: center;
-    }
-    #chatDivinePanel.cdp-full .cdp-back-btn { background: transparent; }
-    #chatDivinePanel.cdp-full .cdp-back-btn svg { stroke: #333; }
     .cdp-body {
-      flex: 1; overflow-y: auto;
+      flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch;
       padding: 14px 16px 6px;
       background: linear-gradient(180deg, var(--bg-main) 0%, #ffffff 24%);
     }
@@ -4225,11 +4161,11 @@
     .cdv-face, .cdv-back {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       border-radius: 10px; overflow: hidden;
-      
+      transition: opacity .12s linear;
     }
-    .cdv-face { visibility: hidden; }
-    .cdv-card.flipped .cdv-back { visibility: hidden; }
-    .cdv-card.flipped .cdv-face { visibility: visible; }
+    .cdv-face { opacity: 0; }
+    .cdv-card.flipped .cdv-back { opacity: 0; }
+    .cdv-card.flipped .cdv-face { opacity: 1; }
     .cdv-card.half .cdv-flip { transform: scaleX(0.06); transition: transform .26s ease-in; }
     .cdv-card.flipped .cdv-flip { transform: scaleX(1); transition: transform .26s ease-out; }
     .cdv-back {
@@ -4258,9 +4194,9 @@
     .cdv-card.nobadge .cdv-badge { display: none; }
     .cdv-note {
       font-size: 10.5px; color: var(--text-secondary); line-height: 1.5;
-      text-align: center; min-height: 34px; visibility: hidden; 
+      text-align: center; min-height: 34px; opacity: 0; transition: opacity .4s .3s;
     }
-    .cdv-card.flipped .cdv-note { visibility: visible; }
+    .cdv-card.flipped .cdv-note { opacity: 1; }
     .cdp-summary {
       display: none; margin: 10px 0 4px; padding: 12px 14px;
       background: linear-gradient(135deg, rgba(var(--primary-strong-rgba),0.08), rgba(var(--primary-strong-rgba),0.1));
@@ -4307,6 +4243,7 @@
     }
     .cdv-fan-wrap {
       overflow-x: auto; overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
       height: 150px; margin: 0 -6px; padding: 0 6px;
     }
     .cdv-fan-wrap::-webkit-scrollbar { display: none; }
@@ -4319,7 +4256,7 @@
       background: linear-gradient(150deg, var(--primary-deep) 0%, var(--primary-strong) 50%, var(--primary-deep) 100%);
       box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25), inset 0 0 22px rgba(0,0,0,0.28), 0 2px 6px rgba(74,61,148,0.35);
       display: flex; align-items: center; justify-content: center;
-      transition: transform .22s ease;
+      transition: transform .22s ease, opacity .3s ease;
       cursor: pointer;
     }
     .cdv-fcard.picked { box-shadow: inset 0 0 0 2px rgba(255,224,138,0.9), inset 0 0 22px rgba(0,0,0,0.28), 0 3px 10px rgba(230,178,60,0.5); }
@@ -4391,7 +4328,8 @@
     .acd-char-card span { flex: 1; font-size: 13px; color: rgba(255,255,255,0.92); }
     .acd-cc-arrow { font-size: 20px; color: rgba(255,255,255,0.5); font-style: normal; line-height: 1; }
     .acd-char-row {
-      display: flex; gap: 8px; overflow-x: auto; margin-top: 10px; padding-bottom: 4px; scrollbar-width: none;
+      display: flex; gap: 8px; overflow-x: auto; margin-top: 10px; padding-bottom: 4px;
+      -webkit-overflow-scrolling: touch; scrollbar-width: none;
     }
     .acd-char-row::-webkit-scrollbar { display: none; }
     .acd-chip {
@@ -4436,11 +4374,11 @@
     .acd-hitem-r { font-size: 10.5px; color: rgba(255,255,255,0.5); margin-top: 4px; }
     .acd-hempty { text-align: center; color: rgba(255,255,255,0.5); font-size: 12px; padding: 30px 0; }
     .acd-live {
-      visibility: hidden; pointer-events: none;  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       z-index: 1300; overflow: hidden;
     }
-    .acd-live.open { visibility: visible; pointer-events: auto; }
-    .acd-live-scroll { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; }
+    .acd-live.open { display: block; }
+    .acd-live-scroll { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     .acd-live-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
     .acd-glow {
       position: absolute; top: 24%; left: 50%; width: 240px; height: 240px;
@@ -4498,7 +4436,7 @@
       overflow: hidden;
     }
     .acd-log-title { padding: 7px 12px 4px; font-size: 10.5px; color: rgba(255,255,255,0.7); letter-spacing: 2px; }
-    .acd-log-list { max-height: 76px; overflow-y: auto; padding: 0 12px 8px; }
+    .acd-log-list { max-height: 76px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 12px 8px; }
     .acd-log-item {
       display: flex; gap: 8px; font-size: 11px; color: rgba(255,255,255,0.88);
       padding: 5px 0; border-top: 1px dashed rgba(255,255,255,0.12);
@@ -4510,22 +4448,17 @@
       background: rgba(0,0,0,0.22); color: #fff; font-size: 13px; letter-spacing: 2px;
     }
     .clp-backdrop {
-      visibility: hidden;
-      pointer-events: none;
-      
+      display: none;
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.35);
       z-index: 260;
     }
     .clp-backdrop.active {
-      visibility: visible;
-      pointer-events: auto;
+      display: block;
     }
     .chat-letter-panel {
-      display: flex;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       position: absolute;
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
@@ -4540,22 +4473,9 @@
       z-index: 261;
     }
     .chat-letter-panel.active {
-      visibility: visible;
-      pointer-events: auto;
+      display: flex;
       animation: clp-scale-in 0.3s cubic-bezier(0.32, 0.72, 0, 1) forwards;
     }
-    /* 占卜面板全屏模式（首页侧边栏进入，v137） */
-    .chat-letter-panel.cdp-full {
-      top: 0; left: 0; right: 0; bottom: 0;
-      width: 100%; height: 100%;
-      max-width: none; max-height: none;
-      transform: none;
-      border-radius: 0;
-      box-shadow: none;
-      z-index: 350;
-    }
-    /* v141: 全屏占卜不跑任何动画——雨见老内核动画合成层吞触摸/命中错乱 */
-    .chat-letter-panel.cdp-full.active { animation: none; }
     /* Header with avatar */
     .chat-letter-panel .clp-header-hero {
       display: flex;
@@ -4639,6 +4559,7 @@
     .chat-letter-panel .clp-scroll-body {
       flex: 1;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .chat-letter-panel .clp-scroll-body::-webkit-scrollbar { width: 3px; }
     .chat-letter-panel .clp-scroll-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 3px; }
@@ -4750,7 +4671,7 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: transform 0.15s;
+      transition: transform 0.15s, opacity 0.15s;
     }
     .chat-letter-panel .clp-action-btn:active { transform: scale(0.96); opacity: 0.85; }
     .chat-letter-panel .clp-action-btn.primary {
@@ -4898,9 +4819,7 @@
 
         /* 信件详情弹窗（在信件面板内） */
     .chat-letter-detail {
-      display: flex;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: #f7f7f7;
@@ -4910,7 +4829,7 @@
       padding: 10px;
       border-radius: 16px;
     }
-    .chat-letter-detail.active { visibility: visible; pointer-events: auto; }
+    .chat-letter-detail.active { display: flex; }
     .chat-letter-detail .cld-header {
       display: flex;
       align-items: center;
@@ -4933,6 +4852,7 @@
       flex: 1;
       min-height: 0;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       display: flex;
       flex-direction: column;
     }
@@ -5036,7 +4956,7 @@
     .chat-letter-detail .cld-ovl-text {
       font-size: 13px; color: #444; line-height: 1.6; white-space: pre-wrap;
       background: var(--bg-soft); border-radius: 8px; padding: 10px; margin-bottom: 12px;
-      max-height: 160px; overflow-y: auto;
+      max-height: 160px; overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
     .chat-letter-detail .cld-ovl-textarea {
       width: 100%; box-sizing: border-box; min-height: 90px;
@@ -5060,13 +4980,12 @@
       width: 100%;
       height: 100%;
       z-index: 300;
-      visibility: hidden;
+      display: none;
       pointer-events: none;
-      
     }
 
     .sidebar-overlay.show {
-      visibility: visible;
+      display: block;
       pointer-events: auto;
     }
 
@@ -5080,7 +4999,7 @@
     }
 
     .sidebar-overlay.show .sidebar-bg {
-      visibility: visible;
+      opacity: 1;
     }
 
     .sidebar {
@@ -5253,12 +5172,12 @@
       font-size: 11px;
       padding: 4px 0;
       text-align: center;
-      visibility: hidden;
-      
+      opacity: 0;
+      transition: opacity 0.2s;
     }
 
     .profile-box .profile-avatar-edit:hover .avatar-hint {
-      visibility: visible;
+      opacity: 1;
     }
 
     .profile-box .profile-avatar-edit img {
@@ -5346,7 +5265,6 @@
     }
 
     .feature-page .feature-header {
-      position: relative;
       display: flex;
       align-items: center;
       padding: 12px 16px;
@@ -5367,13 +5285,12 @@
     }
 
     .feature-page .feature-title {
-      position: absolute;
-      top: 0; bottom: 0; left: 0; right: 0;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
+      flex: 1;
+      text-align: center;
       font-size: 17px;
       font-weight: 600;
       color: #1a1a1a;
+      margin-right: 36px;
     }
 
     .feature-page .feature-content {
@@ -5411,15 +5328,16 @@
       border-radius: 12px;
       font-size: 15px;
       z-index: 500;
-      visibility: hidden;
+      opacity: 0;
       pointer-events: none;
-      
+      transition: opacity 0.3s ease;
       text-align: center;
       max-width: 260px;
+      backdrop-filter: blur(4px);
     }
 
     .toast.show {
-      visibility: visible;
+      opacity: 1;
     }
 
     /* --- 字卡功能页面 --- */
@@ -5440,7 +5358,6 @@
     }
 
     .card-feature-header {
-      position: relative;
       display: flex;
       align-items: center;
       padding: 12px 16px;
@@ -5461,13 +5378,12 @@
     }
 
     .card-feature-header .card-feature-title {
-      position: absolute;
-      top: 0; bottom: 0; left: 0; right: 0;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
+      flex: 1;
+      text-align: center;
       font-size: 17px;
       font-weight: 600;
       color: #1a1a1a;
+      margin-right: 36px;
     }
 
     .card-feature-content {
@@ -6237,6 +6153,7 @@
       display: none;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(4px);
     }
 
     .export-chat-modal.show {
@@ -6323,12 +6240,12 @@
     .chat-messages.select-mode .msg-right {
       cursor: pointer;
       opacity: 0.6;
-      
+      transition: opacity 0.2s;
     }
 
     .chat-messages.select-mode .msg-left.selected,
     .chat-messages.select-mode .msg-right.selected {
-      visibility: visible;
+      opacity: 1;
       background: rgba(155, 142, 196, 0.08);
       border-radius: 8px;
     }
@@ -6351,31 +6268,24 @@
 
     .chat-messages.select-mode .msg-left.selected .msg-avatar,
     .chat-messages.select-mode .msg-right.selected .msg-avatar {
-      visibility: visible;
+      opacity: 1;
     }
 
     /* 多选底部工具栏 */
     .chat-select-toolbar {
-      display: flex;
-      height: 0;
-      overflow: hidden;
-      visibility: hidden;
-      pointer-events: none;
+      display: none;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 8px 16px;
       background: #f7f7f7;
       border-top: 0.5px solid #d9d9d9;
       flex-shrink: 0;
+      min-height: 52px;
       gap: 12px;
     }
 
     .chat-select-toolbar.show {
-      height: auto;
-      min-height: 52px;
-      visibility: visible;
-      pointer-events: auto;
-      padding: 8px 16px;
+      display: flex;
     }
 
     .chat-select-toolbar .select-info {
@@ -6464,6 +6374,7 @@
 .moments-scroll {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .moments-cover {
@@ -6521,6 +6432,7 @@
   font-size: 18px;
   font-weight: 600;
   color: #fff;
+  backdrop-filter: blur(4px);
 }
 
 .moments-feed {
@@ -6658,7 +6570,8 @@
   align-items: center;
   padding: 3px 5px;
   gap: 2px;
-  -webkit-
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 
@@ -6781,9 +6694,10 @@
   inset: 0;
   background: rgba(0,0,0,0.4);
   z-index: 200;
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   align-items: flex-end;
   justify-content: center;
+  backdrop-filter: blur(2px);
 }
 
 .moments-post-overlay.show {
@@ -7054,7 +6968,7 @@
       padding: 14px 14px 30px;
       background: var(--bg-main);
     }
-    .act-cbar-wrap { margin-bottom: 10px; overflow-x: auto; }
+    .act-cbar-wrap { margin-bottom: 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .act-cbar { display: flex; gap: 10px; padding: 2px 2px 6px; width: max-content; min-width: 100%; }
     .act-citem { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 52px; cursor: pointer; }
     .act-cavatar {
@@ -7113,7 +7027,6 @@
     .tl-item.future { opacity: 0.5; }
     .tl-real-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--primary); margin-right: 4px; vertical-align: 1px; }
     .act-hbtn {
-      margin-left: auto;
       flex: 0 0 auto; display: flex; align-items: center; gap: 5px;
       padding: 6px 11px; border-radius: 14px; cursor: pointer;
       background: rgba(var(--primary-rgba), 0.1); color: var(--primary);
@@ -7124,18 +7037,18 @@
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.45); z-index: 1200;
       display: flex; align-items: center; justify-content: center;
-      visibility: hidden; pointer-events: none; 
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
       padding: 18px 16px;
     }
-    .act-ovl.show { visibility: visible; pointer-events: auto; }
-    .act-ovl-box { width: 100%; max-width: 360px; background: var(--bg-card); border-radius: 18px; padding: 18px 16px; box-sizing: border-box; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22); transform: scale(0.94); visibility: hidden; transition: transform 0.18s ease; }
-    .act-ovl.show .act-ovl-box { transform: scale(1); visibility: visible; }
+    .act-ovl.show { opacity: 1; pointer-events: auto; }
+    .act-ovl-box { width: 100%; max-width: 360px; background: var(--bg-card); border-radius: 18px; padding: 18px 16px; box-sizing: border-box; box-shadow: 0 16px 48px rgba(0, 0, 0, 0.22); transform: scale(0.94); opacity: 0; transition: transform 0.18s ease, opacity 0.18s ease; }
+    .act-ovl.show .act-ovl-box { transform: scale(1); opacity: 1; }
     .act-card-box { max-height: 82vh; display: flex; flex-direction: column; }
     .act-ovl-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
     .act-ovl-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
     .act-ovl-x { background: none; border: none; color: var(--text-muted); padding: 4px; cursor: pointer; }
     .act-card-hint { font-size: 11px; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px; background: var(--bg-soft); border-radius: 10px; padding: 8px 10px; }
-    .act-card-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 2px; }
+    .act-card-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 2px; }
     .ac-row { border: 1px solid rgba(var(--primary-rgba), 0.18); border-radius: 10px; margin-bottom: 8px; overflow: hidden; background: var(--bg-soft); }
     .ac-main { display: flex; align-items: center; gap: 8px; padding: 10px 10px; cursor: pointer; }
     .ac-dot { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 8px; }
@@ -7399,7 +7312,6 @@
 }
 .todo-view.show { display: flex; }
 .todo-header {
-  position: relative;
   display: flex;
   align-items: center;
   padding: 12px 16px;
@@ -7421,17 +7333,13 @@
 }
 .todo-back:active { background: var(--bg-soft); }
 .todo-header-title {
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none;
   font-size: 17px;
   font-weight: 600;
   color: #333;
+  flex: 1;
 }
 .todo-header-count {
-  margin-left: auto;
-  align-self: center;
+  margin-left: 8px;
   font-size: 12px;
   color: var(--primary);
   background: var(--bg-soft);
@@ -7439,7 +7347,7 @@
   border-radius: 10px;
 }
 .todo-header-btn {
-  margin-left: auto;
+  margin-left: 6px;
   display: inline-flex;
   align-items: center;
   gap: 3px;
@@ -7490,6 +7398,7 @@
 .todo-scroll {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 8px 0;
 }
 .todo-empty {
@@ -7586,7 +7495,7 @@
   margin-right: 2px;
 }
 .todo-item:active .todo-edit-btn,
-.todo-item:hover .todo-edit-btn { visibility: visible; }
+.todo-item:hover .todo-edit-btn { opacity: 1; }
 .todo-edit-btn svg { width: 16px; height: 16px; }
 .todo-edit-btn:active { background: var(--bg-main); }
 .todo-del-btn {
@@ -7601,11 +7510,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  visibility: hidden;
-  
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 .todo-item:active .todo-del-btn,
-.todo-item:hover .todo-del-btn { visibility: visible; }
+.todo-item:hover .todo-del-btn { opacity: 1; }
 .todo-del-btn svg { width: 16px; height: 16px; }
 .todo-del-btn:active { background: #fff5f5; color: #e55a5a; }
 /* Edit input */
@@ -7671,7 +7580,6 @@
 .diary-page.show { display: flex; }
 
 .diary-header {
-  position: relative;
   display: flex;
   align-items: center;
   padding: 12px 16px;
@@ -7689,13 +7597,12 @@
   border: none;
 }
 .diary-title {
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none;
+  flex: 1;
+  text-align: center;
   font-size: 17px;
   font-weight: 600;
   color: #1a1a1a;
+  margin-right: 36px;
 }
 
 .diary-category-bar {
@@ -7705,6 +7612,7 @@
   padding: 8px 16px;
   padding-right: 48px;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   background: #ffffff;
   border-bottom: 0.5px solid #e0e0e0;
   flex-shrink: 0;
@@ -7745,7 +7653,7 @@
   cursor: pointer;
   vertical-align: middle;
 }
-.diary-cat-tab .cat-close:hover { visibility: visible; }
+.diary-cat-tab .cat-close:hover { opacity: 1; }
 .diary-cat-tab.active .cat-close { opacity: 0.8; }
 
 .diary-category-select {
@@ -7804,7 +7712,7 @@
 .diary-cat-settings:active { background: var(--bg-soft); }
 
 .diary-cat-manage-overlay {
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -7813,7 +7721,7 @@
   align-items: flex-end;
   justify-content: center;
 }
-.diary-cat-manage-overlay.show { visibility: visible; pointer-events: auto; }
+.diary-cat-manage-overlay.show { display: flex; }
 .diary-cat-manage-panel {
   background: #fff;
   border-radius: 16px 16px 0 0;
@@ -7931,12 +7839,12 @@
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.35);
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   align-items: center;
   justify-content: center;
   z-index: 10002;
 }
-.diary-cat-del-overlay.show { visibility: visible; pointer-events: auto; }
+.diary-cat-del-overlay.show { display: flex; }
 .diary-cat-del-box {
   background: #fff;
   border-radius: 16px;
@@ -8035,6 +7943,7 @@
 .diary-scroll {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 12px 12px 80px 12px;
 }
 
@@ -8229,11 +8138,12 @@
   inset: 0;
   background: rgba(0,0,0,0.4);
   z-index: 200;
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   align-items: center;
   justify-content: center;
+  backdrop-filter: blur(2px);
 }
-.diary-overlay.show { visibility: visible; pointer-events: auto; }
+.diary-overlay.show { display: flex; }
 
 .diary-modal {
   width: 90%;
@@ -8326,105 +8236,6 @@
 }
 .diary-modal-confirm:active { opacity: 0.85; }
 
-/* v160: 日记搜索栏 */
-.diary-search-wrap {
-  display: flex; align-items: center;
-  padding: 6px 16px 8px; background: #fff;
-  border-bottom: 0.5px solid #e0e0e0; flex-shrink: 0; position: relative;
-}
-.diary-search-icon {
-  position: absolute; left: 26px; width: 15px; height: 15px;
-  color: #bbb; pointer-events: none;
-}
-.diary-search-wrap input {
-  flex: 1; border: none; background: var(--bg-soft);
-  border-radius: 8px; padding: 7px 32px 7px 34px; font-size: 14px;
-  outline: none; color: #333;
-}
-.diary-search-wrap input::placeholder { color: #bbb; }
-.diary-search-clear {
-  position: absolute; right: 24px; width: 18px; height: 18px;
-  border: none; background: #ccc; color: #fff; border-radius: 50%;
-  font-size: 13px; line-height: 1; display: none;
-  align-items: center; justify-content: center; cursor: pointer;
-}
-.diary-search-clear.show { display: flex; }
-
-/* v160: 日记详情全屏页 */
-.diary-detail-overlay {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg-main); z-index: 360; display: none; flex-direction: column;
-}
-.diary-detail-overlay.show { display: flex; }
-.diary-detail-header {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 16px; background: #fff;
-  border-bottom: 0.5px solid #e0e0e0; min-height: 56px;
-  padding-top: calc(12px + env(safe-area-inset-top, 0px));
-}
-.diary-detail-back {
-  background: none; border: none; padding: 4px 8px;
-  cursor: pointer; color: var(--primary);
-}
-.diary-detail-header span {
-  font-size: 17px; font-weight: 600; color: #1a1a1a;
-}
-.diary-detail-scroll { flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch; }
-.diary-detail-scroll .diary-text { font-size: 15px; line-height: 1.8; margin-bottom: 16px; }
-.diary-detail-time { font-size: 12px; color: #aaa; margin-top: 12px; }
-.diary-detail-title {
-  font-size: 17px; font-weight: 600; color: #1a1a1a;
-  margin-bottom: 12px; line-height: 1.4;
-}
-.diary-item { cursor: pointer; }
-/* v161: 日记详情页操作栏 */
-.diary-detail-action-bar {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; padding-top: 12px; margin-top: 8px;
-  border-top: 0.5px solid var(--border-light);
-}
-.diary-detail-comments { margin-top: 12px; }
-.diary-detail-comments-title {
-  font-size: 13px; color: #888; font-weight: 600; margin-bottom: 8px;
-}
-.diary-detail-comment-list .diary-comment-item { padding: 6px 0; }
-/* v162: 日记编辑全屏页 */
-.diary-edit-fullscreen {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: var(--bg-main); z-index: 370; display: none; flex-direction: column;
-}
-.diary-edit-fullscreen.show { display: flex; }
-.diary-edit-header {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 16px; background: #fff;
-  border-bottom: 0.5px solid #e0e0e0; min-height: 56px;
-  padding-top: calc(12px + env(safe-area-inset-top, 0px));
-}
-.diary-edit-header .diary-detail-back { background: none; border: none; padding: 4px 8px; cursor: pointer; color: var(--primary); }
-.diary-edit-header span {
-  flex: 1; font-size: 17px; font-weight: 600; color: #1a1a1a;
-}
-.diary-edit-save-btn {
-  background: linear-gradient(135deg, var(--primary), #7b6eb4);
-  color: #fff; border: none; border-radius: 8px;
-  padding: 6px 18px; font-size: 14px; cursor: pointer; white-space: nowrap;
-}
-.diary-edit-save-btn:active { opacity: 0.85; }
-.diary-edit-scroll {
-  flex: 1; overflow-y: auto; padding: 16px;
-  -webkit-overflow-scrolling: touch;
-}
-.diary-edit-scroll .diary-category-select { margin-bottom: 16px; }
-.diary-edit-textarea {
-  width: 100%; min-height: 240px;
-  border: 1px solid #d4c8e8; border-radius: 12px;
-  padding: 14px; font-size: 15px; resize: none; outline: none;
-  color: #333; background: #fff; box-sizing: border-box; margin-bottom: 16px;
-  line-height: 1.7;
-}
-.diary-edit-scroll .diary-image-upload-area { margin-bottom: 16px; }
-
-
 
 /* ===== 待办优先级 & 联系人 ===== */
 .todo-prio-dot {
@@ -8478,7 +8289,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  visibility: visible;
+  opacity: 1;
 }
 .todo-reminder-toast-title svg {
   flex-shrink: 0;
@@ -8596,6 +8407,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 14px;
+  -webkit-overflow-scrolling: touch;
 }
 .reminder-cards-section {
   margin-bottom: 18px;
@@ -8702,7 +8514,7 @@
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
-  
+  transition: opacity 0.15s;
 }
 .reminder-card-add-btn:hover {
   opacity: 0.85;
@@ -8867,11 +8679,11 @@
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.3);
   z-index: 9999;
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   align-items: flex-end;
   justify-content: center;
 }
-.todo-prio-overlay.show { visibility: visible; pointer-events: auto; }
+.todo-prio-overlay.show { display: flex; }
 .todo-prio-popup {
   background: #fff;
   border-radius: 16px 16px 0 0;
@@ -8994,12 +8806,12 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.35);
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   justify-content: center;
   align-items: flex-end;
   z-index: 10000;
 }
-.todo-datetime-overlay.show { visibility: visible; pointer-events: auto; }
+.todo-datetime-overlay.show { display: flex; }
 .todo-datetime-popup {
   width: 92%;
   max-height: 55%;
@@ -9129,6 +8941,7 @@
   height: 168px;
   overflow-y: auto;
   scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
   width: 56px;
   position: relative;
 }
@@ -9178,12 +8991,12 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.35);
-  display: flex; visibility: hidden; pointer-events: none; 
+  display: none;
   justify-content: center;
   align-items: flex-end;
   z-index: 10000;
 }
-.todo-contact-overlay.show { visibility: visible; pointer-events: auto; }
+.todo-contact-overlay.show { display: flex; }
 .todo-contact-popup {
   width: 92%;
   max-height: 60%;
@@ -9431,19 +9244,14 @@
 }
 .theme-view.show { transform: translateX(0); }
 .theme-header {
-  position: relative;
   display: flex; align-items: center; padding: 12px 16px;
   background: var(--bg-card); border-bottom: 0.5px solid var(--border-light); flex-shrink: 0;
 }
 .theme-header-title {
-  position: absolute;
-  top: 0; bottom: 0; left: 0; right: 0;
-  display: flex; align-items: center; justify-content: center;
-  pointer-events: none;
-  font-size: 17px; font-weight: 600; color: var(--text-main);
+  font-size: 17px; font-weight: 600; color: var(--text-main); flex: 1;
 }
 .theme-scroll {
-  flex: 1; overflow-y: auto; padding: 16px;
+  flex: 1; overflow-y: auto; padding: 16px; -webkit-overflow-scrolling: touch;
 }
 .theme-section { margin-bottom: 24px; }
 .theme-section-title {
@@ -9538,29 +9346,29 @@
   margin: 0 auto;
   height: 100vh;
   height: 100dvh;
-  z-index: 11000; display: flex; visibility: hidden; pointer-events: none; flex-direction: column;
+  z-index: 11000; display: none; flex-direction: column;
   background: transparent;
   color: #fff; overflow: hidden;
   transition: background 0.4s ease;
   --call-msg-color: rgba(60,60,60,0.85);
   --call-msg-color-self: rgba(60,60,60,0.85);
   --halo-r: 255; --halo-g: 215; --halo-b: 0;
-  --halo-visibility: visible;
+  --halo-opacity: 1;
   --input-opacity: 0.25;
 }
-.call-overlay.active { visibility: visible; pointer-events: auto; }
+.call-overlay.active { display: flex; }
 .call-overlay.ringing-mode {
-  background: rgba(0,0,0,0.5); -webkit-
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
   justify-content: center; align-items: center;
 }
 
 .call-type-modal {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  z-index: 11500; display: flex; visibility: hidden; pointer-events: none; 
-  align-items: center; justify-content: center;
-  background: rgba(0,0,0,0.5); -webkit-
+  z-index: 11500; display: none; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
-.call-type-modal.active { visibility: visible; pointer-events: auto; }
+.call-type-modal.active { display: flex; }
 .call-type-card {
   background: var(--bg-card, #fff); border-radius: 16px; padding: 28px 24px;
   width: 280px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -9585,7 +9393,7 @@
   color: var(--text-muted); font-size: 13px; cursor: pointer;
 }
 
-.call-ringing { display: none; flex-direction: column; align-items: stretch; width: 100%; max-width: 280px; padding: 24px 20px; padding-bottom: 24px; background: rgba(30,20,50,0.95); -webkit- border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+.call-ringing { display: none; flex-direction: column; align-items: stretch; width: 100%; max-width: 280px; padding: 24px 20px; padding-bottom: 24px; background: rgba(30,20,50,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
 .call-ringing.active { display: flex; animation: callCardIn 0.3s ease; }
 .call-ringing-center {
   flex: 1;
@@ -9631,7 +9439,7 @@
 .call-action-btn {
   flex: 1; padding: 13px 0; border: none; border-radius: 26px;
   font-size: 16px; font-weight: 500; color: #fff; cursor: pointer;
-  
+  transition: opacity 0.2s;
   display: flex; align-items: center; justify-content: center; gap: 8px;
 }
 .call-action-btn:active { opacity: 0.8; }
@@ -9676,15 +9484,16 @@
 .cs-overlay {
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0,0,0,0.45);
-  z-index: 200; display: flex; visibility: hidden; pointer-events: none; 
+  z-index: 200; display: none;
   align-items: center; justify-content: center;
   padding: 20px;
 }
-.cs-overlay.active { visibility: visible; pointer-events: auto; }
+.cs-overlay.active { display: flex; animation: csFadeIn 0.2s ease; }
 @keyframes csFadeIn { from { opacity: 0; } to { opacity: 1; } }
 .cs-card {
   width: 100%; max-width: 320px; max-height: 80vh;
-  background: rgba(255,255,255,0.95); -webkit-
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
   box-shadow: 0 8px 40px rgba(0,0,0,0.2);
   overflow: hidden; display: flex; flex-direction: column;
@@ -9708,7 +9517,7 @@
   cursor: pointer; transition: background 0.15s;
 }
 .cs-close-btn:active { background: rgba(var(--primary-rgba), 0.25); }
-.cs-card-body { overflow-y: auto; padding: 4px 18px 16px; }
+.cs-card-body { overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 4px 18px 16px; }
 .cs-row {
   display: flex; align-items: center; justify-content: space-between;
   padding: 10px 0;
@@ -9831,13 +9640,14 @@
 .call-overlay.kb-open .call-send-bar,
 .call-overlay.kb-open .call-controls {
   max-height: 0; padding-top: 0; padding-bottom: 0;
-  visibility: hidden; pointer-events: none;
+  opacity: 0; pointer-events: none;
 }
 .call-dynamic-ring {
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  visibility: hidden;
+  opacity: 0;
+  will-change: transform, opacity;
   animation: callRingAppear ease-out forwards;
 }
 .call-dynamic-ring.ring-solid {
@@ -9911,7 +9721,7 @@
   background: var(--primary);
   font-size: 36px; font-weight: 600; color: #fff;
   box-shadow: 0 0 30px rgba(255,215,0,0.4), 0 0 60px rgba(155,142,196,0.2);
-  
+  transition: opacity 0.3s;
 }
 /* 视频小窗口 - 自己 */
 .call-video-small {
@@ -9931,7 +9741,7 @@
   width: 50px; height: 50px; border-radius: 50%; overflow: hidden;
   background: rgba(155,142,196,0.6);
   font-size: 20px; font-weight: 600; color: #fff;
-  
+  transition: opacity 0.3s;
 }
 .call-video-small .swap-icon {
   position: absolute; bottom: 4px; right: 4px;
@@ -9948,7 +9758,8 @@
 .call-video-bg-btn:active { background: rgba(255,255,255,0.2); }
 .video-bg-menu {
   position: absolute; top: 56px; right: 12px;
-  background: rgba(255,255,255,0.95); -webkit-
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
   border-radius: 12px; padding: 6px;
   box-shadow: 0 8px 30px rgba(0,0,0,0.25);
   z-index: 150; display: none;
@@ -9977,7 +9788,8 @@
   padding-top: 6px;
   padding-bottom: 4px;
   position: relative; z-index: 5;
-  background: rgba(255,255,255,0.62); -webkit-
+  background: rgba(255,255,255,0.62);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-radius: 14px;
 }
 .call-overlay.video-mode .call-chat-input-bar,
@@ -9989,7 +9801,8 @@
 .call-overlay.video-mode .call-top-bar .call-bg-btn,
 .call-overlay.video-mode .call-top-bar .call-minimize-btn,
 .call-overlay.video-mode .call-top-bar .call-video-bg-btn {
-  background: rgba(255,255,255,0.18); -webkit-
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .call-overlay.video-mode .call-top-bar .call-bg-btn:active,
 .call-overlay.video-mode .call-top-bar .call-minimize-btn:active,
@@ -10002,7 +9815,7 @@
   padding-bottom: max(10px, env(safe-area-inset-bottom));
   flex-shrink: 0;
   max-height: 120px; overflow: hidden;
-  transition: max-height 0.25s ease;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
 .call-hangup-btn {
   display: flex; align-items: center; justify-content: center; gap: 8px;
@@ -10027,12 +9840,14 @@
   padding: 6px 0;
   overflow: hidden;
   position: relative; z-index: 5;
-  background: rgba(255,255,255,0.62); -webkit-
+  background: rgba(255,255,255,0.62);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
   border-radius: 14px;
 }
 /* 视频模式：白底由 call-chat-area 承担，消息容器不重复套白 */
 .call-overlay.video-mode .call-chat-messages {
-  background: none; -webkit-
+  background: none;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
   border-radius: 0;
 }
 /* 第1行：联系人消息（居中） */
@@ -10104,13 +9919,14 @@
   display: flex; flex-direction: column; align-items: center;
   padding: 0 16px; flex-shrink: 0; width: 100%;
   max-height: 80px; overflow: hidden;
-  transition: max-height 0.25s ease;
+  transition: max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease;
 }
 .call-chat-input-fixed {
   width: 100%; min-width: 0;
   background: rgba(255,255,255,var(--input-opacity)); border: 1px solid rgba(255,255,255,0.25);
   border-radius: 20px; padding: 12px 18px; color: var(--call-msg-color-self); font-size: 14px; outline: none;
-  transition: border-color 0.2s, background 0.2s; box-sizing: border-box; -webkit-
+  transition: border-color 0.2s, background 0.2s; box-sizing: border-box;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
 }
 .call-chat-input-fixed:focus { border-color: var(--primary); }
 .call-chat-input-fixed::placeholder { color: rgba(60,60,60,0.35); }
@@ -10119,24 +9935,25 @@
   background: linear-gradient(135deg, var(--primary), var(--accent));
   color: #fff; border: none; border-radius: 23px;
   width: 160px; height: 46px; font-size: 18px; cursor: pointer; white-space: nowrap;
-  font-weight: 600;  flex-shrink: 0;
+  font-weight: 600; transition: opacity 0.2s; flex-shrink: 0;
   box-shadow: 0 4px 16px rgba(155,142,196,0.35);
 }
 .call-chat-send-btn:active { opacity: 0.7; transform: scale(0.96); }
 
 /* 语音小窗 - 圆角矩形 */
 .call-mini-window {
-  position: fixed; z-index: 11200; display: flex; visibility: hidden; pointer-events: none; 
+  position: fixed; z-index: 11200; display: none;
   width: auto; min-width: 92px; height: 40px;
   padding: 0 8px; box-sizing: border-box;
   background: rgba(30,20,50,0.7);
   border-radius: 18px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(155,142,196,0.12); -webkit-
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(155,142,196,0.12);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   touch-action: none; cursor: pointer;
   transition: transform 0.15s, box-shadow 0.15s;
   overflow: hidden; align-items: center;
 }
-.call-mini-window.active { visibility: visible; pointer-events: auto; }
+.call-mini-window.active { display: flex; }
 .call-mini-window:active { transform: scale(0.96); }
 .call-mini-window .cmw-avatar {
   width: 24px; height: 24px; border-radius: 50%; overflow: hidden;
@@ -10297,6 +10114,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
       </button>
       <span class="todo-header-title">待办</span>
+      <span class="todo-header-count" id="todoCount">0 项</span>
       <button class="todo-header-btn" id="reminderCardsEntryBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M8 14h4"/></svg>
         <span>提醒字卡</span>
@@ -10306,7 +10124,7 @@
       <button class="todo-filter-btn active" data-filter="all">全部</button>
       <button class="todo-filter-btn" data-filter="pending">未完成</button>
       <button class="todo-filter-btn" data-filter="done">已完成</button>
-      <span class="todo-header-count" id="todoCount">0 项</span>
+
     </div>
     <div class="todo-scroll" id="todoScroll">
       <div class="todo-empty" id="todoEmpty">
@@ -10556,6 +10374,110 @@
 
         </div>
       </div>
+      <!-- 塔罗占卜面板（星语占卜） -->
+      <div class="clp-backdrop" id="cdvBackdrop"></div>
+      <div class="chat-letter-panel cdp-panel" id="chatDivinePanel">
+        <div class="cdp-header">
+          <div class="cdp-title-wrap">
+            <span class="cdp-title">
+              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
+              星语占卜
+              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
+            </span>
+            <span class="cdp-sub">以牌为桥 · 连接彼此</span>
+          </div>
+          <button class="cdp-close-btn" id="cdvCloseBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <div class="cdp-body">
+          <!-- 设置视图 -->
+          <div class="cdp-view" id="cdvSetupView">
+            <div class="cdp-tabs" id="cdvModeTabs">
+              <button class="cdp-tab active" data-m="tarot">塔罗牌</button>
+              <button class="cdp-tab" data-m="leno">雷诺曼牌</button>
+            </div>
+            <div class="cdp-mode-sub" id="cdvModeSub">78张塔罗 · 带正逆位</div>
+            <div class="cdp-sec-label">抽牌数量</div>
+            <div class="cdp-row" id="cdvCountRow">
+              <button class="cdp-opt active" data-c="1">抽1张</button>
+              <button class="cdp-opt" data-c="3">抽3张</button>
+            </div>
+            <div class="cdp-sec-label">
+              <svg class="cdp-star" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
+              占卜对象
+            </div>
+            <div class="cdp-row cdp-targets" id="cdvTargetRow"></div>
+            <div class="cdp-sec-label">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8db3e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 4v7l2-2 2 2V4"/></svg>
+              想问TA什么？输入你的问题
+            </div>
+            <input class="cdp-qinput" id="cdvQInput" placeholder="例如：TA现在对我是什么感觉？" maxlength="50">
+            <button class="cdp-start" id="cdvStartBtn">
+              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
+              开始抽牌
+              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
+            </button>
+            <button class="cdp-history-btn" id="cdvQuickBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
+              速占 · 免选牌直接出结果
+            </button>
+            <button class="cdp-history-btn" id="cdvHistoryBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
+              历史记录
+            </button>
+            <div class="cdp-copyright">本占卜功能仅供学习、交流与娱乐参考。</div>
+          </div>
+          <!-- 洗牌抽牌视图 -->
+          <div class="cdp-view" id="cdvPickView" style="display:none;">
+            <div class="cdp-qecho" id="cdvPickEcho"></div>
+            <div class="cdp-shuffle-stage" id="cdvShuffleStage">
+              <div class="cdv-shuffle-pile">
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+                <div class="cdv-shcard"></div>
+              </div>
+              <div class="cdv-shuffle-tip" id="cdvShuffleTip">洗牌中…</div>
+            </div>
+            <div class="cdp-fan-stage" id="cdvFanStage" style="display:none;">
+              <div class="cdv-fan-tip" id="cdvFanTip">凭直觉，抽 3 张牌</div>
+              <div class="cdv-goto-row">
+                <input type="number" class="cdv-goto-input" id="cdvGotoInput" placeholder="输入序号" min="1">
+                <button class="cdp-opt" id="cdvGotoBtn">抽这张</button>
+              </div>
+              <div class="cdv-fan-wrap" id="cdvFanWrap"><div class="cdv-fan-track" id="cdvFan"></div></div>
+              <div class="cdv-drawn" id="cdvDrawn"></div>
+              <div class="cdp-draw-actions">
+                <button class="cdp-opt" id="cdvReShuffleBtn">重新抽牌</button>
+                <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">确定</button>
+                <button class="cdp-opt" id="cdvBackBtn1">返回</button>
+              </div>
+            </div>
+          </div>
+          <!-- 抽牌视图 -->
+          <div class="cdp-view" id="cdvDrawView" style="display:none;">
+            <div class="cdp-qecho" id="cdvQEcho"></div>
+            <div class="cdp-cards" id="cdvCards"></div>
+            <div class="cdp-summary" id="cdvSummary"></div>
+            <div class="cdp-draw-actions">
+              <button class="cdp-opt" id="cdvCopyBtn">复制结果</button>
+              <button class="cdp-opt" id="cdvBackBtn2">返回</button>
+            </div>
+          </div>
+          <!-- 历史视图 -->
+          <div class="cdp-view" id="cdvHistoryView" style="display:none;">
+            <div class="cdp-hlist" id="cdvHList"></div>
+            <div class="cdp-draw-actions">
+              <button class="cdp-opt" id="cdvClearHBtn">清空记录</button>
+              <button class="cdp-opt" id="cdvBackBtn3">返回</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- 陪伴面板（一起） -->
       <div class="clp-backdrop" id="acdBackdrop"></div>
       <div class="chat-letter-panel cdp-panel acd-panel" id="chatAccompanyPanel">
@@ -10814,113 +10736,6 @@
       </div>
     </div>
 
-          <!-- 塔罗占卜面板（星语占卜） -->
-      <div class="clp-backdrop" id="cdvBackdrop"></div>
-      <div class="chat-letter-panel cdp-panel" id="chatDivinePanel">
-        <div class="cdp-header">
-          <button class="cdp-back-btn" id="cdvBackBtn0" aria-label="返回">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
-          </button>
-          <div class="cdp-title-wrap">
-            <span class="cdp-title">
-              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-              星语占卜
-              <svg class="cdp-star" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-            </span>
-            <span class="cdp-sub">以牌为桥 · 连接彼此</span>
-          </div>
-          <span class="cdp-title-full">占卜</span>
-          <button class="cdp-close-btn" id="cdvCloseBtn">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <div class="cdp-body">
-          <!-- 设置视图 -->
-          <div class="cdp-view" id="cdvSetupView">
-            <div class="cdp-tabs" id="cdvModeTabs">
-              <button class="cdp-tab active" data-m="tarot">塔罗牌</button>
-              <button class="cdp-tab" data-m="leno">雷诺曼牌</button>
-            </div>
-            <div class="cdp-mode-sub" id="cdvModeSub">78张塔罗 · 带正逆位</div>
-            <div class="cdp-sec-label">抽牌数量</div>
-            <div class="cdp-row" id="cdvCountRow">
-              <button class="cdp-opt active" data-c="1">抽1张</button>
-              <button class="cdp-opt" data-c="3">抽3张</button>
-            </div>
-            <div class="cdp-sec-label">
-              <svg class="cdp-star" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
-              占卜对象
-            </div>
-            <div class="cdp-row cdp-targets" id="cdvTargetRow"></div>
-            <div class="cdp-sec-label">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8db3e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 4v7l2-2 2 2V4"/></svg>
-              想问TA什么？输入你的问题
-            </div>
-            <input class="cdp-qinput" id="cdvQInput" placeholder="例如：TA现在对我是什么感觉？" maxlength="50">
-            <button class="cdp-start" id="cdvStartBtn">
-              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
-              开始抽牌
-              <svg class="cdp-diamond" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l10 10-10 10L2 12z"/></svg>
-            </button>
-            <button class="cdp-history-btn" id="cdvQuickBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4.5 13.5H11L10 22l8.5-11.5H12z"/></svg>
-              速占 · 免选牌直接出结果
-            </button>
-            <button class="cdp-history-btn" id="cdvHistoryBtn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#b99b76" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>
-              历史记录
-            </button>
-            <div class="cdp-copyright">本占卜功能仅供学习、交流与娱乐参考。</div>
-          </div>
-          <!-- 洗牌抽牌视图 -->
-          <div class="cdp-view" id="cdvPickView" style="display:none;">
-            <div class="cdp-qecho" id="cdvPickEcho"></div>
-            <div class="cdp-shuffle-stage" id="cdvShuffleStage">
-              <div class="cdv-shuffle-pile">
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-                <div class="cdv-shcard"></div>
-              </div>
-              <div class="cdv-shuffle-tip" id="cdvShuffleTip">洗牌中…</div>
-            </div>
-            <div class="cdp-fan-stage" id="cdvFanStage" style="display:none;">
-              <div class="cdv-fan-tip" id="cdvFanTip">凭直觉，抽 3 张牌</div>
-              <div class="cdv-goto-row">
-                <input type="number" class="cdv-goto-input" id="cdvGotoInput" placeholder="输入序号" min="1">
-                <button class="cdp-opt" id="cdvGotoBtn">抽这张</button>
-              </div>
-              <div class="cdv-fan-wrap" id="cdvFanWrap"><div class="cdv-fan-track" id="cdvFan"></div></div>
-              <div class="cdv-drawn" id="cdvDrawn"></div>
-              <div class="cdp-draw-actions">
-                <button class="cdp-opt" id="cdvReShuffleBtn">重新抽牌</button>
-                <button class="cdp-opt" id="cdvRevealBtn" style="display:none;">确定</button>
-                <button class="cdp-opt" id="cdvBackBtn1">返回</button>
-              </div>
-            </div>
-          </div>
-          <!-- 抽牌视图 -->
-          <div class="cdp-view" id="cdvDrawView" style="display:none;">
-            <div class="cdp-qecho" id="cdvQEcho"></div>
-            <div class="cdp-cards" id="cdvCards"></div>
-            <div class="cdp-summary" id="cdvSummary"></div>
-            <div class="cdp-draw-actions">
-              <button class="cdp-opt" id="cdvCopyBtn">复制结果</button>
-              <button class="cdp-opt" id="cdvBackBtn2">返回</button>
-            </div>
-          </div>
-          <!-- 历史视图 -->
-          <div class="cdp-view" id="cdvHistoryView" style="display:none;">
-            <div class="cdp-hlist" id="cdvHList"></div>
-            <div class="cdp-draw-actions">
-              <button class="cdp-opt" id="cdvClearHBtn">清空记录</button>
-              <button class="cdp-opt" id="cdvBackBtn3">返回</button>
-            </div>
-          </div>
-        </div>
-      </div>
 
     <!-- 通话类型选择弹窗 -->
     <div class="call-type-modal" id="callTypeModal">
@@ -11084,7 +10899,7 @@
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
       <!-- 信件列表视图 -->
-      <div id="letterListView" style="display:flex;flex-direction:column;height:100%;position:relative;overflow-y:auto;background:var(--bg-main);">
+      <div id="letterListView" style="display:flex;flex-direction:column;height:100%;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg-main);">
         <div class="letter-header">
           <button class="letter-back-btn" id="letterBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
           <span class="letter-title">信件</span>
@@ -11513,10 +11328,6 @@
           <div class="sidebar-menu-item" data-action="activity"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
               </svg></span><span class="item-text">活动</span></div>
-          <div class="sidebar-menu-item" data-action="divine"><span class="item-icon"><svg viewBox="0 0 24 24">
-                <path d="M20 13.5A8 8 0 0 1 10.5 4a7 7 0 1 0 9.5 9.5z" />
-                <path d="M17 4.2l.4 1.2 1.2.4-1.2.4-.4 1.2-.4-1.2-1.2-.4 1.2-.4z" />
-              </svg></span><span class="item-text">占卜</span></div>
           <div class="sidebar-menu-item" data-action="theme"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -11870,11 +11681,6 @@
         </div>
       </div>
     </div>
-    <div class="diary-search-wrap" id="diarySearchWrap">
-      <svg class="diary-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-      <input type="text" id="diarySearchInput" placeholder="搜索日记内容...">
-      <button class="diary-search-clear" id="diarySearchClear">×</button>
-    </div>
     <div class="diary-scroll" id="diaryScroll">
       <div class="diary-feed" id="diaryFeed">
         <div class="diary-empty" id="diaryEmpty">
@@ -11892,20 +11698,14 @@
       </svg>
     </button>
     <!-- 写日记弹窗 -->
-    <div class="diary-edit-fullscreen" id="diaryWriteOverlay">
-      <div class="diary-edit-header">
-        <button class="diary-detail-back" id="diaryWriteCancel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
-        </button>
-        <span>写日记</span>
-        <button class="diary-edit-save-btn" id="diaryWriteConfirm">发布</button>
-      </div>
-      <div class="diary-edit-scroll">
+    <div class="diary-overlay" id="diaryWriteOverlay">
+      <div class="diary-modal">
+        <h3>写日记</h3>
         <div class="diary-category-select">
           <label>分类：</label>
           <select id="diaryWriteCategory"></select>
         </div>
-        <textarea class="diary-edit-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
+        <textarea class="diary-modal-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
         <div class="diary-image-upload-area">
           <button type="button" class="diary-image-upload-btn" id="diaryWriteUploadBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -11914,23 +11714,21 @@
           <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="display:none">
           <div class="diary-image-preview" id="diaryWriteImagePreview"></div>
         </div>
+        <div class="diary-modal-actions">
+          <button class="diary-modal-cancel" id="diaryWriteCancel">取消</button>
+          <button class="diary-modal-confirm" id="diaryWriteConfirm">发布</button>
+        </div>
       </div>
     </div>
-    <!-- 编辑日记全屏页 -->
-    <div class="diary-edit-fullscreen" id="diaryEditOverlay">
-      <div class="diary-edit-header">
-        <button class="diary-detail-back" id="diaryEditCancel">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
-        </button>
-        <span>编辑日记</span>
-        <button class="diary-edit-save-btn" id="diaryEditConfirm">保存</button>
-      </div>
-      <div class="diary-edit-scroll">
+    <!-- 编辑日记弹窗 -->
+    <div class="diary-overlay" id="diaryEditOverlay">
+      <div class="diary-modal">
+        <h3>编辑日记</h3>
         <div class="diary-category-select">
           <label>分类：</label>
           <select id="diaryEditCategory"></select>
         </div>
-        <textarea class="diary-edit-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
+        <textarea class="diary-modal-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
         <div class="diary-image-upload-area">
           <button type="button" class="diary-image-upload-btn" id="diaryEditUploadBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -11938,6 +11736,10 @@
           </button>
           <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="display:none">
           <div class="diary-image-preview" id="diaryEditImagePreview"></div>
+        </div>
+        <div class="diary-modal-actions">
+          <button class="diary-modal-cancel" id="diaryEditCancel">取消</button>
+          <button class="diary-modal-confirm" id="diaryEditConfirm">保存</button>
         </div>
       </div>
     </div>
@@ -11951,16 +11753,6 @@
           <button class="diary-modal-confirm" id="diaryDeleteConfirm" style="background:linear-gradient(135deg,#ff6b6b,#e55a5a);">删除</button>
         </div>
       </div>
-    </div>
-    <!-- v160: 日记详情全屏页 -->
-    <div class="diary-detail-overlay" id="diaryDetailOverlay">
-      <div class="diary-detail-header">
-        <button class="diary-detail-back" id="diaryDetailBack">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
-        </button>
-        <span>日记详情</span>
-      </div>
-      <div class="diary-detail-scroll" id="diaryDetailScroll"></div>
     </div>
   </div>
 
@@ -12330,7 +12122,7 @@
 </div>
 
 <script>
-    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);-webkit-opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);-webkit-opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
+    (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
     // ===== 键盘跟随 + 视口适配 =====
     (function () {
       const phone = document.querySelector('.phone');
@@ -12530,10 +12322,8 @@
           div.dataset.id = item.id;
           const avatar = document.createElement('div');
           avatar.className = 'contact-avatar';
-          if (!applyContactAvatar(avatar, item.id)) {
-            avatar.textContent = item.name.charAt(0).toUpperCase() || '?';
-            avatar.style.background = item.isGroup ? '#9b9b9b' : 'var(--primary)';
-          }
+          avatar.textContent = item.name.charAt(0).toUpperCase() || '?';
+          avatar.style.background = item.isGroup ? '#9b9b9b' : 'var(--primary)';
           const info = document.createElement('div');
           info.className = 'contact-info';
           const nameDiv = document.createElement('div');
@@ -12580,23 +12370,6 @@
       const chatToolbar = document.getElementById('chatToolbar');
       let isToolbarOpen = false;
 
-      // v159: 替换 4 个 MutationObserver 的直接回调（MO 是冻死根因）
-      function syncChatUI() {
-        var _tg = document.getElementById('toolbarGrid');
-        var _td = document.getElementById('toolbarDots');
-        if (_tg && _td) _td.classList.toggle('hidden', _tg.classList.contains('hidden'));
-        var _bw = document.querySelector('.chat-bottom-wrapper');
-        if (_bw) {
-          var _acd = document.getElementById('acdBackdrop');
-          var _cdv = document.getElementById('cdvBackdrop');
-          var _hide = (_acd && _acd.classList.contains('active')) || (_cdv && _cdv.classList.contains('active'));
-          _bw.style.visibility = _hide ? 'hidden' : '';
-        }
-        var _dp = document.getElementById('chatDivinePanel');
-        if (_dp && !_dp.classList.contains('active')) _dp.classList.remove('cdp-full');
-      }
-
-
       // 点击输入框：收起工具栏/表情/信件面板，让输入框紧贴键盘
       chatInput.addEventListener('focus', function () {
         if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
@@ -12618,7 +12391,6 @@
         if (_ap3) _ap3.classList.remove('active');
         var _ab3 = document.getElementById('acdBackdrop');
         if (_ab3) _ab3.classList.remove('active');
-        syncChatUI();
       });
 
       // ----- 工具栏翻页（微信式） -----
@@ -12636,7 +12408,9 @@
           var p = Math.round(pages.scrollLeft / Math.max(1, pages.clientWidth));
           dots.forEach(function (d, i) { d.classList.toggle('active', i === p); });
         }, { passive: true });
-        // v159: removed MO#1 (toolbarDots)
+        new MutationObserver(function () {
+          dotsWrap.classList.toggle('hidden', pages.classList.contains('hidden'));
+        }).observe(pages, { attributes: true, attributeFilter: ['class'] });
       })();
 
       chatToolbarToggle.addEventListener('click', function (e) {
@@ -12658,7 +12432,6 @@
         } else {
           chatToolbar.classList.remove('open');
         }
-        syncChatUI();
       });
 
       // ----- 聊天顶部信息更新（每天随机更换）-----
@@ -12929,7 +12702,6 @@
         emojiModule.classList.remove('active');
         document.getElementById('toolbarGrid').classList.remove('hidden');
         if (!isToolbarOpen) { isToolbarOpen = true; chatToolbar.classList.add('open'); }
-        syncChatUI();
       });
       document.querySelector('.toolbar-item[data-tool="emoji"]').addEventListener('click', function (e) {
         e.stopPropagation();
@@ -12958,7 +12730,6 @@
           if (!isToolbarOpen) { isToolbarOpen = true; chatToolbar.classList.add('open'); }
           setTimeout(() => { chatMessages.scrollTop = chatMessages.scrollHeight; }, 50);
         }
-        syncChatUI();
       });
       document.querySelectorAll('.toolbar-item[data-tool]').forEach(item => {
         const tool = item.dataset.tool;
@@ -12976,7 +12747,6 @@
           if (_ap) _ap.classList.remove('active');
           var _ab = document.getElementById('acdBackdrop');
           if (_ab) _ab.classList.remove('active');
-          syncChatUI();
         });
       });
 
@@ -12990,32 +12760,14 @@
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
         }
         chatView.classList.add('show');
-        var bn=document.querySelector('.bottom-nav');if(bn){bn.style.visibility='hidden';bn.style.pointerEvents='none';bn.style.height='0';bn.style.overflow='hidden';}
+        var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
         renderMessages(contactId);
       }
       function closeChat() {
         chatView.classList.remove('show');
-        if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
-        var _tg = document.getElementById('toolbarGrid');
-        if (_tg) _tg.classList.add('hidden');
-        var _em = document.getElementById('emojiModule');
-        if (_em) _em.classList.remove('active');
-        var _lp = document.getElementById('chatLetterPanel');
-        if (_lp) _lp.classList.remove('active');
-        var _bk = document.getElementById('clpBackdrop');
-        if (_bk) _bk.classList.remove('active');
-        var _dp = document.getElementById('chatDivinePanel');
-        if (_dp) _dp.classList.remove('active');
-        var _db = document.getElementById('cdvBackdrop');
-        if (_db) _db.classList.remove('active');
-        var _ap = document.getElementById('chatAccompanyPanel');
-        if (_ap) _ap.classList.remove('active');
-        var _ab = document.getElementById('acdBackdrop');
-        if (_ab) _ab.classList.remove('active');
-        var bn=document.querySelector('.bottom-nav');if(bn){bn.style.visibility='';bn.style.pointerEvents='';bn.style.height='';bn.style.overflow='';}
+        var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='';
         currentChatId = null;
         refreshList();
-        syncChatUI();
       }
 
       // ----- 聊天顶部菜单 -----
@@ -13353,24 +13105,26 @@
         }
 
         // 格式化聊天记录
+        const dateStr = new Date().toLocaleString('zh-CN');
         let text = `聊天记录 - ${name}\n`;
-        text += `${'╌'.repeat(20)}\n`;
+        text += `导出时间：${dateStr}\n`;
+        text += `共 ${selectedMsgs.length} 条消息\n`;
+        text += `${'─'.repeat(30)}\n\n`;
         selectedMsgs.forEach(msg => {
-          const sender = msg.from === 'me' ? '我' : name;
+          const sender = msg.from === 'me' ? '我' : (msg.from === 'other' ? '对方' : (msg.from || '对方'));
           text += `[${msg.time}] ${sender}：${msg.text}\n`;
         });
-        text += `${'╌'.repeat(20)}`;
+        text += `\n${'─'.repeat(30)}\n`;
+        text += `导出方式：多选导出`;
 
         // 保存到日记（使用 localStorage）
         let diaryEntries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
         const entry = {
           id: Date.now(),
-          title: `聊天记录 - ${name}`,
+          title: `聊天记录 - ${name} (${selectedMsgs.length}条)`,
           content: text,
           date: new Date().toISOString(),
-          type: 'chat',
-          category: '聊天记录',
-          visibility: 'private'
+          type: 'chat'
         };
         diaryEntries.unshift(entry);
         try { localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries)); } catch(e) {}
@@ -13431,7 +13185,7 @@
           const contact = contacts.find(c => c.id === currentChatId);
           const name = contact ? contact.name : '未知';
           const text = selectedMsgs.map(msg => {
-            return `[${msg.time}] ${msg.from === 'me' ? '我' : name}：${msg.text}`;
+            return `[${msg.time}] ${msg.from === 'me' ? '我' : (msg.from === 'other' ? '对方' : msg.from)}：${msg.text}`;
           }).join('\n');
           const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
           const url = URL.createObjectURL(blob);
@@ -13534,106 +13288,6 @@
       }
 
       // ----- 渲染消息 -----
-      // ----- v152: 联系人头像（localStorage 持久化 + 点击消息头像弹窗修改） -----
-      function getContactAvatars() {
-        try { return JSON.parse(localStorage.getItem('zk_contact_avatars') || '{}'); } catch (e) { return {}; }
-      }
-      function setContactAvatar(id, dataUrl) {
-        var store = getContactAvatars();
-        if (dataUrl) store[id] = dataUrl; else delete store[id];
-        try { localStorage.setItem('zk_contact_avatars', JSON.stringify(store)); } catch (e) {}
-      }
-      // 有自定义头像时填充图片并返回 true；否则返回 false 由调用方回退文字头像
-      function applyContactAvatar(avatarEl, contactId) {
-        if (contactId === null || contactId === undefined) return false;
-        var av = getContactAvatars()[contactId];
-        if (!av) return false;
-        avatarEl.innerHTML = '';
-        avatarEl.style.background = 'transparent';
-        avatarEl.style.overflow = 'hidden';
-        var im = document.createElement('img');
-        im.src = av;
-        im.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;';
-        avatarEl.appendChild(im);
-        return true;
-      }
-      (function initContactAvatarModal() {
-        var box = null, fileInput = null, curId = null, previewEl = null, nameEl = null;
-        function ensureBox() {
-          if (box) return;
-          box = document.createElement('div');
-          box.style.cssText = 'position:fixed;inset:0;z-index:12000;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;';
-          var card = document.createElement('div');
-          card.style.cssText = 'background:#fff;border-radius:16px;padding:20px 22px;width:78%;max-width:300px;text-align:center;';
-          nameEl = document.createElement('div');
-          nameEl.style.cssText = 'font-size:15px;font-weight:600;color:#333;margin-bottom:14px;';
-          previewEl = document.createElement('div');
-          previewEl.style.cssText = 'width:76px;height:76px;border-radius:12px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:600;color:#fff;overflow:hidden;background:var(--primary);';
-          var btnRow = document.createElement('div');
-          btnRow.style.cssText = 'display:flex;gap:10px;justify-content:center;';
-          function mkBtn(t, filled, cb) {
-            var b = document.createElement('button');
-            b.textContent = t;
-            b.style.cssText = 'flex:1;padding:9px 0;border:none;border-radius:10px;font-size:14px;font-weight:600;' + (filled ? 'color:#fff;background:var(--primary);' : 'color:var(--primary);background:var(--bg-soft,#eee);');
-            b.addEventListener('click', cb);
-            return b;
-          }
-          btnRow.appendChild(mkBtn('选图片', true, function () { fileInput.click(); }));
-          btnRow.appendChild(mkBtn('恢复默认', false, function () {
-            if (curId !== null) {
-              setContactAvatar(curId, null);
-              refreshAfterAvatarChange();
-              closeBox();
-            }
-          }));
-          card.appendChild(nameEl); card.appendChild(previewEl); card.appendChild(btnRow);
-          box.appendChild(card);
-          box.addEventListener('click', function (e) { if (e.target === box) closeBox(); });
-          document.body.appendChild(box);
-          fileInput = document.createElement('input');
-          fileInput.type = 'file';
-          fileInput.accept = 'image/*';
-          fileInput.style.display = 'none';
-          fileInput.addEventListener('change', function () {
-            var file = this.files[0];
-            if (!file || curId === null) return;
-            var r = new FileReader();
-            r.onload = function (ev) {
-              setContactAvatar(curId, ev.target.result);
-              refreshAfterAvatarChange();
-              closeBox();
-            };
-            r.readAsDataURL(file);
-            this.value = '';
-          });
-          document.body.appendChild(fileInput);
-        }
-        function closeBox() { if (box) box.style.display = 'none'; }
-        function refreshAfterAvatarChange() {
-          renderContacts(searchInput.value);
-          if (typeof currentChatId !== 'undefined' && currentChatId !== null) renderMessages(currentChatId);
-        }
-        window.openContactAvatarModal = function (id) {
-          var c = contacts.find(function (x) { return x.id === id; });
-          if (!c) return;
-          ensureBox();
-          curId = id;
-          nameEl.textContent = c.name + ' · 修改头像';
-          previewEl.innerHTML = '';
-          var av = getContactAvatars()[id];
-          if (av) {
-            var im = document.createElement('img');
-            im.src = av;
-            im.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-            previewEl.appendChild(im);
-            previewEl.style.background = 'transparent';
-          } else {
-            previewEl.textContent = c.name.charAt(0).toUpperCase();
-            previewEl.style.background = c.isGroup ? '#9b9b9b' : 'var(--primary)';
-          }
-          box.style.display = 'flex';
-        };
-      })();
       function renderMessages(contactId) {
         const messages = chatHistories[contactId] || [];
         chatMessages.innerHTML = '';
@@ -13699,14 +13353,7 @@
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) {
-                if (!applyContactAvatar(avatar, contact.id)) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
-                avatar.style.cursor = 'pointer';
-                avatar.addEventListener('click', function (e) {
-                  e.stopPropagation();
-                  window.openContactAvatarModal(contactId);
-                });
-              }
+              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const img = document.createElement('img');
@@ -13738,14 +13385,7 @@
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) {
-                if (!applyContactAvatar(avatar, contact.id)) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
-                avatar.style.cursor = 'pointer';
-                avatar.addEventListener('click', function (e) {
-                  e.stopPropagation();
-                  window.openContactAvatarModal(contactId);
-                });
-              }
+              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const videoWrap = document.createElement('div');
@@ -13802,24 +13442,10 @@
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; avatar.style.display = 'flex'; avatar.style.alignItems = 'center'; avatar.style.justifyContent = 'center'; }
             } else if (contact && contact.isGroup && senderName !== 'me' && senderName !== 'other') {
               const member = contacts.find(c => c.name === senderName);
-              if (member) { if (!applyContactAvatar(avatar, member.id)) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = 'var(--primary)'; } }
+              if (member) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = 'var(--primary)'; }
               else { avatar.textContent = senderName.charAt(0).toUpperCase(); avatar.style.background = '#9b9b9b'; }
-            } else if (contact) { if (!applyContactAvatar(avatar, contact.id)) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; } }
+            } else if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
             else { avatar.textContent = '?'; avatar.style.background = '#999'; }
-            if (msg.from !== 'me') {
-              avatar.style.cursor = 'pointer';
-              avatar.addEventListener('click', function (e) {
-                e.stopPropagation();
-                var ct = contacts.find(function (c) { return c.id === contactId; });
-                var cid = contactId;
-                if (ct && ct.isGroup) {
-                  var m = contacts.find(function (c) { return c.name === senderName; });
-                  if (m) cid = m.id;
-                  else { showToast('该成员不在联系人列表中'); return; }
-                }
-                if (cid !== null && cid !== undefined) window.openContactAvatarModal(cid);
-              });
-            }
 
             const bubble = document.createElement('div');
             bubble.className = 'msg-bubble';
@@ -14766,11 +14392,6 @@
           if (action === 'activity') {
             sidebarOverlay.classList.remove('show');
             openActivityPage();
-            return;
-          }
-          if (action === 'divine') {
-            sidebarOverlay.classList.remove('show');
-            if (typeof window.openDivineFromSidebar === 'function') window.openDivineFromSidebar();
             return;
           }
           const info = featureMap[action];
@@ -20439,7 +20060,6 @@ patText2 = patText2.replace(/你/g, '我');
           document.getElementById('clpBackdrop').classList.add('active');
           renderChatLetterPanel();
         }
-        syncChatUI();
       });
 
       // 关闭按钮
@@ -20448,7 +20068,6 @@ patText2 = patText2.replace(/你/g, '我');
         chatLetterPanel.classList.remove('active');
         chatLetterDetail.classList.remove('active');
         document.getElementById('clpBackdrop').classList.remove('active');
-        syncChatUI();
       });
 
       // 遮罩层点击关闭面板
@@ -20456,7 +20075,6 @@ patText2 = patText2.replace(/你/g, '我');
         chatLetterPanel.classList.remove('active');
         chatLetterDetail.classList.remove('active');
         this.classList.remove('active');
-        syncChatUI();
       });
 
       // ----- 一起（陪伴系统） -----
@@ -20795,12 +20413,10 @@ patText2 = patText2.replace(/你/g, '我');
           customRow.style.display = cfg.scene === 'custom' ? 'block' : 'none';
           customInput.value = cfg.custom || '';
           renderScenes(); renderChars(); renderCharCard(); refreshSlider(); refreshTitle(); renderSetSubs();
-          syncChatUI();
         }
         function closePanel() {
           panel.classList.remove('active');
           backdrop.classList.remove('active');
-          syncChatUI();
         }
         backdrop.addEventListener('click', closePanel);
         document.getElementById('acdCloseBtn').addEventListener('click', closePanel);
@@ -20822,7 +20438,15 @@ patText2 = patText2.replace(/你/g, '我');
           charRow.style.display = charRow.style.display === 'none' ? 'flex' : 'none';
         });
 
-        // v159: removed MO#2 (bwMo/accompany)
+        // 面板打开时藏起聊天输入栏（同 v112 占卜面板）
+        var bwHide = document.querySelector('.chat-bottom-wrapper');
+        if (bwHide && 'MutationObserver' in window) {
+          var bwMo = new MutationObserver(function () {
+            if (backdrop.classList.contains('active')) bwHide.style.display = 'none';
+            else bwHide.style.display = '';
+          });
+          bwMo.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
+        }
 
         // 工具栏入口
         document.querySelector('.toolbar-item[data-tool="together"]').addEventListener('click', function (e) {
@@ -20836,7 +20460,6 @@ patText2 = patText2.replace(/你/g, '我');
           document.getElementById('emojiModule').classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
           if (!was) openPanel();
-          syncChatUI();
         });
       })();
 
@@ -20846,7 +20469,18 @@ patText2 = patText2.replace(/你/g, '我');
         var backdrop = document.getElementById('cdvBackdrop');
         if (!panel || !backdrop) return;
 
-        // v159: removed MO#3 (_bwMo/divine)
+        // 面板打开时藏起聊天输入栏：白色输入栏透过半透明遮罩会露出一条白边
+        var _bwHide = document.querySelector('.chat-bottom-wrapper');
+        if (_bwHide && 'MutationObserver' in window) {
+          var _bwMo = new MutationObserver(function () {
+            if (backdrop.classList.contains('active')) {
+              _bwHide.style.display = 'none';
+            } else {
+              _bwHide.style.display = '';
+            }
+          });
+          _bwMo.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
+        }
 
         // 22 大阿卡纳
         var MAJORS = [
@@ -20933,7 +20567,6 @@ patText2 = patText2.replace(/你/g, '我');
         var SYM = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-strong)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="rgba(var(--primary-strong-rgba),0.12)"/></svg>';
 
         function showView(k) {
-          try { var _ae = document.activeElement; if (_ae && _ae.blur && panel.contains(_ae)) _ae.blur(); } catch (e) {}
           Object.keys(views).forEach(function (v) { views[v].style.display = (v === k) ? '' : 'none'; });
         }
 
@@ -21271,44 +20904,15 @@ patText2 = patText2.replace(/你/g, '我');
         });
 
         function closeDivine() {
-          try { var _ae = document.activeElement; if (_ae && _ae.blur && panel.contains(_ae)) _ae.blur(); } catch (e) {}
-          var _locked = (panel.style.display === 'flex');
-          panel.classList.remove('active', 'cdp-full');
-          if (_locked) {
-            try { panel.style.transition = 'transform .28s ease'; panel.style.transform = 'translateX(102%)'; panel.style.pointerEvents = 'none'; } catch (e) {}
-          } else {
-            try { panel.style.transform = ''; panel.style.transition = ''; panel.style.pointerEvents = ''; panel.style.display = ''; } catch (e) {}
-          }
+          panel.classList.remove('active');
           backdrop.classList.remove('active');
           showView('setup');
-          syncChatUI();
         }
-        // 供首页侧边栏打开占卜面板（v136；v137 起侧边栏进入为全屏模式）
-        window.openDivineFromSidebar = function () {
-          panel.classList.add('active', 'cdp-full');
-          backdrop.classList.remove('active');
-          try { panel.style.display = ''; panel.style.pointerEvents = ''; panel.style.transition = 'transform .28s ease'; panel.style.transform = 'translateX(0)'; } catch (e) {}
-          showView('setup');
-          renderSetup();
-        };
-        // v159: removed MO#4 (_dfMo/cdp-full)
         document.getElementById('cdvCloseBtn').addEventListener('click', closeDivine);
-        // v150/v151: 全屏返回箭头改"滑出屏幕"——面板永不隐藏（内联 transform 控制，class 保留，无 display 切换）；v151 改右滑出
-        document.getElementById('cdvBackBtn0').addEventListener('click', function () {
-          try { var ae = document.activeElement; if (ae && ae.blur) ae.blur(); } catch (e) {}
-          try {
-            panel.style.transition = 'transform .28s ease';
-            panel.style.transform = 'translateX(102%)';
-            panel.style.display = 'flex';
-          } catch (e) {}
-          setTimeout(function () {
-            try { panel.style.pointerEvents = 'none'; } catch (e) {}
-          }, 320);
-        });
         backdrop.addEventListener('click', closeDivine);
         document.querySelector('.toolbar-item[data-tool="divine"]').addEventListener('click', function (e) {
           e.stopPropagation();
-          var was = panel.classList.contains('active') && panel.style.display !== 'flex';
+          var was = panel.classList.contains('active');
           closeDivine();
           document.getElementById('chatLetterPanel').classList.remove('active');
           document.getElementById('clpBackdrop').classList.remove('active');
@@ -21318,8 +20922,7 @@ patText2 = patText2.replace(/你/g, '我');
           if (_ap5) _ap5.classList.remove('active');
           var _ab5 = document.getElementById('acdBackdrop');
           if (_ab5) _ab5.classList.remove('active');
-          if (!was) { panel.classList.add('active'); panel.style.display = ''; panel.style.transform = ''; panel.style.transition = ''; panel.style.pointerEvents = ''; backdrop.classList.add('active'); renderSetup(); }
-          syncChatUI();
+          if (!was) { panel.classList.add('active'); backdrop.classList.add('active'); renderSetup(); }
         });
       })();
 
@@ -21843,7 +21446,6 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('cstBackdrop').classList.remove('active');
         document.getElementById('chatStatsPanel').classList.remove('active');
         document.getElementById('cstMetOvl').classList.remove('show');
-        syncChatUI();
       }
       function renderChatStats() {
         var contact = contacts.find(function (c) { return c.id === currentChatId; });
@@ -22014,7 +21616,6 @@ patText2 = patText2.replace(/你/g, '我');
         } else {
           openChatStatsPanel();
         }
-        syncChatUI();
       });
       document.getElementById('cstBackBtn').addEventListener('click', closeChatStatsPanel);
       document.getElementById('cstBackdrop').addEventListener('click', closeChatStatsPanel);
@@ -22093,14 +21694,12 @@ patText2 = patText2.replace(/你/g, '我');
       // ===== 日记模块 =====
       // 分类管理
       var _diaryCurrentCategory = 'all';
-      var _diarySearchText = '';
       function getDiaryCategories() {
         try {
           var cats = JSON.parse(localStorage.getItem('diaryCategories') || 'null');
-          if (!cats || !Array.isArray(cats) || cats.length === 0) cats = ['生活', '聊天记录'];
-          if (cats.indexOf('聊天记录') === -1) { cats.push('聊天记录'); saveDiaryCategories(cats); }
+          if (!cats || !Array.isArray(cats) || cats.length === 0) cats = ['生活'];
           return cats;
-        } catch(e) { return ['生活', '聊天记录']; }
+        } catch(e) { return ['生活']; }
       }
       function saveDiaryCategories(cats) {
         try { localStorage.setItem('diaryCategories', JSON.stringify(cats)); } catch(e) {}
@@ -22366,145 +21965,6 @@ patText2 = patText2.replace(/你/g, '我');
         diaryPage.classList.remove('show');
       });
 
-      // v160: 搜索功能
-      var diarySearchInput = document.getElementById('diarySearchInput');
-      var diarySearchClear = document.getElementById('diarySearchClear');
-      if (diarySearchInput) {
-        diarySearchInput.addEventListener('input', function() {
-          _diarySearchText = this.value.trim();
-          if (diarySearchClear) diarySearchClear.classList.toggle('show', !!_diarySearchText);
-          renderDiary();
-        });
-      }
-      if (diarySearchClear) {
-        diarySearchClear.addEventListener('click', function() {
-          if (diarySearchInput) diarySearchInput.value = '';
-          _diarySearchText = '';
-          diarySearchClear.classList.remove('show');
-          renderDiary();
-        });
-      }
-
-      // v160: 日记详情页
-      function openDiaryDetail(id) {
-        var entries = getDiaryEntries();
-        var entry = entries.find(function(e) { return e.id === id; });
-        if (!entry) return;
-        var overlay = document.getElementById('diaryDetailOverlay');
-        var scroll = document.getElementById('diaryDetailScroll');
-        if (!overlay || !scroll) return;
-        var titleHtml = entry.title ? '<div class="diary-detail-title">' + escapeDiaryHtml(entry.title) + '</div>' : '';
-        var displayText = entry.content || '';
-        var escapedText = escapeDiaryHtml(displayText);
-        var catBadge = entry.category ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
-        var imageHtml = '';
-        var images = entry.images || [];
-        if (images.length > 0) {
-          var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
-          imageHtml = '<div class="' + gridClass + '">';
-          images.forEach(function(img) { imageHtml += '<img src="' + img + '" onclick="window._openDiaryImage(this.src)">'; });
-          imageHtml += '</div>';
-        }
-        var timeStr = formatDiaryTime(entry.date);
-        var isLiked = entry.likes && entry.likes.indexOf('me') >= 0;
-        var likeCount = entry.likes ? entry.likes.length : 0;
-        var commentCount = entry.comments ? entry.comments.length : 0;
-        var accentVar = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-        var likeFill = isLiked ? accentVar : 'none';
-        var likeStroke = isLiked ? accentVar : 'currentColor';
-        var commentListHtml = '';
-        if (commentCount > 0) {
-          commentListHtml = '<div class="diary-detail-comment-list">';
-          entry.comments.forEach(function(c) {
-            commentListHtml += '<div class="diary-comment-item"><span class="comment-author">' + escapeDiaryHtml(c.author) + '</span>：' + escapeDiaryHtml(c.text) + '</div>';
-          });
-          commentListHtml += '</div>';
-        }
-        var actionHtml =
-          '<div class="diary-detail-action-bar">' +
-          '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" id="detailLikeBtn">' +
-          '<svg viewBox="0 0 24 24" fill="' + likeFill + '" stroke="' + likeStroke + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
-          (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
-          '</button>' +
-          '<button class="diary-comment-toggle" id="detailCommentBtn">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
-          (commentCount > 0 ? '<span>' + commentCount + '</span>' : '') +
-          '</button>' +
-          '<button class="diary-edit-btn" id="detailEditBtn">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
-          '</button>' +
-          '<button class="diary-delete-btn" id="detailDeleteBtn">' +
-          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>' +
-          '</button>' +
-          '</div>';
-        var commentAreaHtml =
-          '<div class="diary-detail-comments">' +
-          '<div class="diary-detail-comments-title">评论 (' + commentCount + ')</div>' +
-          commentListHtml +
-          '<div class="diary-comment-input-wrap">' +
-          '<input class="diary-comment-input" id="detailCommentInput" placeholder="写评论...">' +
-          '<button class="diary-comment-send" id="detailCommentSend">发送</button>' +
-          '</div>' +
-          '</div>';
-        scroll.innerHTML = catBadge + titleHtml + '<div class="diary-text">' + escapedText + '</div>' + imageHtml + '<div class="diary-detail-time">' + timeStr + '</div>' + actionHtml + commentAreaHtml;
-        overlay.classList.add('show');
-
-        var dLikeBtn = document.getElementById('detailLikeBtn');
-        if (dLikeBtn) dLikeBtn.addEventListener('click', function() {
-          var es = getDiaryEntries();
-          var en = es.find(function(e) { return e.id === id; });
-          if (!en) return;
-          if (!en.likes) en.likes = [];
-          var idx = en.likes.indexOf('me');
-          if (idx >= 0) en.likes.splice(idx, 1); else en.likes.push('me');
-          saveDiaryEntries(es);
-          openDiaryDetail(id);
-          renderDiary();
-        });
-        var dCommentBtn = document.getElementById('detailCommentBtn');
-        if (dCommentBtn) dCommentBtn.addEventListener('click', function() {
-          var inp = document.getElementById('detailCommentInput');
-          if (inp) { inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-        });
-        var dCommentSend = document.getElementById('detailCommentSend');
-        var sendFn = function() {
-          var inp = document.getElementById('detailCommentInput');
-          if (!inp) return;
-          var text = inp.value.trim();
-          if (!text) return;
-          var es = getDiaryEntries();
-          var en = es.find(function(e) { return e.id === id; });
-          if (!en) return;
-          if (!en.comments) en.comments = [];
-          en.comments.push({ author: getDiaryUserInfo().name, text: text, date: new Date().toISOString() });
-          saveDiaryEntries(es);
-          openDiaryDetail(id);
-          renderDiary();
-        };
-        if (dCommentSend) dCommentSend.addEventListener('click', sendFn);
-        var dCommentInput = document.getElementById('detailCommentInput');
-        if (dCommentInput) dCommentInput.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') sendFn();
-        });
-        var dEditBtn = document.getElementById('detailEditBtn');
-        if (dEditBtn) dEditBtn.addEventListener('click', function() {
-          overlay.classList.remove('show');
-          openDiaryEdit(id);
-        });
-        var dDeleteBtn = document.getElementById('detailDeleteBtn');
-        if (dDeleteBtn) dDeleteBtn.addEventListener('click', function() {
-          overlay.classList.remove('show');
-          _diaryDeleteId = id;
-          diaryDeleteOverlay.classList.add('show');
-        });
-      }
-      var diaryDetailBack = document.getElementById('diaryDetailBack');
-      if (diaryDetailBack) {
-        diaryDetailBack.addEventListener('click', function() {
-          document.getElementById('diaryDetailOverlay').classList.remove('show');
-        });
-      }
-
       function getDiaryEntries() {
         try { return JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch(e) { return []; }
       }
@@ -22642,19 +22102,10 @@ patText2 = patText2.replace(/你/g, '我');
         if (_diaryCurrentCategory && _diaryCurrentCategory !== 'all') {
           entries = entries.filter(function(e) { return e.category === _diaryCurrentCategory; });
         }
-        if (_diarySearchText) {
-          var st = _diarySearchText.toLowerCase();
-          entries = entries.filter(function(e) {
-            return (e.content && e.content.toLowerCase().indexOf(st) >= 0) ||
-                   (e.title && e.title.toLowerCase().indexOf(st) >= 0) ||
-                   (e.category && e.category.toLowerCase().indexOf(st) >= 0);
-          });
-        }
         diaryFeed.innerHTML = '';
 
         if (entries.length === 0) {
-          var emptyMsg = _diarySearchText ? '没有找到匹配的日记' : '还没有日记，写下第一篇吧';
-          diaryFeed.innerHTML = '<div class="diary-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><div>' + emptyMsg + '</div></div>';
+          diaryFeed.innerHTML = '<div class="diary-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg><div>还没有日记，写下第一篇吧</div></div>';
           return;
         }
 
@@ -22668,9 +22119,9 @@ patText2 = patText2.replace(/你/g, '我');
           item.className = 'diary-item';
 
           var catBadge = (entry.category && entry.category !== '生活') ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
-          var titleHtml = entry.title ? '<div class="diary-detail-title" style="font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:8px;">' + escapeDiaryHtml(entry.title) + '</div>' : '';
 
-
+          var isPrivate = entry.visibility === 'private';
+          var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
 
           var displayText = entry.content || '';
           if (displayText.length > 500) displayText = displayText.substring(0, 500) + '...';
@@ -22708,7 +22159,7 @@ patText2 = patText2.replace(/你/g, '我');
 
           item.innerHTML =
             catBadge +
-            titleHtml +
+            visibilityHtml +
             '<div class="diary-text">' + escapedText + '</div>' +
             imageHtml +
             '\u003cdiv class="diary-action-bar"\u003e' +
@@ -22779,16 +22230,6 @@ patText2 = patText2.replace(/你/g, '我');
           });
         });
 
-        // v160: 点击日记卡片打开详情
-        var diaryItems = diaryFeed.querySelectorAll('.diary-item');
-        diaryItems.forEach(function(item) {
-          item.addEventListener('click', function(e) {
-            if (e.target.closest('button') || e.target.closest('input') || e.target.closest('.diary-comment-area') || e.target.closest('img')) return;
-            var editBtn = this.querySelector('[data-edit-id]');
-            if (editBtn) openDiaryDetail(parseInt(editBtn.dataset.editId));
-          });
-        });
-
         var editBtns = diaryFeed.querySelectorAll('.diary-edit-btn');
         editBtns.forEach(function(btn) {
           btn.addEventListener('click', function() {
@@ -22803,7 +22244,12 @@ patText2 = patText2.replace(/你/g, '我');
           });
         });
 
-
+        var visBtns = diaryFeed.querySelectorAll('.diary-visibility-btn');
+        visBtns.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            toggleDiaryVisibility(parseInt(this.dataset.visId));
+          });
+        });
       }
 
 
@@ -24164,7 +23610,7 @@ patText2 = patText2.replace(/你/g, '我');
         '\u54ce\u5440\u4e0d\u597d\u610f\u601d', '\u54c8\u54c8\u54c8\u53ef\u4ee5\u7684', '\u884c\u5427\u884c\u5427'
       ];
 
-      function closeCallTypeModal() { callTypeModal.classList.remove('active'); var _tg = document.getElementById('toolbarGrid'); if (_tg) _tg.classList.remove('hidden'); syncChatUI(); }
+      function closeCallTypeModal() { callTypeModal.classList.remove('active'); var _tg = document.getElementById('toolbarGrid'); if (_tg) _tg.classList.remove('hidden'); }
 
       function startCall(type) {
         callType = type;
@@ -24739,7 +24185,6 @@ patText2 = patText2.replace(/你/g, '我');
           var toolbarGrid = document.getElementById('toolbarGrid');
           if (toolbarGrid) toolbarGrid.classList.add('hidden');
           openCallTypeModal();
-          syncChatUI();
         });
       }
 
