@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v188')){sessionStorage.setItem('zk_v188','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==188){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v189')){sessionStorage.setItem('zk_v189','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==189){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v188</title>
+  <title>字卡 · 小手机 v189</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7218,6 +7218,7 @@
       border: 1px solid rgba(var(--primary-rgba),0.35);
       color: #fff; padding: 12px 8px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
     }
+    .dvd-card .dvd-kind { font-size: 10px; color: var(--primary-light); letter-spacing: 1px; opacity: 0.9; }
     .dvd-card .dvd-num { font-size: 11px; opacity: 0.75; letter-spacing: 1px; }
     .dvd-card .dvd-sym { margin: 6px 0 2px; color: var(--primary-light); display: flex; justify-content: center; }
     .dvd-card .dvd-name { font-size: 15px; font-weight: 600; }
@@ -12398,7 +12399,7 @@
           <div class="dvd-hero">
             <div class="dvd-hero-star">✦</div>
             <div class="dvd-hero-title">今日，想问点什么？</div>
-            <div class="dvd-hero-sub">以牌为镜 · 照见心声</div>
+            <div class="dvd-hero-sub">心里没说出口的，让牌来答</div>
           </div>
           <div class="dvd-grid">
             <div class="dvd-entry" data-go="draw">
@@ -12433,7 +12434,7 @@
             <button class="dvd-seg-item" data-m="leno">雷诺曼牌</button>
             <button class="dvd-seg-item" data-m="mix">混合模式</button>
           </div>
-          <div class="dvd-seg-label">抽牌数量</div>
+          <div class="dvd-seg-label" id="dvdCountLabel">抽牌数量</div>
           <div class="dvd-seg" id="dvdCountSeg">
             <button class="dvd-seg-item active" data-c="1">抽 1 张</button>
             <button class="dvd-seg-item" data-c="3">抽 3 张</button>
@@ -12446,11 +12447,16 @@
           <div class="dvd-result" id="dvdResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdResultActions" style="display:none;">
             <button class="dvd-ghost" id="dvdCopyBtn">复制结果</button>
+            <button class="dvd-ghost" id="dvdDiaryBtn">添加到日记</button>
             <button class="dvd-ghost" id="dvdSendBtn">发送到聊天</button>
             <button class="dvd-ghost accent" id="dvdInterpBtn">AI 解读</button>
             <button class="dvd-ghost" id="dvdGoAskBtn">去追问</button>
           </div>
           <div class="dvd-interp" id="dvdInterpBox" style="display:none;"></div>
+          <div class="dvd-result-actions" id="dvdInterpActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdInterpCopyBtn">复制解读</button>
+            <button class="dvd-ghost" id="dvdInterpDiaryBtn">添加到日记</button>
+          </div>
         </div>
 
         <!-- 每日运势 -->
@@ -12461,9 +12467,14 @@
           <div class="dvd-result" id="dvdDailyResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdDailyActions" style="display:none;">
             <button class="dvd-ghost" id="dvdDailyCopyBtn">复制运势</button>
+            <button class="dvd-ghost" id="dvdDailyDiaryBtn">添加到日记</button>
             <button class="dvd-ghost accent" id="dvdDailyInterpBtn">AI 深度解读</button>
           </div>
           <div class="dvd-interp" id="dvdDailyInterpBox" style="display:none;"></div>
+          <div class="dvd-result-actions" id="dvdDailyInterpActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdDailyInterpCopyBtn">复制解读</button>
+            <button class="dvd-ghost" id="dvdDailyInterpDiaryBtn">添加到日记</button>
+          </div>
         </div>
 
         <!-- 占卜追问 -->
@@ -12475,6 +12486,7 @@
           <button class="dvd-primary" id="dvdAskBtn">追问</button>
           <div class="dvd-interp" id="dvdAskResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdAskActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdAskCopyBtn">复制追问</button>
             <button class="dvd-ghost" id="dvdAskSendBtn">发送到聊天</button>
             <button class="dvd-ghost" id="dvdAskDiaryBtn">添加到日记</button>
           </div>
@@ -22038,6 +22050,11 @@ patText2 = patText2.replace(/你/g, '我');
             st.mode = b.getAttribute('data-m');
             document.getElementById('dvdModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
             b.classList.add('active');
+            var mix = st.mode === 'mix';
+            var cntSeg = document.getElementById('dvdCountSeg');
+            var cntLabel = document.getElementById('dvdCountLabel');
+            if (cntSeg) cntSeg.style.display = mix ? 'none' : '';
+            if (cntLabel) cntLabel.style.display = mix ? 'none' : '';
           });
         });
         document.getElementById('dvdCountSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
@@ -22050,7 +22067,16 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 抽牌
         function pick() {
-          var pool = (st.mode === 'tarot') ? TAROT : (st.mode === 'leno' ? LENO : TAROT.concat(LENO));
+          if (st.mode === 'mix') {
+            var ti = Math.floor(Math.random() * TAROT.length);
+            var li = Math.floor(Math.random() * LENO.length);
+            draw = [
+              { c: TAROT[ti], r: Math.random() < 0.35, tarot: true, mix: true, kind: '塔罗' },
+              { c: LENO[li], r: false, tarot: false, mix: true, kind: '雷诺曼' }
+            ];
+            return;
+          }
+          var pool = (st.mode === 'tarot') ? TAROT : LENO;
           var idx = [];
           while (idx.length < st.count) {
             var r = Math.floor(Math.random() * pool.length);
@@ -22064,7 +22090,9 @@ patText2 = patText2.replace(/你/g, '我');
         }
         function cardHtml(d, pos) {
           var kw = d.r ? d.c.rev : d.c.up;
+          var kindHtml = d.mix ? '<div class="dvd-kind">' + d.kind + '</div>' : '';
           return '<div class="dvd-card">' +
+            kindHtml +
             '<div class="dvd-num">' + (pos || '') + (d.c.n ? ' · ' + d.c.n : '') + '</div>' +
             '<div class="dvd-sym">' + SYM + '</div>' +
             '<div class="dvd-name">' + d.c.name + '</div>' +
@@ -22074,20 +22102,27 @@ patText2 = patText2.replace(/你/g, '我');
         }
         function resultText() {
           var lines = [];
-          lines.push('占卜方式：' + (st.mode === 'tarot' ? '塔罗牌' : (st.mode === 'leno' ? '雷诺曼牌' : '混合牌')));
+          lines.push('占卜方式：' + (st.mode === 'tarot' ? '塔罗牌' : (st.mode === 'leno' ? '雷诺曼牌' : '混合模式')));
           if (st.target) lines.push('占卜对象：' + st.target);
           if (st.question) lines.push('问题：' + st.question);
           lines.push('牌面：');
           draw.forEach(function (d, i) {
-            lines.push((i + 1) + '. ' + d.c.name + (d.tarot ? (d.r ? '（逆位）' : '（正位）') : '') + ' - ' + (d.r ? d.c.rev : d.c.up));
+            if (st.mode === 'mix') {
+              lines.push(d.kind + '：' + d.c.name + (d.tarot ? (d.r ? '（逆位）' : '（正位）') : '') + ' - ' + (d.r ? d.c.rev : d.c.up));
+            } else {
+              lines.push((i + 1) + '. ' + d.c.name + (d.tarot ? (d.r ? '（逆位）' : '（正位）') : '') + ' - ' + (d.r ? d.c.rev : d.c.up));
+            }
           });
           return lines.join('\n');
         }
         function renderResult() {
-          var pos = st.count === 3 ? POS3 : ['指引'];
+          var pos = st.mode === 'mix' ? ['塔罗', '雷诺曼'] : (st.count === 3 ? POS3 : ['指引']);
           var cardsRow = '<div class="dvd-cards-row">' + draw.map(function (d, i) { return cardHtml(d, pos[i]); }).join('') + '</div>';
           var sum = '';
-          if (st.mode === 'leno') {
+          if (st.mode === 'mix') {
+            var t = draw[0], l = draw[1];
+            sum = '塔罗看内心：「' + t.c.name + (t.r ? '（逆位）' : '（正位）') + '」' + (t.r ? t.c.revT : t.c.upT) + '；雷诺曼看现实：「' + l.c.name + '」' + l.c.up + '。';
+          } else if (st.mode === 'leno') {
             sum = '牌面串起来：' + draw.map(function (d) { return d.c.name + '（' + d.c.up + '）'; }).join(' → ') + '。' + draw[0].c.upT;
           } else if (st.count === 1) {
             var d0 = draw[0];
@@ -22108,7 +22143,7 @@ patText2 = patText2.replace(/你/g, '我');
             mode: st.mode === 'tarot' ? '塔罗' : (st.mode === 'leno' ? '雷诺曼' : '混合'),
             q: st.question,
             target: st.target,
-            cards: draw.map(function (d) { return d.c.name + (d.tarot ? (d.r ? '(逆)' : '(正)') : ''); })
+            cards: draw.map(function (d) { return (d.mix ? d.kind + '·' : '') + d.c.name + (d.tarot ? (d.r ? '(逆)' : '(正)') : ''); })
           });
           if (h.length > 50) h = h.slice(0, 50);
           try { localStorage.setItem('divineHistory', JSON.stringify(h)); } catch (e) {}
@@ -22133,6 +22168,10 @@ patText2 = patText2.replace(/你/g, '我');
           if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, fb); else fb();
         }
         document.getElementById('dvdCopyBtn').addEventListener('click', function () { copyText(resultText(), this); });
+        document.getElementById('dvdDiaryBtn').addEventListener('click', function () {
+          addToDiary('占卜', resultText());
+          if (typeof showToast === 'function') showToast('已添加到日记');
+        });
 
         // 发送到聊天
         function sendToChat(text) {
@@ -22151,7 +22190,7 @@ patText2 = patText2.replace(/你/g, '我');
         // 添加日记
         function addToDiary(title, text) {
           var entries = []; try { entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch (e) {}
-          entries.unshift({ id: Date.now(), title: title, content: text, date: new Date().toISOString(), type: 'divine' });
+          entries.unshift({ id: Date.now(), title: title, content: text, date: new Date().toISOString(), visibility: 'private', type: 'divine' });
           try { localStorage.setItem('diaryEntries', JSON.stringify(entries)); } catch (e) {}
         }
 
@@ -22191,8 +22230,19 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         // 抽牌 - AI 解读
+        var _dvdInterpText = '';
         document.getElementById('dvdInterpBtn').addEventListener('click', function () {
-          callAI(DEFAULT_PROMPT, resultText(), document.getElementById('dvdInterpBox'), null);
+          _dvdInterpText = '';
+          document.getElementById('dvdInterpActions').style.display = 'none';
+          callAI(DEFAULT_PROMPT, resultText(), document.getElementById('dvdInterpBox'), function (text) {
+            if (text) { _dvdInterpText = text; document.getElementById('dvdInterpActions').style.display = ''; }
+          });
+        });
+        document.getElementById('dvdInterpCopyBtn').addEventListener('click', function () { if (_dvdInterpText) copyText(_dvdInterpText, this); });
+        document.getElementById('dvdInterpDiaryBtn').addEventListener('click', function () {
+          if (!_dvdInterpText) return;
+          addToDiary('占卜解读', resultText() + '\n\n—— AI 解读 ——\n' + _dvdInterpText);
+          if (typeof showToast === 'function') showToast('已添加到日记');
         });
         // 抽牌 - 去追问
         document.getElementById('dvdGoAskBtn').addEventListener('click', function () {
@@ -22225,9 +22275,25 @@ patText2 = patText2.replace(/你/g, '我');
           _dvdDailyText = txt;
         });
         var _dvdDailyText = '';
+        var _dvdDailyInterpText = '';
         document.getElementById('dvdDailyCopyBtn').addEventListener('click', function () { copyText(_dvdDailyText, this); });
+        document.getElementById('dvdDailyDiaryBtn').addEventListener('click', function () {
+          if (!_dvdDailyText) return;
+          addToDiary('今日运势', _dvdDailyText);
+          if (typeof showToast === 'function') showToast('已添加到日记');
+        });
         document.getElementById('dvdDailyInterpBtn').addEventListener('click', function () {
-          callAI(DEFAULT_PROMPT, '这是一条每日运势，请解读：\n' + _dvdDailyText, document.getElementById('dvdDailyInterpBox'), null);
+          _dvdDailyInterpText = '';
+          document.getElementById('dvdDailyInterpActions').style.display = 'none';
+          callAI(DEFAULT_PROMPT, '这是一条每日运势，请解读：\n' + _dvdDailyText, document.getElementById('dvdDailyInterpBox'), function (text) {
+            if (text) { _dvdDailyInterpText = text; document.getElementById('dvdDailyInterpActions').style.display = ''; }
+          });
+        });
+        document.getElementById('dvdDailyInterpCopyBtn').addEventListener('click', function () { if (_dvdDailyInterpText) copyText(_dvdDailyInterpText, this); });
+        document.getElementById('dvdDailyInterpDiaryBtn').addEventListener('click', function () {
+          if (!_dvdDailyInterpText) return;
+          addToDiary('今日运势解读', _dvdDailyText + '\n\n—— AI 解读 ——\n' + _dvdDailyInterpText);
+          if (typeof showToast === 'function') showToast('已添加到日记');
         });
 
         // ===== 占卜追问 =====
@@ -22264,6 +22330,7 @@ patText2 = patText2.replace(/你/g, '我');
           });
         });
         var _dvdAskText = '';
+        document.getElementById('dvdAskCopyBtn').addEventListener('click', function () { if (_dvdAskText) copyText(_dvdAskText, this); });
         document.getElementById('dvdAskSendBtn').addEventListener('click', function () {
           if (!_dvdAskText) return;
           if (sendToChat(_dvdAskText)) { if (typeof showToast === 'function') showToast('已发送到聊天'); }
