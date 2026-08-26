@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v173')){sessionStorage.setItem('zk_v173','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==173){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v174')){sessionStorage.setItem('zk_v174','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==174){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v173</title>
+  <title>字卡 · 小手机 v174</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15679,17 +15679,24 @@
                   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
                   body: JSON.stringify({ model: cfg.model, messages: [{ role: 'user', content: '你好' }], max_tokens: 10 })
                 }).then(function(res) {
-                  if (res.ok) {
-                    testResult.textContent = '✓ 连接成功';
-                    testResult.style.color = '#4caf50';
-                  } else {
-                    return res.json().then(function(data) {
-                      var msg = (data.error && data.error.message) ? data.error.message : ('HTTP ' + res.status);
+                  return res.text().then(function(t) {
+                    if (!res.ok) {
+                      var msg = 'HTTP ' + res.status;
+                      try { var j = JSON.parse(t); if (j.error && j.error.message) msg = j.error.message; } catch(e) {}
                       throw new Error(msg);
-                    }).catch(function() {
-                      throw new Error('HTTP ' + res.status);
-                    });
-                  }
+                    }
+                    try { var data = JSON.parse(t); }
+                    catch(e) { throw new Error('API 返回的不是 JSON，请检查地址是否正确'); }
+                    if (data.choices && data.choices[0]) {
+                      var reply = data.choices[0].message ? data.choices[0].message.content : '';
+                      testResult.textContent = '✓ 连接成功' + (reply ? '：' + reply.slice(0,20) : '');
+                      testResult.style.color = '#4caf50';
+                    } else if (data.error) {
+                      throw new Error(data.error.message || 'API 返回错误');
+                    } else {
+                      throw new Error('返回格式异常，请检查 API 地址');
+                    }
+                  });
                 }).catch(function(err) {
                   testResult.textContent = '✗ 失败：' + (err.message || err.toString());
                   testResult.style.color = '#e07a7a';
