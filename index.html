@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v174')){sessionStorage.setItem('zk_v174','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==174){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v175')){sessionStorage.setItem('zk_v175','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==175){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v174</title>
+  <title>字卡 · 小手机 v175</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21185,6 +21185,8 @@ patText2 = patText2.replace(/你/g, '我');
               text = data.content;
             }
             if (!text) throw new Error('empty response');
+            // v175: 去掉 markdown 星号（**加粗** 与行首 * 列表标记）
+            text = text.replace(/\*\*/g, '').replace(/^[ \t]*\*+[ \t]?/gm, '');
             interpContent.innerHTML = '<div class="cdp-interp-text">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>';
             interpActions.style.display = '';
             _lastInterpText = text;
