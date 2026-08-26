@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v187')){sessionStorage.setItem('zk_v187','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==187){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v188')){sessionStorage.setItem('zk_v188','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==188){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v187</title>
+  <title>字卡 · 小手机 v188</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12398,7 +12398,7 @@
           <div class="dvd-hero">
             <div class="dvd-hero-star">✦</div>
             <div class="dvd-hero-title">今日，想问点什么？</div>
-            <div class="dvd-hero-sub">以牌为桥 · 连接彼此</div>
+            <div class="dvd-hero-sub">以牌为镜 · 照见心声</div>
           </div>
           <div class="dvd-grid">
             <div class="dvd-entry" data-go="draw">
@@ -12431,6 +12431,7 @@
           <div class="dvd-seg" id="dvdModeSeg">
             <button class="dvd-seg-item active" data-m="tarot">塔罗牌</button>
             <button class="dvd-seg-item" data-m="leno">雷诺曼牌</button>
+            <button class="dvd-seg-item" data-m="mix">混合模式</button>
           </div>
           <div class="dvd-seg-label">抽牌数量</div>
           <div class="dvd-seg" id="dvdCountSeg">
@@ -12439,8 +12440,8 @@
           </div>
           <div class="dvd-seg-label">占卜对象</div>
           <div class="dvd-seg dvd-targets" id="dvdTargetSeg"></div>
-          <div class="dvd-seg-label">想问 TA 什么？</div>
-          <input class="dvd-input" id="dvdQInput" placeholder="例如：TA 现在对我是什么感觉？" maxlength="50">
+          <div class="dvd-seg-label" id="dvdQLabel">想了解什么？</div>
+          <input class="dvd-input" id="dvdQInput" placeholder="例如：最近有什么值得注意的事？" maxlength="50">
           <button class="dvd-primary" id="dvdStartBtn">开始抽牌</button>
           <div class="dvd-result" id="dvdResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdResultActions" style="display:none;">
@@ -22012,8 +22013,23 @@ patText2 = patText2.replace(/你/g, '我');
               st.target = b.getAttribute('data-v');
               seg.querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
               b.classList.add('active');
+              updateQuestionHint();
             });
           });
+          updateQuestionHint();
+        }
+
+        // 标签/占位符跟随占卜对象切换
+        function updateQuestionHint() {
+          var label = document.getElementById('dvdQLabel');
+          var input = document.getElementById('dvdQInput');
+          if (st.target) {
+            label.textContent = '想问 TA 什么？';
+            input.placeholder = '例如：TA 现在对我是什么感觉？';
+          } else {
+            label.textContent = '想了解什么？';
+            input.placeholder = '例如：最近有什么值得注意的事？';
+          }
         }
 
         // 模式/数量切换
@@ -22034,7 +22050,7 @@ patText2 = patText2.replace(/你/g, '我');
 
         // 抽牌
         function pick() {
-          var pool = (st.mode === 'tarot') ? TAROT : LENO;
+          var pool = (st.mode === 'tarot') ? TAROT : (st.mode === 'leno' ? LENO : TAROT.concat(LENO));
           var idx = [];
           while (idx.length < st.count) {
             var r = Math.floor(Math.random() * pool.length);
@@ -22042,7 +22058,8 @@ patText2 = patText2.replace(/你/g, '我');
           }
           draw = idx.map(function (i) {
             var c = pool[i];
-            return { c: c, r: st.mode === 'tarot' && Math.random() < 0.35 };
+            var isTarot = st.mode !== 'leno' && (i < TAROT.length);
+            return { c: c, r: isTarot && Math.random() < 0.35, tarot: isTarot };
           });
         }
         function cardHtml(d, pos) {
@@ -22051,18 +22068,18 @@ patText2 = patText2.replace(/你/g, '我');
             '<div class="dvd-num">' + (pos || '') + (d.c.n ? ' · ' + d.c.n : '') + '</div>' +
             '<div class="dvd-sym">' + SYM + '</div>' +
             '<div class="dvd-name">' + d.c.name + '</div>' +
-            (st.mode === 'tarot' ? '<div class="dvd-badge">' + (d.r ? '逆位' : '正位') + '</div>' : '') +
+            (d.tarot ? '<div class="dvd-badge">' + (d.r ? '逆位' : '正位') + '</div>' : '') +
             '<div class="dvd-up">' + kw + '</div>' +
           '</div>';
         }
         function resultText() {
           var lines = [];
-          lines.push('占卜方式：' + (st.mode === 'tarot' ? '塔罗牌' : '雷诺曼牌'));
+          lines.push('占卜方式：' + (st.mode === 'tarot' ? '塔罗牌' : (st.mode === 'leno' ? '雷诺曼牌' : '混合牌')));
           if (st.target) lines.push('占卜对象：' + st.target);
           if (st.question) lines.push('问题：' + st.question);
           lines.push('牌面：');
           draw.forEach(function (d, i) {
-            lines.push((i + 1) + '. ' + d.c.name + (st.mode === 'tarot' ? (d.r ? '（逆位）' : '（正位）') : '') + ' - ' + (d.r ? d.c.rev : d.c.up));
+            lines.push((i + 1) + '. ' + d.c.name + (d.tarot ? (d.r ? '（逆位）' : '（正位）') : '') + ' - ' + (d.r ? d.c.rev : d.c.up));
           });
           return lines.join('\n');
         }
@@ -22088,10 +22105,10 @@ patText2 = patText2.replace(/你/g, '我');
           var h = loadHistory();
           h.unshift({
             t: new Date().getTime(),
-            mode: st.mode === 'tarot' ? '塔罗' : '雷诺曼',
+            mode: st.mode === 'tarot' ? '塔罗' : (st.mode === 'leno' ? '雷诺曼' : '混合'),
             q: st.question,
             target: st.target,
-            cards: draw.map(function (d) { return d.c.name + (st.mode === 'tarot' ? (d.r ? '(逆)' : '(正)') : ''); })
+            cards: draw.map(function (d) { return d.c.name + (d.tarot ? (d.r ? '(逆)' : '(正)') : ''); })
           });
           if (h.length > 50) h = h.slice(0, 50);
           try { localStorage.setItem('divineHistory', JSON.stringify(h)); } catch (e) {}
