@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v182')){sessionStorage.setItem('zk_v182','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==182){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v183')){sessionStorage.setItem('zk_v183','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==183){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v182</title>
+  <title>字卡 · 小手机 v183</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6172,7 +6172,12 @@
     #importFileInput,
     #emojiFileInput,
     #importChatFileInput {
-      display: none;
+      position: absolute;
+      left: -9999px;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      overflow: hidden;
     }
 
     /* --- 导出聊天记录选项弹窗 --- */
@@ -8515,7 +8520,7 @@
 .diary-comment-head { display: flex; align-items: baseline; gap: 8px; }
 .diary-comment-time { font-size: 11px; color: #b0aabf; }
 .diary-comment-text { margin: 2px 0; color: #555; }
-.diary-comment-ops { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+.diary-comment-ops { display: flex; align-items: center; justify-content: flex-end; gap: 2px; margin-top: 4px; }
 .diary-comment-ops .diary-cmt-op {
   display: inline-flex; align-items: center; gap: 3px;
   background: none; border: none; color: #b6b0c4;
@@ -8545,10 +8550,19 @@
   margin-bottom: 8px;
 }
 .diary-detail-comments .diary-comment-list {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}
+.diary-detail-comments .diary-comment-item {
   background: var(--bg-card);
   border-radius: 10px;
-  padding: 12px 14px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
   box-shadow: 0 1px 4px rgba(155,142,196,0.12);
+}
+.diary-detail-comments .diary-comment-item:last-child {
+  margin-bottom: 0;
 }
 .diary-detail-commentbar {
   flex-shrink: 0;
@@ -10810,7 +10824,7 @@
               <span style="width:60px; height:28px; display:inline-block;"></span>
             </div>
             <div class="emoji-grid" id="emojiGrid">
-              <div class="emoji-empty-state"><button class="empty-add-btn" id="emptyAddBtn">＋ 添加</button></div>
+              <div class="emoji-empty-state"><label class="empty-add-btn" id="emptyAddBtn" for="emojiFileInput">＋ 添加</label></div>
             </div>
           </div>
 
@@ -12174,7 +12188,7 @@
           <textarea class="diary-editor-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
           <div class="diary-img-grid" id="diaryWriteImagePreview"></div>
         </div>
-        <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="display:none;">
+        <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
       </div>
     </div>
     <!-- 编辑日记弹窗 -->
@@ -12202,7 +12216,7 @@
           <textarea class="diary-editor-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
           <div class="diary-img-grid" id="diaryEditImagePreview"></div>
         </div>
-        <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="display:none;">
+        <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
       </div>
     </div>
     <!-- 删除确认弹窗 -->
@@ -13158,10 +13172,10 @@
 
       function renderEmojis() {
         emojiGrid.innerHTML = '';
-        const addBtn = document.createElement('div');
+        const addBtn = document.createElement('label');
         addBtn.className = 'emoji-add-btn';
         addBtn.textContent = '＋';
-        addBtn.addEventListener('click', function (e) { e.stopPropagation(); emojiFileInput.click(); });
+        addBtn.setAttribute('for', 'emojiFileInput');
         emojiGrid.appendChild(addBtn);
         if (emojiList.length === 0) return;
         emojiList.forEach((src, index) => {
@@ -13306,13 +13320,7 @@
         this.value = '';
       });
 
-      // emptyAddBtn 和 emoji-add-btn 都通过 emojiFileInput 选择图片
-      if (emptyAddBtn) {
-        emptyAddBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          emojiFileInput.click();
-        });
-      }
+      // emptyAddBtn 和 emoji-add-btn 都通过 emojiFileInput（label for 原生触发）选择图片
       emojiBackBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         emojiModule.classList.remove('active');
@@ -23359,9 +23367,9 @@ patText2 = patText2.replace(/你/g, '我');
           diaryWriteImagePreview.appendChild(div);
         });
         if (_diaryPendingImages.length < 9) {
-          var addW = document.createElement('div');
+          var addW = document.createElement('label');
           addW.className = 'diary-img-add';
-          addW.addEventListener('click', function() { diaryWriteImageInput.click(); });
+          addW.setAttribute('for', 'diaryWriteImageInput');
           addW.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
           diaryWriteImagePreview.appendChild(addW);
         }
@@ -23395,9 +23403,9 @@ patText2 = patText2.replace(/你/g, '我');
           diaryEditImagePreview.appendChild(div);
         });
         if (_diaryEditPendingImages.length < 9) {
-          var addE = document.createElement('div');
+          var addE = document.createElement('label');
           addE.className = 'diary-img-add';
-          addE.addEventListener('click', function() { diaryEditImageInput.click(); });
+          addE.setAttribute('for', 'diaryEditImageInput');
           addE.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
           diaryEditImagePreview.appendChild(addE);
         }
@@ -23672,7 +23680,7 @@ patText2 = patText2.replace(/你/g, '我');
               '<div class="diary-comment-head"><span class="comment-author">' + escapeDiaryHtml(c.author) + '</span><span class="diary-comment-time">' + formatDiaryTime(c.date) + '</span></div>' +
               '<div class="diary-comment-text">' + escapeDiaryHtml(c.text).replace(/\n/g, '<br>') + '</div>' +
               '<div class="diary-comment-ops">' +
-                '<button class="diary-cmt-op' + (cLiked ? ' liked' : '') + '" onclick="window._toggleDiaryCommentLike(' + _diaryDetailId + ',' + i + ')">' + _diaryIcLike + (cLikes.length > 0 ? '<span class="diary-cmt-like-n">' + cLikes.length + '</span>' : '') + '</button>' +
+                '<button class="diary-cmt-op' + (cLiked ? ' liked' : '') + '" onclick="window._toggleDiaryCommentLike(' + _diaryDetailId + ',' + i + ')">' + _diaryIcLike + '</button>' +
                 '<button class="diary-cmt-op" onclick="window._editDiaryComment(' + _diaryDetailId + ',' + i + ')">' + _diaryIcEdit + '</button>' +
                 '<button class="diary-cmt-op danger" onclick="window._delDiaryComment(' + _diaryDetailId + ',' + i + ')">' + _diaryIcDelete + '</button>' +
               '</div>' +
@@ -23690,7 +23698,7 @@ patText2 = patText2.replace(/你/g, '我');
             '<div class="diary-detail-body">' + text + '</div>' +
             imageHtml +
             '<div class="diary-detail-actions">' +
-              '<button class="diary-action-btn diary-action-like' + (likes.length > 0 ? ' liked' : '') + '" id="diaryDetailActionLike">' + _diaryIcLike + (likes.length > 0 ? '<span class="diary-action-like-n">' + likes.length + '</span>' : '') + '</button>' +
+              '<button class="diary-action-btn diary-action-like' + (likes.length > 0 ? ' liked' : '') + '" id="diaryDetailActionLike">' + _diaryIcLike + '</button>' +
               '<button class="diary-action-btn" id="diaryDetailEditBtn">' + _diaryIcEdit + '</button>' +
               '<button class="diary-action-btn diary-action-danger" id="diaryDetailDeleteBtn">' + _diaryIcDelete + '</button>' +
             '</div>' +
