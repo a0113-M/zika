@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v186')){sessionStorage.setItem('zk_v186','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==186){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v187')){sessionStorage.setItem('zk_v187','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==187){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v186</title>
+  <title>字卡 · 小手机 v187</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13828,17 +13828,13 @@
         }
 
         // 格式化聊天记录
-        const dateStr = new Date().toLocaleString('zh-CN');
         let text = `聊天记录 - ${name}\n`;
-        text += `导出时间：${dateStr}\n`;
-        text += `共 ${selectedMsgs.length} 条消息\n`;
-        text += `${'─'.repeat(30)}\n\n`;
+        text += `${'╌'.repeat(20)}\n`;
         selectedMsgs.forEach(msg => {
-          const sender = msg.from === 'me' ? '我' : (msg.from === 'other' ? '对方' : (msg.from || '对方'));
+          const sender = msg.from === 'me' ? '我' : name;
           text += `[${msg.time}] ${sender}：${msg.text}\n`;
         });
-        text += `\n${'─'.repeat(30)}\n`;
-        text += `导出方式：多选导出`;
+        text += `${'╌'.repeat(20)}`;
 
         // 保存到日记（使用 localStorage）
         let diaryEntries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
