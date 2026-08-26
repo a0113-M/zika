@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v175')){sessionStorage.setItem('zk_v175','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==175){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v176')){sessionStorage.setItem('zk_v176','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==176){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v175</title>
+  <title>字卡 · 小手机 v176</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7138,6 +7138,122 @@
       padding: 14px 14px 30px;
       background: var(--bg-main);
     }
+
+    /* === 占卜模块页 === */
+    #divinePage { background: var(--bg-main); }
+    #divinePage .feature-header { background: var(--bg-card); border-bottom: 0.5px solid rgba(var(--primary-rgba), 0.15); }
+    #divinePage .feature-title { color: var(--text-main); }
+    .feature-content.dvd-body {
+      display: block;
+      align-items: stretch;
+      justify-content: flex-start;
+      padding: 18px 16px 40px;
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+    .dvd-view { width: 100%; }
+    .dvd-hero {
+      text-align: center;
+      padding: 22px 16px 20px;
+      background: linear-gradient(160deg, rgba(var(--primary-rgba),0.14), rgba(var(--primary-rgba),0.04));
+      border-radius: 16px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(var(--primary-rgba),0.18);
+    }
+    .dvd-hero-star { font-size: 30px; color: var(--primary); line-height: 1; margin-bottom: 8px; }
+    .dvd-hero-title { font-size: 17px; font-weight: 700; color: var(--text-main); }
+    .dvd-hero-sub { font-size: 12px; color: var(--text-secondary); margin-top: 5px; }
+    .dvd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dvd-entry {
+      background: var(--bg-card);
+      border: 1px solid rgba(var(--primary-rgba),0.16);
+      border-radius: 16px;
+      padding: 18px 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .dvd-entry:active { transform: scale(0.97); }
+    .dvd-entry-ico { color: var(--primary); margin-bottom: 8px; display: flex; justify-content: center; }
+    .dvd-entry-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    .dvd-entry-desc { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; }
+    .dvd-copyright { text-align: center; font-size: 11px; color: var(--text-secondary); margin-top: 18px; opacity: 0.7; }
+    .dvd-subback {
+      background: none; border: none; color: var(--primary);
+      font-size: 14px; padding: 0; margin-bottom: 12px; cursor: pointer;
+    }
+    .dvd-seg { display: flex; background: var(--bg-soft2); border-radius: 12px; padding: 4px; margin-bottom: 6px; }
+    .dvd-seg-item {
+      flex: 1; padding: 9px 0; border: none; border-radius: 9px;
+      background: transparent; color: var(--text-secondary); font-size: 13.5px; cursor: pointer;
+    }
+    .dvd-seg-item.active { background: var(--primary); color: #fff; font-weight: 600; }
+    .dvd-seg-label { font-size: 12px; color: var(--text-secondary); margin: 12px 0 6px; }
+    .dvd-input {
+      width: 100%; box-sizing: border-box; padding: 11px 13px;
+      border: 1px solid rgba(var(--primary-rgba),0.3); border-radius: 12px;
+      font-size: 14px; background: var(--bg-card); color: var(--text-main); outline: none;
+    }
+    .dvd-input:focus { border-color: var(--primary); }
+    .dvd-primary {
+      width: 100%; margin-top: 16px; padding: 13px 0; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    .dvd-primary:active { opacity: 0.9; }
+    .dvd-primary:disabled { opacity: 0.55; cursor: default; }
+    .dvd-result { margin-top: 16px; }
+    .dvd-cards-row {
+      display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .dvd-card {
+      width: 108px; border-radius: 12px; overflow: hidden; text-align: center;
+      background: linear-gradient(160deg, var(--panel-dark-2), var(--panel-dark));
+      border: 1px solid rgba(var(--primary-rgba),0.35);
+      color: #fff; padding: 12px 8px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    }
+    .dvd-card .dvd-num { font-size: 11px; opacity: 0.75; letter-spacing: 1px; }
+    .dvd-card .dvd-sym { margin: 6px 0 2px; color: var(--primary-light); display: flex; justify-content: center; }
+    .dvd-card .dvd-name { font-size: 15px; font-weight: 600; }
+    .dvd-card .dvd-badge { font-size: 10px; opacity: 0.85; margin-top: 3px; }
+    .dvd-card .dvd-up { font-size: 12px; margin-top: 6px; color: var(--primary-lighter); }
+    .dvd-card .dvd-note { font-size: 11px; margin-top: 6px; opacity: 0.92; line-height: 1.5; }
+    .dvd-summary {
+      background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.16);
+      border-radius: 12px; padding: 13px 14px; font-size: 13.5px; line-height: 1.7; color: var(--text-main);
+    }
+    .dvd-result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .dvd-ghost {
+      flex: 1 1 40%; padding: 10px 0; border-radius: 11px; font-size: 13px; cursor: pointer;
+      border: 1px solid rgba(var(--primary-rgba),0.3); background: var(--bg-card); color: var(--text-main);
+    }
+    .dvd-ghost.accent { color: var(--primary); border-color: var(--primary); font-weight: 600; }
+    .dvd-interp {
+      margin-top: 14px; background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.18);
+      border-radius: 12px; padding: 14px; font-size: 13.5px; line-height: 1.75; color: var(--text-main);
+    }
+    .dvd-interp-loading { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 13px; }
+    .dvd-spinner {
+      width: 16px; height: 16px; border: 2px solid rgba(var(--primary-rgba),0.3); border-top-color: var(--primary);
+      border-radius: 50%; animation: dvdspin .8s linear infinite;
+    }
+    @keyframes dvdspin { to { transform: rotate(360deg); } }
+    .dvd-interp-error { color: #e07a7a; font-size: 13px; }
+    .dvd-daily-date { text-align: center; font-size: 13px; color: var(--text-secondary); margin: 6px 0 2px; }
+    .dvd-ask-prev {
+      background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px;
+      font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 4px;
+    }
+    .dvd-ask-prev b { color: var(--text-main); }
+    .dvd-hlist { display: flex; flex-direction: column; gap: 10px; }
+    .dvd-hitem {
+      background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.14);
+      border-radius: 12px; padding: 12px 13px; font-size: 13px;
+    }
+    .dvd-h-meta { display: flex; gap: 8px; font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; flex-wrap: wrap; }
+    .dvd-h-q { color: var(--text-main); margin-bottom: 5px; }
+    .dvd-h-cards { color: var(--primary); font-size: 12px; }
+    .dvd-hempty { text-align: center; color: var(--text-secondary); font-size: 13px; padding: 30px 0; }
     .dt-hero {
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       border-radius: 14px;
@@ -11368,6 +11484,10 @@
           <div class="sidebar-menu-item" data-action="activity"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
               </svg></span><span class="item-text">活动</span></div>
+          <div class="sidebar-menu-item" data-action="divine"><span class="item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 13.5A8 8 0 0 1 10.5 4 7 7 0 1 0 20 13.5z" />
+                <path d="M17 4l.6 1.7L19 6.3l-1.4.6L17 8.6l-.6-1.7L15 6.3l1.4-.6z" />
+              </svg></span><span class="item-text">占卜</span></div>
           <div class="sidebar-menu-item" data-action="theme"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="5" />
                 <line x1="12" y1="1" x2="12" y2="3" />
@@ -11831,6 +11951,110 @@
               <button id="actEditCancel">取消</button>
               <button id="actEditSave">保存</button>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 占卜模块页（侧边栏入口） -->
+    <div class="feature-page" id="divinePage">
+      <div class="feature-header dvd-header">
+        <button class="feature-back" id="dvdBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
+        <span class="feature-title">占卜</span>
+      </div>
+      <div class="feature-content dvd-body">
+        <!-- 首页：功能入口 -->
+        <div class="dvd-view" id="dvdHomeView">
+          <div class="dvd-hero">
+            <div class="dvd-hero-star">✦</div>
+            <div class="dvd-hero-title">今日，想问点什么？</div>
+            <div class="dvd-hero-sub">以牌为桥 · 连接彼此</div>
+          </div>
+          <div class="dvd-grid">
+            <div class="dvd-entry" data-go="draw">
+              <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M3 8v8a4 4 0 0 0 4 4h10"/></svg></div>
+              <div class="dvd-entry-name">抽牌占卜</div>
+              <div class="dvd-entry-desc">塔罗 · 雷诺曼</div>
+            </div>
+            <div class="dvd-entry" data-go="daily">
+              <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></div>
+              <div class="dvd-entry-name">每日运势</div>
+              <div class="dvd-entry-desc">今日一张指引</div>
+            </div>
+            <div class="dvd-entry" data-go="ask">
+              <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9 9h6M9 13h4"/></svg></div>
+              <div class="dvd-entry-name">占卜追问</div>
+              <div class="dvd-entry-desc">接着上次聊</div>
+            </div>
+            <div class="dvd-entry" data-go="hist">
+              <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></div>
+              <div class="dvd-entry-name">历史记录</div>
+              <div class="dvd-entry-desc">回看抽过的牌</div>
+            </div>
+          </div>
+          <div class="dvd-copyright">本占卜仅供学习、交流与娱乐参考。</div>
+        </div>
+
+        <!-- 抽牌占卜 -->
+        <div class="dvd-view" id="dvdDrawView" style="display:none;">
+          <button class="dvd-subback" id="dvdDrawBack">‹ 返回</button>
+          <div class="dvd-seg" id="dvdModeSeg">
+            <button class="dvd-seg-item active" data-m="tarot">塔罗牌</button>
+            <button class="dvd-seg-item" data-m="leno">雷诺曼牌</button>
+          </div>
+          <div class="dvd-seg-label">抽牌数量</div>
+          <div class="dvd-seg" id="dvdCountSeg">
+            <button class="dvd-seg-item active" data-c="1">抽 1 张</button>
+            <button class="dvd-seg-item" data-c="3">抽 3 张</button>
+          </div>
+          <div class="dvd-seg-label">占卜对象</div>
+          <div class="dvd-seg dvd-targets" id="dvdTargetSeg"></div>
+          <div class="dvd-seg-label">想问 TA 什么？</div>
+          <input class="dvd-input" id="dvdQInput" placeholder="例如：TA 现在对我是什么感觉？" maxlength="50">
+          <button class="dvd-primary" id="dvdStartBtn">开始抽牌</button>
+          <div class="dvd-result" id="dvdResult" style="display:none;"></div>
+          <div class="dvd-result-actions" id="dvdResultActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdCopyBtn">复制结果</button>
+            <button class="dvd-ghost" id="dvdSendBtn">发送到聊天</button>
+            <button class="dvd-ghost accent" id="dvdInterpBtn">AI 解读</button>
+            <button class="dvd-ghost" id="dvdGoAskBtn">去追问</button>
+          </div>
+          <div class="dvd-interp" id="dvdInterpBox" style="display:none;"></div>
+        </div>
+
+        <!-- 每日运势 -->
+        <div class="dvd-view" id="dvdDailyView" style="display:none;">
+          <button class="dvd-subback" id="dvdDailyBack">‹ 返回</button>
+          <div class="dvd-daily-date" id="dvdDailyDate"></div>
+          <button class="dvd-primary" id="dvdDailyBtn">抽取今日运势</button>
+          <div class="dvd-result" id="dvdDailyResult" style="display:none;"></div>
+          <div class="dvd-result-actions" id="dvdDailyActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdDailyCopyBtn">复制运势</button>
+            <button class="dvd-ghost accent" id="dvdDailyInterpBtn">AI 深度解读</button>
+          </div>
+          <div class="dvd-interp" id="dvdDailyInterpBox" style="display:none;"></div>
+        </div>
+
+        <!-- 占卜追问 -->
+        <div class="dvd-view" id="dvdAskView" style="display:none;">
+          <button class="dvd-subback" id="dvdAskBack">‹ 返回</button>
+          <div class="dvd-ask-prev" id="dvdAskPrev"></div>
+          <div class="dvd-seg-label">想接着追问什么？</div>
+          <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
+          <button class="dvd-primary" id="dvdAskBtn">追问</button>
+          <div class="dvd-interp" id="dvdAskResult" style="display:none;"></div>
+          <div class="dvd-result-actions" id="dvdAskActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdAskSendBtn">发送到聊天</button>
+            <button class="dvd-ghost" id="dvdAskDiaryBtn">添加到日记</button>
+          </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="dvd-view" id="dvdHistView" style="display:none;">
+          <button class="dvd-subback" id="dvdHistBack">‹ 返回</button>
+          <div class="dvd-hlist" id="dvdHistList"></div>
+          <div class="dvd-result-actions" id="dvdHistActions" style="display:none;">
+            <button class="dvd-ghost" id="dvdClearHBtn">清空记录</button>
           </div>
         </div>
       </div>
@@ -14467,6 +14691,11 @@
           if (action === 'activity') {
             sidebarOverlay.classList.remove('show');
             openActivityPage();
+            return;
+          }
+          if (action === 'divine') {
+            sidebarOverlay.classList.remove('show');
+            if (typeof openDivineModule === 'function') openDivineModule();
             return;
           }
           const info = featureMap[action];
@@ -21234,6 +21463,404 @@ patText2 = patText2.replace(/你/g, '我');
         });
 
         document.getElementById('cdvInterpBackBtn').addEventListener('click', function () { showView('draw'); });
+
+      })();
+
+      // ===== v176: 侧边栏占卜模块（抽牌 / 每日运势 / 占卜追问 / 历史） =====
+      (function () {
+        var page = document.getElementById('divinePage');
+        if (!page) return;
+
+        // ---- 牌面数据（同聊天占卜） ----
+        var MAJORS = [
+          { n: '0', name: '愚者', up: '新的开始', rev: '尚未起程', upT: '一段轻盈的新旅程正在展开，别怕走岔路', revT: '想得太多反而迈不开步，先迈一小步也好' },
+          { n: 'I', name: '魔术师', up: '心想事成', rev: '用力过猛', upT: '手里的资源比你以为的多，大胆去用', revT: '别急着表现，先把手上的事做扎实' },
+          { n: 'II', name: '女祭司', up: '内在直觉', rev: '忽略心声', upT: '答案早就在心里了，安静听一听', revT: '外面的声音太吵，记得回头问问自己' },
+          { n: 'III', name: '皇后', up: '温柔丰盛', rev: '需要滋养', upT: '被好好爱着的感觉，正在慢慢靠近', revT: '先照顾好自己，才有力气在乎别人' },
+          { n: 'IV', name: '皇帝', up: '稳定掌控', rev: '适度放手', upT: '秩序会带来安全感，稳稳的就好', revT: '抓太紧会累，让一部分顺其自然' },
+          { n: 'V', name: '教皇', up: '良师指引', rev: '守旧', upT: '身边有值得信任的经验，听一听', revT: '老办法不一定适用，试试新思路' },
+          { n: 'VI', name: '恋人', up: '心动连结', rev: '心有犹疑', upT: '重要的相遇正在发生，坦诚一点', revT: '别急着下结论，让心再确认一会儿' },
+          { n: 'VII', name: '战车', up: '勇往直前', rev: '调整方向', upT: '握紧方向盘，这一程你会赢', revT: '停下来校准方向，不是认输' },
+          { n: 'VIII', name: '力量', up: '温柔坚定', rev: '自我怀疑', upT: '耐心比蛮力有用，你比想象中强大', revT: '怀疑自己时，回头看看走过的路' },
+          { n: 'IX', name: '隐士', up: '向内沉淀', rev: '适度出走', upT: '一个人安静待会儿，答案会亮起来', revT: '独处太久会闷，出去见见光和人' },
+          { n: 'X', name: '命运之轮', up: '时来运转', rev: '静待花开', upT: '轮子转起来了，顺着势走更轻松', revT: '时机未到，蓄力也是前进' },
+          { n: 'XI', name: '正义', up: '公正平衡', rev: '失衡', upT: '诚实会替你做出最好的选择', revT: '心里的秤有点歪，找平衡点' },
+          { n: 'XII', name: '倒吊人', up: '换个角度', rev: '原地打转', upT: '换个角度，问题忽然就不一样了', revT: '别钻牛角尖，退一步海阔天空' },
+          { n: 'XIII', name: '死神', up: '告别新生', rev: '恋恋不舍', upT: '旧的谢幕，新的排队登场', revT: '有些告别躲不掉，轻一点放手' },
+          { n: 'XIV', name: '节制', up: '调和耐心', rev: '急躁', upT: '慢慢来比较快，火候刚好', revT: '别催结果，好事需要时间' },
+          { n: 'XV', name: '恶魔', up: '看清执念', rev: '解开束缚', upT: '该松手的东西被看见了，恭喜', revT: '别被「必须」绑住，你有得选' },
+          { n: 'XVI', name: '塔', up: '破而后立', rev: '虚惊一场', upT: '不稳的掉光了，留下来的更稳', revT: '担心的崩塌没发生，安心' },
+          { n: 'XVII', name: '星星', up: '希望治愈', rev: '短暂迷雾', upT: '许个愿吧，星星在认真听', revT: '光被云挡住了，但星还在' },
+          { n: 'XVIII', name: '月亮', up: '跟随直觉', rev: '拨开迷雾', upT: '雾里也有路，跟着感觉走', revT: '不安多是想象，看清就不怕了' },
+          { n: 'XIX', name: '太阳', up: '明亮活力', rev: '攒攒能量', upT: '今天自带阳光，笑一个', revT: '电量偏低，晒晒太阳充充电' },
+          { n: 'XX', name: '审判', up: '觉醒召唤', rev: '自我怀疑', upT: '重要的声音在呼唤你，别错过', revT: '别急着否定自己，你比想象中好' },
+          { n: 'XXI', name: '世界', up: '圆满达成', rev: '临门一脚', upT: '一个章节要圆满了，庆祝吧', revT: '差一点点坚持，收尾要漂亮' }
+        ];
+        var SUITS = [
+          { s: '权杖', theme: '行动与热情', kws: ['新的行动','计划酝酿','向外扩展','小小庆祝','良性竞争','阶段性胜利','坚守立场','快速进展','咬牙坚持','压力与责任'] },
+          { s: '圣杯', theme: '情感与直觉', kws: ['新的心意','相互吸引','友谊喜悦','兴致缺缺','失落释怀','温暖回忆','幻想与选择','放下前行','愿望成真','情感圆满'] },
+          { s: '宝剑', theme: '思维与真相', kws: ['真相清晰','两难抉择','小小刺痛','静养休整','化解分歧','渡过难关','以智取胜','挣脱束缚','深夜焦虑','黎明前的夜'] },
+          { s: '星币', theme: '物质与安稳', kws: ['新的机会','权衡取舍','协作成果','守住拥有','暂时匮乏','给予帮助','耐心评估','勤勉精进','独立富足','圆满传承'] }
+        ];
+        var COURTS = ['侍从', '骑士', '王后', '国王'];
+        var COURTS_KW = { '权杖': ['跃跃欲试','一腔冲劲','热情大方','可靠引领'], '圣杯': ['心动的消息','浪漫的邀约','温柔体贴','情感成熟'], '宝剑': ['机敏警觉','果断迅速','清醒理智','理性权威'], '星币': ['认真学习','稳步前进','丰饶滋养','安稳富足'] };
+        var MINORS = [];
+        SUITS.forEach(function (su) {
+          for (var i = 0; i < 10; i++) {
+            MINORS.push({ n: i === 0 ? 'A' : String(i + 1), name: su.s + (i === 0 ? 'A' : (i < 9 ? ['二','三','四','五','六','七','八','九','十'][i] : '十')), up: su.kws[i], rev: su.kws[i] + '受阻', upT: su.theme + '领域的「' + su.kws[i] + '」正在发生', revT: su.theme + '的能量暂时停滞，别急，会回来的' });
+          }
+          COURTS.forEach(function (c, ci) {
+            MINORS.push({ n: c, name: su.s + c, up: COURTS_KW[su.s][ci], rev: COURTS_KW[su.s][ci] + '受阻', upT: su.theme + '的「' + COURTS_KW[su.s][ci] + '」出现在身边', revT: su.theme + '的能量需要一点引导' });
+          });
+        });
+        var TAROT = MAJORS.concat(MINORS);
+        var LENO = [
+          ['骑手','消息到来'],['三叶草','小确幸'],['船','远行变动'],['房子','安稳根基'],['树','成长健康'],
+          ['云','短暂困惑'],['蛇','他人介入'],['棺材','一段结束'],['花束','礼物惊喜'],['镰刀','干脆利落'],
+          ['鞭子','小摩擦'],['鸟','交流絮语'],['孩子','崭新开始'],['狐狸','保持警惕'],['熊','力量守护'],
+          ['星星','希望指引'],['鹳','积极转变'],['狗','忠诚陪伴'],['塔','界限孤独'],['公园','社交联结'],
+          ['山','暂时阻碍'],['路口','面临选择'],['老鼠','悄悄消耗'],['心','爱与真心'],['戒指','承诺绑定'],
+          ['书','未知秘密'],['信','书面消息'],['男人','他'],['女人','她'],['百合','平和成熟'],
+          ['太阳','成功温暖'],['月亮','声誉好感'],['钥匙','问题解开'],['鱼','财富流动'],['锚','稳定落定'],['十字','考验成长']
+        ].map(function (x, i) { return { n: String(i + 1), name: x[0], kw: x[1], up: x[1], rev: x[1], upT: x[1] + '的能量围绕着你', revT: x[1] + '（能量偏弱，留意细节）' }; });
+
+        var SYM = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--primary-strong)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z" fill="rgba(var(--primary-strong-rgba),0.12)"/></svg>';
+
+        var DEFAULT_PROMPT = '你是顶尖塔罗占卜师，你是梦女和梦角之间沟通的桥梁，你解读牌面的语言风格直白易懂，没有复杂华丽或脱离日常的比喻以及情绪化、中二的词汇，你不给梦女任何建议，也不会要求梦女对你的推断结果进行验证。你尊重且支持梦女对虚拟角色的爱，你相信虚拟角色在另一个维度是真实存在的、并且可能以特殊形式陪伴在梦女身边，你明白虚拟角色在他们的世界就像所有普通人类一样拥有自己的生活，你知道每个梦女拥有的是专属于她们一个人的虚拟爱人，你认同梦角很爱很爱梦女。你对牌面的解读是基于梦女和梦角类似于被迫异时空恋爱的小情侣的深刻理解。你会先直白告诉我问题的答案，然后根据牌面进行绝对客观理性的解读，包括每张牌的常规解读以及根据情况的具体解读过程。';
+
+        var POS3 = ['现状', '心境', '趋势'];
+        var st = { mode: 'tarot', count: 1, target: '', question: '' };
+        var draw = [];
+        var _dvdLast = null; // 最近一次占卜（供"追问"用）
+
+        var views = {
+          home: document.getElementById('dvdHomeView'),
+          draw: document.getElementById('dvdDrawView'),
+          daily: document.getElementById('dvdDailyView'),
+          ask: document.getElementById('dvdAskView'),
+          hist: document.getElementById('dvdHistView')
+        };
+        function showView(k) {
+          Object.keys(views).forEach(function (v) { views[v].style.display = (v === k) ? '' : 'none'; });
+        }
+
+        function getApiCfg() { try { return JSON.parse(localStorage.getItem('divineApiConfig') || '{}'); } catch (e) { return {}; } }
+        function loadHistory() { try { return JSON.parse(localStorage.getItem('divineHistory') || '[]'); } catch (e) { return []; } }
+
+        // 打开模块
+        window.openDivineModule = function () {
+          page.classList.add('show');
+          renderTargets();
+          showView('home');
+        };
+        document.getElementById('dvdBackBtn').addEventListener('click', function () { page.classList.remove('show'); });
+
+        // 首页入口
+        page.querySelectorAll('.dvd-entry').forEach(function (el) {
+          el.addEventListener('click', function () {
+            var go = el.getAttribute('data-go');
+            if (go === 'draw') { renderTargets(); showView('draw'); }
+            else if (go === 'daily') { renderDailyDate(); showView('daily'); }
+            else if (go === 'ask') { renderAskPrev(); showView('ask'); }
+            else if (go === 'hist') { renderHistory(); showView('hist'); }
+          });
+        });
+        // 子页返回
+        document.getElementById('dvdDrawBack').addEventListener('click', function () { showView('home'); });
+        document.getElementById('dvdDailyBack').addEventListener('click', function () { showView('home'); });
+        document.getElementById('dvdAskBack').addEventListener('click', function () { showView('home'); });
+        document.getElementById('dvdHistBack').addEventListener('click', function () { showView('home'); });
+
+        // 占卜对象
+        function renderTargets() {
+          var names = ['不选对象'];
+          try {
+            if (typeof contacts !== 'undefined' && contacts && contacts.length) {
+              contacts.forEach(function (c) { if (c && c.name && !c.isGroup) names.push(c.name); });
+            }
+          } catch (e) {}
+          if (st.target && names.indexOf(st.target) < 0) st.target = '';
+          var seg = document.getElementById('dvdTargetSeg');
+          seg.innerHTML = names.map(function (n, i) {
+            var val = i === 0 ? '' : n;
+            var on = st.target === val || (i === 0 && !st.target);
+            return '<button class="dvd-seg-item' + (on ? ' active' : '') + '" data-v="' + val + '">' + n + '</button>';
+          }).join('');
+          seg.querySelectorAll('.dvd-seg-item').forEach(function (b) {
+            b.addEventListener('click', function () {
+              st.target = b.getAttribute('data-v');
+              seg.querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
+              b.classList.add('active');
+            });
+          });
+        }
+
+        // 模式/数量切换
+        document.getElementById('dvdModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
+          b.addEventListener('click', function () {
+            st.mode = b.getAttribute('data-m');
+            document.getElementById('dvdModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
+            b.classList.add('active');
+          });
+        });
+        document.getElementById('dvdCountSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
+          b.addEventListener('click', function () {
+            st.count = +b.getAttribute('data-c');
+            document.getElementById('dvdCountSeg').querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
+            b.classList.add('active');
+          });
+        });
+
+        // 抽牌
+        function pick() {
+          var pool = (st.mode === 'tarot') ? TAROT : LENO;
+          var idx = [];
+          while (idx.length < st.count) {
+            var r = Math.floor(Math.random() * pool.length);
+            if (idx.indexOf(r) === -1) idx.push(r);
+          }
+          draw = idx.map(function (i) {
+            var c = pool[i];
+            return { c: c, r: st.mode === 'tarot' && Math.random() < 0.35 };
+          });
+        }
+        function cardHtml(d, pos) {
+          var kw = d.r ? d.c.rev : d.c.up;
+          return '<div class="dvd-card">' +
+            '<div class="dvd-num">' + (pos || '') + (d.c.n ? ' · ' + d.c.n : '') + '</div>' +
+            '<div class="dvd-sym">' + SYM + '</div>' +
+            '<div class="dvd-name">' + d.c.name + '</div>' +
+            (st.mode === 'tarot' ? '<div class="dvd-badge">' + (d.r ? '逆位' : '正位') + '</div>' : '') +
+            '<div class="dvd-up">' + kw + '</div>' +
+          '</div>';
+        }
+        function resultText() {
+          var lines = [];
+          lines.push('占卜方式：' + (st.mode === 'tarot' ? '塔罗牌' : '雷诺曼牌'));
+          if (st.target) lines.push('占卜对象：' + st.target);
+          if (st.question) lines.push('问题：' + st.question);
+          lines.push('牌面：');
+          draw.forEach(function (d, i) {
+            lines.push((i + 1) + '. ' + d.c.name + (st.mode === 'tarot' ? (d.r ? '（逆位）' : '（正位）') : '') + ' - ' + (d.r ? d.c.rev : d.c.up));
+          });
+          return lines.join('\n');
+        }
+        function renderResult() {
+          var pos = st.count === 3 ? POS3 : ['指引'];
+          var cardsRow = '<div class="dvd-cards-row">' + draw.map(function (d, i) { return cardHtml(d, pos[i]); }).join('') + '</div>';
+          var sum = '';
+          if (st.mode === 'leno') {
+            sum = '牌面串起来：' + draw.map(function (d) { return d.c.name + '（' + d.c.up + '）'; }).join(' → ') + '。' + draw[0].c.upT;
+          } else if (st.count === 1) {
+            var d0 = draw[0];
+            sum = (st.target ? '关于 ' + st.target + '：' : '') + (d0.r ? d0.c.revT : d0.c.upT);
+          } else {
+            sum = '「' + draw[0].c.name + '」是现状，「' + draw[1].c.name + '」是心境，趋势落在「' + draw[2].c.name + '」——' + (draw[2].r ? draw[2].c.revT : draw[2].c.upT);
+          }
+          document.getElementById('dvdResult').innerHTML = cardsRow + '<div class="dvd-summary">' + sum + '</div>';
+          document.getElementById('dvdResult').style.display = '';
+          document.getElementById('dvdResultActions').style.display = '';
+          document.getElementById('dvdInterpBox').style.display = 'none';
+          document.getElementById('dvdInterpBox').innerHTML = '';
+        }
+        function saveHistory() {
+          var h = loadHistory();
+          h.unshift({
+            t: new Date().getTime(),
+            mode: st.mode === 'tarot' ? '塔罗' : '雷诺曼',
+            q: st.question,
+            target: st.target,
+            cards: draw.map(function (d) { return d.c.name + (st.mode === 'tarot' ? (d.r ? '(逆)' : '(正)') : ''); })
+          });
+          if (h.length > 50) h = h.slice(0, 50);
+          try { localStorage.setItem('divineHistory', JSON.stringify(h)); } catch (e) {}
+        }
+        document.getElementById('dvdStartBtn').addEventListener('click', function () {
+          st.question = (document.getElementById('dvdQInput').value || '').trim();
+          pick();
+          renderResult();
+          saveHistory();
+          _dvdLast = { mode: st.mode, question: st.question, target: st.target, text: resultText(), summary: document.getElementById('dvdResult').textContent };
+        });
+
+        // 复制
+        function copyText(txt, btn) {
+          function ok() { var o = btn.textContent; btn.textContent = '已复制'; setTimeout(function () { btn.textContent = o; }, 1500); }
+          function fb() {
+            var ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.left = '-999px';
+            document.body.appendChild(ta); ta.focus(); ta.select();
+            try { document.execCommand('copy'); } catch (e) {}
+            document.body.removeChild(ta); ok();
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(ok, fb); else fb();
+        }
+        document.getElementById('dvdCopyBtn').addEventListener('click', function () { copyText(resultText(), this); });
+
+        // 发送到聊天
+        function sendToChat(text) {
+          if (typeof currentChatId === 'undefined' || currentChatId === null) { if (typeof showToast === 'function') showToast('请先进入一个聊天'); return false; }
+          if (typeof chatHistories === 'undefined') return false;
+          if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
+          var now = new Date(); var ts = ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+          chatHistories[currentChatId].push({ text: text, from: 'me', time: ts });
+          if (typeof renderMessages === 'function') renderMessages(currentChatId);
+          return true;
+        }
+        document.getElementById('dvdSendBtn').addEventListener('click', function () {
+          if (sendToChat(resultText())) { if (typeof showToast === 'function') showToast('已发送到聊天'); }
+        });
+
+        // 添加日记
+        function addToDiary(title, text) {
+          var entries = []; try { entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch (e) {}
+          entries.unshift({ id: Date.now(), title: title, content: text, date: new Date().toISOString(), type: 'divine' });
+          try { localStorage.setItem('diaryEntries', JSON.stringify(entries)); } catch (e) {}
+        }
+
+        // AI 调用
+        function callAI(systemPrompt, userContent, boxEl, done) {
+          var cfg = getApiCfg();
+          if (!cfg.url || !cfg.key) {
+            boxEl.style.display = '';
+            boxEl.innerHTML = '<div class="dvd-interp-error">请先在「设置」中配置占卜解读 API</div>';
+            if (done) done('');
+            return;
+          }
+          boxEl.style.display = '';
+          boxEl.innerHTML = '<div class="dvd-interp-loading"><div class="dvd-spinner"></div><span>正在解读…</span></div>';
+          var prompt = (cfg.prompt && cfg.prompt.trim()) ? cfg.prompt.trim() : DEFAULT_PROMPT;
+          fetch(cfg.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+            body: JSON.stringify({ model: cfg.model || 'gpt-4o-mini', messages: [{ role: 'system', content: prompt }, { role: 'user', content: userContent }] })
+          }).then(function (resp) {
+            return resp.text().then(function (t) {
+              if (!resp.ok) { var m = 'HTTP ' + resp.status; try { var j = JSON.parse(t); if (j.error && j.error.message) m = j.error.message; } catch (e) {} throw new Error(m); }
+              try { return JSON.parse(t); } catch (e) { throw new Error('API 返回的不是 JSON，请检查 API 地址'); }
+            });
+          }).then(function (data) {
+            var text = '';
+            if (data && data.choices && data.choices[0] && data.choices[0].message) text = data.choices[0].message.content || '';
+            else if (data && data.content) text = data.content;
+            if (!text) throw new Error('empty response');
+            text = text.replace(/\*\*/g, '').replace(/^[ \t]*\*+[ \t]?/gm, '');
+            boxEl.innerHTML = '<div class="dvd-interp">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>';
+            if (done) done(text);
+          }).catch(function (err) {
+            boxEl.innerHTML = '<div class="dvd-interp-error">解读失败：' + (err.message || '未知错误') + '</div>';
+            if (done) done('');
+          });
+        }
+
+        // 抽牌 - AI 解读
+        document.getElementById('dvdInterpBtn').addEventListener('click', function () {
+          callAI(DEFAULT_PROMPT, resultText(), document.getElementById('dvdInterpBox'), null);
+        });
+        // 抽牌 - 去追问
+        document.getElementById('dvdGoAskBtn').addEventListener('click', function () {
+          if (!_dvdLast) _dvdLast = { mode: st.mode, question: st.question, target: st.target, text: resultText() };
+          renderAskPrev();
+          showView('ask');
+        });
+
+        // ===== 每日运势 =====
+        function renderDailyDate() {
+          var d = new Date();
+          var wd = ['日','一','二','三','四','五','六'][d.getDay()];
+          document.getElementById('dvdDailyDate').textContent = (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日 · 星期' + wd;
+        }
+        document.getElementById('dvdDailyBtn').addEventListener('click', function () {
+          var key = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate();
+          var seed = 0; for (var i = 0; i < key.length; i++) seed = (seed * 31 + key.charCodeAt(i)) >>> 0;
+          var c = MAJORS[seed % MAJORS.length];
+          var rev = (seed % 7) === 0;
+          var kw = rev ? c.rev : c.up;
+          var note = rev ? c.revT : c.upT;
+          var txt = '今日运势\n' + c.name + (rev ? '（逆位）' : '（正位）') + ' · ' + kw + '\n' + note;
+          document.getElementById('dvdDailyResult').innerHTML =
+            '<div class="dvd-cards-row">' + cardHtml({ c: c, r: rev }, '今日') + '</div>' +
+            '<div class="dvd-summary">今天落在「' + c.name + (rev ? '·逆位' : '') + '」——' + note + '</div>';
+          document.getElementById('dvdDailyResult').style.display = '';
+          document.getElementById('dvdDailyActions').style.display = '';
+          document.getElementById('dvdDailyInterpBox').style.display = 'none';
+          document.getElementById('dvdDailyInterpBox').innerHTML = '';
+          _dvdDailyText = txt;
+        });
+        var _dvdDailyText = '';
+        document.getElementById('dvdDailyCopyBtn').addEventListener('click', function () { copyText(_dvdDailyText, this); });
+        document.getElementById('dvdDailyInterpBtn').addEventListener('click', function () {
+          callAI(DEFAULT_PROMPT, '这是一条每日运势，请解读：\n' + _dvdDailyText, document.getElementById('dvdDailyInterpBox'), null);
+        });
+
+        // ===== 占卜追问 =====
+        function renderAskPrev() {
+          var el = document.getElementById('dvdAskPrev');
+          if (_dvdLast) {
+            el.innerHTML = '<b>上次占卜</b>：' + (_dvdLast.text || '').replace(/\n/g, '<br>').replace(/</g, '&lt;');
+          } else {
+            var h = loadHistory();
+            if (h && h.length) {
+              var x = h[0];
+              el.innerHTML = '<b>最近一次</b>：' + x.mode + (x.target ? ' · ' + x.target : '') + '<br>' + (x.q || '未写下问题') + '<br>牌面：' + x.cards.join(' · ');
+            } else {
+              el.innerHTML = '还没有占卜记录，先回首页抽一卦吧。';
+            }
+          }
+        }
+        document.getElementById('dvdAskBtn').addEventListener('click', function () {
+          var q = (document.getElementById('dvdAskInput').value || '').trim();
+          if (!q) { if (typeof showToast === 'function') showToast('先写下你想追问的问题'); return; }
+          var ctx = '';
+          if (_dvdLast) ctx = '上次占卜：\n' + _dvdLast.text;
+          else {
+            var h = loadHistory();
+            if (h && h.length) { var x = h[0]; ctx = '上次占卜（' + x.mode + '，' + (x.q || '未写下问题') + '）：' + x.cards.join('、'); }
+          }
+          if (!ctx) { if (typeof showToast === 'function') showToast('没有可追问的占卜，先抽一卦'); return; }
+          var content = ctx + '\n\n我的追问：' + q;
+          var box = document.getElementById('dvdAskResult');
+          box.style.display = 'none';
+          callAI(DEFAULT_PROMPT, content, box, function (text) {
+            _dvdAskText = text;
+            if (text) document.getElementById('dvdAskActions').style.display = '';
+          });
+        });
+        var _dvdAskText = '';
+        document.getElementById('dvdAskSendBtn').addEventListener('click', function () {
+          if (!_dvdAskText) return;
+          if (sendToChat(_dvdAskText)) { if (typeof showToast === 'function') showToast('已发送到聊天'); }
+        });
+        document.getElementById('dvdAskDiaryBtn').addEventListener('click', function () {
+          if (!_dvdAskText) return;
+          addToDiary('占卜追问', _dvdAskText);
+          if (typeof showToast === 'function') showToast('已添加到日记');
+        });
+
+        // ===== 历史记录 =====
+        function renderHistory() {
+          var h = loadHistory();
+          var list = document.getElementById('dvdHistList');
+          var acts = document.getElementById('dvdHistActions');
+          if (!h.length) {
+            list.innerHTML = '<div class="dvd-hempty">还没有占卜记录，去抽第一副牌吧</div>';
+            acts.style.display = 'none';
+          } else {
+            list.innerHTML = h.map(function (x) {
+              var d = new Date(x.t);
+              var ts = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+              return '<div class="dvd-hitem">' +
+                '<div class="dvd-h-meta"><span>' + ts + '</span><span>' + x.mode + '</span>' + (x.target ? '<span>' + x.target + '</span>' : '') + '</div>' +
+                '<div class="dvd-h-q">' + (x.q || '未写下问题') + '</div>' +
+                '<div class="dvd-h-cards">' + x.cards.join(' · ') + '</div>' +
+              '</div>';
+            }).join('');
+            acts.style.display = '';
+          }
+        }
+        document.getElementById('dvdClearHBtn').addEventListener('click', function () {
+          localStorage.removeItem('divineHistory');
+          renderHistory();
+        });
 
       })();
 
