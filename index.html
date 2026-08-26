@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v181')){sessionStorage.setItem('zk_v181','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==181){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v182')){sessionStorage.setItem('zk_v182','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==182){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v181</title>
+  <title>字卡 · 小手机 v182</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8503,6 +8503,40 @@
   cursor: pointer;
   padding: 4px;
 }
+.diary-detail-actions .diary-action-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 6px;
+}
+.diary-detail-actions .diary-action-btn svg { width: 18px; height: 18px; }
+.diary-action-like.liked { color: #f06595; }
+.diary-action-like.liked svg { fill: #f06595; stroke: #f06595; }
+.diary-action-like-n { font-size: 13px; }
+.diary-action-danger:active { color: #e55a5a; }
+.diary-comment-head { display: flex; align-items: baseline; gap: 8px; }
+.diary-comment-time { font-size: 11px; color: #b0aabf; }
+.diary-comment-text { margin: 2px 0; color: #555; }
+.diary-comment-ops { display: flex; align-items: center; gap: 2px; margin-top: 2px; }
+.diary-comment-ops .diary-cmt-op {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: none; border: none; color: #b6b0c4;
+  cursor: pointer; padding: 2px 5px; font-size: 12px;
+}
+.diary-comment-ops .diary-cmt-op svg { width: 14px; height: 14px; }
+.diary-comment-ops .diary-cmt-op.liked { color: #f06595; }
+.diary-comment-ops .diary-cmt-op.liked svg { fill: #f06595; stroke: #f06595; }
+.diary-comment-ops .diary-cmt-op.danger:active { color: #e55a5a; }
+.diary-cmt-like-n { font-size: 12px; }
+.diary-cmt-edit-input {
+  width: 100%; box-sizing: border-box; margin-top: 4px;
+  border: 1px solid #d4c8e8; border-radius: 8px; padding: 6px 8px;
+  font-size: 13px; color: #333; resize: vertical; min-height: 56px;
+}
+.diary-cmt-edit-ops { display: flex; gap: 10px; justify-content: flex-end; margin-top: 6px; }
+.diary-cmt-edit-ops button {
+  border: none; background: none; cursor: pointer; font-size: 13px; padding: 4px 8px;
+}
+.diary-cmt-save { color: var(--primary); font-weight: 600; }
+.diary-cmt-cancel { color: #999; }
 .diary-detail-comments { margin-top: 14px; }
 .diary-detail-comments-title {
   font-size: 13px;
@@ -12192,7 +12226,6 @@
         </div>
         <div class="diary-detail-scroll" id="diaryDetailScroll"></div>
         <div class="diary-detail-commentbar">
-          <button class="diary-detail-like" id="diaryDetailLike"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
           <input class="diary-comment-input" id="diaryDetailCommentInput" placeholder="写评论...">
           <button class="diary-comment-send" id="diaryDetailCommentSend">发送</button>
         </div>
@@ -23261,6 +23294,10 @@ patText2 = patText2.replace(/你/g, '我');
         return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
       }
 
+      var _diaryIcLike = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>';
+      var _diaryIcEdit = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+      var _diaryIcDelete = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>';
+
       function getDiaryUserInfo() {
         var name = (typeof userProfile !== 'undefined' && userProfile.name) ? userProfile.name : '我';
         var avatarImage = (typeof userProfile !== 'undefined') ? userProfile.avatarImage : null;
@@ -23375,10 +23412,16 @@ patText2 = patText2.replace(/你/g, '我');
       if (diaryWriteImageInput) {
         diaryWriteImageInput.addEventListener('change', function(e) {
           var files = Array.from(e.target.files || []);
+          if (files.length === 0) { if (typeof showToast === 'function') showToast('未读取到图片'); return; }
           e.target.value = '';
           files.forEach(function(f) {
             if (_diaryPendingImages.length >= 9) return;
-            _diaryPendingImages.push({ src: URL.createObjectURL(f), file: f });
+            var slot = { src: '', file: f };
+            _diaryPendingImages.push(slot);
+            var reader = new FileReader();
+            reader.onload = function(ev) { slot.src = ev.target.result; renderWriteImagePreview(); };
+            reader.onerror = function() { slot.src = ''; renderWriteImagePreview(); };
+            reader.readAsDataURL(f);
           });
           renderWriteImagePreview();
         });
@@ -23386,10 +23429,16 @@ patText2 = patText2.replace(/你/g, '我');
       if (diaryEditImageInput) {
         diaryEditImageInput.addEventListener('change', function(e) {
           var files = Array.from(e.target.files || []);
+          if (files.length === 0) { if (typeof showToast === 'function') showToast('未读取到图片'); return; }
           e.target.value = '';
           files.forEach(function(f) {
             if (_diaryEditPendingImages.length >= 9) return;
-            _diaryEditPendingImages.push({ src: URL.createObjectURL(f), file: f });
+            var slot = { src: '', file: f };
+            _diaryEditPendingImages.push(slot);
+            var reader = new FileReader();
+            reader.onload = function(ev) { slot.src = ev.target.result; renderEditImagePreview(); };
+            reader.onerror = function() { slot.src = ''; renderEditImagePreview(); };
+            reader.readAsDataURL(f);
           });
           renderEditImagePreview();
         });
@@ -23616,8 +23665,18 @@ patText2 = patText2.replace(/你/g, '我');
         var commentHtml = '';
         if (comments.length > 0) {
           commentHtml = '<div class="diary-comment-list">';
-          comments.forEach(function(c) {
-            commentHtml += '<div class="diary-comment-item"><span class="comment-author">' + escapeDiaryHtml(c.author) + '</span>：' + escapeDiaryHtml(c.text) + '</div>';
+          comments.forEach(function(c, i) {
+            var cLikes = c.likes || [];
+            var cLiked = cLikes.indexOf('me') >= 0;
+            commentHtml += '<div class="diary-comment-item" id="diaryCommentItem-' + i + '">' +
+              '<div class="diary-comment-head"><span class="comment-author">' + escapeDiaryHtml(c.author) + '</span><span class="diary-comment-time">' + formatDiaryTime(c.date) + '</span></div>' +
+              '<div class="diary-comment-text">' + escapeDiaryHtml(c.text).replace(/\n/g, '<br>') + '</div>' +
+              '<div class="diary-comment-ops">' +
+                '<button class="diary-cmt-op' + (cLiked ? ' liked' : '') + '" onclick="window._toggleDiaryCommentLike(' + _diaryDetailId + ',' + i + ')">' + _diaryIcLike + (cLikes.length > 0 ? '<span class="diary-cmt-like-n">' + cLikes.length + '</span>' : '') + '</button>' +
+                '<button class="diary-cmt-op" onclick="window._editDiaryComment(' + _diaryDetailId + ',' + i + ')">' + _diaryIcEdit + '</button>' +
+                '<button class="diary-cmt-op danger" onclick="window._delDiaryComment(' + _diaryDetailId + ',' + i + ')">' + _diaryIcDelete + '</button>' +
+              '</div>' +
+            '</div>';
           });
           commentHtml += '</div>';
         }
@@ -23631,8 +23690,9 @@ patText2 = patText2.replace(/你/g, '我');
             '<div class="diary-detail-body">' + text + '</div>' +
             imageHtml +
             '<div class="diary-detail-actions">' +
-              '<button id="diaryDetailEditBtn">编辑</button>' +
-              '<button id="diaryDetailDeleteBtn">删除</button>' +
+              '<button class="diary-action-btn diary-action-like' + (likes.length > 0 ? ' liked' : '') + '" id="diaryDetailActionLike">' + _diaryIcLike + (likes.length > 0 ? '<span class="diary-action-like-n">' + likes.length + '</span>' : '') + '</button>' +
+              '<button class="diary-action-btn" id="diaryDetailEditBtn">' + _diaryIcEdit + '</button>' +
+              '<button class="diary-action-btn diary-action-danger" id="diaryDetailDeleteBtn">' + _diaryIcDelete + '</button>' +
             '</div>' +
           '</div>' +
           '<div class="diary-detail-comments">' +
@@ -23641,11 +23701,11 @@ patText2 = patText2.replace(/你/g, '我');
           '</div>';
 
         var liked = likes.length > 0;
-        diaryDetailLike.classList.toggle('liked', liked);
-        diaryDetailLike.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' + (likes.length > 0 ? '<span>' + likes.length + '</span>' : '');
 
+        var _lkBtn = document.getElementById('diaryDetailActionLike');
         var _edBtn = document.getElementById('diaryDetailEditBtn');
         var _deBtn = document.getElementById('diaryDetailDeleteBtn');
+        if (_lkBtn) _lkBtn.onclick = function() { toggleDiaryDetailLike(); };
         if (_edBtn) _edBtn.onclick = function() { var _id = _diaryDetailId; closeDiaryDetail(); openDiaryEdit(_id); };
         if (_deBtn) _deBtn.onclick = function() { var _id = _diaryDetailId; closeDiaryDetail(); openDiaryDelete(_id); };
       }
@@ -23660,6 +23720,59 @@ patText2 = patText2.replace(/你/g, '我');
         renderDiaryDetail();
         renderDiary();
       }
+      window._toggleDiaryCommentLike = function(id, idx) {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === id; });
+        if (!entry || !entry.comments || !entry.comments[idx]) return;
+        var cc = entry.comments[idx];
+        if (!cc.likes) cc.likes = [];
+        var li = cc.likes.indexOf('me');
+        if (li >= 0) { cc.likes.splice(li, 1); } else { cc.likes.push('me'); }
+        saveDiaryEntries(entries);
+        renderDiaryDetail();
+        renderDiary();
+      };
+      window._delDiaryComment = function(id, idx) {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === id; });
+        if (!entry || !entry.comments) return;
+        entry.comments.splice(idx, 1);
+        saveDiaryEntries(entries);
+        renderDiaryDetail();
+        renderDiary();
+      };
+      window._editDiaryComment = function(id, idx) {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === id; });
+        if (!entry || !entry.comments || !entry.comments[idx]) return;
+        var cc = entry.comments[idx];
+        var item = document.getElementById('diaryCommentItem-' + idx);
+        if (!item) return;
+        item.classList.add('editing');
+        item.innerHTML = '<textarea class="diary-cmt-edit-input">' + escapeDiaryHtml(cc.text) + '</textarea>' +
+          '<div class="diary-cmt-edit-ops">' +
+            '<button class="diary-cmt-save" onclick="window._saveDiaryComment(' + id + ',' + idx + ')">保存</button>' +
+            '<button class="diary-cmt-cancel" onclick="window._cancelEditComment()">取消</button>' +
+          '</div>';
+        var ta = item.querySelector('textarea');
+        if (ta) ta.focus();
+      };
+      window._saveDiaryComment = function(id, idx) {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === id; });
+        if (!entry || !entry.comments || !entry.comments[idx]) return;
+        var item = document.getElementById('diaryCommentItem-' + idx);
+        var ta = item ? item.querySelector('textarea') : null;
+        var val = ta ? ta.value.trim() : '';
+        if (!val) { renderDiaryDetail(); return; }
+        entry.comments[idx].text = val;
+        saveDiaryEntries(entries);
+        renderDiaryDetail();
+        renderDiary();
+      };
+      window._cancelEditComment = function() {
+        renderDiaryDetail();
+      };
       function sendDiaryDetailComment() {
         var text = diaryDetailCommentInput.value.trim();
         if (!text) return;
