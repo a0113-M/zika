@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v184')){sessionStorage.setItem('zk_v184','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==184){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v185')){sessionStorage.setItem('zk_v185','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==185){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v184</title>
+  <title>字卡 · 小手机 v185</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7750,6 +7750,11 @@
   color: var(--primary);
   background: none;
   border: none;
+  width: 36px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .diary-title {
   flex: 1;
@@ -7757,8 +7762,21 @@
   font-size: 17px;
   font-weight: 600;
   color: #1a1a1a;
-  margin-right: 36px;
+  margin: 0;
 }
+.diary-fav-btn {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: none;
+  background: none;
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.diary-fav-btn svg { width: 20px; height: 20px; }
 
 .diary-category-bar {
   display: flex;
@@ -8455,6 +8473,72 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   padding: 14px;
+}
+.diary-fav-overlay {
+  z-index: 290;
+  align-items: stretch;
+  justify-content: center;
+}
+.diary-fav-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
+}
+.diary-fav-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #999;
+  margin: 14px 4px 8px;
+}
+.diary-fav-section-title:first-child { margin-top: 2px; }
+.diary-fav-item {
+  background: var(--bg-card);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+  box-shadow: 0 1px 4px rgba(155,142,196,0.12);
+  cursor: pointer;
+  transition: transform 0.12s;
+}
+.diary-fav-item:active { transform: scale(0.98); }
+.diary-fav-item-main {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.55;
+  word-break: break-word;
+}
+.diary-fav-item-source {
+  font-size: 12px;
+  color: #8a82a8;
+  margin-top: 6px;
+  padding: 6px 9px;
+  background: var(--bg-soft, #f5f0ff);
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.diary-fav-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 7px;
+  font-size: 12px;
+  color: #999;
+}
+.diary-fav-empty {
+  text-align: center;
+  color: #aaa;
+  font-size: 14px;
+  padding: 60px 20px;
+}
+.diary-comment-flash {
+  animation: diaryFlash 1.8s ease;
+}
+@keyframes diaryFlash {
+  0% { background: #f3ebff; }
+  100% { background: transparent; }
 }
 .diary-detail-card {
   background: var(--bg-card);
@@ -12109,6 +12193,7 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
       </button>
       <span class="diary-title">日记</span>
+      <button class="diary-fav-btn" id="diaryFavBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button>
     </div>
     <div class="diary-category-bar" id="diaryCategoryBar"></div>
     <!-- 分类管理弹窗 -->
@@ -12230,6 +12315,17 @@
           <button class="diary-modal-cancel" id="diaryDeleteCancel">取消</button>
           <button class="diary-modal-confirm" id="diaryDeleteConfirm" style="background:linear-gradient(135deg,#ff6b6b,#e55a5a);">删除</button>
         </div>
+      </div>
+    </div>
+    <!-- 日记收藏页 -->
+    <div class="diary-overlay diary-fav-overlay" id="diaryFavOverlay">
+      <div class="diary-detail">
+        <div class="diary-detail-header">
+          <button class="diary-detail-back" id="diaryFavBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span class="diary-detail-title">我的收藏</span>
+          <span class="diary-detail-title-right"></span>
+        </div>
+        <div class="diary-fav-scroll" id="diaryFavScroll"></div>
       </div>
     </div>
     <!-- 日记详情页 -->
@@ -23523,7 +23619,6 @@ patText2 = patText2.replace(/你/g, '我');
             '<div class="diary-action-bar">' +
               '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
                 '<svg viewBox="0 0 24 24" fill="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'none') + '" stroke="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
-                (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
               '</button>' +
               '<button class="diary-comment-toggle" data-detail-id="' + entry.id + '">' +
                 '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
@@ -23644,11 +23739,86 @@ patText2 = patText2.replace(/你/g, '我');
       var diaryDetailCommentInput = document.getElementById('diaryDetailCommentInput');
       var diaryDetailCommentSend = document.getElementById('diaryDetailCommentSend');
       var _diaryDetailId = null;
+      var _diaryDetailFocusComment = null;
+      var diaryFavOverlay = document.getElementById('diaryFavOverlay');
+      var diaryFavScroll = document.getElementById('diaryFavScroll');
+      var diaryFavBtn = document.getElementById('diaryFavBtn');
+      var diaryFavBack = document.getElementById('diaryFavBack');
 
-      function openDiaryDetail(id) {
+      function openDiaryDetail(id, commentIdx) {
         _diaryDetailId = id;
+        _diaryDetailFocusComment = (typeof commentIdx === 'number') ? commentIdx : null;
         renderDiaryDetail();
         diaryDetailOverlay.classList.add('show');
+        if (_diaryDetailFocusComment !== null) {
+          setTimeout(function() {
+            var el = document.getElementById('diaryCommentItem-' + _diaryDetailFocusComment);
+            if (el) {
+              el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              el.classList.add('diary-comment-flash');
+              setTimeout(function() { el.classList.remove('diary-comment-flash'); }, 1800);
+            }
+          }, 150);
+        }
+      }
+      function openDiaryFavorites() {
+        renderDiaryFavorites();
+        diaryFavOverlay.classList.add('show');
+      }
+      function closeDiaryFavorites() {
+        diaryFavOverlay.classList.remove('show');
+      }
+      function renderDiaryFavorites() {
+        var entries = getDiaryEntries();
+        var favDiaries = [];
+        var favComments = [];
+        entries.forEach(function(entry) {
+          if ((entry.likes || []).indexOf('me') >= 0) favDiaries.push(entry);
+          (entry.comments || []).forEach(function(c, idx) {
+            if ((c.likes || []).indexOf('me') >= 0) {
+              favComments.push({ entryId: entry.id, idx: idx, author: c.author, text: c.text, date: c.date, source: entry.content });
+            }
+          });
+        });
+        var html = '';
+        if (favDiaries.length === 0 && favComments.length === 0) {
+          html = '<div class="diary-fav-empty">还没有收藏，去日记或评论里点一下心形收藏吧</div>';
+        } else {
+          if (favDiaries.length > 0) {
+            html += '<div class="diary-fav-section-title">收藏的日记 · ' + favDiaries.length + '</div>';
+            favDiaries.forEach(function(entry) {
+              var txt = (entry.content || '').replace(/\n/g, ' ').trim();
+              if (txt.length > 60) txt = txt.slice(0, 60) + '…';
+              html += '<div class="diary-fav-item" data-fav-diary="' + entry.id + '">' +
+                '<div class="diary-fav-item-main">' + escapeDiaryHtml(txt || '(无文字)') + '</div>' +
+                '<div class="diary-fav-item-meta"><span>' + formatDiaryTime(entry.date) + '</span></div>' +
+              '</div>';
+            });
+          }
+          if (favComments.length > 0) {
+            html += '<div class="diary-fav-section-title">收藏的评论 · ' + favComments.length + '</div>';
+            favComments.forEach(function(c) {
+              var src = (c.source || '').replace(/\n/g, ' ').trim();
+              if (src.length > 36) src = src.slice(0, 36) + '…';
+              html += '<div class="diary-fav-item" data-fav-comment="' + c.entryId + '" data-comment-idx="' + c.idx + '">' +
+                '<div class="diary-fav-item-main"><strong>' + escapeDiaryHtml(c.author) + '：</strong>' + escapeDiaryHtml(c.text) + '</div>' +
+                '<div class="diary-fav-item-source">来自：' + escapeDiaryHtml(src || '(无文字)') + '</div>' +
+                '<div class="diary-fav-item-meta"><span>' + formatDiaryTime(c.date) + '</span></div>' +
+              '</div>';
+            });
+          }
+        }
+        diaryFavScroll.innerHTML = html;
+        diaryFavScroll.querySelectorAll('[data-fav-diary]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            openDiaryDetail(parseInt(this.getAttribute('data-fav-diary')));
+          });
+        });
+        diaryFavScroll.querySelectorAll('[data-fav-comment]').forEach(function(el) {
+          el.addEventListener('click', function() {
+            openDiaryDetail(parseInt(this.getAttribute('data-fav-comment')), parseInt(this.getAttribute('data-comment-idx')));
+          });
+        });
       }
       function closeDiaryDetail() {
         diaryDetailOverlay.classList.remove('show');
@@ -23798,6 +23968,9 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
       if (diaryDetailBack) diaryDetailBack.addEventListener('click', closeDiaryDetail);
+      if (diaryFavBtn) diaryFavBtn.addEventListener('click', openDiaryFavorites);
+      if (diaryFavBack) diaryFavBack.addEventListener('click', closeDiaryFavorites);
+      if (diaryFavOverlay) diaryFavOverlay.addEventListener('click', function(e) { if (e.target === diaryFavOverlay) closeDiaryFavorites(); });
       if (diaryDetailLike) diaryDetailLike.addEventListener('click', toggleDiaryDetailLike);
       if (diaryDetailCommentSend) diaryDetailCommentSend.addEventListener('click', sendDiaryDetailComment);
       if (diaryDetailCommentInput) diaryDetailCommentInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendDiaryDetailComment(); });
