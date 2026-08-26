@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v180')){sessionStorage.setItem('zk_v180','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==180){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v181')){sessionStorage.setItem('zk_v181','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==181){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v180</title>
+  <title>字卡 · 小手机 v181</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8380,7 +8380,7 @@
 .diary-img-add:active { background: #f0eaf8; }
 .diary-meta-row {
   display: flex; align-items: center; gap: 12px;
-  margin-top: 12px;
+  margin-bottom: 12px;
 }
 .diary-meta-row .diary-category-select { margin-bottom: 0; flex: 1; }
 .diary-meta-row .diary-visibility-select { margin: 0; flex-shrink: 0; }
@@ -12124,8 +12124,6 @@
           <button type="button" class="diary-editor-publish" id="diaryWriteConfirm">发布</button>
         </div>
         <div class="diary-editor-body">
-          <textarea class="diary-editor-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
-          <div class="diary-img-grid" id="diaryWriteImagePreview"></div>
           <div class="diary-meta-row">
             <div class="diary-category-select">
               <label>分类</label>
@@ -12139,8 +12137,10 @@
               </span>
             </div>
           </div>
+          <textarea class="diary-editor-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
+          <div class="diary-img-grid" id="diaryWriteImagePreview"></div>
         </div>
-        <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);">
+        <input type="file" id="diaryWriteImageInput" accept="image/*" multiple style="display:none;">
       </div>
     </div>
     <!-- 编辑日记弹窗 -->
@@ -12152,8 +12152,6 @@
           <button type="button" class="diary-editor-publish" id="diaryEditConfirm">保存</button>
         </div>
         <div class="diary-editor-body">
-          <textarea class="diary-editor-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
-          <div class="diary-img-grid" id="diaryEditImagePreview"></div>
           <div class="diary-meta-row">
             <div class="diary-category-select">
               <label>分类</label>
@@ -12167,8 +12165,10 @@
               </span>
             </div>
           </div>
+          <textarea class="diary-editor-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
+          <div class="diary-img-grid" id="diaryEditImagePreview"></div>
         </div>
-        <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);">
+        <input type="file" id="diaryEditImageInput" accept="image/*" multiple style="display:none;">
       </div>
     </div>
     <!-- 删除确认弹窗 -->
@@ -23322,9 +23322,9 @@ patText2 = patText2.replace(/你/g, '我');
           diaryWriteImagePreview.appendChild(div);
         });
         if (_diaryPendingImages.length < 9) {
-          var addW = document.createElement('label');
+          var addW = document.createElement('div');
           addW.className = 'diary-img-add';
-          addW.setAttribute('for', 'diaryWriteImageInput');
+          addW.addEventListener('click', function() { diaryWriteImageInput.click(); });
           addW.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
           diaryWriteImagePreview.appendChild(addW);
         }
@@ -23358,9 +23358,9 @@ patText2 = patText2.replace(/你/g, '我');
           diaryEditImagePreview.appendChild(div);
         });
         if (_diaryEditPendingImages.length < 9) {
-          var addE = document.createElement('label');
+          var addE = document.createElement('div');
           addE.className = 'diary-img-add';
-          addE.setAttribute('for', 'diaryEditImageInput');
+          addE.addEventListener('click', function() { diaryEditImageInput.click(); });
           addE.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
           diaryEditImagePreview.appendChild(addE);
         }
