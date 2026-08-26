@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v185')){sessionStorage.setItem('zk_v185','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==185){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v186')){sessionStorage.setItem('zk_v186','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==186){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v185</title>
+  <title>字卡 · 小手机 v186</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6528,6 +6528,7 @@
   color: #333;
   line-height: 1.5;
   word-break: break-word;
+  white-space: pre-wrap;
   margin-bottom: 6px;
 }
 
@@ -13846,6 +13847,7 @@
           title: `聊天记录 - ${name} (${selectedMsgs.length}条)`,
           content: text,
           date: new Date().toISOString(),
+          visibility: 'private',
           type: 'chat'
         };
         diaryEntries.unshift(entry);
