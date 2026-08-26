@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v172')){sessionStorage.setItem('zk_v172','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==172){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v173')){sessionStorage.setItem('zk_v173','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==173){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v172</title>
+  <title>字卡 · 小手机 v173</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21159,8 +21159,17 @@ patText2 = patText2.replace(/你/g, '我');
               ]
             })
           }).then(function (resp) {
-            if (!resp.ok) throw new Error('HTTP ' + resp.status);
-            return resp.json();
+            if (!resp.ok) {
+              return resp.text().then(function(t) {
+                var msg = 'HTTP ' + resp.status;
+                try { var j = JSON.parse(t); if (j.error && j.error.message) msg = j.error.message; } catch(e) {}
+                throw new Error(msg);
+              });
+            }
+            return resp.text().then(function(t) {
+              try { return JSON.parse(t); }
+              catch(e) { throw new Error('API 返回的不是 JSON，请检查 API 地址是否正确（需包含完整路径如 /v1/chat/completions）'); }
+            });
           }).then(function (data) {
             var text = '';
             if (data && data.choices && data.choices[0] && data.choices[0].message) {
