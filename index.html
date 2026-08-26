@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v178')){sessionStorage.setItem('zk_v178','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==178){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v179')){sessionStorage.setItem('zk_v179','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==179){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v178</title>
+  <title>字卡 · 小手机 v179</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8385,6 +8385,163 @@
 .diary-meta-row .diary-category-select { margin-bottom: 0; flex: 1; }
 .diary-meta-row .diary-visibility-select { margin: 0; flex-shrink: 0; }
 
+/* 正文截断 + 展开 */
+.diary-text.clamped {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+  overflow: hidden;
+}
+.diary-expand-btn {
+  display: block;
+  background: none;
+  border: none;
+  color: #7c6fae;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 6px 0 0;
+  margin: 0;
+}
+
+/* 日记详情页 */
+.diary-detail-overlay {
+  z-index: 300;
+  align-items: stretch;
+  justify-content: center;
+}
+.diary-detail {
+  width: 100%;
+  max-width: 500px;
+  height: 100%;
+  background: #f6f4fb;
+  display: flex;
+  flex-direction: column;
+}
+.diary-detail-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 0.5px solid #eee;
+}
+.diary-detail-back {
+  border: none;
+  background: none;
+  color: #333;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+}
+.diary-detail-back svg { width: 22px; height: 22px; }
+.diary-detail-title {
+  flex: 1;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+.diary-detail-title-right { width: 30px; }
+.diary-detail-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
+}
+.diary-detail-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 4px rgba(155,142,196,0.12);
+}
+.diary-detail-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: #999;
+}
+.diary-detail-vis {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+.diary-detail-vis.private { color: #aaa; background: #f0eef5; }
+.diary-detail-vis.public { color: #7c6fae; background: #f1ecfb; }
+.diary-detail-cat {
+  font-size: 11px;
+  color: #7c6fae;
+  background: #f1ecfb;
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+.diary-detail-body {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.7;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+.diary-detail-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 0.5px solid #eee;
+}
+.diary-detail-actions button {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 4px;
+}
+.diary-detail-comments { margin-top: 14px; }
+.diary-detail-comments-title {
+  font-size: 13px;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.diary-detail-comments .diary-comment-list {
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 1px 4px rgba(155,142,196,0.12);
+}
+.diary-detail-commentbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 0.5px solid #eee;
+}
+.diary-detail-like {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: #999;
+  font-size: 13px;
+}
+.diary-detail-like svg { width: 22px; height: 22px; }
+.diary-detail-like.liked { color: #f06595; }
+.diary-detail-like.liked svg { fill: #f06595; stroke: #f06595; }
+.diary-detail-commentbar .diary-comment-input { flex: 1; }
+
 /* 图片上传区 */
 .diary-image-upload-area {
   margin-top: 12px;
@@ -11974,6 +12131,22 @@
         <div class="diary-modal-actions">
           <button class="diary-modal-cancel" id="diaryDeleteCancel">取消</button>
           <button class="diary-modal-confirm" id="diaryDeleteConfirm" style="background:linear-gradient(135deg,#ff6b6b,#e55a5a);">删除</button>
+        </div>
+      </div>
+    </div>
+    <!-- 日记详情页 -->
+    <div class="diary-overlay diary-detail-overlay" id="diaryDetailOverlay">
+      <div class="diary-detail">
+        <div class="diary-detail-header">
+          <button class="diary-detail-back" id="diaryDetailBack"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <span class="diary-detail-title">日记详情</span>
+          <span class="diary-detail-title-right"></span>
+        </div>
+        <div class="diary-detail-scroll" id="diaryDetailScroll"></div>
+        <div class="diary-detail-commentbar">
+          <button class="diary-detail-like" id="diaryDetailLike"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></button>
+          <input class="diary-comment-input" id="diaryDetailCommentInput" placeholder="写评论...">
+          <button class="diary-comment-send" id="diaryDetailCommentSend">发送</button>
         </div>
       </div>
     </div>
@@ -23054,29 +23227,40 @@ patText2 = patText2.replace(/你/g, '我');
         return new Promise(function(resolve) {
           var reader = new FileReader();
           reader.onload = function() {
+            var raw = reader.result;
+            if (!raw || typeof raw !== 'string') { resolve(''); return; }
+            if (raw.length <= 1200000) { resolve(raw); return; }
             var img = new Image();
+            var settled = false;
+            var timer = setTimeout(function() { if (!settled) { settled = true; resolve(raw); } }, 4000);
             img.onload = function() {
-              var maxDim = 800;
-              var w = img.width, h = img.height;
-              if (w > maxDim || h > maxDim) {
-                if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
-                else { w = Math.round(w * maxDim / h); h = maxDim; }
-              }
+              if (settled) return;
               try {
+                var maxDim = 800;
+                var w = img.width, h = img.height;
+                if (w > maxDim || h > maxDim) {
+                  if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                  else { w = Math.round(w * maxDim / h); h = maxDim; }
+                }
                 var canvas = document.createElement('canvas');
                 canvas.width = w; canvas.height = h;
                 var ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, w, h);
-                resolve(canvas.toDataURL('image/jpeg', 0.7));
-              } catch(err) {
-                resolve(reader.result);
+                var out = canvas.toDataURL('image/jpeg', 0.7);
+                settled = true;
+                clearTimeout(timer);
+                resolve(out && out.length > 0 ? out : raw);
+              } catch (err) {
+                settled = true;
+                clearTimeout(timer);
+                resolve(raw);
               }
             };
-            img.onerror = function() { resolve(reader.result); };
-            img.src = reader.result;
+            img.onerror = function() { if (!settled) { settled = true; clearTimeout(timer); resolve(raw); } };
+            img.src = raw;
           };
           reader.onerror = function() { resolve(''); };
-          reader.readAsDataURL(file);
+          try { reader.readAsDataURL(file); } catch (e) { resolve(''); }
         });
       }
 
@@ -23180,15 +23364,15 @@ patText2 = patText2.replace(/你/g, '我');
         sorted.forEach(function(entry) {
           var item = document.createElement('div');
           item.className = 'diary-item';
+          item.setAttribute('data-diary-open', entry.id);
 
           var catBadge = (entry.category && entry.category !== '生活') ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
 
           var isPrivate = entry.visibility === 'private';
           var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
 
-          var displayText = entry.content || '';
-          if (displayText.length > 500) displayText = displayText.substring(0, 500) + '...';
-          var escapedText = escapeDiaryHtml(displayText);
+          var fullText = entry.content || '';
+          var escapedText = escapeDiaryHtml(fullText);
 
           var imageHtml = '';
           var images = entry.images || [];
@@ -23196,7 +23380,7 @@ patText2 = patText2.replace(/你/g, '我');
             var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
             imageHtml = '<div class="' + gridClass + '">';
             images.forEach(function(img) {
-              imageHtml += '<img src="' + img + '" onclick="window._openDiaryImage(this.src)">';
+              imageHtml += '<img src="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
             });
             imageHtml += '</div>';
           }
@@ -23223,36 +23407,60 @@ patText2 = patText2.replace(/你/g, '我');
           item.innerHTML =
             catBadge +
             visibilityHtml +
-            '<div class="diary-text">' + escapedText + '</div>' +
+            '<div class="diary-text" data-diary-open="' + entry.id + '">' + escapedText + '</div>' +
             imageHtml +
-            '\u003cdiv class="diary-action-bar"\u003e' +
-'<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
-            '<svg viewBox="0 0 24 24" fill="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'none') + '" stroke="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
-            (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
-            '</button>' +
-            '<button class="diary-comment-toggle" data-comment-id="' + entry.id + '">' +
-            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
-            (commentCount > 0 ? '<span>' + commentCount + '</span>' : '') +
-            '</button>' +
-            '\u003cspan class="diary-time"\u003e' + timeStr + '\u003c/span\u003e' +
-            '\u003cbutton class="diary-edit-btn" data-edit-id="' + entry.id + '"\u003e' +
-            '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"\u003e\u003cpath d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/\u003e\u003cpath d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/\u003e\u003c/svg\u003e' +
-            '\u003c/button\u003e' +
-            '\u003cbutton class="diary-delete-btn" data-delete-id="' + entry.id + '"\u003e' +
-            '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"\u003e\u003cpolyline points="3 6 5 6 21 6"/\u003e\u003cpath d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/\u003e\u003c/svg\u003e' +
-            '\u003c/button\u003e' +
-            '\u003c/div\u003e' +
-            '<div class="diary-comment-area" id="diaryCommentArea-' + entry.id + '">' +
-            commentListHtml +
-            '<div class="diary-comment-input-wrap">' +
-            '<input class="diary-comment-input" placeholder="写评论..." data-comment-input-id="' + entry.id + '">' +
-            '<button class="diary-comment-send" data-comment-send-id="' + entry.id + '">发送</button>' +
-            '</div></div>';
-
+            '<div class="diary-action-bar">' +
+              '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
+                '<svg viewBox="0 0 24 24" fill="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'none') + '" stroke="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
+                (likeCount > 0 ? '<span>' + likeCount + '</span>' : '') +
+              '</button>' +
+              '<button class="diary-comment-toggle" data-detail-id="' + entry.id + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>' +
+                (commentCount > 0 ? '<span>' + commentCount + '</span>' : '') +
+              '</button>' +
+              '<span class="diary-time">' + timeStr + '</span>' +
+              '<button class="diary-edit-btn" data-edit-id="' + entry.id + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>' +
+              '</button>' +
+              '<button class="diary-delete-btn" data-delete-id="' + entry.id + '">' +
+                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>' +
+              '</button>' +
+            '</div>';
           diaryFeed.appendChild(item);
         });
 
         bindDiaryEvents();
+
+        // 正文溢出检测 + 展开按钮
+        var _textEls = diaryFeed.querySelectorAll('.diary-text');
+        _textEls.forEach(function(t) {
+          var _lh = parseFloat(getComputedStyle(t).lineHeight) || 22;
+          if (t.scrollHeight > Math.ceil(_lh * 5) + 4) {
+            t.classList.add('clamped');
+            var _eb = document.createElement('button');
+            _eb.type = 'button';
+            _eb.className = 'diary-expand-btn';
+            _eb.textContent = '展开';
+            _eb.addEventListener('click', function(e) {
+              e.stopPropagation();
+              var _c = t.classList.toggle('clamped');
+              _eb.textContent = _c ? '展开' : '收起';
+            });
+            t.parentNode.insertBefore(_eb, t.nextSibling);
+          }
+        });
+
+        // 卡片点击进详情
+        var _items = diaryFeed.querySelectorAll('.diary-item');
+        _items.forEach(function(it) {
+          it.addEventListener('click', function(e) {
+            if (e.target.closest('button')) return;
+            if (e.target.tagName === 'IMG') return;
+            var _id = parseInt(this.getAttribute('data-diary-open'));
+            if (!isNaN(_id)) openDiaryDetail(_id);
+          });
+        });
+
         renderCategoryTabs();
       }
 
@@ -23276,7 +23484,7 @@ patText2 = patText2.replace(/你/g, '我');
         var commentToggles = diaryFeed.querySelectorAll('.diary-comment-toggle');
         commentToggles.forEach(function(btn) {
           btn.addEventListener('click', function() {
-            toggleCommentArea(parseInt(this.dataset.commentId));
+            openDiaryDetail(parseInt(this.dataset.detailId));
           });
         });
 
@@ -23316,6 +23524,109 @@ patText2 = patText2.replace(/你/g, '我');
       }
 
 
+
+      // === 日记详情页 ===
+      var diaryDetailOverlay = document.getElementById('diaryDetailOverlay');
+      var diaryDetailBack = document.getElementById('diaryDetailBack');
+      var diaryDetailScroll = document.getElementById('diaryDetailScroll');
+      var diaryDetailLike = document.getElementById('diaryDetailLike');
+      var diaryDetailCommentInput = document.getElementById('diaryDetailCommentInput');
+      var diaryDetailCommentSend = document.getElementById('diaryDetailCommentSend');
+      var _diaryDetailId = null;
+
+      function openDiaryDetail(id) {
+        _diaryDetailId = id;
+        renderDiaryDetail();
+        diaryDetailOverlay.classList.add('show');
+      }
+      function closeDiaryDetail() {
+        diaryDetailOverlay.classList.remove('show');
+        _diaryDetailId = null;
+      }
+      function renderDiaryDetail() {
+        var entry = getDiaryEntries().find(function(e) { return e.id === _diaryDetailId; });
+        if (!entry) { closeDiaryDetail(); return; }
+        var isPrivate = entry.visibility === 'private';
+        var catBadge = (entry.category && entry.category !== '生活') ? '<span class="diary-detail-cat">' + escapeDiaryHtml(entry.category) + '</span>' : '';
+        var text = escapeDiaryHtml(entry.content || '').replace(/\n/g, '<br>');
+        var images = entry.images || [];
+        var imageHtml = '';
+        if (images.length > 0) {
+          var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
+          imageHtml = '<div class="' + gridClass + '">';
+          images.forEach(function(img) {
+            imageHtml += '<img src="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+          });
+          imageHtml += '</div>';
+        }
+        var likes = entry.likes || [];
+        var comments = entry.comments || [];
+        var commentHtml = '';
+        if (comments.length > 0) {
+          commentHtml = '<div class="diary-comment-list">';
+          comments.forEach(function(c) {
+            commentHtml += '<div class="diary-comment-item"><span class="comment-author">' + escapeDiaryHtml(c.author) + '</span>：' + escapeDiaryHtml(c.text) + '</div>';
+          });
+          commentHtml += '</div>';
+        }
+        diaryDetailScroll.innerHTML =
+          '<div class="diary-detail-card">' +
+            '<div class="diary-detail-meta">' +
+              '<span>' + formatDiaryTime(entry.date) + '</span>' +
+              '<span class="diary-detail-vis ' + (isPrivate ? 'private' : 'public') + '">' + (isPrivate ? '私密' : '公开') + '</span>' +
+              catBadge +
+            '</div>' +
+            '<div class="diary-detail-body">' + text + '</div>' +
+            imageHtml +
+            '<div class="diary-detail-actions">' +
+              '<button id="diaryDetailEditBtn">编辑</button>' +
+              '<button id="diaryDetailDeleteBtn">删除</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="diary-detail-comments">' +
+            '<div class="diary-detail-comments-title">评论 ' + comments.length + '</div>' +
+            commentHtml +
+          '</div>';
+
+        var liked = likes.length > 0;
+        diaryDetailLike.classList.toggle('liked', liked);
+        diaryDetailLike.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' + (likes.length > 0 ? '<span>' + likes.length + '</span>' : '');
+
+        var _edBtn = document.getElementById('diaryDetailEditBtn');
+        var _deBtn = document.getElementById('diaryDetailDeleteBtn');
+        if (_edBtn) _edBtn.onclick = function() { var _id = _diaryDetailId; closeDiaryDetail(); openDiaryEdit(_id); };
+        if (_deBtn) _deBtn.onclick = function() { var _id = _diaryDetailId; closeDiaryDetail(); openDiaryDelete(_id); };
+      }
+      function toggleDiaryDetailLike() {
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === _diaryDetailId; });
+        if (!entry) return;
+        if (!entry.likes) entry.likes = [];
+        var idx = entry.likes.indexOf('me');
+        if (idx >= 0) { entry.likes.splice(idx, 1); } else { entry.likes.push('me'); }
+        saveDiaryEntries(entries);
+        renderDiaryDetail();
+        renderDiary();
+      }
+      function sendDiaryDetailComment() {
+        var text = diaryDetailCommentInput.value.trim();
+        if (!text) return;
+        var entries = getDiaryEntries();
+        var entry = entries.find(function(e) { return e.id === _diaryDetailId; });
+        if (!entry) return;
+        if (!entry.comments) entry.comments = [];
+        entry.comments.push({ author: getDiaryUserInfo().name, text: text, date: new Date().toISOString() });
+        saveDiaryEntries(entries);
+        diaryDetailCommentInput.value = '';
+        renderDiaryDetail();
+        renderDiary();
+      }
+
+      if (diaryDetailBack) diaryDetailBack.addEventListener('click', closeDiaryDetail);
+      if (diaryDetailLike) diaryDetailLike.addEventListener('click', toggleDiaryDetailLike);
+      if (diaryDetailCommentSend) diaryDetailCommentSend.addEventListener('click', sendDiaryDetailComment);
+      if (diaryDetailCommentInput) diaryDetailCommentInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendDiaryDetailComment(); });
+      if (diaryDetailOverlay) diaryDetailOverlay.addEventListener('click', function(e) { if (e.target === diaryDetailOverlay) closeDiaryDetail(); });
 
       function toggleDiaryLike(id) {
         var entries = getDiaryEntries();
