@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v217')){sessionStorage.setItem('zk_v217','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==217){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v218')){sessionStorage.setItem('zk_v218','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==218){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v217</title>
+  <title>字卡 · 小手机 v218</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -23096,6 +23096,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             '【抽牌数】每轮是否抽牌、抽几张由你根据阶段判断：未正式开场不抽；开场抽' + cfg.spread + '张；纠错重抽时按需抽' + cfg.spread + '张；模拟聊天阶段，仅呼唤判定（抽' + cfg.callCount + '张）或确有需要补充信息时抽牌，平常聊天不抽。\n' +
             '【语言风格】直白易懂，不用情绪化、中二的词，不主动给建议，不要求用户验证你的推断。任何环节的解读都只说最终结论，不要逐张解说每张牌的牌意。';
         }
+        function baseInfoPrompt() {
+          return '你是塔罗占卜师，帮用户解读 TA 心中梦角（虚拟恋人/角色）的基础信息。根据下面给出的牌面，把这几张牌当作一个整体综合判断，直接说出梦角的基础信息，严格按以下格式输出，每项一到两句：\n性格：……\n生活环境：……\n职业：……\n要求：紧扣所抽的牌；只解读梦角本人，不要解读感情运势、关系走向、过去现在未来；不要逐张讲牌（不出现「第一张」「第二张」）；不要做氛围铺垫；不要问任何问题；口吻直白客观，不用比喻。';
+        }
         function callAIChat(messages, done) {
           var cfg = getApiCfg();
           if (!cfg.url || !cfg.key) { done(new Error('请先在设置中配置占卜解读 API')); return; }
@@ -23205,6 +23208,23 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             finishBot(f, []);
           }
 
+          // 开场词：直接锁格式解读梦角基础信息（抽固定牌数，不带旧历史）
+          var isOpen = /^(开始|准备好了|准备好|开始吧|可以开始|开始占卜)/.test(q);
+          if (isOpen) {
+            var openN = parseInt(ccfg.spread, 10) || 3;
+            var openDraw = chatDraw(openN);
+            var openNames = chatCardNames(openDraw);
+            var openCardTxt = chatCardText(openDraw);
+            var openMsgs = [{ role: 'system', content: baseInfoPrompt() }].concat([
+              { role: 'user', content: '（用户已准备好，请解读梦角的基础信息）\n\n（本轮牌面，共' + openN + '张）\n' + openCardTxt }
+            ]);
+            callAIChat(openMsgs, function (err, text) {
+              if (err) { failBot(err); return; }
+              if (!text) { failBot(new Error('empty')); return; }
+              finishBot(text, openNames);
+            });
+            return;
+          }
           // 第一段：判断本轮抽几张牌
           var decMsgs = [{ role: 'system', content: sys }].concat(hist).concat([
             { role: 'user', content: '（本轮用户说：「' + q + '」）请仅输出一个数字，表示本轮需要抽几张塔罗牌（0=不抽，1~3=张数），不要输出任何其他文字。' }
