@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v201')){sessionStorage.setItem('zk_v201','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==201){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v202')){sessionStorage.setItem('zk_v202','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==202){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v201</title>
+  <title>字卡 · 小手机 v202</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22628,15 +22628,25 @@ patText2 = patText2.replace(/你/g, '我');
           var rec = findRec(t);
           if (!rec || !rec.asks || !rec.asks[i]) return;
           var a = rec.asks[i];
-          var label = a.self ? '我的解读' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读');
-          var txt = '追问（' + label + '）' + (a.q ? '：' + a.q : '');
-          if (a.sup) txt += '\n' + a.sup;
-          if (a.text) txt += '\n' + a.text;
-          if (btn.getAttribute('data-act') === 'copy') {
+          var act = btn.getAttribute('data-act');
+          if (act === 'copy') {
+            var label = a.self ? '我的解读' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读');
+            var txt = '追问（' + label + '）' + (a.q ? '：' + a.q : '');
+            if (a.sup) txt += '\n' + a.sup;
+            if (a.text) txt += '\n' + a.text;
             copyText(txt, btn);
           } else {
-            addToDiary('占卜追问', txt);
-            if (typeof showToast === 'function') showToast('已添加到日记');
+            var lines = [];
+            if (rec.mode) lines.push(rec.mode + (rec.target ? ' · ' + rec.target : '') + (rec.q ? '，问题：' + rec.q : ''));
+            rec.asks.forEach(function (ax, k) {
+              var lbl = ax.self ? '我的解读' : (ax.mode === 'draw' ? '再抽补充' : '原牌面解读');
+              var seg = (k + 1) + '. ' + lbl + (ax.q ? '：' + ax.q : '');
+              if (ax.sup) seg += '\n' + ax.sup;
+              if (ax.text) seg += '\n' + ax.text;
+              lines.push(seg);
+            });
+            addToDiary('占卜追问', lines.join('\n\n'));
+            if (typeof showToast === 'function') showToast('已添加到日记（全部 ' + rec.asks.length + ' 条）');
           }
         });
         document.getElementById('dvdHistModalClose').addEventListener('click', closeHistModal);
