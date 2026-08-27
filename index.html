@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v210')){sessionStorage.setItem('zk_v210','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==210){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v211')){sessionStorage.setItem('zk_v211','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==211){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v210</title>
+  <title>字卡 · 小手机 v211</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7383,6 +7383,56 @@
     .dvd-confirm-btn.cancel { background: var(--bg-soft2); color: var(--text-secondary); }
     .dvd-confirm-btn.danger { background: #e55a5a; color: #fff; }
     .dvd-confirm-btn:active { transform: scale(0.97); }
+    .dvd-chat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .dvd-chat-avatar {
+      width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff; display: flex; align-items: center; justify-content: center;
+    }
+    .dvd-chat-meta { flex: 1; min-width: 0; }
+    .dvd-chat-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    .dvd-chat-status { font-size: 11.5px; color: var(--text-secondary); margin-top: 1px; }
+    .dvd-chat-list {
+      display: flex; flex-direction: column; gap: 12px;
+      min-height: 320px; max-height: 52vh; overflow-y: auto; padding: 4px 2px;
+    }
+    .dvd-chat-msg { display: flex; }
+    .dvd-chat-msg.me { justify-content: flex-end; }
+    .dvd-chat-msg.bot { justify-content: flex-start; }
+    .dvd-chat-bubble {
+      max-width: 82%; padding: 10px 13px; border-radius: 14px;
+      font-size: 13.5px; line-height: 1.65; word-break: break-word;
+    }
+    .dvd-chat-msg.me .dvd-chat-bubble {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff; border-bottom-right-radius: 4px;
+    }
+    .dvd-chat-msg.bot .dvd-chat-bubble {
+      background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.16);
+      color: var(--text-main); border-bottom-left-radius: 4px;
+    }
+    .dvd-chat-cards { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .dvd-chat-cardchip {
+      font-size: 11.5px; padding: 3px 9px; border-radius: 20px;
+      background: rgba(var(--primary-rgba), 0.10); color: var(--primary);
+    }
+    .dvd-chat-loading { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 12.5px; }
+    .dvd-chat-empty {
+      text-align: center; color: var(--text-secondary); font-size: 13px;
+      padding: 48px 12px; line-height: 1.9; white-space: pre-line;
+    }
+    .dvd-chat-bar {
+      position: sticky; bottom: 0; z-index: 5; display: flex; gap: 8px; align-items: center;
+      margin-top: 12px; padding-top: 10px; background: var(--bg-main);
+    }
+    .dvd-chat-input { flex: 1; }
+    .dvd-chat-send {
+      width: 44px; height: 44px; border-radius: 50%; border: none; flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dvd-chat-send:active { opacity: 0.9; transform: scale(0.95); }
     .dvd-hist-search { margin-bottom: 10px; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
@@ -12546,10 +12596,10 @@
               <div class="dvd-entry-name">每日运势</div>
               <div class="dvd-entry-desc">今日一张指引</div>
             </div>
-            <div class="dvd-entry" data-go="ask">
+            <div class="dvd-entry" data-go="chat">
               <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M9 9h6M9 13h4"/></svg></div>
-              <div class="dvd-entry-name">占卜追问</div>
-              <div class="dvd-entry-desc">接着上次聊</div>
+              <div class="dvd-entry-name">占卜聊天</div>
+              <div class="dvd-entry-desc">抽张牌说说话</div>
             </div>
             <div class="dvd-entry" data-go="hist">
               <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></div>
@@ -12681,6 +12731,26 @@
             <button class="dvd-hist-askbtn" id="dvdHistAskBtn">追问</button>
           </div>
           <div class="dvd-hdetail" id="dvdHistDetail"></div>
+        </div>
+
+        <!-- 占卜聊天 -->
+        <div class="dvd-view" id="dvdChatView" style="display:none;">
+          <div class="dvd-hist-top">
+            <button class="dvd-subback" id="dvdChatBack">‹ 返回</button>
+            <button class="dvd-hist-askbtn" id="dvdChatClear">清空对话</button>
+          </div>
+          <div class="dvd-chat-head">
+            <div class="dvd-chat-avatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2z"/></svg></div>
+            <div class="dvd-chat-meta">
+              <div class="dvd-chat-name">塔罗</div>
+              <div class="dvd-chat-status">抽张牌，慢慢聊</div>
+            </div>
+          </div>
+          <div class="dvd-chat-list" id="dvdChatList"></div>
+          <div class="dvd-chat-bar">
+            <input class="dvd-input dvd-chat-input" id="dvdChatInput" placeholder="想说点什么呢？" maxlength="200">
+            <button class="dvd-chat-send" id="dvdChatSend" aria-label="发送"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 9 13 2 9 22 2"/></svg></button>
+          </div>
         </div>
       </div>
     </div>
@@ -22181,6 +22251,7 @@ patText2 = patText2.replace(/你/g, '我');
           draw: document.getElementById('dvdDrawView'),
           daily: document.getElementById('dvdDailyView'),
           ask: document.getElementById('dvdAskView'),
+          chat: document.getElementById('dvdChatView'),
           hist: document.getElementById('dvdHistView'),
           histDetail: document.getElementById('dvdHistDetailView')
         };
@@ -22205,6 +22276,7 @@ patText2 = patText2.replace(/你/g, '我');
             var go = el.getAttribute('data-go');
             if (go === 'draw') { renderTargets(); showView('draw'); }
             else if (go === 'daily') { renderDailyDate(); showView('daily'); }
+            else if (go === 'chat') { renderChat(); showView('chat'); }
             else if (go === 'ask') { renderAskPrev(); showView('ask'); }
             else if (go === 'hist') { renderHistory(); showView('hist'); }
           });
@@ -23003,6 +23075,96 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         document.getElementById('dvdClearHBtn').addEventListener('click', function () {
           localStorage.removeItem('divineHistory');
           renderHistory();
+        });
+
+        // ===== 占卜聊天 =====
+        function loadChat() { try { return JSON.parse(localStorage.getItem('divineChat') || '[]'); } catch (e) { return []; } }
+        function saveChat(h) { try { localStorage.setItem('divineChat', JSON.stringify(h)); } catch (e) {} }
+        function chatDraw() {
+          var idx = [];
+          while (idx.length < 3) {
+            var r = Math.floor(Math.random() * TAROT.length);
+            if (idx.indexOf(r) === -1) idx.push(r);
+          }
+          return idx.map(function (i) {
+            var c = TAROT[i];
+            return { c: c, r: Math.random() < 0.35 };
+          });
+        }
+        function chatCardNames(draw) {
+          return draw.map(function (d) { return d.c.name + (d.r ? '(逆)' : '(正)'); });
+        }
+        function chatCardText(draw) {
+          return ['这次为你抽到：'].concat(draw.map(function (d, i) {
+            return POS3[i] + ' · ' + d.c.name + (d.r ? '（逆位）' : '（正位）') + ' —— ' + (d.r ? d.c.rev : d.c.up);
+          })).join('\n');
+        }
+        function chatMsgHtml(m) {
+          if (m.role === 'user') {
+            return '<div class="dvd-chat-msg me"><div class="dvd-chat-bubble">' + escHtml(m.text || '').replace(/\n/g, '<br>') + '</div></div>';
+          }
+          if (m.loading) {
+            return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble"><div class="dvd-chat-loading"><div class="dvd-spinner"></div><span>正在抽牌…</span></div></div></div>';
+          }
+          var cardsHtml = (m.cards && m.cards.length)
+            ? '<div class="dvd-chat-cards">' + m.cards.map(function (c) { return '<span class="dvd-chat-cardchip">' + escHtml(c) + '</span>'; }).join('') + '</div>'
+            : '';
+          return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble">' + cardsHtml + escHtml(m.text || '').replace(/\n/g, '<br>') + '</div></div>';
+        }
+        function renderChat() {
+          var list = document.getElementById('dvdChatList');
+          var h = loadChat();
+          if (!h.length) {
+            list.innerHTML = '<div class="dvd-chat-empty">我是塔罗，有什么想聊的\n抽张牌，让我替你解一解</div>';
+            return;
+          }
+          list.innerHTML = h.map(chatMsgHtml).join('');
+          list.scrollTop = list.scrollHeight;
+        }
+        function sendChat() {
+          var input = document.getElementById('dvdChatInput');
+          var q = (input.value || '').trim();
+          if (!q) { if (typeof showToast === 'function') showToast('先写下你想说的'); return; }
+          input.value = '';
+          var h = loadChat();
+          h.push({ role: 'user', text: q, t: new Date().getTime() });
+          h.push({ role: 'bot', text: '', cards: [], loading: true, t: new Date().getTime() });
+          saveChat(h);
+          renderChat();
+          var draw = chatDraw();
+          var names = chatCardNames(draw);
+          var cardTxt = chatCardText(draw);
+          var userContent = '我们正在聊天，我先说：「' + q + '」\n\n' + cardTxt + '\n\n请你结合这三张牌，用占卜师的口吻自然地回复我这段话。';
+          var box = document.createElement('div');
+          callAI(DEFAULT_PROMPT, userContent, box, function (text) {
+            var list = loadChat();
+            var cfg = getApiCfg();
+            var fallback;
+            if (!cfg.url || !cfg.key) {
+              fallback = '我得靠 AI 解读牌面，先去「设置」里配好占卜解读 API，再来找我聊吧。';
+            } else {
+              fallback = '为你抽到 ' + draw.map(function (d) { return d.c.name + (d.r ? '·逆位' : '') + '「' + (d.r ? d.c.rev : d.c.up) + '」'; }).join('，') + '。解读暂时没连上，先看看牌面吧。';
+            }
+            for (var i = list.length - 1; i >= 0; i--) {
+              if (list[i].role === 'bot' && list[i].loading) {
+                list[i] = { role: 'bot', text: text || fallback, cards: names, t: list[i].t };
+                break;
+              }
+            }
+            saveChat(list);
+            renderChat();
+          }, true);
+        }
+        document.getElementById('dvdChatBack').addEventListener('click', function () { showView('home'); });
+        document.getElementById('dvdChatClear').addEventListener('click', function () {
+          if (!confirm('确定要清空全部对话吗？')) return;
+          localStorage.removeItem('divineChat');
+          renderChat();
+          if (typeof showToast === 'function') showToast('已清空对话');
+        });
+        document.getElementById('dvdChatSend').addEventListener('click', sendChat);
+        document.getElementById('dvdChatInput').addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); sendChat(); }
         });
 
       })();
