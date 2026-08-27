@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v200')){sessionStorage.setItem('zk_v200','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==200){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v201')){sessionStorage.setItem('zk_v201','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==201){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v200</title>
+  <title>字卡 · 小手机 v201</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7269,6 +7269,8 @@
     .dvd-prev-askq { color: var(--text-main); font-size: 12.5px; }
     .dvd-prev-sup { color: var(--primary); font-size: 12px; margin-top: 2px; }
     .dvd-prev-atext { color: var(--text-secondary); font-size: 12.5px; margin-top: 4px; }
+    .dvd-prev-actwrap { margin-top: 7px; display: flex; gap: 8px; }
+    .dvd-prev-act { padding: 5px 12px; border-radius: 9px; font-size: 12px; cursor: pointer; border: 1px solid rgba(var(--primary-rgba),0.3); background: var(--bg-card); color: var(--primary); font-weight: 500; }
     .dvd-hdetail { display: flex; flex-direction: column; }
     .dvd-hd { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.14); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.7; }
     .dvd-hd-meta { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
@@ -22562,11 +22564,12 @@ patText2 = patText2.replace(/你/g, '我');
           var asks = x.asks || [];
           if (asks.length) {
             html += '<div class="dvd-prev-sec">追问记录（' + asks.length + '）</div>';
-            asks.forEach(function (a) {
+            asks.forEach(function (a, i) {
               html += '<div class="dvd-prev-ask">';
               html += '<div class="dvd-prev-askq">' + (a.self ? '▸ 我的解读' : (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
               if (a.sup) html += '<div class="dvd-prev-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
               html += '<div class="dvd-prev-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
+              html += '<div class="dvd-prev-actwrap"><button class="dvd-prev-act" data-act="copy" data-t="' + x.t + '" data-i="' + i + '">复制</button><button class="dvd-prev-act" data-act="diary" data-t="' + x.t + '" data-i="' + i + '">添加到日记</button></div>';
               html += '</div>';
             });
           }
@@ -22616,6 +22619,25 @@ patText2 = patText2.replace(/你/g, '我');
         }
         document.getElementById('dvdAskSwitch').addEventListener('click', function () {
           openHistModal();
+        });
+        document.getElementById('dvdAskPrev').addEventListener('click', function (e) {
+          var btn = e.target;
+          if (!btn || !btn.classList || !btn.classList.contains('dvd-prev-act')) return;
+          var t = parseInt(btn.getAttribute('data-t'), 10);
+          var i = parseInt(btn.getAttribute('data-i'), 10);
+          var rec = findRec(t);
+          if (!rec || !rec.asks || !rec.asks[i]) return;
+          var a = rec.asks[i];
+          var label = a.self ? '我的解读' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读');
+          var txt = '追问（' + label + '）' + (a.q ? '：' + a.q : '');
+          if (a.sup) txt += '\n' + a.sup;
+          if (a.text) txt += '\n' + a.text;
+          if (btn.getAttribute('data-act') === 'copy') {
+            copyText(txt, btn);
+          } else {
+            addToDiary('占卜追问', txt);
+            if (typeof showToast === 'function') showToast('已添加到日记');
+          }
         });
         document.getElementById('dvdHistModalClose').addEventListener('click', closeHistModal);
         document.getElementById('dvdHistSearch').addEventListener('input', renderAskHist);
