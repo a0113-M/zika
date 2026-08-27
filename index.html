@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v202')){sessionStorage.setItem('zk_v202','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==202){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v203')){sessionStorage.setItem('zk_v203','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==203){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v202</title>
+  <title>字卡 · 小手机 v203</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7271,6 +7271,10 @@
     .dvd-prev-atext { color: var(--text-secondary); font-size: 12.5px; margin-top: 4px; }
     .dvd-prev-actwrap { margin-top: 7px; display: flex; gap: 8px; }
     .dvd-prev-act { padding: 5px 12px; border-radius: 9px; font-size: 12px; cursor: pointer; border: 1px solid rgba(var(--primary-rgba),0.3); background: var(--bg-card); color: var(--primary); font-weight: 500; }
+    .dvd-prev-note { margin-top: 6px; padding: 6px 8px; border-left: 2px solid rgba(var(--primary-rgba),0.4); background: rgba(var(--primary-rgba),0.06); border-radius: 6px; color: var(--text-secondary); font-size: 12px; }
+    .dvd-prev-note b { color: var(--primary); font-weight: 600; }
+    .dvd-prev-all { margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(var(--primary-rgba), 0.25); }
+    .dvd-prev-all .dvd-prev-act { width: 100%; justify-content: center; background: var(--primary); color: #fff; border-color: var(--primary); }
     .dvd-hdetail { display: flex; flex-direction: column; }
     .dvd-hd { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.14); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.7; }
     .dvd-hd-meta { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
@@ -12580,12 +12584,12 @@
           <div class="dvd-ask-extra" id="dvdAskExtra" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdAskInterpBtns" style="display:none;">
             <button class="dvd-ghost accent" id="dvdAskInterpBtn">AI 解读</button>
-            <button class="dvd-ghost" id="dvdAskSelfBtn">解读</button>
+            <button class="dvd-ghost" id="dvdAskSelfBtn">笔记</button>
           </div>
           <div class="dvd-self-panel" id="dvdAskSelfPanel" style="display:none;">
-            <textarea class="dvd-textarea" id="dvdAskSelfInput" placeholder="写下你对这张补充牌的理解…" maxlength="500"></textarea>
+            <textarea class="dvd-textarea" id="dvdAskSelfInput" placeholder="写下你的理解…" maxlength="500"></textarea>
             <div class="dvd-self-actions">
-              <button class="dvd-self-save" id="dvdAskSelfSaveBtn">保存解读</button>
+              <button class="dvd-self-save" id="dvdAskSelfSaveBtn">保存笔记</button>
               <button class="dvd-self-cancel" id="dvdAskSelfCancelBtn">取消</button>
             </div>
           </div>
@@ -22566,12 +22570,14 @@ patText2 = patText2.replace(/你/g, '我');
             html += '<div class="dvd-prev-sec">追问记录（' + asks.length + '）</div>';
             asks.forEach(function (a, i) {
               html += '<div class="dvd-prev-ask">';
-              html += '<div class="dvd-prev-askq">' + (a.self ? '▸ 我的解读' : (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
+              html += '<div class="dvd-prev-askq">' + (a.self ? '▸ 我的笔记' : (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
               if (a.sup) html += '<div class="dvd-prev-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
               html += '<div class="dvd-prev-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
-              html += '<div class="dvd-prev-actwrap"><button class="dvd-prev-act" data-act="copy" data-t="' + x.t + '" data-i="' + i + '">复制</button><button class="dvd-prev-act" data-act="diary" data-t="' + x.t + '" data-i="' + i + '">添加到日记</button></div>';
+              if (a.note) html += '<div class="dvd-prev-note"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</div>';
+              html += '<div class="dvd-prev-actwrap"><button class="dvd-prev-act" data-act="copy" data-t="' + x.t + '" data-i="' + i + '">复制</button><button class="dvd-prev-act" data-act="note" data-t="' + x.t + '" data-i="' + i + '">笔记</button></div>';
               html += '</div>';
             });
+            html += '<div class="dvd-prev-all"><button class="dvd-prev-act" data-act="diary-all" data-t="' + x.t + '">添加到日记</button></div>';
           }
           return html;
         }
@@ -22623,30 +22629,40 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('dvdAskPrev').addEventListener('click', function (e) {
           var btn = e.target;
           if (!btn || !btn.classList || !btn.classList.contains('dvd-prev-act')) return;
-          var t = parseInt(btn.getAttribute('data-t'), 10);
-          var i = parseInt(btn.getAttribute('data-i'), 10);
-          var rec = findRec(t);
-          if (!rec || !rec.asks || !rec.asks[i]) return;
-          var a = rec.asks[i];
           var act = btn.getAttribute('data-act');
-          if (act === 'copy') {
-            var label = a.self ? '我的解读' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读');
-            var txt = '追问（' + label + '）' + (a.q ? '：' + a.q : '');
-            if (a.sup) txt += '\n' + a.sup;
-            if (a.text) txt += '\n' + a.text;
-            copyText(txt, btn);
-          } else {
+          var t = parseInt(btn.getAttribute('data-t'), 10);
+          var rec = findRec(t);
+          if (!rec || !rec.asks) return;
+          if (act === 'diary-all') {
             var lines = [];
             if (rec.mode) lines.push(rec.mode + (rec.target ? ' · ' + rec.target : '') + (rec.q ? '，问题：' + rec.q : ''));
             rec.asks.forEach(function (ax, k) {
-              var lbl = ax.self ? '我的解读' : (ax.mode === 'draw' ? '再抽补充' : '原牌面解读');
+              var lbl = ax.self ? '我的笔记' : (ax.mode === 'draw' ? '再抽补充' : '原牌面解读');
               var seg = (k + 1) + '. ' + lbl + (ax.q ? '：' + ax.q : '');
               if (ax.sup) seg += '\n' + ax.sup;
               if (ax.text) seg += '\n' + ax.text;
+              if (ax.note) seg += '\n【笔记】' + ax.note;
               lines.push(seg);
             });
             addToDiary('占卜追问', lines.join('\n\n'));
             if (typeof showToast === 'function') showToast('已添加到日记（全部 ' + rec.asks.length + ' 条）');
+            return;
+          }
+          var i = parseInt(btn.getAttribute('data-i'), 10);
+          var a = rec.asks[i];
+          if (!a) return;
+          if (act === 'copy') {
+            var label = a.self ? '我的笔记' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读');
+            var txt = '追问（' + label + '）' + (a.q ? '：' + a.q : '');
+            if (a.sup) txt += '\n' + a.sup;
+            if (a.text) txt += '\n' + a.text;
+            if (a.note) txt += '\n【笔记】' + a.note;
+            copyText(txt, btn);
+          } else if (act === 'note') {
+            _dvdNoteTarget = { t: t, i: i };
+            document.getElementById('dvdAskDock').classList.add('collapsed');
+            document.getElementById('dvdAskSelfInput').value = a.note || '';
+            document.getElementById('dvdAskSelfPanel').style.display = '';
           }
         });
         document.getElementById('dvdHistModalClose').addEventListener('click', closeHistModal);
@@ -22719,23 +22735,38 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         });
         document.getElementById('dvdAskSelfBtn').addEventListener('click', function () {
           if (!_dvdAskPending) return;
+          _dvdNoteTarget = null;
           document.getElementById('dvdAskDock').classList.add('collapsed');
           document.getElementById('dvdAskSelfInput').value = _dvdAskPending.selfText || '';
           document.getElementById('dvdAskSelfPanel').style.display = '';
         });
         document.getElementById('dvdAskSelfSaveBtn').addEventListener('click', function () {
-          var p = _dvdAskPending; if (!p) return;
           var txt = document.getElementById('dvdAskSelfInput').value.trim();
-          if (!txt) { if (typeof showToast === 'function') showToast('先写下你的解读'); return; }
-          if (_dvdAskTarget && _dvdAskTarget.t) {
-            if (p.selfT) { updateAskText(_dvdAskTarget.t, p.selfT, txt); }
-            else { var nt = new Date().getTime(); p.selfT = nt; appendAsk(_dvdAskTarget.t, { t: nt, q: p.q, mode: p.mode, sup: p.supText, text: txt, self: true }); }
-            p.selfText = txt;
-            _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
+          if (!txt) { if (typeof showToast === 'function') showToast('先写下你的笔记'); return; }
+          if (_dvdNoteTarget) {
+            var h = loadHistory();
+            for (var k = 0; k < h.length; k++) {
+              if (h[k].t === _dvdNoteTarget.t && h[k].asks && h[k].asks[_dvdNoteTarget.i]) {
+                h[k].asks[_dvdNoteTarget.i].note = txt;
+                saveHistoryRaw(h);
+                break;
+              }
+            }
+            _dvdNoteTarget = null;
             renderAskPrev();
+            if (typeof showToast === 'function') showToast('已保存笔记');
+          } else {
+            var p = _dvdAskPending; if (!p) return;
+            if (_dvdAskTarget && _dvdAskTarget.t) {
+              if (p.selfT) { updateAskText(_dvdAskTarget.t, p.selfT, txt); }
+              else { var nt = new Date().getTime(); p.selfT = nt; appendAsk(_dvdAskTarget.t, { t: nt, q: p.q, mode: p.mode, sup: p.supText, text: txt, self: true }); }
+              p.selfText = txt;
+              _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
+              renderAskPrev();
+            }
+            if (typeof showToast === 'function') showToast('已保存你的笔记');
           }
           document.getElementById('dvdAskSelfPanel').style.display = 'none';
-          if (typeof showToast === 'function') showToast('已保存你的解读');
         });
         document.getElementById('dvdAskSelfCancelBtn').addEventListener('click', function () {
           document.getElementById('dvdAskSelfPanel').style.display = 'none';
@@ -22771,6 +22802,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           ball.addEventListener('pointercancel', function () { dragging = false; });
         })();
         var _dvdAskText = '';
+        var _dvdNoteTarget = null;
         document.getElementById('dvdAskCopyBtn').addEventListener('click', function () { if (_dvdAskText) copyText(_dvdAskText, this); });
         document.getElementById('dvdAskSendBtn').addEventListener('click', function () {
           if (!_dvdAskText) return;
@@ -22829,9 +22861,10 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               var ad = new Date(a.t);
               var ats = ('0' + ad.getHours()).slice(-2) + ':' + ('0' + ad.getMinutes()).slice(-2);
               h += '<div class="dvd-hd-ask">';
-              h += '<div class="dvd-hd-askq">' + ats + ' · ' + (a.self ? '我的解读' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
+              h += '<div class="dvd-hd-askq">' + ats + ' · ' + (a.self ? '我的笔记' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
               if (a.sup) h += '<div class="dvd-hd-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
               h += '<div class="dvd-hd-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
+              if (a.note) h += '<div class="dvd-prev-note"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</div>';
               h += '</div>';
             });
           }
