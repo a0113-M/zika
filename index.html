@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v205')){sessionStorage.setItem('zk_v205','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==205){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v206')){sessionStorage.setItem('zk_v206','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==206){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v205</title>
+  <title>字卡 · 小手机 v206</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7338,6 +7338,28 @@
     .dvd-hist-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
     .dvd-hist-modal-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
     .dvd-hist-close { background: none; border: none; font-size: 17px; color: var(--text-secondary); cursor: pointer; padding: 2px 6px; }
+    .dvd-confirm-modal {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 700; display: flex; align-items: center; justify-content: center;
+    }
+    .dvd-confirm-mask { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.42); }
+    .dvd-confirm-card {
+      position: relative; width: 78%; max-width: 320px;
+      background: var(--bg-card); border-radius: 18px; padding: 24px 18px 18px;
+      display: flex; flex-direction: column; align-items: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    }
+    .dvd-confirm-icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(229, 90, 90, 0.12); display: flex; align-items: center; justify-content: center; margin-bottom: 12px; color: #e55a5a; }
+    .dvd-confirm-title { font-size: 16px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+    .dvd-confirm-text { font-size: 13px; color: var(--text-secondary); text-align: center; line-height: 1.6; margin-bottom: 18px; }
+    .dvd-confirm-btns { display: flex; gap: 10px; width: 100%; }
+    .dvd-confirm-btn {
+      flex: 1; padding: 11px 0; border-radius: 12px; font-size: 14px; font-weight: 600;
+      cursor: pointer; border: none; -webkit-tap-highlight-color: transparent;
+    }
+    .dvd-confirm-btn.cancel { background: var(--bg-soft2); color: var(--text-secondary); }
+    .dvd-confirm-btn.danger { background: #e55a5a; color: #fff; }
+    .dvd-confirm-btn:active { transform: scale(0.97); }
     .dvd-hist-search { margin-bottom: 10px; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
@@ -12646,6 +12668,20 @@
         </div>
         <input class="dvd-input dvd-hist-search" id="dvdHistSearch" placeholder="搜索问题或牌面">
         <div class="dvd-hlist dvd-ask-hist" id="dvdAskHist"></div>
+      </div>
+    </div>
+
+    <!-- 删除追问记录确认弹窗 -->
+    <div class="dvd-confirm-modal" id="dvdConfirmModal" style="display:none;">
+      <div class="dvd-confirm-mask"></div>
+      <div class="dvd-confirm-card">
+        <div class="dvd-confirm-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></div>
+        <div class="dvd-confirm-title">删除追问记录</div>
+        <div class="dvd-confirm-text">确定要删除这条追问记录吗？删除后无法恢复。</div>
+        <div class="dvd-confirm-btns">
+          <button class="dvd-confirm-btn cancel" id="dvdConfirmCancel">取消</button>
+          <button class="dvd-confirm-btn danger" id="dvdConfirmOk">删除</button>
+        </div>
       </div>
     </div>
 
@@ -22670,22 +22706,27 @@ patText2 = patText2.replace(/你/g, '我');
             document.getElementById('dvdAskSelfInput').value = a.note || '';
             document.getElementById('dvdAskSelfPanel').style.display = '';
           } else if (act === 'delete') {
-            if (confirm('确定要删除这条追问记录吗？')) {
-              var h = loadHistory();
-              for (var k = 0; k < h.length; k++) {
-                if (h[k].t === t && h[k].asks) {
-                  h[k].asks.splice(i, 1);
-                  saveHistoryRaw(h);
-                  break;
-                }
-              }
-              _dvdAskTarget = findRec(t) || _dvdAskTarget;
-              renderAskPrev();
-              if (typeof showToast === 'function') showToast('已删除');
-            }
+            _dvdDeleteTarget = { t: t, i: i };
+            openDvdConfirm();
           }
         });
         document.getElementById('dvdHistModalClose').addEventListener('click', closeHistModal);
+        document.getElementById('dvdConfirmCancel').addEventListener('click', closeDvdConfirm);
+        document.getElementById('dvdConfirmOk').addEventListener('click', function () {
+          if (!_dvdDeleteTarget) { closeDvdConfirm(); return; }
+          var dt = _dvdDeleteTarget.t, di = _dvdDeleteTarget.i;
+          var hh = loadHistory();
+          for (var kk = 0; kk < hh.length; kk++) {
+            if (hh[kk].t === dt && hh[kk].asks) { hh[kk].asks.splice(di, 1); saveHistoryRaw(hh); break; }
+          }
+          _dvdAskTarget = findRec(dt) || _dvdAskTarget;
+          renderAskPrev();
+          if (typeof showToast === 'function') showToast('已删除');
+          closeDvdConfirm();
+        });
+        document.getElementById('dvdConfirmModal').querySelector('.dvd-confirm-mask').addEventListener('click', closeDvdConfirm);
+        function openDvdConfirm() { document.getElementById('dvdConfirmModal').style.display = ''; }
+        function closeDvdConfirm() { document.getElementById('dvdConfirmModal').style.display = 'none'; _dvdDeleteTarget = null; }
         document.getElementById('dvdHistSearch').addEventListener('input', renderAskHist);
         document.getElementById('dvdHistModal').querySelector('.dvd-hist-modal-mask').addEventListener('click', closeHistModal);
         function openHistModal() {
@@ -22823,6 +22864,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         })();
         var _dvdAskText = '';
         var _dvdNoteTarget = null;
+        var _dvdDeleteTarget = null;
         document.getElementById('dvdAskCopyBtn').addEventListener('click', function () { if (_dvdAskText) copyText(_dvdAskText, this); });
         document.getElementById('dvdAskSendBtn').addEventListener('click', function () {
           if (!_dvdAskText) return;
