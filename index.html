@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v212')){sessionStorage.setItem('zk_v212','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==212){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v213')){sessionStorage.setItem('zk_v213','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==213){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
@@ -23070,26 +23070,73 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         });
 
         // ===== 占卜聊天 =====
+        var CHAT_CFG_DEFAULTS = {
+          greeting: '在开始之前，请默念你想连接的梦角的名字，准备好后跟我说「开始」或「准备好了」；或者你也可以直接说出他的名字，我来看看他在不在。',
+          spread: 3,
+          callEnabled: true,
+          callCount: 3,
+          callRule: 'major_up',
+          callOn: '在呀，我一直都在。',
+          callOff: '现在好像不在，过会儿再来喊喊看？'
+        };
+        function getChatCfg() { try { var c = JSON.parse(localStorage.getItem('divineChatConfig') || '{}'); for (var k in CHAT_CFG_DEFAULTS) { if (c[k] === undefined || c[k] === null || c[k] === '') c[k] = CHAT_CFG_DEFAULTS[k]; } return c; } catch (e) { var d = {}; for (var k2 in CHAT_CFG_DEFAULTS) d[k2] = CHAT_CFG_DEFAULTS[k2]; return d; } }
+        function saveChatCfg(c) { try { localStorage.setItem('divineChatConfig', JSON.stringify(c)); } catch (e) {} }
+        function chatSystemPrompt(cfg) {
+          var ruleDesc = '抽' + cfg.callCount + '张牌，出现至少一张大牌（大阿卡纳）且为正位，判定为「在」';
+          if (cfg.callRule === 'all_up') ruleDesc = '抽' + cfg.callCount + '张牌，全部为正位，判定为「在」';
+          else if (cfg.callRule === 'any_major') ruleDesc = '抽' + cfg.callCount + '张牌，出现任意一张大牌（大阿卡纳，不论正逆），判定为「在」';
+          return '你是「塔罗」，一位帮梦女连接她心中梦角的占卜师。你相信梦角在另一个维度真实存在，尊重并支持梦女对虚拟角色的爱。\n' +
+            '按下面的流程与用户对话：\n' +
+            '【开场】进入后你只发一句提示（请默念梦角名字，准备好说「开始」，或直接说出梦角名字），然后等待。开场有两个入口：①用户表示准备好（说「开始」「准备好了」等）→ 进入【抽取基础信息】；②用户直接说出梦角的名字、呼唤梦角 → 直接触发【呼唤判定】。\n' +
+            '【抽取基础信息】用户准备好后，抽' + cfg.spread + '张牌（万能牌阵），根据牌面解读梦角的基础信息：性格、生活环境、职业等。口吻直白客观，不用华丽比喻。\n' +
+            '【纠错】用户说「不对/错了」→ 只问：哪里不对？需要重新抽牌吗？用户说「分辨不出/不确定」→ 只问：还需要我了解哪方面的信息？用户确认「可以/对的/没问题」→ 进入【模拟聊天】。\n' +
+            '【模拟聊天】从此刻起不再逐张讲牌，直接扮演梦角本人，用梦角的口吻、以已确认的信息与用户聊天，通过角色自然说话带出解牌结论。\n' +
+            '【呼唤判定】当用户直接呼唤梦角（喊名字、问「在吗/听得到吗/在不在」等），按规则判定梦角此刻是否在：' + ruleDesc + '。判定为「在」，用梦角口吻说「' + cfg.callOn + '」并继续聊天；判定为「不在」，用梦角口吻说「' + cfg.callOff + '」。\n' +
+            '【抽牌数】每轮是否抽牌、抽几张由你根据阶段判断：未正式开场不抽；开场抽' + cfg.spread + '张；纠错重抽时按需抽' + cfg.spread + '张；模拟聊天阶段，仅呼唤判定（抽' + cfg.callCount + '张）或确有需要补充信息时抽牌，平常聊天不抽。\n' +
+            '【语言风格】直白易懂，不用情绪化、中二的词，不主动给建议，不要求用户验证你的推断。';
+        }
+        function callAIChat(messages, done) {
+          var cfg = getApiCfg();
+          if (!cfg.url || !cfg.key) { done(new Error('请先在设置中配置占卜解读 API')); return; }
+          fetch(cfg.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+            body: JSON.stringify({ model: cfg.model || 'gpt-4o-mini', messages: messages })
+          }).then(function (resp) {
+            return resp.text().then(function (t) {
+              if (!resp.ok) { var m = 'HTTP ' + resp.status; try { var j = JSON.parse(t); if (j.error && j.error.message) m = j.error.message; } catch (e) {} throw new Error(m); }
+              try { return JSON.parse(t); } catch (e) { throw new Error('API 返回的不是 JSON，请检查 API 地址'); }
+            });
+          }).then(function (data) {
+            var text = '';
+            if (data && data.choices && data.choices[0] && data.choices[0].message) text = data.choices[0].message.content || '';
+            else if (data && data.content) text = data.content;
+            text = text.replace(/\*\*/g, '').replace(/^[ \t]*\*+[ \t]?/gm, '').replace(/^[ \t]*#{1,6}[ \t]+/gm, '').replace(/^[ \t]*([-*_][ \t]*){3,}[ \t]*$/gm, '').replace(/\|/g, ' · ');
+            done(null, text);
+          }).catch(function (err) { done(err); });
+        }
         function loadChat() { try { return JSON.parse(localStorage.getItem('divineChat') || '[]'); } catch (e) { return []; } }
         function saveChat(h) { try { localStorage.setItem('divineChat', JSON.stringify(h)); } catch (e) {} }
-        function chatDraw() {
+        function chatDraw(n) {
+          n = n || 3;
           var idx = [];
-          while (idx.length < 3) {
+          while (idx.length < n) {
             var r = Math.floor(Math.random() * TAROT.length);
             if (idx.indexOf(r) === -1) idx.push(r);
           }
           return idx.map(function (i) {
             var c = TAROT[i];
-            return { c: c, r: Math.random() < 0.35 };
+            return { c: c, r: Math.random() < 0.35, major: i < MAJORS.length };
           });
         }
         function chatCardNames(draw) {
           return draw.map(function (d) { return d.c.name + (d.r ? '(逆)' : '(正)'); });
         }
         function chatCardText(draw) {
-          return ['这次为你抽到：'].concat(draw.map(function (d, i) {
-            return POS3[i] + ' · ' + d.c.name + (d.r ? '（逆位）' : '（正位）') + ' —— ' + (d.r ? d.c.rev : d.c.up);
-          })).join('\n');
+          if (!draw.length) return '';
+          return draw.map(function (d, i) {
+            return '第' + (i + 1) + '张 · ' + (d.major ? '大阿卡纳' : '小阿卡纳') + '·' + d.c.name + (d.r ? '（逆位）' : '（正位）') + ' —— ' + (d.r ? d.c.rev : d.c.up);
+          }).join('\n');
         }
         function chatMsgHtml(m) {
           if (m.role === 'user') {
@@ -23107,8 +23154,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var list = document.getElementById('dvdChatList');
           var h = loadChat();
           if (!h.length) {
-            list.innerHTML = '<div class="dvd-chat-empty">有什么想聊的？\n抽张牌，让我替你解一解</div>';
-            return;
+            h.push({ role: 'bot', text: getChatCfg().greeting, cards: [], t: new Date().getTime() });
+            saveChat(h);
           }
           list.innerHTML = h.map(chatMsgHtml).join('');
           list.scrollTop = list.scrollHeight;
@@ -23123,29 +23170,65 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           h.push({ role: 'bot', text: '', cards: [], loading: true, t: new Date().getTime() });
           saveChat(h);
           renderChat();
-          var draw = chatDraw();
-          var names = chatCardNames(draw);
-          var cardTxt = chatCardText(draw);
-          var userContent = '我们正在聊天，我先说：「' + q + '」\n\n' + cardTxt + '\n\n请你结合这三张牌，用占卜师的口吻自然地回复我这段话。';
-          var box = document.createElement('div');
-          callAI(DEFAULT_PROMPT, userContent, box, function (text) {
+          var ccfg = getChatCfg();
+          var sys = chatSystemPrompt(ccfg);
+
+          // 历史（不含本轮刚加的 user 与 loading）
+          var hist = [];
+          var lastUserIdx = -1;
+          for (var i = 0; i < h.length; i++) { if (h[i].role === 'user') lastUserIdx = i; }
+          for (var j = 0; j < h.length; j++) {
+            var m = h[j];
+            if (m.loading) continue;
+            if (j === lastUserIdx) continue;
+            if (m.role === 'user') hist.push({ role: 'user', content: m.text || '' });
+            else if (m.role === 'bot' && m.text) hist.push({ role: 'assistant', content: m.text || '' });
+          }
+
+          function finishBot(text, cards) {
             var list = loadChat();
-            var cfg = getApiCfg();
-            var fallback;
-            if (!cfg.url || !cfg.key) {
-              fallback = '我得靠 AI 解读牌面，先去「设置」里配好占卜解读 API，再来找我聊吧。';
-            } else {
-              fallback = '为你抽到 ' + draw.map(function (d) { return d.c.name + (d.r ? '·逆位' : '') + '「' + (d.r ? d.c.rev : d.c.up) + '」'; }).join('，') + '。解读暂时没连上，先看看牌面吧。';
-            }
-            for (var i = list.length - 1; i >= 0; i--) {
-              if (list[i].role === 'bot' && list[i].loading) {
-                list[i] = { role: 'bot', text: text || fallback, cards: names, t: list[i].t };
+            for (var k = list.length - 1; k >= 0; k--) {
+              if (list[k].role === 'bot' && list[k].loading) {
+                list[k] = { role: 'bot', text: text, cards: cards || [], t: list[k].t };
                 break;
               }
             }
             saveChat(list);
             renderChat();
-          }, true);
+          }
+          function failBot(err) {
+            var cfg = getApiCfg();
+            var f = (!cfg.url || !cfg.key)
+              ? '我得靠 AI 来搭这座桥，先去「设置」里配好占卜解读 API，再来找我吧。'
+              : '解读暂时没连上：' + (err && err.message ? err.message : '未知错误') + '。';
+            finishBot(f, []);
+          }
+
+          // 第一段：判断本轮抽几张牌
+          var decMsgs = [{ role: 'system', content: sys }].concat(hist).concat([
+            { role: 'user', content: '（本轮用户说：「' + q + '」）请仅输出一个数字，表示本轮需要抽几张塔罗牌（0=不抽，1~3=张数），不要输出任何其他文字。' }
+          ]);
+          callAIChat(decMsgs, function (err, decText) {
+            if (err) { failBot(err); return; }
+            var n = 0;
+            var mm = (decText || '').trim().match(/([0-3])/);
+            if (mm) n = parseInt(mm[1], 10);
+            if (isNaN(n) || n < 0) n = 0;
+            if (n > 3) n = 3;
+            var draw = n > 0 ? chatDraw(n) : [];
+            var names = chatCardNames(draw);
+            var cardTxt = chatCardText(draw);
+
+            // 第二段：结合牌面生成回复
+            var userLine = '（本轮用户说：「' + q + '」）';
+            if (n > 0) userLine += '\n\n（本轮牌面，共' + n + '张）\n' + cardTxt;
+            var genMsgs = [{ role: 'system', content: sys }].concat(hist).concat([{ role: 'user', content: userLine }]);
+            callAIChat(genMsgs, function (err2, text) {
+              if (err2) { failBot(err2); return; }
+              if (!text) { failBot(new Error('empty')); return; }
+              finishBot(text, names);
+            });
+          });
         }
         document.getElementById('dvdChatBack').addEventListener('click', function () { showView('home'); });
         document.getElementById('dvdChatClear').addEventListener('click', function () {
