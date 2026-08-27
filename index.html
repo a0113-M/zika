@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v209')){sessionStorage.setItem('zk_v209','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==209){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v210')){sessionStorage.setItem('zk_v210','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==210){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v209</title>
+  <title>字卡 · 小手机 v210</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12655,6 +12655,7 @@
               <div class="dvd-seg" id="dvdAskModeSeg">
                 <button class="dvd-seg-item active" data-m="talk">按原牌面解读</button>
                 <button class="dvd-seg-item" data-m="draw">再抽一张补充</button>
+                <button class="dvd-seg-item" data-m="draw3">抽三张牌补充</button>
               </div>
               <div class="dvd-seg-label">想接着追问什么？</div>
               <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
@@ -22580,28 +22581,42 @@ patText2 = patText2.replace(/你/g, '我');
 
         // ===== 占卜追问 =====
         var _dvdAskTarget = null; // 当前追问承接的占卜记录
-        var _dvdAskMode = 'talk'; // 追问方式：talk 原牌面解读 / draw 再抽一张补充
+        var _dvdAskMode = 'talk'; // 追问方式：talk 原牌面解读 / draw 再抽一张补充 / draw3 抽三张补充
         var _dvdHistCur = null; // 历史详情当前查看的记录
-        function drawSupplement(x) {
+        function drawSupplement(x, count) {
           if (!x) return '';
+          count = count || 1;
           var mode = x.mode || '';
           if (mode === 'tarot') mode = '塔罗';
           else if (mode === 'leno') mode = '雷诺曼';
           else if (mode === 'mix') mode = '混合';
           var lines = ['追问补充抽牌：'];
+          function pickN(pool, n) {
+            var idx = [];
+            while (idx.length < n) {
+              var r = Math.floor(Math.random() * pool.length);
+              if (idx.indexOf(r) === -1) idx.push(r);
+            }
+            return idx;
+          }
           if (mode === '混合') {
-            var t = TAROT[Math.floor(Math.random() * TAROT.length)];
-            var tr = Math.random() < 0.35;
-            var l = LENO[Math.floor(Math.random() * LENO.length)];
-            lines.push('塔罗：' + t.name + '（' + (tr ? '逆位' : '正位') + '）- ' + (tr ? t.rev : t.up));
-            lines.push('雷诺曼：' + l.name + ' - ' + l.up);
+            var n = count >= 3 ? 3 : 1;
+            pickN(TAROT, n).forEach(function (i) {
+              var t = TAROT[i], tr = Math.random() < 0.35;
+              lines.push('塔罗：' + t.name + '（' + (tr ? '逆位' : '正位') + '）- ' + (tr ? t.rev : t.up));
+            });
+            pickN(LENO, n).forEach(function (i) {
+              lines.push('雷诺曼：' + LENO[i].name + ' - ' + LENO[i].up);
+            });
           } else if (mode === '雷诺曼') {
-            var l2 = LENO[Math.floor(Math.random() * LENO.length)];
-            lines.push('雷诺曼：' + l2.name + ' - ' + l2.up);
+            pickN(LENO, count).forEach(function (i) {
+              lines.push('雷诺曼：' + LENO[i].name + ' - ' + LENO[i].up);
+            });
           } else {
-            var t2 = TAROT[Math.floor(Math.random() * TAROT.length)];
-            var tr2 = Math.random() < 0.35;
-            lines.push('塔罗：' + t2.name + '（' + (tr2 ? '逆位' : '正位') + '）- ' + (tr2 ? t2.rev : t2.up));
+            pickN(TAROT, count).forEach(function (i) {
+              var t = TAROT[i], tr = Math.random() < 0.35;
+              lines.push('塔罗：' + t.name + '（' + (tr ? '逆位' : '正位') + '）- ' + (tr ? t.rev : t.up));
+            });
           }
           return lines.join('\n');
         }
@@ -22634,7 +22649,7 @@ patText2 = patText2.replace(/你/g, '我');
             html += '<div class="dvd-prev-sec">追问记录（' + asks.length + '）</div>';
             asks.forEach(function (a, i) {
               html += '<div class="dvd-prev-ask">';
-              html += '<div class="dvd-prev-askq">' + (a.self ? '▸ 我的笔记' : (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
+              html += '<div class="dvd-prev-askq">' + (a.self ? '▸ 我的笔记' : (a.mode === 'draw3' ? '▸ 三张补充' : (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读'))) + ' · ' + escHtml(a.q || '') + '</div>';
               if (a.sup) html += '<div class="dvd-prev-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
               html += '<div class="dvd-prev-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
               if (a.note) html += '<div class="dvd-prev-note"><div class="dvd-prev-note-row"><span class="dvd-prev-note-text"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</span><span class="dvd-note-ops"><button class="dvd-note-op" data-act="note-edit" data-t="' + x.t + '" data-i="' + i + '">修改</button><button class="dvd-note-op" data-act="note-del" data-t="' + x.t + '" data-i="' + i + '">删除</button></span></div></div>';
@@ -22707,7 +22722,7 @@ patText2 = patText2.replace(/你/g, '我');
             if (rec.selfInterp) lines.push('我的解读：\n' + rec.selfInterp);
             if (rec.asks && rec.asks.length) lines.push('—— 追问记录（' + rec.asks.length + '）——');
             rec.asks.forEach(function (ax, k) {
-              var lbl = ax.self ? '我的笔记' : (ax.mode === 'draw' ? '再抽补充' : '原牌面解读');
+              var lbl = ax.self ? '我的笔记' : (ax.mode === 'draw3' ? '三张补充' : (ax.mode === 'draw' ? '再抽补充' : '原牌面解读'));
               var seg = (k + 1) + '. ' + lbl + (ax.q ? '：' + ax.q : '');
               if (ax.sup) seg += '\n' + ax.sup;
               if (ax.text) seg += '\n' + ax.text;
@@ -22722,7 +22737,7 @@ patText2 = patText2.replace(/你/g, '我');
           var a = rec.asks[i];
           if (!a) return;
           if (act === 'copy') {
-            var label = a.self ? '我的笔记' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读');
+            var label = a.self ? '我的笔记' : (a.mode === 'draw3' ? '三张补充' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读'));
             var txt = '追问（' + label + '）' + (a.q ? '：' + a.q : '');
             if (a.sup) txt += '\n' + a.sup;
             if (a.text) txt += '\n' + a.text;
@@ -22816,11 +22831,11 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           document.getElementById('dvdAskInterpBtns').style.display = 'none';
           document.getElementById('dvdAskSelfPanel').style.display = 'none';
           _dvdAskText = '';
-          if (_dvdAskMode === 'draw') {
-            supText = drawSupplement(_dvdAskTarget);
+          if (_dvdAskMode === 'draw' || _dvdAskMode === 'draw3') {
+            supText = drawSupplement(_dvdAskTarget, _dvdAskMode === 'draw3' ? 3 : 1);
             extraEl.innerHTML = supText.replace(/\n/g, '<br>');
             extraEl.style.display = '';
-            _dvdAskPending = { q: q, supText: supText, ctx: ctx, mode: 'draw', selfT: null, selfText: '' };
+            _dvdAskPending = { q: q, supText: supText, ctx: ctx, mode: _dvdAskMode, selfT: null, selfText: '' };
             document.getElementById('dvdAskInterpBtns').style.display = '';
           } else {
             extraEl.style.display = 'none';
@@ -22961,7 +22976,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               var ad = new Date(a.t);
               var ats = ('0' + ad.getHours()).slice(-2) + ':' + ('0' + ad.getMinutes()).slice(-2);
               h += '<div class="dvd-hd-ask">';
-              h += '<div class="dvd-hd-askq">' + ats + ' · ' + (a.self ? '我的笔记' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
+              h += '<div class="dvd-hd-askq">' + ats + ' · ' + (a.self ? '我的笔记' : (a.mode === 'draw3' ? '三张补充' : (a.mode === 'draw' ? '再抽补充' : '原牌面解读'))) + ' · ' + escHtml(a.q || '') + '</div>';
               if (a.sup) h += '<div class="dvd-hd-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
               h += '<div class="dvd-hd-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
               if (a.note) h += '<div class="dvd-prev-note"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</div>';
