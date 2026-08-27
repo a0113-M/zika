@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v189')){sessionStorage.setItem('zk_v189','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==189){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v190')){sessionStorage.setItem('zk_v190','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==190){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v189</title>
+  <title>字卡 · 小手机 v190</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7252,6 +7252,9 @@
       font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 4px;
     }
     .dvd-ask-prev b { color: var(--text-main); }
+    .dvd-ask-switch { font-size: 12px; color: var(--primary); text-align: right; margin-bottom: 10px; cursor: pointer; user-select: none; }
+    .dvd-ask-hist { max-height: 230px; overflow-y: auto; margin-bottom: 4px; }
+    .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
     .dvd-hlist { display: flex; flex-direction: column; gap: 10px; }
     .dvd-hitem {
       background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.14);
@@ -12481,6 +12484,8 @@
         <div class="dvd-view" id="dvdAskView" style="display:none;">
           <button class="dvd-subback" id="dvdAskBack">‹ 返回</button>
           <div class="dvd-ask-prev" id="dvdAskPrev"></div>
+          <div class="dvd-ask-switch" id="dvdAskSwitch">从历史记录里选一条 ▾</div>
+          <div class="dvd-hlist dvd-ask-hist" id="dvdAskHist" style="display:none;"></div>
           <div class="dvd-seg-label">想接着追问什么？</div>
           <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
           <button class="dvd-primary" id="dvdAskBtn">追问</button>
@@ -22143,7 +22148,8 @@ patText2 = patText2.replace(/你/g, '我');
             mode: st.mode === 'tarot' ? '塔罗' : (st.mode === 'leno' ? '雷诺曼' : '混合'),
             q: st.question,
             target: st.target,
-            cards: draw.map(function (d) { return (d.mix ? d.kind + '·' : '') + d.c.name + (d.tarot ? (d.r ? '(逆)' : '(正)') : ''); })
+            cards: draw.map(function (d) { return (d.mix ? d.kind + '·' : '') + d.c.name + (d.tarot ? (d.r ? '(逆)' : '(正)') : ''); }),
+            text: resultText()
           });
           if (h.length > 50) h = h.slice(0, 50);
           try { localStorage.setItem('divineHistory', JSON.stringify(h)); } catch (e) {}
@@ -22297,29 +22303,68 @@ patText2 = patText2.replace(/你/g, '我');
         });
 
         // ===== 占卜追问 =====
-        function renderAskPrev() {
-          var el = document.getElementById('dvdAskPrev');
-          if (_dvdLast) {
-            el.innerHTML = '<b>上次占卜</b>：' + (_dvdLast.text || '').replace(/\n/g, '<br>').replace(/</g, '&lt;');
-          } else {
-            var h = loadHistory();
-            if (h && h.length) {
-              var x = h[0];
-              el.innerHTML = '<b>最近一次</b>：' + x.mode + (x.target ? ' · ' + x.target : '') + '<br>' + (x.q || '未写下问题') + '<br>牌面：' + x.cards.join(' · ');
-            } else {
-              el.innerHTML = '还没有占卜记录，先回首页抽一卦吧。';
-            }
-          }
+        var _dvdAskTarget = null; // 当前追问承接的占卜记录
+        function askCtx(x) {
+          if (!x) return '';
+          if (x.text) return '上次占卜：\n' + x.text;
+          return '上次占卜（' + (x.mode || '') + (x.target ? ' · ' + x.target : '') + (x.q ? '，' + x.q : '') + '）：' + ((x.cards && x.cards.length) ? x.cards.join('、') : '');
         }
+        function askPrevHtml(x) {
+          if (!x) return '还没有占卜记录，先回首页抽一卦吧。';
+          var mode = x.mode || '';
+          // 兼容旧「去追问」即时对象的英文 mode
+          if (x.text && x.question !== undefined && (!x.cards || !x.cards.length)) {
+            mode = ({ tarot: '塔罗牌', leno: '雷诺曼牌', mix: '混合模式' })[x.mode] || x.mode;
+          }
+          var q = x.q || x.question || '';
+          var target = x.target || '';
+          var cards = (x.cards && x.cards.length) ? x.cards.join(' · ') : '';
+          var html = '<b>' + mode + '</b>' + (target ? ' · ' + target : '');
+          html += '<br>' + (q || '未写下问题');
+          if (cards) html += '<br>牌面：' + cards;
+          return html;
+        }
+        function renderAskHist() {
+          var h = loadHistory();
+          var box = document.getElementById('dvdAskHist');
+          if (!h.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
+          box.innerHTML = h.map(function (x, i) {
+            var d = new Date(x.t);
+            var ts = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+            var on = _dvdAskTarget && _dvdAskTarget.t === x.t;
+            return '<div class="dvd-hitem' + (on ? ' act' : '') + '" data-i="' + i + '">' +
+              '<div class="dvd-h-meta"><span>' + ts + '</span><span>' + x.mode + '</span>' + (x.target ? '<span>' + x.target + '</span>' : '') + '</div>' +
+              '<div class="dvd-h-q">' + (x.q || '未写下问题') + '</div>' +
+              '<div class="dvd-h-cards">' + x.cards.join(' · ') + '</div>' +
+            '</div>';
+          }).join('');
+          box.style.display = '';
+          box.querySelectorAll('.dvd-hitem').forEach(function (it) {
+            it.addEventListener('click', function () {
+              _dvdAskTarget = h[parseInt(it.getAttribute('data-i'), 10)];
+              renderAskPrev();
+              box.style.display = 'none';
+            });
+          });
+        }
+        function renderAskPrev() {
+          var h = loadHistory();
+          if (!_dvdAskTarget) {
+            if (h && h.length) _dvdAskTarget = h[0];
+            else if (_dvdLast) _dvdAskTarget = _dvdLast;
+          }
+          document.getElementById('dvdAskPrev').innerHTML = askPrevHtml(_dvdAskTarget);
+          document.getElementById('dvdAskSwitch').style.display = (h && h.length) ? '' : 'none';
+          renderAskHist();
+        }
+        document.getElementById('dvdAskSwitch').addEventListener('click', function () {
+          var box = document.getElementById('dvdAskHist');
+          box.style.display = (box.style.display !== 'none') ? 'none' : '';
+        });
         document.getElementById('dvdAskBtn').addEventListener('click', function () {
           var q = (document.getElementById('dvdAskInput').value || '').trim();
           if (!q) { if (typeof showToast === 'function') showToast('先写下你想追问的问题'); return; }
-          var ctx = '';
-          if (_dvdLast) ctx = '上次占卜：\n' + _dvdLast.text;
-          else {
-            var h = loadHistory();
-            if (h && h.length) { var x = h[0]; ctx = '上次占卜（' + x.mode + '，' + (x.q || '未写下问题') + '）：' + x.cards.join('、'); }
-          }
+          var ctx = askCtx(_dvdAskTarget);
           if (!ctx) { if (typeof showToast === 'function') showToast('没有可追问的占卜，先抽一卦'); return; }
           var content = ctx + '\n\n我的追问：' + q;
           var box = document.getElementById('dvdAskResult');
