@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v208')){sessionStorage.setItem('zk_v208','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==208){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v209')){sessionStorage.setItem('zk_v209','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==209){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v208</title>
+  <title>字卡 · 小手机 v209</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7188,6 +7188,15 @@
       background: none; border: none; color: var(--primary);
       font-size: 14px; padding: 0; margin-bottom: 12px; cursor: pointer;
     }
+    .dvd-hist-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .dvd-hist-top .dvd-subback { margin-bottom: 0; }
+    .dvd-hist-askbtn {
+      padding: 8px 18px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #fff; font-size: 13.5px; font-weight: 600; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .dvd-hist-askbtn:active { opacity: 0.9; }
     .dvd-seg { display: flex; background: var(--bg-soft2); border-radius: 12px; padding: 4px; margin-bottom: 6px; }
     .dvd-seg-item {
       flex: 1; padding: 9px 0; border: none; border-radius: 9px;
@@ -12666,7 +12675,10 @@
 
         <!-- 历史详情 -->
         <div class="dvd-view" id="dvdHistDetailView" style="display:none;">
-          <button class="dvd-subback" id="dvdHistDetailBack">‹ 返回</button>
+          <div class="dvd-hist-top">
+            <button class="dvd-subback" id="dvdHistDetailBack">‹ 返回</button>
+            <button class="dvd-hist-askbtn" id="dvdHistAskBtn">追问</button>
+          </div>
           <div class="dvd-hdetail" id="dvdHistDetail"></div>
         </div>
       </div>
@@ -22569,6 +22581,7 @@ patText2 = patText2.replace(/你/g, '我');
         // ===== 占卜追问 =====
         var _dvdAskTarget = null; // 当前追问承接的占卜记录
         var _dvdAskMode = 'talk'; // 追问方式：talk 原牌面解读 / draw 再抽一张补充
+        var _dvdHistCur = null; // 历史详情当前查看的记录
         function drawSupplement(x) {
           if (!x) return '';
           var mode = x.mode || '';
@@ -22959,10 +22972,19 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           return h;
         }
         function openHistDetail(x) {
+          _dvdHistCur = x;
           document.getElementById('dvdHistDetail').innerHTML = histDetailHtml(x);
           showView('histDetail');
         }
         document.getElementById('dvdHistDetailBack').addEventListener('click', function () { showView('hist'); });
+        document.getElementById('dvdHistAskBtn').addEventListener('click', function () {
+          if (_dvdHistCur) {
+            _dvdAskTarget = findRec(_dvdHistCur.t) || _dvdHistCur;
+            _dvdAskMode = 'talk';
+            renderAskPrev();
+            showView('ask');
+          }
+        });
         document.getElementById('dvdClearHBtn').addEventListener('click', function () {
           localStorage.removeItem('divineHistory');
           renderHistory();
