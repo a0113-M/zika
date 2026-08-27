@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v199')){sessionStorage.setItem('zk_v199','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==199){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v200')){sessionStorage.setItem('zk_v200','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==200){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v199</title>
+  <title>字卡 · 小手机 v200</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22367,7 +22367,7 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         // AI 调用
-        function callAI(systemPrompt, userContent, boxEl, done) {
+        function callAI(systemPrompt, userContent, boxEl, done, skipRender) {
           var cfg = getApiCfg();
           if (!cfg.url || !cfg.key) {
             boxEl.style.display = '';
@@ -22393,7 +22393,7 @@ patText2 = patText2.replace(/你/g, '我');
             else if (data && data.content) text = data.content;
             if (!text) throw new Error('empty response');
             text = text.replace(/\*\*/g, '').replace(/^[ \t]*\*+[ \t]?/gm, '').replace(/^[ \t]*#{1,6}[ \t]+/gm, '').replace(/^[ \t]*([-*_][ \t]*){3,}[ \t]*$/gm, '').replace(/^[ \t]*\|[ \t]*[-:]+[ \t]*(\|[ \t]*[-:]+[ \t]*)+\|?[ \t]*$/gm, '').replace(/^[ \t]*\|/gm, '').replace(/\|[ \t]*$/gm, '').replace(/\|/g, ' · ');
-            boxEl.innerHTML = '<div class="dvd-interp">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>';
+            if (!skipRender) boxEl.innerHTML = '<div class="dvd-interp">' + text.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>') + '</div>';
             if (done) done(text);
           }).catch(function (err) {
             boxEl.innerHTML = '<div class="dvd-interp-error">解读失败：' + (err.message || '未知错误') + '</div>';
@@ -22674,6 +22674,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           callAI(DEFAULT_PROMPT, p.ctx + '\n\n' + p.supText + '\n\n我的追问：' + p.q, box, function (text) {
             _dvdAskText = text;
             if (text) {
+              box.style.display = 'none';
+              box.innerHTML = '';
               document.getElementById('dvdAskActions').style.display = '';
               if (_dvdAskTarget && _dvdAskTarget.t) {
                 appendAsk(_dvdAskTarget.t, { t: new Date().getTime(), q: p.q, mode: p.mode, sup: p.supText, text: text });
@@ -22681,7 +22683,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
                 renderAskPrev();
               }
             }
-          });
+          }, true);
         });
         document.getElementById('dvdAskSelfBtn').addEventListener('click', function () {
           if (!_dvdAskPending) return;
