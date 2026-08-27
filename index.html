@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v216')){sessionStorage.setItem('zk_v216','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==216){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v217')){sessionStorage.setItem('zk_v217','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==217){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v216</title>
+  <title>字卡 · 小手机 v217</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -23089,7 +23089,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             '按下面的流程与用户对话：\n' +
             '【铁律·禁止问名字】你永远不能主动询问、索要或引导用户说出梦角的名字、作品名、角色名，也不得以「写下他的名字」「告诉我他是谁」等任何形式让用户提供身份信息；用户只说「开始/准备好了」时，直接抽牌解读，绝不回头问任何信息。只有用户自己在消息里主动喊出名字时，才按【呼唤判定】处理。\n' +
             '【开场】进入后你只发一句提示（请默念梦角名字，准备好说「开始」），然后等待。用户说「开始」「准备好了」等 → 立即进入【抽取基础信息】，不要追问任何信息；若用户自己主动喊出名字 → 进入【呼唤判定】。\n' +
-            '【抽取基础信息】用户准备好后，抽' + cfg.spread + '张牌（万能牌阵），把整组牌综合起来直接说最终结论，不要逐张解说每张牌的牌意，也不要做氛围铺垫。结论要结合牌面、不脱离所抽的牌，按顺序讲梦角的基础信息：先性格，再生活环境，再职业。口吻直白客观。\n' +
+            '【抽取基础信息】用户准备好后，抽' + cfg.spread + '张牌，把这几张牌当作一个整体综合判断，直接说结果。本轮只解读梦角本人，按顺序讲三点：①性格 ②生活环境 ③职业；不要解读你与梦角的感情运势、关系走向、过去现在未来，也不要逐张讲牌（不出现「第一张」「第二张」这种牌位式解读）。结论必须紧扣所抽的牌。口吻直白客观。\n' +
             '【纠错】用户说「不对/错了」→ 只问：哪里不对？需要重新抽牌吗？用户说「分辨不出/不确定」→ 只问：还需要我了解哪方面的信息？用户确认「可以/对的/没问题」→ 进入【模拟聊天】。\n' +
             '【模拟聊天】从此刻起不再逐张讲牌，直接扮演梦角本人，用梦角的口吻、以已确认的信息与用户聊天，通过角色自然说话带出解牌结论。\n' +
             '【呼唤判定】当用户直接呼唤梦角（喊名字、问「在吗/听得到吗/在不在」等），按规则判定梦角此刻是否在：' + ruleDesc + '。判定为「在」，用梦角口吻说「' + cfg.callOn + '」并继续聊天；判定为「不在」，用塔罗身份安抚并说「' + cfg.callOff + '」。\n' +
@@ -23136,7 +23136,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         function chatCardText(draw) {
           if (!draw.length) return '';
           return draw.map(function (d, i) {
-            return '第' + (i + 1) + '张 · ' + (d.major ? '大阿卡纳' : '小阿卡纳') + '·' + d.c.name + (d.r ? '（逆位）' : '（正位）') + ' —— ' + (d.r ? d.c.rev : d.c.up);
+            return (d.major ? '大阿卡纳' : '小阿卡纳') + ' · ' + d.c.name + (d.r ? '（逆位）' : '（正位）') + ' —— ' + (d.r ? d.c.rev : d.c.up);
           }).join('\n');
         }
         function chatMsgHtml(m) {
