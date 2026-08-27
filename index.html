@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v203')){sessionStorage.setItem('zk_v203','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==203){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v204')){sessionStorage.setItem('zk_v204','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==204){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v203</title>
+  <title>字卡 · 小手机 v204</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22636,6 +22636,11 @@ patText2 = patText2.replace(/你/g, '我');
           if (act === 'diary-all') {
             var lines = [];
             if (rec.mode) lines.push(rec.mode + (rec.target ? ' · ' + rec.target : '') + (rec.q ? '，问题：' + rec.q : ''));
+            if (rec.text) lines.push(rec.text);
+            else if (rec.cards && rec.cards.length) lines.push('牌面：' + rec.cards.join(' · '));
+            if (rec.interp) lines.push('AI 解读：\n' + rec.interp);
+            if (rec.selfInterp) lines.push('我的解读：\n' + rec.selfInterp);
+            if (rec.asks && rec.asks.length) lines.push('—— 追问记录（' + rec.asks.length + '）——');
             rec.asks.forEach(function (ax, k) {
               var lbl = ax.self ? '我的笔记' : (ax.mode === 'draw' ? '再抽补充' : '原牌面解读');
               var seg = (k + 1) + '. ' + lbl + (ax.q ? '：' + ax.q : '');
