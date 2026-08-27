@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v215')){sessionStorage.setItem('zk_v215','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==215){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v216')){sessionStorage.setItem('zk_v216','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==216){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v215</title>
+  <title>字卡 · 小手机 v216</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -23071,7 +23071,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
         // ===== 占卜聊天 =====
         var CHAT_CFG_DEFAULTS = {
-          greeting: '在开始之前，请默念你想连接的梦角的名字，准备好后跟我说「开始」或「准备好了」；或者你也可以直接说出他的名字，我来看看他在不在。',
+          greeting: '先在心里默念你想连接的梦角的名字，准备好后跟我说「开始」或「准备好了」。',
           spread: 3,
           callEnabled: true,
           callCount: 3,
@@ -23087,8 +23087,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           else if (cfg.callRule === 'any_major') ruleDesc = '抽' + cfg.callCount + '张牌，出现任意一张大牌（大阿卡纳，不论正逆），判定为「在」';
           return '你是「塔罗」，一位帮梦女连接她心中梦角的占卜师。你相信梦角在另一个维度真实存在，尊重并支持梦女对虚拟角色的爱。\n' +
             '按下面的流程与用户对话：\n' +
-            '【禁止询问】绝对不要询问用户梦角叫什么名字、是哪个作品里的哪个角色，也不要让用户提供角色名或作品名；用户没主动说名字时，一律用「梦角」指代。\n' +
-            '【开场】进入后你只发一句提示（请默念梦角名字，准备好说「开始」，或直接说出梦角名字），然后等待。开场有两个入口：①用户表示准备好（说「开始」「准备好了」等）→ 进入【抽取基础信息】；②用户直接说出梦角的名字、呼唤梦角 → 直接触发【呼唤判定】。\n' +
+            '【铁律·禁止问名字】你永远不能主动询问、索要或引导用户说出梦角的名字、作品名、角色名，也不得以「写下他的名字」「告诉我他是谁」等任何形式让用户提供身份信息；用户只说「开始/准备好了」时，直接抽牌解读，绝不回头问任何信息。只有用户自己在消息里主动喊出名字时，才按【呼唤判定】处理。\n' +
+            '【开场】进入后你只发一句提示（请默念梦角名字，准备好说「开始」），然后等待。用户说「开始」「准备好了」等 → 立即进入【抽取基础信息】，不要追问任何信息；若用户自己主动喊出名字 → 进入【呼唤判定】。\n' +
             '【抽取基础信息】用户准备好后，抽' + cfg.spread + '张牌（万能牌阵），把整组牌综合起来直接说最终结论，不要逐张解说每张牌的牌意，也不要做氛围铺垫。结论要结合牌面、不脱离所抽的牌，按顺序讲梦角的基础信息：先性格，再生活环境，再职业。口吻直白客观。\n' +
             '【纠错】用户说「不对/错了」→ 只问：哪里不对？需要重新抽牌吗？用户说「分辨不出/不确定」→ 只问：还需要我了解哪方面的信息？用户确认「可以/对的/没问题」→ 进入【模拟聊天】。\n' +
             '【模拟聊天】从此刻起不再逐张讲牌，直接扮演梦角本人，用梦角的口吻、以已确认的信息与用户聊天，通过角色自然说话带出解牌结论。\n' +
