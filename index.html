@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v190')){sessionStorage.setItem('zk_v190','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==190){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v191')){sessionStorage.setItem('zk_v191','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==191){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v190</title>
+  <title>字卡 · 小手机 v191</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7254,6 +7254,7 @@
     .dvd-ask-prev b { color: var(--text-main); }
     .dvd-ask-switch { font-size: 12px; color: var(--primary); text-align: right; margin-bottom: 10px; cursor: pointer; user-select: none; }
     .dvd-ask-hist { max-height: 230px; overflow-y: auto; margin-bottom: 4px; }
+    .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
     .dvd-hlist { display: flex; flex-direction: column; gap: 10px; }
     .dvd-hitem {
@@ -12486,9 +12487,15 @@
           <div class="dvd-ask-prev" id="dvdAskPrev"></div>
           <div class="dvd-ask-switch" id="dvdAskSwitch">从历史记录里选一条 ▾</div>
           <div class="dvd-hlist dvd-ask-hist" id="dvdAskHist" style="display:none;"></div>
+          <div class="dvd-seg-label">追问方式</div>
+          <div class="dvd-seg" id="dvdAskModeSeg">
+            <button class="dvd-seg-item active" data-m="talk">按原牌面解读</button>
+            <button class="dvd-seg-item" data-m="draw">再抽一张补充</button>
+          </div>
           <div class="dvd-seg-label">想接着追问什么？</div>
           <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
           <button class="dvd-primary" id="dvdAskBtn">追问</button>
+          <div class="dvd-ask-extra" id="dvdAskExtra" style="display:none;"></div>
           <div class="dvd-interp" id="dvdAskResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdAskActions" style="display:none;">
             <button class="dvd-ghost" id="dvdAskCopyBtn">复制追问</button>
@@ -22304,6 +22311,30 @@ patText2 = patText2.replace(/你/g, '我');
 
         // ===== 占卜追问 =====
         var _dvdAskTarget = null; // 当前追问承接的占卜记录
+        var _dvdAskMode = 'talk'; // 追问方式：talk 原牌面解读 / draw 再抽一张补充
+        function drawSupplement(x) {
+          if (!x) return '';
+          var mode = x.mode || '';
+          if (mode === 'tarot') mode = '塔罗';
+          else if (mode === 'leno') mode = '雷诺曼';
+          else if (mode === 'mix') mode = '混合';
+          var lines = ['追问补充抽牌：'];
+          if (mode === '混合') {
+            var t = TAROT[Math.floor(Math.random() * TAROT.length)];
+            var tr = Math.random() < 0.35;
+            var l = LENO[Math.floor(Math.random() * LENO.length)];
+            lines.push('塔罗：' + t.name + '（' + (tr ? '逆位' : '正位') + '）- ' + (tr ? t.rev : t.up));
+            lines.push('雷诺曼：' + l.name + ' - ' + l.up);
+          } else if (mode === '雷诺曼') {
+            var l2 = LENO[Math.floor(Math.random() * LENO.length)];
+            lines.push('雷诺曼：' + l2.name + ' - ' + l2.up);
+          } else {
+            var t2 = TAROT[Math.floor(Math.random() * TAROT.length)];
+            var tr2 = Math.random() < 0.35;
+            lines.push('塔罗：' + t2.name + '（' + (tr2 ? '逆位' : '正位') + '）- ' + (tr2 ? t2.rev : t2.up));
+          }
+          return lines.join('\n');
+        }
         function askCtx(x) {
           if (!x) return '';
           if (x.text) return '上次占卜：\n' + x.text;
@@ -22361,12 +22392,29 @@ patText2 = patText2.replace(/你/g, '我');
           var box = document.getElementById('dvdAskHist');
           box.style.display = (box.style.display !== 'none') ? 'none' : '';
         });
+        document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
+          b.addEventListener('click', function () {
+            _dvdAskMode = b.getAttribute('data-m');
+            document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
+            b.classList.add('active');
+          });
+        });
         document.getElementById('dvdAskBtn').addEventListener('click', function () {
           var q = (document.getElementById('dvdAskInput').value || '').trim();
           if (!q) { if (typeof showToast === 'function') showToast('先写下你想追问的问题'); return; }
           var ctx = askCtx(_dvdAskTarget);
           if (!ctx) { if (typeof showToast === 'function') showToast('没有可追问的占卜，先抽一卦'); return; }
           var content = ctx + '\n\n我的追问：' + q;
+          var extraEl = document.getElementById('dvdAskExtra');
+          if (_dvdAskMode === 'draw') {
+            var sup = drawSupplement(_dvdAskTarget);
+            content = ctx + '\n\n' + sup + '\n\n我的追问：' + q;
+            extraEl.innerHTML = sup.replace(/\n/g, '<br>');
+            extraEl.style.display = '';
+          } else {
+            extraEl.style.display = 'none';
+            extraEl.innerHTML = '';
+          }
           var box = document.getElementById('dvdAskResult');
           box.style.display = 'none';
           callAI(DEFAULT_PROMPT, content, box, function (text) {
