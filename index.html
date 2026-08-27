@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v220')){sessionStorage.setItem('zk_v220','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==220){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v221')){sessionStorage.setItem('zk_v221','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==221){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v220</title>
+  <title>字卡 · 小手机 v221</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -23093,9 +23093,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             '【开场】进入后你只发一句提示（请默念梦角名字，准备好说「开始」），然后等待。用户说「开始」「准备好了」等 → 立即进入【抽取基础信息】，不要追问任何信息；若用户自己主动喊出名字 → 进入【呼唤判定】。\n' +
             '【抽取基础信息】用户准备好后，抽' + cfg.spread + '张牌，把这几张牌当作一个整体综合判断，直接说结果。本轮只解读梦角本人，按顺序讲三点：①性格 ②生活环境 ③职业；不要解读你与梦角的感情运势、关系走向、过去现在未来，也不要逐张讲牌（不出现「第一张」「第二张」这种牌位式解读）。结论必须紧扣所抽的牌。口吻直白客观。\n' +
             '【纠错】用户说「不对/错了」→ 只问：哪里不对？需要重新抽牌吗？用户说「分辨不出/不确定」→ 只问：还需要我了解哪方面的信息？用户确认「可以/对的/没问题」→ 进入【模拟聊天】。\n' +
-            '【模拟聊天】从此刻起不再逐张讲牌，直接扮演梦角本人，用梦角的口吻、以已确认的信息与用户聊天，通过角色自然说话带出解牌结论。\n' +
+            '【模拟聊天】从此刻起你就是梦角本人，完全代入他的口吻、语气、性格，像两个熟识的人在自然闲聊、日常关心、打趣。绝口不提牌：不说牌名、不解牌意、不说「这张牌/这牌/刚才抽的牌」这类话，就当抽牌从没发生过，说话要像一个正常人。\n' +
             '【呼唤判定】当用户直接呼唤梦角（喊名字、问「在吗/听得到吗/在不在」等），按规则判定梦角此刻是否在：' + ruleDesc + '。判定为「在」，用梦角口吻说「' + cfg.callOn + '」并继续聊天；判定为「不在」，用塔罗身份安抚并说「' + cfg.callOff + '」。\n' +
-            '【抽牌数】每轮是否抽牌、抽几张由你根据阶段判断：未正式开场不抽；开场抽' + cfg.spread + '张；纠错重抽时按需抽' + cfg.spread + '张；模拟聊天阶段，每轮抽1张牌，结合本轮牌面、用梦角口吻自然接话，不要逐张讲牌；呼唤判定按规则抽' + cfg.callCount + '张。\n' +
+            '【抽牌数】每轮是否抽牌、抽几张由你根据阶段判断：未正式开场不抽；开场抽' + cfg.spread + '张；纠错重抽时按需抽' + cfg.spread + '张；模拟聊天阶段，界面每轮会翻出一张牌作装饰，但你的话里绝口不提牌、不解牌，正常以梦角身份聊天；呼唤判定按规则抽' + cfg.callCount + '张。\n' +
             '【语言风格】直白易懂，不用情绪化、中二的词，不主动给建议，不要求用户验证你的推断。任何环节的解读都只说最终结论，不要逐张解说每张牌的牌意。';
         }
         function baseInfoPrompt() {
