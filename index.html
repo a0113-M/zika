@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v194')){sessionStorage.setItem('zk_v194','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==194){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v195')){sessionStorage.setItem('zk_v195','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==195){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v194</title>
+  <title>字卡 · 小手机 v195</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7271,6 +7271,37 @@
     .dvd-h-askn { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 10px; background: var(--primary); color: #fff; font-size: 10.5px; }
     .dvd-ask-switch { font-size: 12px; color: var(--primary); text-align: right; margin-bottom: 10px; cursor: pointer; user-select: none; }
     .dvd-ask-hist { max-height: 230px; overflow-y: auto; margin-bottom: 4px; }
+    .dvd-ask-barbar { margin-bottom: 8px; }
+    .dvd-ask-histbtn {
+      width: 100%; display: flex; align-items: center; justify-content: space-between;
+      background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.16);
+      border-radius: 12px; padding: 11px 13px; font-size: 13.5px; color: var(--text-main); cursor: pointer;
+    }
+    .dvd-ask-caret { color: var(--primary); font-size: 12px; }
+    .dvd-ask-dock {
+      position: sticky; bottom: 0; z-index: 5;
+      background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.16);
+      border-radius: 16px; padding: 10px 14px 14px; margin-top: 14px;
+      box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+    }
+    .dvd-ask-dock .dvd-seg { margin-bottom: 4px; }
+    .dvd-ask-dock .dvd-seg-label { margin: 8px 0 6px; }
+    .dvd-ask-dock .dvd-seg-label:first-child { margin-top: 0; }
+    .dvd-ask-hist { flex: 1; overflow-y: auto; margin: 0; max-height: none; }
+    .dvd-hist-modal {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 600; display: flex; align-items: center; justify-content: center;
+    }
+    .dvd-hist-modal-mask { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.42); }
+    .dvd-hist-modal-card {
+      position: relative; width: 88%; max-width: 420px; max-height: 74%;
+      background: var(--bg-card); border-radius: 16px; padding: 14px 14px 16px;
+      display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+    }
+    .dvd-hist-modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .dvd-hist-modal-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    .dvd-hist-close { background: none; border: none; font-size: 17px; color: var(--text-secondary); cursor: pointer; padding: 2px 6px; }
+    .dvd-hist-search { margin-bottom: 10px; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
     .dvd-hlist { display: flex; flex-direction: column; gap: 10px; }
@@ -12501,23 +12532,26 @@
         <!-- 占卜追问 -->
         <div class="dvd-view" id="dvdAskView" style="display:none;">
           <button class="dvd-subback" id="dvdAskBack">‹ 返回</button>
-          <div class="dvd-ask-prev" id="dvdAskPrev"></div>
-          <div class="dvd-ask-switch" id="dvdAskSwitch">从历史记录里选一条 ▾</div>
-          <div class="dvd-hlist dvd-ask-hist" id="dvdAskHist" style="display:none;"></div>
-          <div class="dvd-seg-label">追问方式</div>
-          <div class="dvd-seg" id="dvdAskModeSeg">
-            <button class="dvd-seg-item active" data-m="talk">按原牌面解读</button>
-            <button class="dvd-seg-item" data-m="draw">再抽一张补充</button>
+          <div class="dvd-ask-barbar">
+            <button class="dvd-ask-histbtn" id="dvdAskSwitch">历史记录<span class="dvd-ask-caret">▾</span></button>
           </div>
-          <div class="dvd-seg-label">想接着追问什么？</div>
-          <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
-          <button class="dvd-primary" id="dvdAskBtn">追问</button>
+          <div class="dvd-ask-prev" id="dvdAskPrev"></div>
           <div class="dvd-ask-extra" id="dvdAskExtra" style="display:none;"></div>
           <div class="dvd-interp" id="dvdAskResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdAskActions" style="display:none;">
             <button class="dvd-ghost" id="dvdAskCopyBtn">复制追问</button>
             <button class="dvd-ghost" id="dvdAskSendBtn">发送到聊天</button>
             <button class="dvd-ghost" id="dvdAskDiaryBtn">添加到日记</button>
+          </div>
+          <div class="dvd-ask-dock">
+            <div class="dvd-seg-label">追问方式</div>
+            <div class="dvd-seg" id="dvdAskModeSeg">
+              <button class="dvd-seg-item active" data-m="talk">按原牌面解读</button>
+              <button class="dvd-seg-item" data-m="draw">再抽一张补充</button>
+            </div>
+            <div class="dvd-seg-label">想接着追问什么？</div>
+            <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
+            <button class="dvd-primary" id="dvdAskBtn">追问</button>
           </div>
         </div>
 
@@ -12535,6 +12569,19 @@
           <button class="dvd-subback" id="dvdHistDetailBack">‹ 返回</button>
           <div class="dvd-hdetail" id="dvdHistDetail"></div>
         </div>
+      </div>
+    </div>
+
+    <!-- 历史记录选择弹窗 -->
+    <div class="dvd-hist-modal" id="dvdHistModal" style="display:none;">
+      <div class="dvd-hist-modal-mask"></div>
+      <div class="dvd-hist-modal-card">
+        <div class="dvd-hist-modal-head">
+          <span class="dvd-hist-modal-title">历史记录</span>
+          <button class="dvd-hist-close" id="dvdHistModalClose">✕</button>
+        </div>
+        <input class="dvd-input dvd-hist-search" id="dvdHistSearch" placeholder="搜索问题或牌面">
+        <div class="dvd-hlist dvd-ask-hist" id="dvdAskHist"></div>
       </div>
     </div>
 
@@ -22422,23 +22469,32 @@ patText2 = patText2.replace(/你/g, '我');
         function renderAskHist() {
           var h = loadHistory();
           var box = document.getElementById('dvdAskHist');
-          if (!h.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
-          box.innerHTML = h.map(function (x, i) {
+          var q = (document.getElementById('dvdHistSearch').value || '').trim().toLowerCase();
+          var list = q ? h.filter(function (x) {
+            var hay = ((x.q || '') + ' ' + (x.target || '') + ' ' + (x.mode || '') + ' ' + ((x.cards || []).join(' '))).toLowerCase();
+            return hay.indexOf(q) >= 0;
+          }) : h;
+          if (!list.length) {
+            box.innerHTML = '<div class="dvd-hempty">' + (q ? '没有匹配的记录' : '还没有占卜记录，去抽第一副牌吧') + '</div>';
+            return;
+          }
+          box.innerHTML = list.map(function (x) {
             var d = new Date(x.t);
             var ts = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
             var on = _dvdAskTarget && _dvdAskTarget.t === x.t;
-            return '<div class="dvd-hitem' + (on ? ' act' : '') + '" data-i="' + i + '">' +
+            var nAsk = (x.asks && x.asks.length) ? '<span class="dvd-h-askn">' + x.asks.length + ' 追问</span>' : '';
+            return '<div class="dvd-hitem' + (on ? ' act' : '') + '" data-t="' + x.t + '">' +
               '<div class="dvd-h-meta"><span>' + ts + '</span><span>' + x.mode + '</span>' + (x.target ? '<span>' + x.target + '</span>' : '') + '</div>' +
-              '<div class="dvd-h-q">' + (x.q || '未写下问题') + '</div>' +
+              '<div class="dvd-h-q">' + (x.q || '未写下问题') + nAsk + '</div>' +
               '<div class="dvd-h-cards">' + x.cards.join(' · ') + '</div>' +
             '</div>';
           }).join('');
-          box.style.display = '';
           box.querySelectorAll('.dvd-hitem').forEach(function (it) {
             it.addEventListener('click', function () {
-              _dvdAskTarget = h[parseInt(it.getAttribute('data-i'), 10)];
+              var t = parseInt(it.getAttribute('data-t'), 10);
+              _dvdAskTarget = findRec(t) || _dvdAskTarget;
               renderAskPrev();
-              box.style.display = 'none';
+              closeHistModal();
             });
           });
         }
@@ -22453,9 +22509,19 @@ patText2 = patText2.replace(/你/g, '我');
           renderAskHist();
         }
         document.getElementById('dvdAskSwitch').addEventListener('click', function () {
-          var box = document.getElementById('dvdAskHist');
-          box.style.display = (box.style.display !== 'none') ? 'none' : '';
+          openHistModal();
         });
+        document.getElementById('dvdHistModalClose').addEventListener('click', closeHistModal);
+        document.getElementById('dvdHistSearch').addEventListener('input', renderAskHist);
+        document.getElementById('dvdHistModal').querySelector('.dvd-hist-modal-mask').addEventListener('click', closeHistModal);
+        function openHistModal() {
+          var s = document.getElementById('dvdHistSearch'); if (s) s.value = '';
+          renderAskHist();
+          document.getElementById('dvdHistModal').style.display = '';
+        }
+        function closeHistModal() {
+          document.getElementById('dvdHistModal').style.display = 'none';
+        }
         document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
           b.addEventListener('click', function () {
             _dvdAskMode = b.getAttribute('data-m');
