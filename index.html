@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v198')){sessionStorage.setItem('zk_v198','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==198){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v199')){sessionStorage.setItem('zk_v199','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==199){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v198</title>
+  <title>字卡 · 小手机 v199</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22657,22 +22657,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             supText = drawSupplement(_dvdAskTarget);
             extraEl.innerHTML = supText.replace(/\n/g, '<br>');
             extraEl.style.display = '';
-            _dvdAskPending = { q: q, supText: supText, ctx: ctx, selfT: null, selfText: '' };
+            _dvdAskPending = { q: q, supText: supText, ctx: ctx, mode: 'draw', selfT: null, selfText: '' };
             document.getElementById('dvdAskInterpBtns').style.display = '';
           } else {
             extraEl.style.display = 'none';
             extraEl.innerHTML = '';
-            callAI(DEFAULT_PROMPT, ctx + '\n\n我的追问：' + q, box, function (text) {
-              _dvdAskText = text;
-              if (text) {
-                document.getElementById('dvdAskActions').style.display = '';
-                if (_dvdAskTarget && _dvdAskTarget.t) {
-                  appendAsk(_dvdAskTarget.t, { t: new Date().getTime(), q: q, mode: _dvdAskMode, sup: supText, text: text });
-                  _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
-                  renderAskPrev();
-                }
-              }
-            });
+            _dvdAskPending = { q: q, supText: '', ctx: ctx, mode: 'talk', selfT: null, selfText: '' };
+            document.getElementById('dvdAskInterpBtns').style.display = '';
           }
         });
         document.getElementById('dvdAskInterpBtn').addEventListener('click', function () {
@@ -22685,7 +22676,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             if (text) {
               document.getElementById('dvdAskActions').style.display = '';
               if (_dvdAskTarget && _dvdAskTarget.t) {
-                appendAsk(_dvdAskTarget.t, { t: new Date().getTime(), q: p.q, mode: 'draw', sup: p.supText, text: text });
+                appendAsk(_dvdAskTarget.t, { t: new Date().getTime(), q: p.q, mode: p.mode, sup: p.supText, text: text });
                 _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
                 renderAskPrev();
               }
@@ -22704,7 +22695,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           if (!txt) { if (typeof showToast === 'function') showToast('先写下你的解读'); return; }
           if (_dvdAskTarget && _dvdAskTarget.t) {
             if (p.selfT) { updateAskText(_dvdAskTarget.t, p.selfT, txt); }
-            else { var nt = new Date().getTime(); p.selfT = nt; appendAsk(_dvdAskTarget.t, { t: nt, q: p.q, mode: 'draw', sup: p.supText, text: txt, self: true }); }
+            else { var nt = new Date().getTime(); p.selfT = nt; appendAsk(_dvdAskTarget.t, { t: nt, q: p.q, mode: p.mode, sup: p.supText, text: txt, self: true }); }
             p.selfText = txt;
             _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
             renderAskPrev();
