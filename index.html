@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v196')){sessionStorage.setItem('zk_v196','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==196){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v197')){sessionStorage.setItem('zk_v197','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==197){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v196</title>
+  <title>字卡 · 小手机 v197</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7298,6 +7298,12 @@
     .dvd-ask-dock .dvd-seg { margin-bottom: 4px; }
     .dvd-ask-dock .dvd-seg-label { margin: 8px 0 6px; }
     .dvd-ask-dock .dvd-seg-label:first-child { margin-top: 0; }
+    .dvd-ask-dock-head { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 2px 2px 6px; }
+    .dvd-ask-dock-title { font-size: 13px; font-weight: 600; color: var(--text-main); }
+    .dvd-ask-caret { transition: transform .2s; }
+    .dvd-ask-dock.collapsed .dvd-ask-caret { transform: rotate(-90deg); }
+    .dvd-ask-dock.collapsed .dvd-ask-dock-body { display: none; }
+    .dvd-ask-dock.collapsed { padding-bottom: 10px; }
     .dvd-ask-hist { flex: 1; overflow-y: auto; margin: 0; max-height: none; }
     .dvd-hist-modal {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
@@ -12574,15 +12580,21 @@
             <button class="dvd-ghost" id="dvdAskSendBtn">发送到聊天</button>
             <button class="dvd-ghost" id="dvdAskDiaryBtn">添加到日记</button>
           </div>
-          <div class="dvd-ask-dock">
-            <div class="dvd-seg-label">追问方式</div>
-            <div class="dvd-seg" id="dvdAskModeSeg">
-              <button class="dvd-seg-item active" data-m="talk">按原牌面解读</button>
-              <button class="dvd-seg-item" data-m="draw">再抽一张补充</button>
+          <div class="dvd-ask-dock" id="dvdAskDock">
+            <div class="dvd-ask-dock-head" id="dvdAskDockHead">
+              <span class="dvd-ask-dock-title">追问</span>
+              <span class="dvd-ask-caret" id="dvdAskDockCaret">▾</span>
             </div>
-            <div class="dvd-seg-label">想接着追问什么？</div>
-            <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
-            <button class="dvd-primary" id="dvdAskBtn">追问</button>
+            <div class="dvd-ask-dock-body" id="dvdAskDockBody">
+              <div class="dvd-seg-label">追问方式</div>
+              <div class="dvd-seg" id="dvdAskModeSeg">
+                <button class="dvd-seg-item active" data-m="talk">按原牌面解读</button>
+                <button class="dvd-seg-item" data-m="draw">再抽一张补充</button>
+              </div>
+              <div class="dvd-seg-label">想接着追问什么？</div>
+              <input class="dvd-input" id="dvdAskInput" placeholder="例如：那他什么时候会主动一点？" maxlength="80">
+              <button class="dvd-primary" id="dvdAskBtn">追问</button>
+            </div>
           </div>
         </div>
 
@@ -22593,7 +22605,10 @@ patText2 = patText2.replace(/你/g, '我');
         function closeHistModal() {
           document.getElementById('dvdHistModal').style.display = 'none';
         }
-        document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
+                document.getElementById('dvdAskDockHead').addEventListener('click', function () {
+          document.getElementById('dvdAskDock').classList.toggle('collapsed');
+        });
+document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
           b.addEventListener('click', function () {
             _dvdAskMode = b.getAttribute('data-m');
             document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (x) { x.classList.remove('active'); });
@@ -22656,6 +22671,7 @@ patText2 = patText2.replace(/你/g, '我');
         });
         document.getElementById('dvdAskSelfBtn').addEventListener('click', function () {
           if (!_dvdAskPending) return;
+          document.getElementById('dvdAskDock').classList.add('collapsed');
           document.getElementById('dvdAskSelfInput').value = '';
           document.getElementById('dvdAskSelfPanel').style.display = '';
         });
