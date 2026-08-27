@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v207')){sessionStorage.setItem('zk_v207','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==207){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v208')){sessionStorage.setItem('zk_v208','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==208){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v207</title>
+  <title>字卡 · 小手机 v208</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7273,6 +7273,11 @@
     .dvd-prev-act { padding: 5px 12px; border-radius: 9px; font-size: 12px; cursor: pointer; border: 1px solid rgba(var(--primary-rgba),0.3); background: var(--bg-card); color: var(--primary); font-weight: 500; }
     .dvd-prev-note { margin-top: 6px; padding: 6px 8px; border-left: 2px solid rgba(var(--primary-rgba),0.4); background: rgba(var(--primary-rgba),0.06); border-radius: 6px; color: var(--text-secondary); font-size: 12px; }
     .dvd-prev-note b { color: var(--primary); font-weight: 600; }
+    .dvd-prev-note-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .dvd-prev-note-text { flex: 1; line-height: 1.5; }
+    .dvd-note-ops { display: inline-flex; gap: 2px; flex-shrink: 0; margin-top: -1px; }
+    .dvd-note-op { padding: 0 3px; font-size: 11px; cursor: pointer; border: none; background: none; color: var(--primary); line-height: 1.5; -webkit-tap-highlight-color: transparent; }
+    .dvd-note-op[data-act="note-del"] { color: #e55a5a; }
     .dvd-prev-all { margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(var(--primary-rgba), 0.25); }
     .dvd-prev-all .dvd-prev-act { width: 100%; justify-content: center; background: var(--primary); color: #fff; border-color: var(--primary); }
     .dvd-prev-act.danger { color: #e55a5a; border-color: rgba(229,90,90,0.35); }
@@ -22619,7 +22624,7 @@ patText2 = patText2.replace(/你/g, '我');
               html += '<div class="dvd-prev-askq">' + (a.self ? '▸ 我的笔记' : (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读')) + ' · ' + escHtml(a.q || '') + '</div>';
               if (a.sup) html += '<div class="dvd-prev-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
               html += '<div class="dvd-prev-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
-              if (a.note) html += '<div class="dvd-prev-note"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</div>';
+              if (a.note) html += '<div class="dvd-prev-note"><div class="dvd-prev-note-row"><span class="dvd-prev-note-text"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</span><span class="dvd-note-ops"><button class="dvd-note-op" data-act="note-edit" data-t="' + x.t + '" data-i="' + i + '">修改</button><button class="dvd-note-op" data-act="note-del" data-t="' + x.t + '" data-i="' + i + '">删除</button></span></div></div>';
               html += '<div class="dvd-prev-actwrap"><button class="dvd-prev-act" data-act="copy" data-t="' + x.t + '" data-i="' + i + '">复制</button><button class="dvd-prev-act" data-act="note" data-t="' + x.t + '" data-i="' + i + '">笔记</button><button class="dvd-prev-act danger" data-act="delete" data-t="' + x.t + '" data-i="' + i + '">删除</button></div>';
               html += '<div class="dvd-prev-note-edit" style="display:none;"><textarea class="dvd-textarea dvd-note-ta" placeholder="写下你的理解…" maxlength="500">' + escHtml(a.note || '') + '</textarea><div class="dvd-note-ebtns"><button class="dvd-prev-act" data-act="note-save" data-t="' + x.t + '" data-i="' + i + '">保存笔记</button><button class="dvd-prev-act" data-act="note-cancel" data-t="' + x.t + '" data-i="' + i + '">取消</button></div></div>';
               html += '</div>';
@@ -22675,7 +22680,7 @@ patText2 = patText2.replace(/你/g, '我');
         });
         document.getElementById('dvdAskPrev').addEventListener('click', function (e) {
           var btn = e.target;
-          if (!btn || !btn.classList || !btn.classList.contains('dvd-prev-act')) return;
+          if (!btn || !btn.classList || (!btn.classList.contains('dvd-prev-act') && !btn.classList.contains('dvd-note-op'))) return;
           var act = btn.getAttribute('data-act');
           var t = parseInt(btn.getAttribute('data-t'), 10);
           var rec = findRec(t);
@@ -22710,7 +22715,7 @@ patText2 = patText2.replace(/你/g, '我');
             if (a.text) txt += '\n' + a.text;
             if (a.note) txt += '\n【笔记】' + a.note;
             copyText(txt, btn);
-          } else if (act === 'note') {
+          } else if (act === 'note' || act === 'note-edit') {
             var nw = btn.closest('.dvd-prev-ask');
             var eds = document.querySelectorAll('#dvdAskPrev .dvd-prev-note-edit');
             for (var m = 0; m < eds.length; m++) eds[m].style.display = 'none';
@@ -22733,6 +22738,14 @@ patText2 = patText2.replace(/你/g, '我');
           } else if (act === 'note-cancel') {
             var nw3 = btn.closest('.dvd-prev-ask');
             if (nw3) { var eb3 = nw3.querySelector('.dvd-prev-note-edit'); if (eb3) eb3.style.display = 'none'; }
+          } else if (act === 'note-del') {
+            var dl = loadHistory();
+            for (var nd = 0; nd < dl.length; nd++) {
+              if (dl[nd].t === t && dl[nd].asks && dl[nd].asks[i]) { dl[nd].asks[i].note = ''; saveHistoryRaw(dl); break; }
+            }
+            _dvdAskTarget = findRec(t) || _dvdAskTarget;
+            renderAskPrev();
+            if (typeof showToast === 'function') showToast('已删除笔记');
           } else if (act === 'delete') {
             _dvdDeleteTarget = { t: t, i: i };
             openDvdConfirm();
