@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v206')){sessionStorage.setItem('zk_v206','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==206){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v207')){sessionStorage.setItem('zk_v207','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==207){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v206</title>
+  <title>字卡 · 小手机 v207</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7276,6 +7276,15 @@
     .dvd-prev-all { margin-top: 12px; padding-top: 10px; border-top: 1px dashed rgba(var(--primary-rgba), 0.25); }
     .dvd-prev-all .dvd-prev-act { width: 100%; justify-content: center; background: var(--primary); color: #fff; border-color: var(--primary); }
     .dvd-prev-act.danger { color: #e55a5a; border-color: rgba(229,90,90,0.35); }
+    .dvd-prev-note-edit { margin-top: 8px; }
+    .dvd-note-ta {
+      width: 100%; box-sizing: border-box; min-height: 60px; padding: 9px 11px;
+      border: 1px solid rgba(var(--primary-rgba), 0.3); border-radius: 10px;
+      font-size: 13px; line-height: 1.6; color: var(--text-main); background: var(--bg-card);
+      resize: vertical; font-family: inherit;
+    }
+    .dvd-note-ebtns { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+    .dvd-note-ebtns .dvd-prev-act[data-act="note-save"] { background: var(--primary); color: #fff; border-color: var(--primary); }
     .dvd-hdetail { display: flex; flex-direction: column; }
     .dvd-hd { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.14); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.7; }
     .dvd-hd-meta { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
@@ -22612,6 +22621,7 @@ patText2 = patText2.replace(/你/g, '我');
               html += '<div class="dvd-prev-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
               if (a.note) html += '<div class="dvd-prev-note"><b>笔记</b> ' + escHtml(a.note).replace(/\n/g, '<br>') + '</div>';
               html += '<div class="dvd-prev-actwrap"><button class="dvd-prev-act" data-act="copy" data-t="' + x.t + '" data-i="' + i + '">复制</button><button class="dvd-prev-act" data-act="note" data-t="' + x.t + '" data-i="' + i + '">笔记</button><button class="dvd-prev-act danger" data-act="delete" data-t="' + x.t + '" data-i="' + i + '">删除</button></div>';
+              html += '<div class="dvd-prev-note-edit" style="display:none;"><textarea class="dvd-textarea dvd-note-ta" placeholder="写下你的理解…" maxlength="500">' + escHtml(a.note || '') + '</textarea><div class="dvd-note-ebtns"><button class="dvd-prev-act" data-act="note-save" data-t="' + x.t + '" data-i="' + i + '">保存笔记</button><button class="dvd-prev-act" data-act="note-cancel" data-t="' + x.t + '" data-i="' + i + '">取消</button></div></div>';
               html += '</div>';
             });
             html += '<div class="dvd-prev-all"><button class="dvd-prev-act" data-act="diary-all" data-t="' + x.t + '">添加到日记</button></div>';
@@ -22701,10 +22711,28 @@ patText2 = patText2.replace(/你/g, '我');
             if (a.note) txt += '\n【笔记】' + a.note;
             copyText(txt, btn);
           } else if (act === 'note') {
-            _dvdNoteTarget = { t: t, i: i };
-            document.getElementById('dvdAskDock').classList.add('collapsed');
-            document.getElementById('dvdAskSelfInput').value = a.note || '';
-            document.getElementById('dvdAskSelfPanel').style.display = '';
+            var nw = btn.closest('.dvd-prev-ask');
+            var eds = document.querySelectorAll('#dvdAskPrev .dvd-prev-note-edit');
+            for (var m = 0; m < eds.length; m++) eds[m].style.display = 'none';
+            if (nw) {
+              var eb = nw.querySelector('.dvd-prev-note-edit');
+              if (eb) { eb.style.display = ''; var ta = nw.querySelector('.dvd-note-ta'); if (ta) ta.focus(); }
+            }
+          } else if (act === 'note-save') {
+            var nw2 = btn.closest('.dvd-prev-ask');
+            var ta2 = nw2 ? nw2.querySelector('.dvd-note-ta') : null;
+            if (!ta2) return;
+            var nv = ta2.value.trim();
+            var hh = loadHistory();
+            for (var kk = 0; kk < hh.length; kk++) {
+              if (hh[kk].t === t && hh[kk].asks && hh[kk].asks[i]) { hh[kk].asks[i].note = nv; saveHistoryRaw(hh); break; }
+            }
+            _dvdAskTarget = findRec(t) || _dvdAskTarget;
+            renderAskPrev();
+            if (typeof showToast === 'function') showToast(nv ? '已保存笔记' : '笔记已清空');
+          } else if (act === 'note-cancel') {
+            var nw3 = btn.closest('.dvd-prev-ask');
+            if (nw3) { var eb3 = nw3.querySelector('.dvd-prev-note-edit'); if (eb3) eb3.style.display = 'none'; }
           } else if (act === 'delete') {
             _dvdDeleteTarget = { t: t, i: i };
             openDvdConfirm();
@@ -22796,7 +22824,6 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         });
         document.getElementById('dvdAskSelfBtn').addEventListener('click', function () {
           if (!_dvdAskPending) return;
-          _dvdNoteTarget = null;
           document.getElementById('dvdAskDock').classList.add('collapsed');
           document.getElementById('dvdAskSelfInput').value = _dvdAskPending.selfText || '';
           document.getElementById('dvdAskSelfPanel').style.display = '';
@@ -22804,29 +22831,15 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         document.getElementById('dvdAskSelfSaveBtn').addEventListener('click', function () {
           var txt = document.getElementById('dvdAskSelfInput').value.trim();
           if (!txt) { if (typeof showToast === 'function') showToast('先写下你的笔记'); return; }
-          if (_dvdNoteTarget) {
-            var h = loadHistory();
-            for (var k = 0; k < h.length; k++) {
-              if (h[k].t === _dvdNoteTarget.t && h[k].asks && h[k].asks[_dvdNoteTarget.i]) {
-                h[k].asks[_dvdNoteTarget.i].note = txt;
-                saveHistoryRaw(h);
-                break;
-              }
-            }
-            _dvdNoteTarget = null;
+          var p = _dvdAskPending; if (!p) return;
+          if (_dvdAskTarget && _dvdAskTarget.t) {
+            if (p.selfT) { updateAskText(_dvdAskTarget.t, p.selfT, txt); }
+            else { var nt = new Date().getTime(); p.selfT = nt; appendAsk(_dvdAskTarget.t, { t: nt, q: p.q, mode: p.mode, sup: p.supText, text: txt, self: true }); }
+            p.selfText = txt;
+            _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
             renderAskPrev();
-            if (typeof showToast === 'function') showToast('已保存笔记');
-          } else {
-            var p = _dvdAskPending; if (!p) return;
-            if (_dvdAskTarget && _dvdAskTarget.t) {
-              if (p.selfT) { updateAskText(_dvdAskTarget.t, p.selfT, txt); }
-              else { var nt = new Date().getTime(); p.selfT = nt; appendAsk(_dvdAskTarget.t, { t: nt, q: p.q, mode: p.mode, sup: p.supText, text: txt, self: true }); }
-              p.selfText = txt;
-              _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
-              renderAskPrev();
-            }
-            if (typeof showToast === 'function') showToast('已保存你的笔记');
           }
+          if (typeof showToast === 'function') showToast('已保存你的笔记');
           document.getElementById('dvdAskSelfPanel').style.display = 'none';
         });
         document.getElementById('dvdAskSelfCancelBtn').addEventListener('click', function () {
@@ -22863,7 +22876,6 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           ball.addEventListener('pointercancel', function () { dragging = false; });
         })();
         var _dvdAskText = '';
-        var _dvdNoteTarget = null;
         var _dvdDeleteTarget = null;
         document.getElementById('dvdAskCopyBtn').addEventListener('click', function () { if (_dvdAskText) copyText(_dvdAskText, this); });
         document.getElementById('dvdAskSendBtn').addEventListener('click', function () {
