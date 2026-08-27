@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v191')){sessionStorage.setItem('zk_v191','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==191){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v192')){sessionStorage.setItem('zk_v192','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==192){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v191</title>
+  <title>字卡 · 小手机 v192</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7250,8 +7250,26 @@
     .dvd-ask-prev {
       background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px;
       font-size: 12.5px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 4px;
+      max-height: 320px; overflow-y: auto;
     }
     .dvd-ask-prev b { color: var(--text-main); }
+    .dvd-prev-body { color: var(--text-main); margin-top: 4px; }
+    .dvd-prev-sec { margin-top: 10px; font-size: 11.5px; color: var(--primary); font-weight: 600; }
+    .dvd-prev-ask { margin-top: 8px; padding-top: 8px; border-top: 1px dashed rgba(var(--primary-rgba), 0.2); }
+    .dvd-prev-askq { color: var(--text-main); font-size: 12.5px; }
+    .dvd-prev-sup { color: var(--primary); font-size: 12px; margin-top: 2px; }
+    .dvd-prev-atext { color: var(--text-secondary); font-size: 12.5px; margin-top: 4px; }
+    .dvd-hdetail { display: flex; flex-direction: column; }
+    .dvd-hd { background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba),0.14); border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.7; }
+    .dvd-hd-meta { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; }
+    .dvd-hd-q { color: var(--text-main); font-weight: 600; margin-bottom: 8px; }
+    .dvd-hd-body { color: var(--text-main); }
+    .dvd-hd-sec { margin-top: 12px; font-size: 11.5px; color: var(--primary); font-weight: 600; }
+    .dvd-hd-ask { margin-top: 10px; padding-top: 10px; border-top: 1px dashed rgba(var(--primary-rgba), 0.2); }
+    .dvd-hd-askq { color: var(--text-main); font-weight: 500; }
+    .dvd-hd-sup { color: var(--primary); font-size: 12px; margin-top: 3px; }
+    .dvd-hd-atext { color: var(--text-secondary); font-size: 12.5px; margin-top: 6px; }
+    .dvd-h-askn { display: inline-block; margin-left: 4px; padding: 1px 7px; border-radius: 10px; background: var(--primary); color: #fff; font-size: 10.5px; }
     .dvd-ask-switch { font-size: 12px; color: var(--primary); text-align: right; margin-bottom: 10px; cursor: pointer; user-select: none; }
     .dvd-ask-hist { max-height: 230px; overflow-y: auto; margin-bottom: 4px; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
@@ -12511,6 +12529,12 @@
           <div class="dvd-result-actions" id="dvdHistActions" style="display:none;">
             <button class="dvd-ghost" id="dvdClearHBtn">清空记录</button>
           </div>
+        </div>
+
+        <!-- 历史详情 -->
+        <div class="dvd-view" id="dvdHistDetailView" style="display:none;">
+          <button class="dvd-subback" id="dvdHistDetailBack">‹ 返回</button>
+          <div class="dvd-hdetail" id="dvdHistDetail"></div>
         </div>
       </div>
     </div>
@@ -21984,7 +22008,8 @@ patText2 = patText2.replace(/你/g, '我');
           draw: document.getElementById('dvdDrawView'),
           daily: document.getElementById('dvdDailyView'),
           ask: document.getElementById('dvdAskView'),
-          hist: document.getElementById('dvdHistView')
+          hist: document.getElementById('dvdHistView'),
+          histDetail: document.getElementById('dvdHistDetailView')
         };
         function showView(k) {
           Object.keys(views).forEach(function (v) { views[v].style.display = (v === k) ? '' : 'none'; });
@@ -22156,11 +22181,29 @@ patText2 = patText2.replace(/你/g, '我');
             q: st.question,
             target: st.target,
             cards: draw.map(function (d) { return (d.mix ? d.kind + '·' : '') + d.c.name + (d.tarot ? (d.r ? '(逆)' : '(正)') : ''); }),
-            text: resultText()
+            text: resultText(),
+            interp: '',
+            asks: []
           });
           if (h.length > 50) h = h.slice(0, 50);
           try { localStorage.setItem('divineHistory', JSON.stringify(h)); } catch (e) {}
         }
+        function saveHistoryRaw(h) { try { localStorage.setItem('divineHistory', JSON.stringify(h)); } catch (e) {} }
+        function findRec(t) { var h = loadHistory(); for (var i = 0; i < h.length; i++) if (h[i].t === t) return h[i]; return null; }
+        function updateRec(t, patch) {
+          var h = loadHistory();
+          for (var i = 0; i < h.length; i++) {
+            if (h[i].t === t) { for (var k in patch) h[i][k] = patch[k]; saveHistoryRaw(h); return h[i]; }
+          }
+          return null;
+        }
+        function appendAsk(t, ask) {
+          var h = loadHistory();
+          for (var i = 0; i < h.length; i++) {
+            if (h[i].t === t) { h[i].asks = (h[i].asks || []).concat([ask]); saveHistoryRaw(h); return; }
+          }
+        }
+        function escHtml(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
         document.getElementById('dvdStartBtn').addEventListener('click', function () {
           st.question = (document.getElementById('dvdQInput').value || '').trim();
           pick();
@@ -22247,8 +22290,14 @@ patText2 = patText2.replace(/你/g, '我');
         document.getElementById('dvdInterpBtn').addEventListener('click', function () {
           _dvdInterpText = '';
           document.getElementById('dvdInterpActions').style.display = 'none';
+          var _hb = loadHistory();
+          var _h0t = (_hb && _hb.length) ? _hb[0].t : null;
           callAI(DEFAULT_PROMPT, resultText(), document.getElementById('dvdInterpBox'), function (text) {
-            if (text) { _dvdInterpText = text; document.getElementById('dvdInterpActions').style.display = ''; }
+            if (text) {
+              _dvdInterpText = text;
+              document.getElementById('dvdInterpActions').style.display = '';
+              if (_h0t) updateRec(_h0t, { interp: text });
+            }
           });
         });
         document.getElementById('dvdInterpCopyBtn').addEventListener('click', function () { if (_dvdInterpText) copyText(_dvdInterpText, this); });
@@ -22260,6 +22309,8 @@ patText2 = patText2.replace(/你/g, '我');
         // 抽牌 - 去追问
         document.getElementById('dvdGoAskBtn').addEventListener('click', function () {
           if (!_dvdLast) _dvdLast = { mode: st.mode, question: st.question, target: st.target, text: resultText() };
+          _dvdAskTarget = null; // 重置，默认承接刚抽的这条
+          _dvdAskMode = 'talk'; // 重置追问方式
           renderAskPrev();
           showView('ask');
         });
@@ -22349,10 +22400,24 @@ patText2 = patText2.replace(/你/g, '我');
           }
           var q = x.q || x.question || '';
           var target = x.target || '';
-          var cards = (x.cards && x.cards.length) ? x.cards.join(' · ') : '';
-          var html = '<b>' + mode + '</b>' + (target ? ' · ' + target : '');
-          html += '<br>' + (q || '未写下问题');
-          if (cards) html += '<br>牌面：' + cards;
+          var html = '<b>' + escHtml(mode) + '</b>' + (target ? ' · ' + escHtml(target) : '');
+          html += (q ? '<br>问题：' + escHtml(q) : '<br>未写下问题');
+          var body = x.text || ('牌面：' + ((x.cards && x.cards.length) ? x.cards.join(' · ') : ''));
+          html += '<div class="dvd-prev-body">' + escHtml(body).replace(/\n/g, '<br>') + '</div>';
+          if (x.interp) {
+            html += '<div class="dvd-prev-sec">AI 解读</div><div class="dvd-prev-body">' + escHtml(x.interp).replace(/\n/g, '<br>') + '</div>';
+          }
+          var asks = x.asks || [];
+          if (asks.length) {
+            html += '<div class="dvd-prev-sec">追问记录（' + asks.length + '）</div>';
+            asks.forEach(function (a) {
+              html += '<div class="dvd-prev-ask">';
+              html += '<div class="dvd-prev-askq">' + (a.mode === 'draw' ? '▸ 再抽补充' : '▸ 原牌面解读') + ' · ' + escHtml(a.q || '') + '</div>';
+              if (a.sup) html += '<div class="dvd-prev-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
+              html += '<div class="dvd-prev-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
+              html += '</div>';
+            });
+          }
           return html;
         }
         function renderAskHist() {
@@ -22404,22 +22469,29 @@ patText2 = patText2.replace(/你/g, '我');
           if (!q) { if (typeof showToast === 'function') showToast('先写下你想追问的问题'); return; }
           var ctx = askCtx(_dvdAskTarget);
           if (!ctx) { if (typeof showToast === 'function') showToast('没有可追问的占卜，先抽一卦'); return; }
-          var content = ctx + '\n\n我的追问：' + q;
+          var supText = '';
           var extraEl = document.getElementById('dvdAskExtra');
           if (_dvdAskMode === 'draw') {
-            var sup = drawSupplement(_dvdAskTarget);
-            content = ctx + '\n\n' + sup + '\n\n我的追问：' + q;
-            extraEl.innerHTML = sup.replace(/\n/g, '<br>');
+            supText = drawSupplement(_dvdAskTarget);
+            extraEl.innerHTML = supText.replace(/\n/g, '<br>');
             extraEl.style.display = '';
           } else {
             extraEl.style.display = 'none';
             extraEl.innerHTML = '';
           }
+          var content = ctx + (supText ? '\n\n' + supText : '') + '\n\n我的追问：' + q;
           var box = document.getElementById('dvdAskResult');
           box.style.display = 'none';
           callAI(DEFAULT_PROMPT, content, box, function (text) {
             _dvdAskText = text;
-            if (text) document.getElementById('dvdAskActions').style.display = '';
+            if (text) {
+              document.getElementById('dvdAskActions').style.display = '';
+              if (_dvdAskTarget && _dvdAskTarget.t) {
+                appendAsk(_dvdAskTarget.t, { t: new Date().getTime(), q: q, mode: _dvdAskMode, sup: supText, text: text });
+                _dvdAskTarget = findRec(_dvdAskTarget.t) || _dvdAskTarget;
+                renderAskPrev();
+              }
+            }
           });
         });
         var _dvdAskText = '';
@@ -22443,18 +22515,55 @@ patText2 = patText2.replace(/你/g, '我');
             list.innerHTML = '<div class="dvd-hempty">还没有占卜记录，去抽第一副牌吧</div>';
             acts.style.display = 'none';
           } else {
-            list.innerHTML = h.map(function (x) {
+            list.innerHTML = h.map(function (x, i) {
               var d = new Date(x.t);
               var ts = (d.getMonth() + 1) + '/' + d.getDate() + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
-              return '<div class="dvd-hitem">' +
+              var nAsk = (x.asks && x.asks.length) ? '<span class="dvd-h-askn">' + x.asks.length + ' 追问</span>' : '';
+              return '<div class="dvd-hitem" data-i="' + i + '">' +
                 '<div class="dvd-h-meta"><span>' + ts + '</span><span>' + x.mode + '</span>' + (x.target ? '<span>' + x.target + '</span>' : '') + '</div>' +
-                '<div class="dvd-h-q">' + (x.q || '未写下问题') + '</div>' +
+                '<div class="dvd-h-q">' + (x.q || '未写下问题') + nAsk + '</div>' +
                 '<div class="dvd-h-cards">' + x.cards.join(' · ') + '</div>' +
               '</div>';
             }).join('');
             acts.style.display = '';
+            list.querySelectorAll('.dvd-hitem').forEach(function (it) {
+              it.addEventListener('click', function () { openHistDetail(h[parseInt(it.getAttribute('data-i'), 10)]); });
+            });
           }
         }
+        function histDetailHtml(x) {
+          if (!x) return '<div class="dvd-hempty">记录不存在</div>';
+          var d = new Date(x.t);
+          var ts = (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+          var h = '<div class="dvd-hd">';
+          h += '<div class="dvd-hd-meta">' + ts + ' · ' + escHtml(x.mode || '') + (x.target ? ' · ' + escHtml(x.target) : '') + '</div>';
+          h += '<div class="dvd-hd-q">' + escHtml(x.q || '未写下问题') + '</div>';
+          var body = x.text || ('牌面：' + ((x.cards && x.cards.length) ? x.cards.join(' · ') : ''));
+          h += '<div class="dvd-hd-body">' + escHtml(body).replace(/\n/g, '<br>') + '</div>';
+          if (x.interp) {
+            h += '<div class="dvd-hd-sec">AI 解读</div><div class="dvd-hd-body">' + escHtml(x.interp).replace(/\n/g, '<br>') + '</div>';
+          }
+          var asks = x.asks || [];
+          if (asks.length) {
+            h += '<div class="dvd-hd-sec">追问记录（' + asks.length + '）</div>';
+            asks.forEach(function (a) {
+              var ad = new Date(a.t);
+              var ats = ('0' + ad.getHours()).slice(-2) + ':' + ('0' + ad.getMinutes()).slice(-2);
+              h += '<div class="dvd-hd-ask">';
+              h += '<div class="dvd-hd-askq">' + ats + ' · ' + (a.mode === 'draw' ? '再抽补充' : '原牌面解读') + ' · ' + escHtml(a.q || '') + '</div>';
+              if (a.sup) h += '<div class="dvd-hd-sup">' + escHtml(a.sup).replace(/\n/g, '<br>') + '</div>';
+              h += '<div class="dvd-hd-atext">' + escHtml(a.text || '').replace(/\n/g, '<br>') + '</div>';
+              h += '</div>';
+            });
+          }
+          h += '</div>';
+          return h;
+        }
+        function openHistDetail(x) {
+          document.getElementById('dvdHistDetail').innerHTML = histDetailHtml(x);
+          showView('histDetail');
+        }
+        document.getElementById('dvdHistDetailBack').addEventListener('click', function () { showView('hist'); });
         document.getElementById('dvdClearHBtn').addEventListener('click', function () {
           localStorage.removeItem('divineHistory');
           renderHistory();
