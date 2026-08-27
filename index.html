@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v218')){sessionStorage.setItem('zk_v218','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==218){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v219')){sessionStorage.setItem('zk_v219','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==219){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v218</title>
+  <title>字卡 · 小手机 v219</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -23208,9 +23208,16 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             finishBot(f, []);
           }
 
-          // 开场词：直接锁格式解读梦角基础信息（抽固定牌数，不带旧历史）
+          // 开场词 / 确认重抽：直接锁格式解读梦角基础信息（抽固定牌数，不带旧历史）
           var isOpen = /^(开始|准备好了|准备好|开始吧|可以开始|开始占卜)/.test(q);
-          if (isOpen) {
+          var lastBotText = '';
+          for (var bi = h.length - 1; bi >= 0; bi--) {
+            if (h[bi].role === 'bot' && h[bi].text) { lastBotText = h[bi].text; break; }
+          }
+          var isRedraw = /^(重新抽|重抽|重新抽牌|再抽|再抽一次|重新来|重新解读|重来|重新开始)/.test(q)
+            || ((/^(需要|要|好|可以|抽吧|抽)/.test(q)) && /重新抽牌|重抽/.test(lastBotText));
+          var isBase = isOpen || isRedraw;
+          if (isBase) {
             var openN = parseInt(ccfg.spread, 10) || 3;
             var openDraw = chatDraw(openN);
             var openNames = chatCardNames(openDraw);
