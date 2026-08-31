@@ -13093,6 +13093,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div id="roleCardList">
           <div class="card-empty">暂无角色字卡，点击 ＋ 添加</div>
         </div>
+        <div class="card-category"><span>语音字卡</span><button class="category-add" data-type="voice"
+            id="addVoiceCard">＋</button></div>
+        <div id="voiceCardList">
+          <div class="card-empty">暂无语音字卡，点击 ＋ 添加</div>
+        </div>
       </div>
     </div>
 
@@ -16289,6 +16294,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         },
 
         role: {},
+        voice: {},
         // 新增：聊天界面顶部字卡
         topBar: {
           '天气': [{ name: '晴', useCount: 0 }, { name: '多云', useCount: 0 }, { name: '雨', useCount: 0 }, { name: '雪', useCount: 0 }, { name: '阴', useCount: 0 }],
@@ -19437,6 +19443,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const cardAddConfirm = document.getElementById('cardAddConfirm');
       const addGeneralCard = document.getElementById('addGeneralCard');
       const addRoleCard = document.getElementById('addRoleCard');
+      const addVoiceCard = document.getElementById('addVoiceCard');
+      const voiceCardList = document.getElementById('voiceCardList');
       const mergeIndicator = document.getElementById('mergeIndicator');
 
 
@@ -19448,6 +19456,19 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           // 向右箭头（折叠状态）
           return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>`;
         }
+      }
+
+      function speakCard(text) {
+        try {
+          if (typeof window === 'undefined' || !window.speechSynthesis) { showToast('当前环境不支持语音播报'); return; }
+          window.speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = 'zh-CN';
+          u.rate = 1;
+          u.pitch = 1;
+          window.speechSynthesis.speak(u);
+          showToast('🔊 正在播放语音字卡');
+        } catch (e) { showToast('语音播放失败'); }
       }
 
       function renderCardLists() {
@@ -19564,6 +19585,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             roleCardList.appendChild(createCardItemElement('role', name, count));
           });
         }
+
+        // === 渲染 voice 列表 ===
+        voiceCardList.innerHTML = '';
+        const voiceNames = Object.keys(cardData.voice);
+        if (voiceNames.length === 0) {
+          voiceCardList.innerHTML = '<div class="card-empty">暂无语音字卡，点击 ＋ 添加</div>';
+        } else {
+          voiceNames.forEach(name => {
+            const count = (cardData.voice[name] || []).length;
+            voiceCardList.appendChild(createCardItemElement('voice', name, count));
+          });
+        }
       }
 
       function createCardItemElement(type, name, count) {
@@ -19575,6 +19608,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         // 根据类型设置类别标签文本（只保留"角色"的显示）
         let typeText = '';
         if (type === 'role') typeText = '角色';
+        if (type === 'voice') typeText = '语音';
         
         // 只在有 typeText 时显示类型标签
         const typeBadgeHtml = typeText ? `<span class="card-item-type-badge type-${type}">${typeText}</span>` : '';
@@ -19592,6 +19626,12 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           document.getElementById('settingMergeWithText').style.display = 'none';
           document.getElementById('settingsDivider2').style.display = 'block';
           toggleIndicator.textContent = '○';
+        } else if (type === 'voice') {
+          detailMenuBtn.style.display = 'block';
+          document.getElementById('settingToggleGeneral').style.display = 'none';
+          document.getElementById('settingsDivider').style.display = 'none';
+          document.getElementById('settingMergeWithText').style.display = 'none';
+          document.getElementById('settingsDivider2').style.display = 'none';
         } else {
           detailMenuBtn.style.display = 'block';
           document.getElementById('settingToggleGeneral').style.display = 'none';
@@ -19751,9 +19791,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       // 导出/导入全部字卡
       const importAllFileInput = document.getElementById('importAllFileInput');
       document.getElementById('cardExportAll').addEventListener('click', function () {
-        const data = { general: cardData.general, role: cardData.role, topBar: cardData.topBar };
+        const data = { general: cardData.general, role: cardData.role, topBar: cardData.topBar, voice: cardData.voice };
         let total = 0;
-        ['general', 'role', 'topBar'].forEach(function (k) {
+        ['general', 'role', 'topBar', 'voice'].forEach(function (k) {
           Object.keys(data[k] || {}).forEach(function (cat) { total += (data[k][cat] || []).length; });
         });
         if (total === 0) { showToast('⚠️ 当前没有字卡可导出'); return; }
@@ -19799,6 +19839,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         cardData.general = d.general || {};
         cardData.role = d.role || {};
         cardData.topBar = d.topBar || {};
+        cardData.voice = d.voice || {};
         renderCardLists();
         if (currentCardType && currentCardName) { renderCardDetailItems(); updateCategoryFilter(); }
         showToast('✅ 已导入 ' + d.total + ' 条字卡');
@@ -19811,14 +19852,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         try {
           const parsed = JSON.parse(text);
           const data = parsed.data || parsed;
-          if (!data || typeof data !== 'object' || (!data.general && !data.role && !data.topBar)) { showToast('❌ 无效的字卡备份 JSON'); return; }
+          if (!data || typeof data !== 'object' || (!data.general && !data.role && !data.topBar && !data.voice)) { showToast('❌ 无效的字卡备份 JSON'); return; }
           let total = 0;
-          ['general', 'role', 'topBar'].forEach(function (k) {
+          ['general', 'role', 'topBar', 'voice'].forEach(function (k) {
             if (data[k] && typeof data[k] === 'object') { Object.keys(data[k]).forEach(function (cat) { total += (data[k][cat] || []).length; }); }
           });
           if (total === 0) { showToast('⚠️ JSON 里没有字卡'); return; }
           importConfirmText.textContent = '确定导入 ' + total + ' 条字卡吗？（将覆盖现有的全部字卡）';
-          importPending = { general: data.general || {}, role: data.role || {}, topBar: data.topBar || {}, total: total };
+          importPending = { general: data.general || {}, role: data.role || {}, topBar: data.topBar || {}, voice: data.voice || {}, total: total };
           importConfirmModal.style.display = '';
         } catch (err) { showToast('❌ JSON 格式错误，请检查内容'); }
       }
@@ -19889,17 +19930,23 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           const useCount = item.useCount || 0;
           const countClass = useCount > 0 ? 'card-detail-count used' : 'card-detail-count';
           const displayName = item.name || item;
+          const displayShow = (currentCardType === 'voice') ? '🔊 ' + displayName : displayName;
           const category = item.category || '未分类';
           const showCategory = (currentCardName === '文字');
           const categoryBadge = showCategory ? `<span class="card-category-badge" data-index="${index}">${category}</span>` : '';
           const rightHtml = showCategory ? `<div class="card-detail-right">${categoryBadge}</div>` : '';
-          div.innerHTML = `<div class="card-detail-left"><span class="card-detail-name">${displayName}</span><span class="${countClass}">${useCount}</span></div>${rightHtml}`;
+          const countHtml = (currentCardType === 'voice') ? '' : `<span class="${countClass}">${useCount}</span>`;
+          div.innerHTML = `<div class="card-detail-left"><span class="card-detail-name">${displayShow}</span>${countHtml}</div>${rightHtml}`;
           const delBtn = document.createElement('button');
           delBtn.className = 'card-detail-delete-btn';
           delBtn.textContent = '删除';
           delBtn.dataset.index = index;
           const leftPart = div.querySelector('.card-detail-left');
-          leftPart.addEventListener('click', function (e) { e.stopPropagation(); div.classList.toggle('expanded'); });
+          if (currentCardType === 'voice') {
+            leftPart.addEventListener('click', function (e) { e.stopPropagation(); speakCard(displayName); });
+          } else {
+            leftPart.addEventListener('click', function (e) { e.stopPropagation(); div.classList.toggle('expanded'); });
+          }
           
           // 点击分类标签修改分类
           const categoryBadgeEl = div.querySelector('.card-category-badge');
@@ -20159,6 +20206,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         document.getElementById('cardAddCategory').style.display = 'none';
         cardAddModal.classList.add('show');
       });
+      addVoiceCard.addEventListener('click', function () {
+        currentAddTarget = 'voice';
+        cardAddTitle.textContent = '添加语音字卡';
+        cardAddInput.value = '';
+        document.getElementById('cardAddCategory').style.display = 'none';
+        cardAddModal.classList.add('show');
+      });
       cardAddCancel.addEventListener('click', function () { cardAddModal.classList.remove('show'); });
       cardAddModal.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
       cardAddConfirm.addEventListener('click', function () {
@@ -20180,6 +20234,15 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           renderCardLists();
           cardAddModal.classList.remove('show');
           showToast('角色字卡已创建');
+          return;
+        }
+        if (currentAddTarget === 'voice') {
+          if (!value) { showToast('请输入角色名称'); return; }
+          if (cardData.voice[value]) { showToast('该角色已存在'); return; }
+          cardData.voice[value] = [];
+          renderCardLists();
+          cardAddModal.classList.remove('show');
+          showToast('语音字卡已创建');
           return;
         }
         if (currentAddTarget === 'item') {
