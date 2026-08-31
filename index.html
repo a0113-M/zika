@@ -13158,6 +13158,23 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       </div>
     </div>
 
+    <!-- 添加语音字卡 -->
+    <div class="batch-add-modal" id="voiceAddModal">
+      <div class="batch-add-box">
+        <h4 id="voiceAddTitle">添加语音</h4>
+        <div class="batch-hint">选择一段音频，作为该角色的语音条</div>
+        <input type="file" id="voiceFileInput" accept="audio/*" style="display:none;">
+        <div id="voiceAddDrop" style="width:100%;padding:26px 12px;border:1.5px dashed rgba(var(--primary-rgba), 0.45);border-radius:12px;background:var(--bg-soft);text-align:center;color:var(--primary);font-size:14px;cursor:pointer;line-height:1.7;box-sizing:border-box;">&#127908; 点击选择音频文件<br><span style="font-size:12px;color:var(--text-muted);">支持 mp3 / wav / m4a / aac，建议 30 秒内</span></div>
+        <div id="voiceAddFileInfo" style="display:none;margin-top:10px;padding:10px 12px;background:var(--bg-soft);border-radius:10px;font-size:13px;color:var(--text-main);word-break:break-all;"></div>
+        <audio id="voiceAddPreview" controls style="display:none;width:100%;margin-top:10px;height:40px;"></audio>
+        <input type="text" id="voiceAddName" placeholder="语音名称（可选，默认「语音 1」）" style="width:100%;margin-top:10px;padding:10px 12px;border:1px solid var(--border-light);border-radius:10px;font-size:14px;outline:none;box-sizing:border-box;color:var(--text-main);">
+        <div class="add-actions" style="margin-top:16px;">
+          <button class="btn-cancel" id="voiceAddCancel">取消</button>
+          <button class="btn-confirm" id="voiceAddConfirm">确认添加</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 修改分类弹窗 -->
     <div class="card-add-modal" id="editCategoryModal">
       <div class="card-add-box">
@@ -15608,6 +15625,61 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             chatMessages.appendChild(patDiv);
             return;
           }
+          if (msg.voice) {
+            const vRow = document.createElement('div');
+            vRow.className = msg.from === 'me' ? 'msg-right' : 'msg-left';
+            vRow.style.cssText = 'display:flex;align-items:flex-end;gap:8px;margin:4px 0;' + (msg.from === 'me' ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
+            const vAvatar = document.createElement('div');
+            vAvatar.className = 'msg-avatar';
+            const vContact = contacts.find(c => c.id === contactId);
+            if (msg.from === 'me') {
+              if (userProfile.avatarImage) {
+                const vImg = document.createElement('img');
+                vImg.src = userProfile.avatarImage;
+                vImg.style.cssText = 'width:100%;height:100%;border-radius:4px;object-fit:cover;';
+                vAvatar.appendChild(vImg);
+                vAvatar.style.background = 'transparent';
+              } else { vAvatar.textContent = userProfile.avatar || '我'; vAvatar.style.background = 'var(--primary)'; }
+            } else if (vContact) {
+              vAvatar.textContent = (vContact.name || '?').charAt(0).toUpperCase();
+              vAvatar.style.background = vContact.isGroup ? '#9b9b9b' : 'var(--primary)';
+            } else { vAvatar.textContent = '?'; vAvatar.style.background = '#999'; }
+            const vWrapper = document.createElement('div');
+            vWrapper.style.cssText = 'display:flex;flex-direction:column;max-width:78%;';
+            const vBubble = document.createElement('div');
+            vBubble.className = 'msg-bubble';
+            vBubble.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;min-width:88px;';
+            vBubble.addEventListener('click', function () { playAudioUrl(msg.voice); });
+            const vPlay = document.createElement('span');
+            vPlay.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>';
+            vPlay.style.cssText = 'display:inline-flex;color:var(--primary);flex-shrink:0;';
+            const bars = [6, 10, 14, 12, 7, 9, 13, 8, 11, 6];
+            const segs = msg.voiceDuration > 0 ? Math.max(3, Math.min(10, Math.round(msg.voiceDuration))) : 6;
+            const vBar = document.createElement('span');
+            vBar.style.cssText = 'display:inline-flex;align-items:center;gap:2px;';
+            vBar.innerHTML = bars.slice(0, segs).map(function (h) { return '<span style="display:inline-block;width:3px;height:' + h + 'px;background:var(--primary);border-radius:1px;"></span>'; }).join('');
+            const vDur = document.createElement('span');
+            vDur.textContent = msg.voiceDuration > 0 ? (Math.round(msg.voiceDuration) + '″') : '语音';
+            vDur.style.cssText = 'font-size:12px;color:var(--text-muted);flex-shrink:0;';
+            vBubble.appendChild(vPlay);
+            vBubble.appendChild(vBar);
+            vBubble.appendChild(vDur);
+            vWrapper.appendChild(vBubble);
+            const vTime = document.createElement('span');
+            vTime.style.cssText = 'font-size:10px;color:#b0b0b0;flex-shrink:0;align-self:flex-end;margin:0 4px;';
+            vTime.textContent = currentTime;
+            if (msg.from === 'me') {
+              vRow.appendChild(vTime);
+              vRow.appendChild(vWrapper);
+              vRow.appendChild(vAvatar);
+            } else {
+              vRow.appendChild(vAvatar);
+              vRow.appendChild(vWrapper);
+              vRow.appendChild(vTime);
+            }
+            chatMessages.appendChild(vRow);
+            return;
+          }
           if (msg.image) {
             const row = document.createElement('div');
             row.style.cssText = `display:flex;align-items:flex-end;gap:10px;margin:4px 0;${msg.from === 'me' ? 'justify-content:flex-end;' : 'justify-content:flex-start;'}`;
@@ -16191,6 +16263,15 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               const member = contacts.find(c => c.id === memberId);
               if (member) senderName = member.name;
             } else if (contact) { senderName = contact.name; }
+            const _voiceRoll = rollVoiceCard();
+            if (_voiceRoll) {
+              const _nowV = new Date();
+              const _timeV = _nowV.getHours().toString().padStart(2, '0') + ':' + _nowV.getMinutes().toString().padStart(2, '0');
+              chatHistories[currentChatId].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: _timeV });
+              renderMessages(currentChatId);
+              if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
+              return;
+            }
             let reply = getRandomCard();
             if (senderName !== 'me') {
               reply = reply.replace(/你/g, '我');
@@ -16244,6 +16325,15 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           const member = contacts.find(c => c.id === memberId);
           if (member) senderName = member.name;
         } else if (contact) { senderName = contact.name; }
+        const _voiceRoll2 = rollVoiceCard();
+        if (_voiceRoll2) {
+          const _nowV2 = new Date();
+          const _timeV2 = _nowV2.getHours().toString().padStart(2, '0') + ':' + _nowV2.getMinutes().toString().padStart(2, '0');
+          chatHistories[currentChatId].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
+          renderMessages(currentChatId);
+          if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV2; if (!cardView.classList.contains('hidden')) refreshList(); }
+          return;
+        }
         let card = getRandomCard();
         // 如果是对方发送（不是自己），替换「你」为「我」
         if (senderName !== 'me') {
@@ -16305,6 +16395,29 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           '回复消息状态': [{ name: '正在输入...', useCount: 0 }, { name: '已读', useCount: 0 }, { name: '未读', useCount: 0 }, { name: '已回复', useCount: 0 }, { name: '等待回复', useCount: 0 }, { name: '消息已送达', useCount: 0 }]
         }
       };
+      function rollVoiceCard() {
+        try {
+          const voiceRoles = Object.keys(cardData.voice || {});
+          if (voiceRoles.length === 0) return null;
+          const all = [];
+          voiceRoles.forEach(function (role) {
+            (cardData.voice[role] || []).forEach(function (item) {
+              if (item && item.audio) all.push({ name: item.name || role, audio: item.audio, duration: item.duration || 0 });
+            });
+          });
+          if (all.length === 0) return null;
+          let prob = 10;
+          try {
+            const settings = getContactProbSettings();
+            const cs = settings[currentChatId];
+            if (cs && typeof cs.voiceCardProb === 'number') prob = cs.voiceCardProb;
+          } catch (e) {}
+          if (prob <= 0) return null;
+          if (Math.random() * 100 >= prob) return null;
+          return all[Math.floor(Math.random() * all.length)];
+        } catch (e) { return null; }
+      }
+
       function getRandomCard() {
         const allCards = [];
         // 从 general 中收集，排除拍一拍（拍一拍单独处理）
@@ -19471,6 +19584,16 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         } catch (e) { showToast('语音播放失败'); }
       }
 
+      let _currentVoiceAudio = null;
+      function playAudioUrl(url) {
+        try {
+          if (_currentVoiceAudio) { try { _currentVoiceAudio.pause(); } catch (e) {} _currentVoiceAudio = null; }
+          const a = new Audio(url);
+          _currentVoiceAudio = a;
+          a.play().catch(function () { showToast('音频播放失败'); });
+        } catch (e) { showToast('音频播放失败'); }
+      }
+
       function renderCardLists() {
         // === 先渲染 topBar 列表（放在最上方，默认折叠） ===
         // 移除旧的 topBar 容器（如果存在）
@@ -19618,6 +19741,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       }
       function openCardDetail(type, name) {
         currentCardType = type; currentCardName = name;
+        detailAddBtn.innerHTML = '<span class="btn-icon">＋</span> ' + (type === 'voice' ? '添加语音' : '添加字卡');
         document.querySelector('.detail-back').innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg> ' + name;
         if (type === 'role') {
           detailMenuBtn.style.display = 'block';
@@ -19943,7 +20067,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           delBtn.dataset.index = index;
           const leftPart = div.querySelector('.card-detail-left');
           if (currentCardType === 'voice') {
-            leftPart.addEventListener('click', function (e) { e.stopPropagation(); speakCard(displayName); });
+            leftPart.addEventListener('click', function (e) {
+              e.stopPropagation();
+              const idx = parseInt(this.closest('.card-detail-item').dataset.index);
+              const voiceItem = cardData[currentCardType][currentCardName][idx];
+              if (voiceItem && voiceItem.audio) { playAudioUrl(voiceItem.audio); }
+              else { speakCard(displayName); }
+            });
           } else {
             leftPart.addEventListener('click', function (e) { e.stopPropagation(); div.classList.toggle('expanded'); });
           }
@@ -20113,6 +20243,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const batchPreviewCount = document.getElementById('batchPreviewCount');
 
       detailAddBtn.addEventListener('click', function () {
+        if (currentCardType === 'voice') {
+          openVoiceAddModal();
+          return;
+        }
         batchAddTextarea.value = '';
         document.getElementById('batchAddCategory').value = '';
         // 只在"文字"字卡详情页中显示分类输入框
@@ -20164,6 +20298,77 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       });
       batchAddCancel.addEventListener('click', function () { batchAddModal.classList.remove('show'); });
       batchAddModal.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
+
+      // ----- 添加语音字卡 -----
+      let voiceAddFileData = null;
+      const voiceAddModalEl = document.getElementById('voiceAddModal');
+      const voiceAddConfirmBtn = document.getElementById('voiceAddConfirm');
+      const voiceAddCancelBtn = document.getElementById('voiceAddCancel');
+      const voiceAddNameInput = document.getElementById('voiceAddName');
+      const voiceAddFileInput = document.getElementById('voiceFileInput');
+      const voiceAddDropEl = document.getElementById('voiceAddDrop');
+      const voiceAddFileInfoEl = document.getElementById('voiceAddFileInfo');
+      const voiceAddPreviewEl = document.getElementById('voiceAddPreview');
+
+      function openVoiceAddModal() {
+        voiceAddFileData = null;
+        voiceAddNameInput.value = '';
+        voiceAddFileInfoEl.style.display = 'none';
+        voiceAddFileInfoEl.textContent = '';
+        voiceAddPreviewEl.pause();
+        voiceAddPreviewEl.removeAttribute('src');
+        voiceAddPreviewEl.style.display = 'none';
+        voiceAddFileInput.value = '';
+        voiceAddModalEl.classList.add('show');
+      }
+
+      voiceAddDropEl.addEventListener('click', function () { voiceAddFileInput.click(); });
+      voiceAddFileInput.addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        if (file.size > 4 * 1024 * 1024) { showToast('⚠️ 音频过大，请控制在 4MB 以内'); this.value = ''; return; }
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          const dataUrl = ev.target.result;
+          const tmpAudio = new Audio();
+          tmpAudio.preload = 'metadata';
+          tmpAudio.onloadedmetadata = function () {
+            voiceAddFileData = { dataUrl: dataUrl, duration: tmpAudio.duration || 0 };
+            voiceAddFileInfoEl.textContent = '已选择：' + file.name + '（' + (tmpAudio.duration ? Math.round(tmpAudio.duration) + ' 秒' : '未知时长') + '）';
+            voiceAddFileInfoEl.style.display = 'block';
+            voiceAddPreviewEl.src = dataUrl;
+            voiceAddPreviewEl.style.display = 'block';
+          };
+          tmpAudio.onerror = function () {
+            voiceAddFileData = { dataUrl: dataUrl, duration: 0 };
+            voiceAddFileInfoEl.textContent = '已选择：' + file.name;
+            voiceAddFileInfoEl.style.display = 'block';
+            voiceAddPreviewEl.src = dataUrl;
+            voiceAddPreviewEl.style.display = 'block';
+          };
+          tmpAudio.src = dataUrl;
+        };
+        reader.onerror = function () { showToast('❌ 文件读取失败'); };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
+      voiceAddCancelBtn.addEventListener('click', function () { voiceAddModalEl.classList.remove('show'); });
+      voiceAddModalEl.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
+      voiceAddConfirmBtn.addEventListener('click', function () {
+        if (!voiceAddFileData || !voiceAddFileData.dataUrl) { showToast('请先选择一段音频'); return; }
+        if (!currentCardType || !currentCardName) return;
+        if (!cardData[currentCardType]) cardData[currentCardType] = {};
+        if (!cardData[currentCardType][currentCardName]) cardData[currentCardType][currentCardName] = [];
+        const list = cardData[currentCardType][currentCardName];
+        const autoName = '语音 ' + (list.length + 1);
+        const name = voiceAddNameInput.value.trim() || autoName;
+        list.push({ name: name, audio: voiceAddFileData.dataUrl, duration: voiceAddFileData.duration || 0, useCount: 0 });
+        renderCardDetailItems();
+        renderCardLists();
+        updateCategoryFilter();
+        voiceAddModalEl.classList.remove('show');
+        showToast('✅ 语音已添加');
+      });
 
       // 修改分类弹窗事件
       const editCategoryModal = document.getElementById('editCategoryModal');
