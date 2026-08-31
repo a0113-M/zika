@@ -7338,7 +7338,7 @@
       background: none; border: none; color: var(--primary);
       font-size: 14px; padding: 0; margin-bottom: 12px; cursor: pointer;
     }
-    .dvd-hist-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .dvd-hist-top { display: flex; align-items: center; justify-content: flex-end; margin-bottom: 12px; }
     .dvd-hist-top .dvd-subback { margin-bottom: 0; }
     .dvd-hist-askbtn {
       padding: 8px 18px; border: none; border-radius: 12px;
@@ -13693,7 +13693,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
         <!-- 抽牌占卜 -->
         <div class="dvd-view" id="dvdDrawView" style="display:none;">
-          <button class="dvd-subback" id="dvdDrawBack">‹ 返回</button>
           <div class="dvd-seg" id="dvdModeSeg">
             <button class="dvd-seg-item active" data-m="tarot">塔罗牌</button>
             <button class="dvd-seg-item" data-m="leno">雷诺曼牌</button>
@@ -13735,7 +13734,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
         <!-- 每日运势 -->
         <div class="dvd-view" id="dvdDailyView" style="display:none;">
-          <button class="dvd-subback" id="dvdDailyBack">‹ 返回</button>
           <div class="dvd-daily-date" id="dvdDailyDate"></div>
           <button class="dvd-primary" id="dvdDailyBtn">抽取今日运势</button>
           <div class="dvd-result" id="dvdDailyResult" style="display:none;"></div>
@@ -13753,7 +13751,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
         <!-- 占卜追问 -->
         <div class="dvd-view" id="dvdAskView" style="display:none;">
-          <button class="dvd-subback" id="dvdAskBack">‹ 返回</button>
           <div class="dvd-ask-barbar">
             <button class="dvd-ask-histbtn" id="dvdAskSwitch">历史记录<span class="dvd-ask-caret">▾</span></button>
           </div>
@@ -13798,7 +13795,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
         <!-- 历史记录 -->
         <div class="dvd-view" id="dvdHistView" style="display:none;">
-          <button class="dvd-subback" id="dvdHistBack">‹ 返回</button>
           <div class="dvd-hlist" id="dvdHistList"></div>
           <div class="dvd-result-actions" id="dvdHistActions" style="display:none;">
             <button class="dvd-ghost" id="dvdClearHBtn">清空记录</button>
@@ -13808,7 +13804,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <!-- 历史详情 -->
         <div class="dvd-view" id="dvdHistDetailView" style="display:none;">
           <div class="dvd-hist-top">
-            <button class="dvd-subback" id="dvdHistDetailBack">‹ 返回</button>
             <button class="dvd-hist-askbtn" id="dvdHistAskBtn">追问</button>
           </div>
           <div class="dvd-hdetail" id="dvdHistDetail"></div>
@@ -13817,7 +13812,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <!-- 占卜聊天 -->
         <div class="dvd-view" id="dvdChatView" style="display:none;">
           <div class="dvd-hist-top">
-            <button class="dvd-subback" id="dvdChatBack">‹ 返回</button>
             <div class="dvd-top-actions">
                 <button class="dvd-callcfg-btn" id="dvdChatSettings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>设置<svg class="dvd-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <button class="dvd-callcfg-btn" id="dvdChatCallCfg" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>判定设置</button>
@@ -24798,7 +24792,15 @@ patText2 = patText2.replace(/你/g, '我');
           hist: document.getElementById('dvdHistView'),
           histDetail: document.getElementById('dvdHistDetailView')
         };
+        var currentDvdView = 'home';
+        function dvdGoBack() {
+          var back = { home: null, draw: 'home', daily: 'home', ask: 'home', chat: 'home', hist: 'home', histDetail: 'hist' };
+          var target = back[currentDvdView];
+          if (target === null) { page.classList.remove('show'); }
+          else { showView(target); }
+        }
         function showView(k) {
+          currentDvdView = k;
           Object.keys(views).forEach(function (v) { views[v].style.display = (v === k) ? '' : 'none'; });
         }
 
@@ -24811,7 +24813,7 @@ patText2 = patText2.replace(/你/g, '我');
           renderTargets();
           showView('home');
         };
-        document.getElementById('dvdBackBtn').addEventListener('click', function () { page.classList.remove('show'); });
+        document.getElementById('dvdBackBtn').addEventListener('click', function () { dvdGoBack(); });
 
         // 首页入口
         page.querySelectorAll('.dvd-entry').forEach(function (el) {
@@ -24824,11 +24826,6 @@ patText2 = patText2.replace(/你/g, '我');
             else if (go === 'hist') { renderHistory(); showView('hist'); }
           });
         });
-        // 子页返回
-        document.getElementById('dvdDrawBack').addEventListener('click', function () { showView('home'); });
-        document.getElementById('dvdDailyBack').addEventListener('click', function () { showView('home'); });
-        document.getElementById('dvdAskBack').addEventListener('click', function () { showView('home'); });
-        document.getElementById('dvdHistBack').addEventListener('click', function () { showView('home'); });
 
         // 占卜对象
         function renderTargets() {
@@ -25606,7 +25603,6 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           document.getElementById('dvdHistDetail').innerHTML = histDetailHtml(x);
           showView('histDetail');
         }
-        document.getElementById('dvdHistDetailBack').addEventListener('click', function () { showView('hist'); });
         document.getElementById('dvdHistAskBtn').addEventListener('click', function () {
           if (_dvdHistCur) {
             _dvdAskTarget = findRec(_dvdHistCur.t) || _dvdHistCur;
@@ -25827,7 +25823,6 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             });
           });
         }
-        document.getElementById('dvdChatBack').addEventListener('click', function () { showView('home'); });
         document.getElementById('dvdChatClear').addEventListener('click', function () {
           if (!confirm('确定要清空全部对话吗？')) return;
           localStorage.removeItem('divineChat');
