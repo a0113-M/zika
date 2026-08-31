@@ -11310,6 +11310,29 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
 
+
+.settings-item-multi {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 6px;
+      padding: 14px 0;
+    }
+.settings-item-multi .settings-item-left {
+      margin-right: 0;
+    }
+.settings-item-multi .settings-prob-control {
+      width: 100%;
+      justify-content: space-between;
+      flex-shrink: 1;
+    }
+.settings-item-multi .settings-range {
+      flex: 1;
+      width: auto;
+      max-width: 100%;
+    }
+.settings-item-multi .settings-prob-value {
+      min-width: 52px;
+    }
 </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14061,7 +14084,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div id="contactProbSelector" style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0 12px;"></div>
             <div id="contactProbSlidersSection" style="display:none;">
               <div class="settings-section-title" id="contactProbContactName" style="font-size:13px;">联系人概率</div>
-              <div class="settings-item">
+              <div class="settings-item settings-item-multi">
                 <div class="settings-item-left">
                   <span class="settings-item-label">发信</span>
                   <span class="settings-item-hint">该联系人每隔一段时间、按概率自动给你发信</span>
@@ -14077,7 +14100,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                   <span class="settings-prob-value" id="contactSettingLetterProbVal">5%</span>
                 </div>
               </div>
-              <div class="settings-item">
+              <div class="settings-item settings-item-multi">
                 <div class="settings-item-left">
                   <span class="settings-item-label">朋友圈</span>
                   <span class="settings-item-hint">该联系人每隔一段时间、按概率自动发朋友圈</span>
@@ -14093,7 +14116,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                   <span class="settings-prob-value" id="contactSettingMomentProbVal">5%</span>
                 </div>
               </div>
-              <div class="settings-item">
+              <div class="settings-item settings-item-multi">
                 <div class="settings-item-left">
                   <span class="settings-item-label">匿名来信</span>
                   <span class="settings-item-hint">该联系人每隔一段时间、按概率给你写匿名信</span>
