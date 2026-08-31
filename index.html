@@ -16395,6 +16395,59 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           '回复消息状态': [{ name: '正在输入...', useCount: 0 }, { name: '已读', useCount: 0 }, { name: '未读', useCount: 0 }, { name: '已回复', useCount: 0 }, { name: '等待回复', useCount: 0 }, { name: '消息已送达', useCount: 0 }]
         }
       };
+      // ===== 字卡数据持久化（IndexedDB 存储，支持语音音频）=====
+      function _zkCardOpenDb() {
+        return new Promise(function (resolve, reject) {
+          try {
+            if (!window.indexedDB) { reject(new Error('no-idb')); return; }
+            var req = indexedDB.open('zk_wordcard_db', 1);
+            req.onupgradeneeded = function (e) {
+              var db = e.target.result;
+              if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
+            };
+            req.onsuccess = function (e) { resolve(e.target.result); };
+            req.onerror = function (e) { reject(e.target.error); };
+          } catch (err) { reject(err); }
+        });
+      }
+      function saveCardDataNow() {
+        try {
+          _zkCardOpenDb().then(function (db) {
+            try {
+              var tx = db.transaction('kv', 'readwrite');
+              var store = tx.objectStore('kv');
+              store.put(JSON.stringify(cardData), 'cardData');
+            } catch (e2) {}
+            try { db.close(); } catch (e3) {}
+          }).catch(function () {});
+        } catch (e) {}
+      }
+      function loadCardData() {
+        _zkCardOpenDb().then(function (db) {
+          var finished = false;
+          var finish = function () { if (!finished) { finished = true; try { db.close(); } catch (e) {} } };
+          try {
+            var tx = db.transaction('kv', 'readonly');
+            var store = tx.objectStore('kv');
+            var getReq = store.get('cardData');
+            getReq.onsuccess = function () {
+              try {
+                if (getReq.result) {
+                  var d = JSON.parse(getReq.result);
+                  if (d && typeof d === 'object') {
+                    if (d.general && typeof d.general === 'object') cardData.general = d.general;
+                    if (d.role && typeof d.role === 'object') cardData.role = d.role;
+                    if (d.topBar && typeof d.topBar === 'object') cardData.topBar = d.topBar;
+                    if (d.voice && typeof d.voice === 'object') cardData.voice = d.voice;
+                    try { renderCardLists(); refreshList(); } catch (e2) {}
+                  }
+                }
+              } catch (e2) {}
+            };
+            tx.oncomplete = finish;
+          } catch (e2) { finish(); }
+        }).catch(function () {});
+      }
       function rollVoiceCard() {
         try {
           const voiceRoles = Object.keys(cardData.voice || {});
@@ -19855,7 +19908,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             if (cards.length === 0) { showToast('⚠️ 文件中没有有效的字卡'); return; }
             if (confirm(`确定要导入 ${cards.length} 条字卡到「${currentCardName}」吗？\n（将覆盖现有字卡）`)) {
               cardData[currentCardType][currentCardName] = [];
-              cards.forEach(card => { cardData[currentCardType][currentCardName].push({ name: card.name || card, useCount: card.useCount || 0 }); });
+              cards.forEach(card => { var o = { name: card.name || card, useCount: card.useCount || 0 }; if (card.audio) { o.audio = card.audio; o.duration = card.duration || 0; } cardData[currentCardType][currentCardName].push(o); });
+              saveCardDataNow();
               renderCardDetailItems();
               renderCardLists();
               showToast(`✅ 成功导入 ${cards.length} 条字卡`);
@@ -19964,6 +20018,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         cardData.role = d.role || {};
         cardData.topBar = d.topBar || {};
         cardData.voice = d.voice || {};
+        saveCardDataNow();
         renderCardLists();
         if (currentCardType && currentCardName) { renderCardDetailItems(); updateCategoryFilter(); }
         showToast('✅ 已导入 ' + d.total + ' 条字卡');
@@ -20054,7 +20109,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           const useCount = item.useCount || 0;
           const countClass = useCount > 0 ? 'card-detail-count used' : 'card-detail-count';
           const displayName = item.name || item;
-          const displayShow = (currentCardType === 'voice') ? '🔊 ' + displayName : displayName;
+          const displayShow = displayName;
           const category = item.category || '未分类';
           const showCategory = (currentCardName === '文字');
           const categoryBadge = showCategory ? `<span class="card-category-badge" data-index="${index}">${category}</span>` : '';
@@ -20097,6 +20152,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             const idx = parseInt(this.dataset.index);
             if (confirm('确定要删除该字卡吗？')) {
               cardData[currentCardType][currentCardName].splice(idx, 1);
+              saveCardDataNow();
               renderCardDetailItems();
               renderCardLists();
               updateCategoryFilter();
@@ -20197,6 +20253,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           return false;
         }
         cardData[type][name].push({ name: itemName.trim(), useCount: 0, category: category.trim() });
+        saveCardDataNow();
         renderCardDetailItems();
         renderCardLists();
         updateCategoryFilter();
@@ -20280,7 +20337,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             addedCount++;
           }
         });
-        if (addedCount > 0) { renderCardDetailItems(); renderCardLists(); updateCategoryFilter(); }
+        if (addedCount > 0) { saveCardDataNow(); renderCardDetailItems(); renderCardLists(); updateCategoryFilter(); }
         return addedCount;
       }
       batchAddConfirm.addEventListener('click', function () {
@@ -20363,6 +20420,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         const autoName = '语音 ' + (list.length + 1);
         const name = voiceAddNameInput.value.trim() || autoName;
         list.push({ name: name, audio: voiceAddFileData.dataUrl, duration: voiceAddFileData.duration || 0, useCount: 0 });
+        saveCardDataNow();
         renderCardDetailItems();
         renderCardLists();
         updateCategoryFilter();
@@ -20392,6 +20450,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (editingCategoryIndex !== null) {
           const newCategory = editCategoryInput.value.trim() || '未分类';
           cardData[currentCardType][currentCardName][editingCategoryIndex].category = newCategory;
+          saveCardDataNow();
           renderCardDetailItems();
           updateCategoryFilter();
           editCategoryModal.classList.remove('show');
@@ -20427,6 +20486,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           if (!value) { showToast('请输入类型名称'); return; }
           if (cardData.general[value]) { showToast('该类型已存在'); return; }
           cardData.general[value] = [];
+          saveCardDataNow();
           renderCardLists();
           cardAddModal.classList.remove('show');
           showToast(`已创建通用字卡「${value}」`);
@@ -20436,6 +20496,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           if (!value) { showToast('请输入角色名称'); return; }
           if (cardData.role[value]) { showToast('该角色已存在'); return; }
           cardData.role[value] = [];
+          saveCardDataNow();
           renderCardLists();
           cardAddModal.classList.remove('show');
           showToast('角色字卡已创建');
@@ -20445,6 +20506,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           if (!value) { showToast('请输入角色名称'); return; }
           if (cardData.voice[value]) { showToast('该角色已存在'); return; }
           cardData.voice[value] = [];
+          saveCardDataNow();
           renderCardLists();
           cardAddModal.classList.remove('show');
           showToast('语音字卡已创建');
@@ -20463,6 +20525,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       // ----- 初始化 -----
       renderCardLists();
       refreshList();
+      loadCardData();
       // 启动聊天顶部信息自动更新（每天随机时间刷新）
       // ----- 多选工具栏按钮事件 -----
       document.getElementById('btnSelectAll').addEventListener('click', function () {
@@ -23093,6 +23156,7 @@ patText2 = patText2.replace(/你/g, '我');
           });
           if (!exists) {
             cardData.general['拍一拍'].push({ name: text, type: '拍一拍' });
+            saveCardDataNow();
             showToast('已加入拍一拍字卡');
           }
         }
