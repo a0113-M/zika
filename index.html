@@ -7707,6 +7707,12 @@
       border-radius: 12px; border: 1px solid #e74c3c; background: transparent;
       color: #e74c3c; font-size: 14px;
     }
+    .dt-data-actions { display: flex; gap: 10px; margin-top: 4px; margin-bottom: 10px; }
+    .dt-data-btn {
+      flex: 1; padding: 12px; border-radius: 12px; font-size: 14px; cursor: pointer;
+      border: 1px solid rgba(var(--primary-rgba), 0.4); background: rgba(var(--primary-rgba), 0.10);
+      color: var(--primary);
+    }
     .dt-ovl {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.45); z-index: 20; display: none;
@@ -14061,6 +14067,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="dt-card-title">统计总览</div>
           <div class="dt-grid" id="dtGrid"></div>
         </div>
+        <div class="dt-data-actions">
+          <button class="dt-data-btn" id="dtExportBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出数据</button>
+          <button class="dt-data-btn" id="dtImportBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>导入数据</button>
+        </div>
+        <input type="file" id="dtImportFile" accept=".json" style="display:none">
         <button class="dt-clear" id="dtClearBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>清除缓存</button>
       </div>
       <div class="dt-ovl" id="dtMetOvl">
@@ -17102,6 +17113,74 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       });
       document.getElementById('dtClearBtn').addEventListener('click', function () {
         if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) { localStorage.clear(); location.reload(); }
+      });
+
+      // ===== 全站数据导出 / 导入 =====
+      function _zkTs() {
+        var d = new Date();
+        return '' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '-' + String(d.getHours()).padStart(2, '0') + String(d.getMinutes()).padStart(2, '0');
+      }
+      function _zkDownloadJson(obj, filename) {
+        try {
+          var blob = new Blob([JSON.stringify(obj)], { type: 'application/json' });
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url; a.download = filename;
+          document.body.appendChild(a); a.click();
+          setTimeout(function () { try { document.body.removeChild(a); URL.revokeObjectURL(url); } catch (e) {} }, 300);
+          showToast('✅ 数据已导出');
+        } catch (e) { showToast('⚠️ 导出失败'); }
+      }
+      function _zkExportAllData() {
+        var lsData = {};
+        try {
+          for (var i = 0; i < localStorage.length; i++) {
+            var k = localStorage.key(i);
+            if (k != null) { try { lsData[k] = localStorage.getItem(k); } catch (e) {} }
+          }
+        } catch (e) {}
+        var payload = { app: 'zika', ver: 1, exportedAt: Date.now(), localStorage: lsData, indexedDB: {} };
+        try { if (typeof cardData !== 'undefined' && cardData) payload.indexedDB.cardData = JSON.stringify(cardData); } catch (e) {}
+        _zkDownloadJson(payload, '小手机-数据备份-' + _zkTs() + '.json');
+      }
+      function _zkImportAllData(file) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            var obj = JSON.parse(e.target.result);
+            var lsData = obj.localStorage;
+            if (!lsData || typeof lsData !== 'object') { showToast('⚠️ 文件格式不正确'); return; }
+            try { localStorage.clear(); } catch (e2) {}
+            Object.keys(lsData).forEach(function (k) { try { localStorage.setItem(k, lsData[k]); } catch (e2) {} });
+            var idbData = (obj.indexedDB && typeof obj.indexedDB === 'object') ? obj.indexedDB : {};
+            var cardStr = idbData.cardData;
+            var finish = function () { showToast('✅ 导入成功'); setTimeout(function () { location.reload(); }, 500); };
+            if (cardStr) {
+              _zkCardOpenDb().then(function (db) {
+                try {
+                  var tx = db.transaction('kv', 'readwrite');
+                  var store = tx.objectStore('kv');
+                  store.put(cardStr, 'cardData');
+                  tx.oncomplete = function () { try { db.close(); } catch (e) {} finish(); };
+                  tx.onerror = function () { try { db.close(); } catch (e) {} finish(); };
+                } catch (e) { try { db.close(); } catch (e2) {} finish(); }
+              }).catch(function () { finish(); });
+            } else { finish(); }
+          } catch (e) { showToast('⚠️ 导入失败，文件损坏'); }
+        };
+        reader.onerror = function () { showToast('⚠️ 读取文件失败'); };
+        reader.readAsText(file);
+      }
+      document.getElementById('dtExportBtn').addEventListener('click', function () { _zkExportAllData(); });
+      document.getElementById('dtImportBtn').addEventListener('click', function () { document.getElementById('dtImportFile').click(); });
+      document.getElementById('dtImportFile').addEventListener('change', function (ev) {
+        var f = ev.target.files && ev.target.files[0];
+        if (!f) return;
+        if (confirm('导入将覆盖当前全部数据（联系人、聊天记录、字卡等），确定继续？')) {
+          _zkImportAllData(f);
+        } else {
+          ev.target.value = '';
+        }
       });
 
       // ===== 联系人活动页 =====
