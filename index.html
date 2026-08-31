@@ -14063,30 +14063,48 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <div class="settings-section-title" id="contactProbContactName" style="font-size:13px;">联系人概率</div>
               <div class="settings-item">
                 <div class="settings-item-left">
-                  <span class="settings-item-label">发信概率</span>
-                  <span class="settings-item-hint">该联系人自动给你发信的概率</span>
+                  <span class="settings-item-label">发信</span>
+                  <span class="settings-item-hint">该联系人每隔一段时间、按概率自动给你发信</span>
                 </div>
                 <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">间隔</span>
+                  <input type="range" id="contactSettingLetterInterval" min="5" max="1440" step="5" value="30" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingLetterIntervalVal">30分钟</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">概率</span>
                   <input type="range" id="contactSettingLetterProb" min="0" max="100" step="1" value="5" class="settings-range">
                   <span class="settings-prob-value" id="contactSettingLetterProbVal">5%</span>
                 </div>
               </div>
               <div class="settings-item">
                 <div class="settings-item-left">
-                  <span class="settings-item-label">朋友圈概率</span>
-                  <span class="settings-item-hint">该联系人自动发朋友圈的概率</span>
+                  <span class="settings-item-label">朋友圈</span>
+                  <span class="settings-item-hint">该联系人每隔一段时间、按概率自动发朋友圈</span>
                 </div>
                 <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">间隔</span>
+                  <input type="range" id="contactSettingMomentInterval" min="5" max="1440" step="5" value="30" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingMomentIntervalVal">30分钟</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">概率</span>
                   <input type="range" id="contactSettingMomentProb" min="0" max="100" step="1" value="5" class="settings-range">
                   <span class="settings-prob-value" id="contactSettingMomentProbVal">5%</span>
                 </div>
               </div>
               <div class="settings-item">
                 <div class="settings-item-left">
-                  <span class="settings-item-label">匿名来信概率</span>
-                  <span class="settings-item-hint">该联系人匿名信箱收到新信的概率</span>
+                  <span class="settings-item-label">匿名来信</span>
+                  <span class="settings-item-hint">该联系人每隔一段时间、按概率给你写匿名信</span>
                 </div>
                 <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">间隔</span>
+                  <input type="range" id="contactSettingAnonInterval" min="5" max="1440" step="5" value="60" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingAnonIntervalVal">1小时</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">概率</span>
                   <input type="range" id="contactSettingAnonProb" min="0" max="100" step="1" value="3" class="settings-range">
                   <span class="settings-prob-value" id="contactSettingAnonProbVal">3%</span>
                 </div>
@@ -18452,9 +18470,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         }
       }
 
+      function formatIntervalLabel(min) {
+        min = parseInt(min) || 0;
+        if (min <= 0) return '已关闭';
+        if (min < 60) return min + '分钟';
+        if (min % 60 === 0) return (min / 60) + '小时';
+        var h = Math.round(min / 6) / 10;
+        return h + '小时';
+      }
+
       function loadContactProbSliders(contactId) {
         var settings = getContactProbSettings();
-        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0 };
+        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0, letterInterval: 30, momentInterval: 30, anonInterval: 60 };
         
         var contact = contacts.find(function(c) { return c.id === contactId; });
         if (contact) {
@@ -18464,6 +18491,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         var lp = document.getElementById('contactSettingLetterProb');
         var mp = document.getElementById('contactSettingMomentProb');
         var ap = document.getElementById('contactSettingAnonProb');
+        var li = document.getElementById('contactSettingLetterInterval');
+        var mi = document.getElementById('contactSettingMomentInterval');
+        var ai = document.getElementById('contactSettingAnonInterval');
         var rmp = document.getElementById('contactSettingReplyMomentProb');
         var lmp = document.getElementById('contactSettingLikeMomentProb');
         var cp = document.getElementById('contactSettingCallProb');
@@ -18477,6 +18507,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (lp) { lp.value = cs.letterProb; document.getElementById('contactSettingLetterProbVal').textContent = cs.letterProb + '%'; }
         if (mp) { mp.value = cs.momentProb; document.getElementById('contactSettingMomentProbVal').textContent = cs.momentProb + '%'; }
         if (ap) { ap.value = cs.anonProb; document.getElementById('contactSettingAnonProbVal').textContent = cs.anonProb + '%'; }
+        if (li) { li.value = cs.letterInterval || 30; document.getElementById('contactSettingLetterIntervalVal').textContent = formatIntervalLabel(cs.letterInterval || 30); }
+        if (mi) { mi.value = cs.momentInterval || 30; document.getElementById('contactSettingMomentIntervalVal').textContent = formatIntervalLabel(cs.momentInterval || 30); }
+        if (ai) { ai.value = cs.anonInterval || 60; document.getElementById('contactSettingAnonIntervalVal').textContent = formatIntervalLabel(cs.anonInterval || 60); }
         if (rmp) { rmp.value = cs.replyMomentProb || 5; document.getElementById('contactSettingReplyMomentProbVal').textContent = (cs.replyMomentProb || 5) + '%'; }
         if (lmp) { lmp.value = cs.likeMomentProb || 10; document.getElementById('contactSettingLikeMomentProbVal').textContent = (cs.likeMomentProb || 10) + '%'; }
         if (cp) { cp.value = cs.callProb || 3; document.getElementById('contactSettingCallProbVal').textContent = (cs.callProb || 3) + '%'; }
@@ -18494,17 +18527,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       }
 
       // 联系人概率滑块事件
-      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb','contactExclusiveCardProb'].forEach(function(id) {
+      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingLetterInterval','contactSettingMomentInterval','contactSettingAnonInterval','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb','contactExclusiveCardProb'].forEach(function(id) {
         var slider = document.getElementById(id);
         var display = document.getElementById(id + 'Val');
         if (slider && display) {
           slider.addEventListener('input', function() {
             var val = parseInt(this.value);
-            display.textContent = val + '%';
+            var isInterval = /Interval$/.test(id);
+            display.textContent = isInterval ? formatIntervalLabel(val) : (val + '%');
             if (!currentContactProbId) return;
             var settings = getContactProbSettings();
-            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0 };
-            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb', contactExclusiveCardProb: 'exclusiveCardProb' };
+            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0, letterInterval: 30, momentInterval: 30, anonInterval: 60 };
+            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingLetterInterval: 'letterInterval', contactSettingMomentInterval: 'momentInterval', contactSettingAnonInterval: 'anonInterval', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb', contactExclusiveCardProb: 'exclusiveCardProb' };
             settings[currentContactProbId][keyMap[id]] = val;
             saveContactProbSettings(settings);
           });
@@ -18604,68 +18638,142 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         });
       }
 
-      // 联系人自动发信（基于概率设置）
+      // ===== 联系人自动事件（写信/朋友圈/匿名来信）：按「间隔+概率」触发 =====
       var contactAutoLetterTimer = null;
       function startContactAutoLetter() {
         if (contactAutoLetterTimer) clearInterval(contactAutoLetterTimer);
-        var s = getSettings();
-        var intervalMs = s.checkInterval * 60 * 1000;
         contactAutoLetterTimer = setInterval(function() {
-          try {
-            var nonGroupContacts = contacts.filter(function(c) { return !c.isGroup; });
-            if (nonGroupContacts.length === 0) return;
-            // 根据每个联系人的个人概率，随机选一个联系人发信
-            var contactProbSettings = getContactProbSettings();
-            var candidates = [];
-            nonGroupContacts.forEach(function(contact) {
-              var contactSettings = contactProbSettings[contact.id] || {};
-              var prob = (contactSettings.letterProb !== undefined ? contactSettings.letterProb : s.letterProb) / 100;
-              if (prob > 0 && Math.random() <= prob) {
-                candidates.push(contact);
-              }
-            });
-            if (candidates.length === 0) return;
-            var contact = candidates[Math.floor(Math.random() * candidates.length)];
-            // 从该联系人的聊天记录中取消息生成信件
-            var msgs = chatHistories[contact.id];
-            if (!msgs || msgs.length === 0) return;
-            var msg = msgs[Math.floor(Math.random() * msgs.length)];
-            var words = [];
-            if (msg.text) {
-              var chars = msg.text.replace(/\s+/g, '');
-              if (chars.length > 0) {
-                for (var ci = 0; ci < chars.length; ci++) {
-                  words.push({ name: chars[ci], category: '文字' });
-                }
+          try { tickContactAutoEvents(); } catch(e) {}
+        }, 60 * 1000);
+        setTimeout(function() { try { tickContactAutoEvents(); } catch(e) {} }, 3000);
+      }
+
+      function getEventLastFire() {
+        try { return JSON.parse(localStorage.getItem('eventLastFire') || '{}'); } catch(e) { return {}; }
+      }
+      function saveEventLastFire(map) {
+        try { localStorage.setItem('eventLastFire', JSON.stringify(map)); } catch(e) {}
+      }
+
+      var autoAnonMessages = ['我一直在默默关注你...', '今天天气真好，想起了你', '有句话想说，却不知该怎么开口', '猜猜我是谁？猜对有奖', '你最近过得好吗？', '送你一份小惊喜', '有些话，匿名才说得出口'];
+
+      function tickContactAutoEvents() {
+        try {
+          var s = getSettings();
+          var nonGroupContacts = contacts.filter(function(c) { return !c.isGroup; });
+          if (nonGroupContacts.length === 0) return;
+          var contactProbSettings = getContactProbSettings();
+          var lastFire = getEventLastFire();
+          var now = Date.now();
+          var changed = false;
+
+          nonGroupContacts.forEach(function(contact) {
+            var cs = contactProbSettings[contact.id] || {};
+
+            var lProb = (cs.letterProb !== undefined ? cs.letterProb : s.letterProb) / 100;
+            var lInt = (cs.letterInterval !== undefined ? cs.letterInterval : 30) * 60 * 1000;
+            var _lKey = contact.id + ':letter';
+            if ((lastFire[_lKey] || 0) === 0) {
+              lastFire[_lKey] = now; changed = true;
+            } else if (lProb > 0 && (now - lastFire[_lKey] >= lInt)) {
+              lastFire[_lKey] = now; changed = true;
+              if (Math.random() <= lProb) tryAutoLetter(contact);
+            }
+
+            var mProb = (cs.momentProb !== undefined ? cs.momentProb : s.momentProb) / 100;
+            var mInt = (cs.momentInterval !== undefined ? cs.momentInterval : 30) * 60 * 1000;
+            var _mKey = contact.id + ':moment';
+            if ((lastFire[_mKey] || 0) === 0) {
+              lastFire[_mKey] = now; changed = true;
+            } else if (mProb > 0 && (now - lastFire[_mKey] >= mInt)) {
+              lastFire[_mKey] = now; changed = true;
+              if (Math.random() <= mProb) tryAutoMoment(contact);
+            }
+
+            var aProb = (cs.anonProb !== undefined ? cs.anonProb : s.anonProb) / 100;
+            var aInt = (cs.anonInterval !== undefined ? cs.anonInterval : 60) * 60 * 1000;
+            var _aKey = contact.id + ':anon';
+            if ((lastFire[_aKey] || 0) === 0) {
+              lastFire[_aKey] = now; changed = true;
+            } else if (aProb > 0 && (now - lastFire[_aKey] >= aInt)) {
+              lastFire[_aKey] = now; changed = true;
+              if (Math.random() <= aProb) tryAutoAnon(contact);
+            }
+          });
+
+          if (changed) saveEventLastFire(lastFire);
+        } catch(e) {}
+      }
+
+      function tryAutoLetter(contact) {
+        try {
+          var msgs = chatHistories[contact.id];
+          if (!msgs || msgs.length === 0) return;
+          var msg = msgs[Math.floor(Math.random() * msgs.length)];
+          var words = [];
+          if (msg.text) {
+            var chars = msg.text.replace(/\s+/g, '');
+            if (chars.length > 0) {
+              for (var ci = 0; ci < chars.length; ci++) {
+                words.push({ name: chars[ci], category: '文字' });
               }
             }
-            if (words.length === 0) {
-              var sampleChars = '你好呀最近怎么样想你了';
-              for (var i = 0; i < sampleChars.length; i++) {
-                words.push({ name: sampleChars[i], category: '文字' });
-              }
+          }
+          if (words.length === 0) {
+            var sampleChars = '你好呀最近怎么样想你了';
+            for (var i = 0; i < sampleChars.length; i++) {
+              words.push({ name: sampleChars[i], category: '文字' });
             }
-            var newLetter = {
-              id: 'L' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
-              from: contact.name,
-              to: 'me',
-              words: words,
-              timestamp: Date.now(),
-              isOutgoing: false,
-              favorite: false,
-              pinned: false,
-              read: false,
-              hasReplied: false,
-              anonymous: false,
-              type: Math.floor(Math.random() * 3),
-              replies: []
-            };
-            letterList.push(newLetter);
-            saveLetters();
-            renderLetterList();
-            updateLetterBadge();
-          } catch(e) {}
-        }, intervalMs);
+          }
+          var newLetter = {
+            id: 'L' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+            from: contact.name, to: 'me', words: words, timestamp: Date.now(),
+            isOutgoing: false, favorite: false, pinned: false, read: false,
+            hasReplied: false, anonymous: false, type: Math.floor(Math.random() * 3), replies: []
+          };
+          letterList.push(newLetter);
+          saveLetters();
+          renderLetterList();
+          updateLetterBadge();
+        } catch(e) {}
+      }
+
+      function tryAutoMoment(contact) {
+        try {
+          var msgs = chatHistories[contact.id];
+          if (!msgs || msgs.length === 0) return;
+          var count = Math.min(msgs.length, Math.floor(Math.random() * 20) + 1);
+          var shuffled = msgs.slice().sort(function() { return Math.random() - 0.5; });
+          var selected = shuffled.slice(0, count);
+          var textParts = selected.map(function(m) {
+            var prefix = (m.from === 'me') ? '我' : contact.name;
+            return prefix + '：' + (m.text || '[图片]');
+          });
+          moments.push({
+            id: Date.now(), author: contact.name, text: textParts.join('\n'),
+            images: [], likes: [], comments: [], time: Date.now(), isContactPost: true
+          });
+          saveMoments();
+          renderMoments();
+        } catch(e) {}
+      }
+
+      function tryAutoAnon(contact) {
+        try {
+          var message = autoAnonMessages[Math.floor(Math.random() * autoAnonMessages.length)];
+          var now = Date.now();
+          letterList.unshift({
+            id: now + Math.random(),
+            from: contact.name, senderId: contact.id,
+            time: new Date(now).toLocaleString('zh-CN'), timestamp: now,
+            words: [{ name: message, category: '文字' }],
+            read: false, favorite: false, pinned: false, replies: [],
+            isOutgoing: false, theme: 'simple', anonymous: true, guess: ''
+          });
+          saveLetters();
+          updateAnonymousBadge();
+          renderAnonymousList();
+        } catch(e) {}
       }
 
       // 页面加载时启动
@@ -26717,37 +26825,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         } catch(e) {}
       }, 30000);
 
-      // 联系人自动发朋友圈（每小时5%概率，从聊天记录抽1-20条拼接）
-      function contactPostMoments() {
-        try {
-          var lastCheck = parseInt(localStorage.getItem('contactMomentsCheckTime') || '0');
-          var now = Date.now();
-          if (now - lastCheck < 5 * 60 * 1000) return;
-          localStorage.setItem('contactMomentsCheckTime', String(now));
-          // 5%概率 = 0.05，每5分钟检查一次
-          if (Math.random() > 0.0042) return;
-          var nonGroupContacts = contacts.filter(function(c) { return !c.isGroup; });
-          if (nonGroupContacts.length === 0) return;
-          var contact = nonGroupContacts[Math.floor(Math.random() * nonGroupContacts.length)];
-          var msgs = chatHistories[contact.id];
-          if (!msgs || msgs.length === 0) return;
-          var count = Math.min(msgs.length, Math.floor(Math.random() * 20) + 1);
-          var shuffled = msgs.slice().sort(function() { return Math.random() - 0.5; });
-          var selected = shuffled.slice(0, count);
-          var textParts = selected.map(function(m) {
-            var prefix = (m.from === 'me') ? '我' : contact.name;
-            return prefix + '：' + (m.text || '[图片]');
-          });
-          moments.push({
-            id: Date.now(), author: contact.name, text: textParts.join('\n'),
-            images: [], likes: [], comments: [], time: Date.now(), isContactPost: true
-          });
-          saveMoments();
-          renderMoments();
-        } catch(e) {}
-      }
-      setInterval(contactPostMoments, 5 * 60 * 1000);
-      setTimeout(contactPostMoments, 3000);
+      // （联系人自动发朋友圈已合并到上方统一自动事件 tick 中）
+
 
 
       // ===== 日记模块 =====
