@@ -25807,9 +25807,14 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               var revN = draw.length - upN;
               var majorN = draw.filter(function (d) { return d.major; }).length;
               var orientN = (ccfg.callOrient === 'rev') ? revN : upN;
-              var condA = (ccfg.callUpCount > 0) ? orientN >= ccfg.callUpCount : true;
-              var condB = (ccfg.callMajorCount > 0) ? majorN >= ccfg.callMajorCount : true;
-              var here = ccfg.callAnd ? (condA && condB) : (condA || condB);
+              var needOrient = ccfg.callUpCount > 0;
+              var needMajor = ccfg.callMajorCount > 0;
+              var condA = needOrient ? orientN >= ccfg.callUpCount : true;
+              var condB = needMajor ? majorN >= ccfg.callMajorCount : true;
+              // 同时满足「目标朝向」且「大牌」的牌数（如：正位大牌）
+              var bothN = draw.filter(function (d) { var isOrient = (ccfg.callOrient === 'rev') ? d.r : !d.r; return isOrient && d.major; }).length;
+              var bothOk = (needOrient && needMajor) ? bothN >= 1 : true;
+              var here = ccfg.callAnd ? (condA && condB && bothOk) : (condA || condB);
               userLine = '（本轮用户呼唤梦角：「' + q + '」）\n\n（本轮牌面，共' + n + '张，用于判定在不在）\n' + cardTxt + '\n\n【系统判定】梦角此刻' + (here ? '在，已连接' : '不在，未连接') + '。' + (here ? '请用梦角口吻自然回应，先让他亲口说一句「在」再接着回应刚才的话，绝口不提牌、不解牌。' : '请用塔罗占卜师身份温柔安抚，围绕「先集中注意力、默念梦角名字、再试一次」回应，绝口不提牌、不解牌。');
             } else {
               userLine = '（本轮用户说：「' + q + '」）\n\n（本轮牌面，共' + n + '张，仅作界面装饰，不要解读、不要提）\n' + cardTxt;
