@@ -14838,6 +14838,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         _zkContactModal.classList.remove('show');
         contactModalEditId = null;
       }
+      function _zkBindAvatarClick(el, id) {
+        if (!el || id === null || id === undefined) return;
+        el.style.cursor = 'pointer';
+        el.addEventListener('click', function (e) {
+          e.stopPropagation();
+          _zkOpenContactModal(id);
+        });
+      }
       _zkContactAvatarEdit.addEventListener('click', function () { _zkContactAvatarFileInput.click(); });
       _zkContactAvatarFileInput.addEventListener('change', function (e) {
         var file = this.files[0]; if (!file) return;
@@ -15992,6 +16000,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { vAvatar.textContent = userProfile.avatar || '我'; vAvatar.style.background = 'var(--primary)'; }
             } else if (vContact) {
               _zkSetContactAvatar(vAvatar, vContact);
+              _zkBindAvatarClick(vAvatar, contactId);
             } else { vAvatar.textContent = '?'; vAvatar.style.background = '#999'; }
             const vWrapper = document.createElement('div');
             vWrapper.style.cssText = 'display:flex;flex-direction:column;max-width:78%;';
@@ -16044,7 +16053,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { _zkSetContactAvatar(avatar, contact); }
+              if (contact) { _zkSetContactAvatar(avatar, contact); _zkBindAvatarClick(avatar, contactId); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const img = document.createElement('img');
@@ -16076,7 +16085,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { _zkSetContactAvatar(avatar, contact); }
+              if (contact) { _zkSetContactAvatar(avatar, contact); _zkBindAvatarClick(avatar, contactId); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const videoWrap = document.createElement('div');
@@ -16133,9 +16142,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; avatar.style.display = 'flex'; avatar.style.alignItems = 'center'; avatar.style.justifyContent = 'center'; }
             } else if (contact && contact.isGroup && senderName !== 'me' && senderName !== 'other') {
               const member = contacts.find(c => c.name === senderName);
-              if (member) { _zkSetContactAvatar(avatar, member); }
+              if (member) { _zkSetContactAvatar(avatar, member); _zkBindAvatarClick(avatar, member.id); }
               else { avatar.textContent = senderName.charAt(0).toUpperCase(); avatar.style.background = '#9b9b9b'; }
-            } else if (contact) { _zkSetContactAvatar(avatar, contact); }
+            } else if (contact) { _zkSetContactAvatar(avatar, contact); _zkBindAvatarClick(avatar, contactId); }
             else { avatar.textContent = '?'; avatar.style.background = '#999'; }
 
             const bubble = document.createElement('div');
