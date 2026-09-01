@@ -6517,7 +6517,7 @@
 .moments-cover {
   position: relative;
   height: 180px;
-  background: linear-gradient(135deg, var(--primary) 0%, #7b6eb4 50%, #6a5ba3 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-strong) 50%, var(--primary-deep) 100%);
   overflow: hidden;
   cursor: pointer;
 }
@@ -6933,7 +6933,7 @@
 }
 
 .moments-btn-publish {
-  background: linear-gradient(135deg, var(--primary), #7b6eb4);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   color: #fff;
 }
 
@@ -6948,13 +6948,13 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), #7b6eb4);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(155, 142, 196, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--primary-rgba), 0.4);
   z-index: 10;
   transition: 0.2s;
 }
@@ -9067,7 +9067,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 .diary-comment-input:focus { border-color: var(--primary); }
 .diary-comment-send {
-  background: linear-gradient(135deg, var(--primary), #7b6eb4);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   color: #fff;
   border: none;
   border-radius: 18px;
@@ -9096,13 +9096,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   bottom: 20px; right: 16px;
   width: 48px; height: 48px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--primary), #7b6eb4);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 14px rgba(155, 142, 196, 0.4);
+  box-shadow: 0 4px 14px rgba(var(--primary-rgba), 0.4);
   z-index: 10;
   transition: 0.2s;
 }
@@ -9532,7 +9532,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 .diary-modal-cancel { background: #f0f0f0; color: #666; }
 .diary-modal-confirm {
-  background: linear-gradient(135deg, var(--primary), #7b6eb4);
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
   color: #fff;
   font-weight: 600;
 }
