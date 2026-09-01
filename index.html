@@ -7735,6 +7735,20 @@
     .dt-ovl-btns button { flex: 1; padding: 10px 0; border-radius: 10px; font-size: 14px; border: none; }
     #dtMetCancel, #dtAnnCancel { background: var(--bg-soft2); color: var(--text-secondary); }
     #dtMetSave, #dtAnnSave { background: var(--primary); color: #fff; font-weight: 600; }
+    .dt-clear-hint { font-size: 12px; color: var(--text-muted); text-align: center; margin-bottom: 12px; }
+    .dt-clear-list { max-height: 260px; overflow-y: auto; margin-bottom: 2px; }
+    .dt-clear-item {
+      display: flex; align-items: center; padding: 10px 8px;
+      border-bottom: 0.5px solid rgba(0,0,0,0.05); font-size: 14px; color: var(--text-main); cursor: pointer;
+    }
+    .dt-clear-item:last-child { border-bottom: none; }
+    .dt-clear-item input[type="checkbox"], .dt-clear-all input[type="checkbox"] {
+      width: 18px; height: 18px; padding: 0; margin: 0 10px 0 0;
+      flex-shrink: 0; accent-color: var(--primary); background: transparent !important;
+    }
+    .dt-clear-all { display: flex; align-items: center; padding: 6px 8px 12px; font-size: 13px; color: var(--text-secondary); }
+    #dtClearConfirm { background: #e74c3c; color: #fff; font-weight: 600; }
+    #dtClearCancel { background: var(--bg-soft2); color: var(--text-secondary); }
 
     /* === 设置页面样式 === */
     .feature-content.settings-body {
@@ -14095,6 +14109,25 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           </div>
         </div>
       </div>
+      <div class="dt-ovl" id="dtClearOvl">
+        <div class="dt-ovl-box">
+          <div class="dt-ovl-title">清理记录</div>
+          <div class="dt-clear-hint">选择要清理的记录（不影响联系人和字卡）</div>
+          <div class="dt-clear-list" id="dtClearList">
+            <label class="dt-clear-item"><input type="checkbox" class="dt-clear-chk" value="chat">聊天记录</label>
+            <label class="dt-clear-item"><input type="checkbox" class="dt-clear-chk" value="moment">朋友圈动态</label>
+            <label class="dt-clear-item"><input type="checkbox" class="dt-clear-chk" value="divine">占卜对话与历史</label>
+            <label class="dt-clear-item"><input type="checkbox" class="dt-clear-chk" value="diary">日记</label>
+            <label class="dt-clear-item"><input type="checkbox" class="dt-clear-chk" value="letter">信件</label>
+            <label class="dt-clear-item"><input type="checkbox" class="dt-clear-chk" value="todo">待办与提醒</label>
+          </div>
+          <div class="dt-clear-all"><label><input type="checkbox" id="dtClearAllChk">全选</label></div>
+          <div class="dt-ovl-btns">
+            <button id="dtClearCancel">取消</button>
+            <button id="dtClearConfirm">确认清除</button>
+          </div>
+        </div>
+      </div>
     </div>
 
       <div class="feature-page" id="settingsPage">
@@ -17111,8 +17144,74 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         document.getElementById('dtAnnOvl').classList.remove('show');
         renderDataStats();
       });
+      // ===== 清理记录（可选模块） =====
+      function _zkClearSelected(chk) {
+        var done = [];
+        try {
+          if (chk.chat) {
+            try { chatHistories = {}; } catch (e) {}
+            localStorage.removeItem('contactChatHistories');
+            try {
+              contacts.forEach(function (c) { c.lastMsg = ''; c.time = ''; });
+              if (typeof renderContacts === 'function') renderContacts();
+            } catch (e) {}
+            done.push('聊天记录');
+          }
+          if (chk.moment) {
+            try { moments = []; } catch (e) {}
+            localStorage.removeItem('moments');
+            done.push('朋友圈动态');
+          }
+          if (chk.divine) {
+            localStorage.removeItem('divineChat');
+            localStorage.removeItem('divineChatStage');
+            localStorage.removeItem('divineHistory');
+            localStorage.removeItem('zk_divine_archive');
+            done.push('占卜对话与历史');
+          }
+          if (chk.diary) {
+            localStorage.removeItem('diaryEntries');
+            localStorage.removeItem('diaryCategories');
+            done.push('日记');
+          }
+          if (chk.letter) {
+            try { letterList = []; } catch (e) {}
+            localStorage.removeItem('letterList');
+            localStorage.removeItem('letterSort');
+            localStorage.removeItem('anonymousLettersInited');
+            done.push('信件');
+          }
+          if (chk.todo) {
+            localStorage.removeItem('todos');
+            localStorage.removeItem('reminderCards');
+            done.push('待办与提醒');
+          }
+          try { renderDataStats(); } catch (e) {}
+        } catch (e) {}
+        if (done.length) { showToast('已清理：' + done.join('、')); }
+        else { showToast('未勾选任何项目'); }
+      }
       document.getElementById('dtClearBtn').addEventListener('click', function () {
-        if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) { localStorage.clear(); location.reload(); }
+        var ovl = document.getElementById('dtClearOvl');
+        if (!ovl) return;
+        var cbs = ovl.querySelectorAll('.dt-clear-chk');
+        for (var i = 0; i < cbs.length; i++) cbs[i].checked = false;
+        var all = document.getElementById('dtClearAllChk'); if (all) all.checked = false;
+        ovl.classList.add('show');
+      });
+      document.getElementById('dtClearCancel').addEventListener('click', function () { document.getElementById('dtClearOvl').classList.remove('show'); });
+      document.getElementById('dtClearAllChk').addEventListener('change', function () {
+        var on = this.checked;
+        var cbs = document.querySelectorAll('#dtClearList .dt-clear-chk');
+        for (var i = 0; i < cbs.length; i++) cbs[i].checked = on;
+      });
+      document.getElementById('dtClearConfirm').addEventListener('click', function () {
+        var chk = {}; var any = false;
+        var cbs = document.querySelectorAll('#dtClearList .dt-clear-chk');
+        for (var i = 0; i < cbs.length; i++) { chk[cbs[i].value] = cbs[i].checked; if (cbs[i].checked) any = true; }
+        if (!any) { showToast('请先勾选要清理的记录'); return; }
+        document.getElementById('dtClearOvl').classList.remove('show');
+        _zkClearSelected(chk);
       });
 
       // ===== 全站数据导出 / 导入 =====
