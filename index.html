@@ -21188,16 +21188,28 @@ patText2 = patText2.replace(/你/g, '我');
             allCards.push({ name: item.name || item, category: type });
           });
         });
-        if (allCards.length === 0) {
+        // 表情包（聊天工具栏里的图片）也纳入抽取
+        const emojiCards = (typeof emojiList !== 'undefined' && emojiList ? emojiList : []).map(src => ({ name: '[表情包]', category: '表情', img: src }));
+        if (allCards.length === 0 && emojiCards.length === 0) {
           showToast('请先添加一些字卡');
           return null;
         }
         // 随机 1-100 张字卡
         const count = Math.floor(Math.random() * 100) + 1;
         const words = [];
+        let emojiUsed = 0;
+        const maxEmoji = 2; // 表情包是图片，限制张数避免信件过大
         for (let i = 0; i < count; i++) {
-          const card = allCards[Math.floor(Math.random() * allCards.length)];
-          words.push({ name: card.name, category: card.category });
+          const canEmoji = emojiCards.length > 0 && emojiUsed < maxEmoji;
+          const useEmoji = canEmoji && (allCards.length === 0 || Math.random() < 0.12);
+          if (useEmoji) {
+            const e = emojiCards[Math.floor(Math.random() * emojiCards.length)];
+            words.push({ name: e.name, category: e.category, img: e.img });
+            emojiUsed++;
+          } else if (allCards.length > 0) {
+            const card = allCards[Math.floor(Math.random() * allCards.length)];
+            words.push({ name: card.name, category: card.category });
+          }
         }
         // 随机选一个联系人作为发信人
         let sender = null;
@@ -21715,7 +21727,7 @@ patText2 = patText2.replace(/你/g, '我');
               const chip = document.createElement('span');
               chip.className = 'letter-word';
               chip.style.color = cc[1];
-              chip.textContent = gw.name;
+              if (gw.img) { chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.style.cssText = 'max-width:100%;max-height:72px;border-radius:6px;display:block;'; chip.appendChild(_imgA); } else { chip.textContent = gw.name; }
               chipWrap.appendChild(chip);
               if (annotationMode) {
                 chipWrap.classList.add('selectable');
@@ -21745,7 +21757,7 @@ patText2 = patText2.replace(/你/g, '我');
             const chip = document.createElement('span');
             chip.className = 'letter-word';
             chip.style.color = cc[1];
-            chip.textContent = w.name;
+            if (w.img) { chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.style.cssText = 'max-width:100%;max-height:72px;border-radius:6px;display:block;'; chip.appendChild(_imgB); } else { chip.textContent = w.name; }
             chipWrap.appendChild(chip);
             if (annotationMode) {
               chipWrap.classList.add('selectable');
