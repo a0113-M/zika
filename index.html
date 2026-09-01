@@ -14604,6 +14604,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (cm && inputFocused && !divineInput) {
           cm.scrollTop = cm.scrollHeight;
         }
+        // 占卜聊天同理：键盘弹出时列表滚到底，最新回复不被键盘盖住
+        var dv = document.getElementById('dvdChatList');
+        if (dv && inputFocused && !divineInput) {
+          dv.scrollTop = dv.scrollHeight;
+        }
       }
 
       document.addEventListener('focusin', function(e) {
