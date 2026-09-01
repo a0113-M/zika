@@ -744,14 +744,6 @@
       gap: 8px;
     }
 
-    .chat-header-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: var(--primary); color: #fff;
-      font-size: 16px; font-weight: 600;
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; flex-shrink: 0; cursor: pointer;
-    }
-    .chat-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
     .chat-header-center {
       flex: 1;
@@ -5201,6 +5193,8 @@
       border-radius: 20px;
       padding: 30px 24px 24px;
       animation: popUp 0.25s ease;
+      max-height: 88vh;
+      overflow-y: auto;
     }
 
     .profile-box .profile-avatar-wrap {
@@ -5275,6 +5269,16 @@
       font-size: 15px;
       outline: none;
       background: #fafafa;
+    }
+    .profile-field select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 15px;
+      outline: none;
+      background: #fafafa;
+      color: #333;
     }
 
     .profile-box .profile-field input:focus {
@@ -11957,7 +11961,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <div class="chat-view" id="chatView">
       <div class="chat-header">
         <button class="chat-back" id="chatBack"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
         <div class="chat-header-center" id="chatHeaderCenter">
           <span class="chat-title" id="chatTitle">联系人</span>
           <div class="chat-header-info" id="chatHeaderInfo">
@@ -13154,6 +13157,48 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
+        <div class="profile-field"><label>所在地方</label><select id="contactLocationSelect">
+          <option value="">未设置</option>
+          <option>在你身边</option>
+          <option>家里</option>
+          <option>街上</option>
+          <option>商店</option>
+          <option>公司</option>
+          <option>医院</option>
+          <option>集市</option>
+          <option>书店</option>
+          <option>床上</option>
+          <option>学校</option>
+          <option>公园</option>
+          <option>图书馆</option>
+          <option>餐厅</option>
+          <option>路上</option>
+        </select></div>
+        <div class="profile-field"><label>在做什么</label><select id="contactDoingSelect">
+          <option value="">未设置</option>
+          <option>吃饭</option>
+          <option>与人交谈</option>
+          <option>工作</option>
+          <option>思考</option>
+          <option>看电视</option>
+          <option>玩手机</option>
+          <option>刷视频</option>
+          <option>等消息</option>
+          <option>睡觉</option>
+          <option>学习</option>
+          <option>看书</option>
+          <option>做饭</option>
+          <option>散步</option>
+          <option>听歌</option>
+        </select></div>
+        <div class="profile-field"><label>距离</label><select id="contactDistanceSelect">
+          <option value="">未设置</option>
+          <option value="远">远 · 他在他的世界里做自己的事情</option>
+          <option value="中">中 · 他在你的不远处</option>
+          <option value="近">近 · 就在你的旁边</option>
+          <option value="靠近">靠近 · 他在向你接近</option>
+          <option value="远离">远离 · 他正在离你远去</option>
+        </select></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -14811,6 +14856,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactAvatarFileInput = document.getElementById('contactAvatarFileInput');
       const _zkContactNameInput = document.getElementById('contactNameInput');
       const _zkContactMetDateInput = document.getElementById('contactMetDateInput');
+      const _zkContactLocationSelect = document.getElementById('contactLocationSelect');
+      const _zkContactDoingSelect = document.getElementById('contactDoingSelect');
+      const _zkContactDistanceSelect = document.getElementById('contactDistanceSelect');
       function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
       function _zkSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
       function _zkDateToStr(ts) { if (!ts) return ''; var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -14833,6 +14881,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
+        _zkContactLocationSelect.value = contact.location || '';
+        _zkContactDoingSelect.value = contact.doing || '';
+        _zkContactDistanceSelect.value = contact.distance || '';
         _zkContactModal.classList.add('show');
       }
       function closeContactModal() {
@@ -14875,11 +14926,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (dv) { var pp = dv.split('-'); met[contact.id] = new Date(parseInt(pp[0],10), parseInt(pp[1],10)-1, parseInt(pp[2],10)).getTime(); }
         else { delete met[contact.id]; }
         _zkSaveMetDates(met);
+        contact.location = _zkContactLocationSelect.value;
+        contact.doing = _zkContactDoingSelect.value;
+        contact.distance = _zkContactDistanceSelect.value;
         saveContacts();
         renderContacts();
         if (currentChatId === contact.id) {
           chatTitle.textContent = contact.name;
-          _zkSetContactAvatar(document.getElementById('chatHeaderAvatar'), contact);
         }
         showToast('已保存');
         closeContactModal();
@@ -15401,7 +15454,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!contact) return;
         currentChatId = contactId;
         chatTitle.textContent = contact.name;
-        _zkSetContactAvatar(document.getElementById('chatHeaderAvatar'), contact);
         if (!chatHistories[contactId]) {
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
         }
@@ -15421,9 +15473,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
       const chatMenuBtn = document.getElementById('chatMenuBtn');
       const chatMenuDropdown = document.getElementById('chatMenuDropdown');
-      document.getElementById('chatHeaderAvatar').addEventListener('click', function () {
-        if (currentChatId !== null) _zkOpenContactModal(currentChatId);
-      });
 
       chatMenuBtn.addEventListener('click', function (e) {
         e.stopPropagation();
