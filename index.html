@@ -13219,6 +13219,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
         <div class="profile-field"><label>所在地方</label><div class="contact-state" id="contactLocationState">—</div><div class="contact-tarot-cards" id="contactLocCards"></div></div>
         <div class="profile-field"><label>在做什么</label><div class="contact-state" id="contactDoingState">—</div><div class="contact-tarot-cards" id="contactActCards"></div></div>
+        <div class="profile-field"><label>状态</label><div class="contact-state" id="contactStateState">—</div><div class="contact-tarot-cards" id="contactStateCards"></div></div>
         <div class="profile-field"><label>距离</label><div class="contact-state" id="contactDistanceState">—</div><div class="contact-tarot-cards" id="contactDisCards"></div></div>
 <button type="button" class="contact-tarot-btn" id="contactTarotBtn">🔮 重新占卜</button>
         <div class="profile-actions">
@@ -14883,89 +14884,90 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactDistanceState = document.getElementById('contactDistanceState');
       const _zkContactLocCards = document.getElementById('contactLocCards');
       const _zkContactActCards = document.getElementById('contactActCards');
+      const _zkContactStateState = document.getElementById('contactStateState');
+      const _zkContactStateCards = document.getElementById('contactStateCards');
       const _zkContactDisCards = document.getElementById('contactDisCards');
       const _zkContactTarotBtn = document.getElementById('contactTarotBtn');
       var _ZK_TAROT = [
-        { name: '愚者', emoji: '🃏', up: { loc: ['公路', '旅途路上', '路边集市'], act: ['在移动漂泊', '出发上路'] }, rev: { loc: ['陌生街头'], act: ['漫无目的闲逛', '临时停留'] } },
-        { name: '魔术师', emoji: '✨', up: { loc: ['书桌电脑旁', '工作室', '直播间'], act: ['专注处理工作'] }, rev: { loc: ['杂乱的工作间'], act: ['事情中断', '分心'] } },
-        { name: '女祭司', emoji: '🌙', up: { loc: ['安静的私密房间', '图书馆'], act: ['独处', '静思'] }, rev: { loc: ['隐蔽的角落'], act: ['刻意回避'] } },
-        { name: '女皇', emoji: '👑', up: { loc: ['舒适的家里', '餐厅', '花园商场'], act: ['享受生活', '用餐'] }, rev: { loc: ['热闹的商场'], act: ['临时外出'] } },
-        { name: '皇帝', emoji: '🏰', up: { loc: ['办公楼', '政务大厅', '办公室'], act: ['处理公务', '工作'] }, rev: { loc: ['办公楼外'], act: ['外出办事'] } },
-        { name: '教皇', emoji: '📜', up: { loc: ['学校', '培训机构', '办事大厅'], act: ['上课', '办手续'] }, rev: { loc: ['别处'], act: ['临时离场'] } },
-        { name: '恋人', emoji: '💞', up: { loc: ['咖啡馆', '公园', '约会的地方'], act: ['与人约会', '相伴'] }, rev: { loc: ['各自的地方'], act: ['争执', '分开行动'] } },
-        { name: '战车', emoji: '⚔️', up: { loc: ['车上', '路上'], act: ['赶路', '开车'] }, rev: { loc: ['中途停靠点'], act: ['堵车', '停靠'] } },
-        { name: '力量', emoji: '🦁', up: { loc: ['健身房', '户外山野'], act: ['运动', '耗费体力'] }, rev: { loc: ['休息处'], act: ['疲惫停歇'] } },
-        { name: '隐士', emoji: '🏮', up: { loc: ['山林', '空房间'], act: ['独处', '静修'] }, rev: { loc: ['僻静的角落'], act: ['散心', '避开人群'] } },
-        { name: '命运之轮', emoji: '🎡', up: { loc: ['路上', '即将换地方'], act: ['准备离开', '移动中'] }, rev: { loc: ['原地'], act: ['滞留', '等待'] } },
-        { name: '正义', emoji: '⚖️', up: { loc: ['政务大厅', '法院', '办事窗口'], act: ['办手续', '处理事务'] }, rev: { loc: ['等待处'], act: ['事情搁置', '等待'] } },
-        { name: '倒吊人', emoji: '🙃', up: { loc: ['原地'], act: ['停留等待'] }, rev: { loc: ['准备离开的地方'], act: ['僵持结束', '准备走'] } },
-        { name: '死神', emoji: '🍂', up: { loc: ['陌生新地方'], act: ['离开', '前往新地方'] }, rev: { loc: ['原地'], act: ['不愿离开'] } },
-        { name: '节制', emoji: '⚗️', up: { loc: ['水边小店', '茶室', '休闲处'], act: ['放松', '小憩'] }, rev: { loc: ['路上'], act: ['短暂停留', '继续赶路'] } },
-        { name: '恶魔', emoji: '🔗', up: { loc: ['酒吧', '包厢', '密闭娱乐场所'], act: ['沉迷娱乐'] }, rev: { loc: ['娱乐场所外'], act: ['打算离开'] } },
-        { name: '高塔', emoji: '⚡', up: { loc: ['临时更换的地方'], act: ['应对突发', '慌乱'] }, rev: { loc: ['暂时稳定的地方'], act: ['危机缓和', '安定'] } },
-        { name: '星星', emoji: '🌟', up: { loc: ['河边湖边', '夜景开阔地'], act: ['看夜景', '许愿'] }, rev: { loc: ['光线昏暗处'], act: ['位置模糊', '徘徊'] } },
-        { name: '月亮', emoji: '🌙', up: { loc: ['夜晚的小路', '昏暗陌生区域'], act: ['夜里行走', '心神不宁'] }, rev: { loc: ['渐渐清晰的地方'], act: ['迷雾散去'] } },
-        { name: '太阳', emoji: '☀️', up: { loc: ['游乐园', '广场', '明亮的露天处'], act: ['玩乐', '晒太阳'] }, rev: { loc: ['暴晒的车内'], act: ['短暂逗留'] } },
-        { name: '审判', emoji: '📯', up: { loc: ['准备出发的地方'], act: ['准备动身', '联系见面'] }, rev: { loc: ['原地'], act: ['拖延', '迟迟未动'] } },
-        { name: '世界', emoji: '🌍', up: { loc: ['目的地', '固定的地点'], act: ['安定下来', '停留'] }, rev: { loc: ['路上'], act: ['奔波', '行程未完'] } },
-        { name: '权杖ACE', suit: '权杖', emoji: '🔥', up: { loc: ['阳光充足的户外开阔处'], act: ['刚出发', '在路上移动'] }, rev: { loc: ['原地'], act: ['行程搁置'] } },
-        { name: '权杖2', suit: '权杖', emoji: '🔥', up: { loc: ['楼顶', '观景台', '高处'], act: ['眺望远方'] }, rev: { loc: ['原地'], act: ['选择停留不动'] } },
-        { name: '权杖3', suit: '权杖', emoji: '🔥', up: { loc: ['车站', '港口'], act: ['等待出发'] }, rev: { loc: ['原地'], act: ['出行计划推迟'] } },
-        { name: '权杖4', suit: '权杖', emoji: '🔥', up: { loc: ['庆典现场', '热闹的户外聚会'], act: ['暂作休整'] }, rev: { loc: ['别处'], act: ['离开聚会场地'] } },
-        { name: '权杖5', suit: '权杖', emoji: '🔥', up: { loc: ['闹市', '运动场', '拥挤的户外'], act: ['混在人群里'] }, rev: { loc: ['安静的角落'], act: ['挤出来暂避'] } },
-        { name: '权杖6', suit: '权杖', emoji: '🔥', up: { loc: ['游行的户外', '公开活动场地'], act: ['顺利赶往目的地'] }, rev: { loc: ['半路'], act: ['停滞不前'] } },
-        { name: '权杖7', suit: '权杖', emoji: '🔥', up: { loc: ['山坡', '阶梯', '户外高处'], act: ['努力向上赶路'] }, rev: { loc: ['往回走的路'], act: ['体力不支停下'] } },
-        { name: '权杖8', suit: '权杖', emoji: '🔥', up: { loc: ['高速行驶的车', '高铁上'], act: ['快速移动'] }, rev: { loc: ['途中'], act: ['延误停滞'] } },
-        { name: '权杖9', suit: '权杖', emoji: '🔥', up: { loc: ['围栏边', '围墙旁'], act: ['带着防备停留'] }, rev: { loc: ['别处'], act: ['放下防备离开'] } },
-        { name: '权杖10', suit: '权杖', emoji: '🔥', up: { loc: ['搬运行李的路上'], act: ['背负重物赶路'] }, rev: { loc: ['原地'], act: ['放下东西休息'] } },
-        { name: '权杖侍从', suit: '权杖', emoji: '🔥', up: { loc: ['热闹的户外', '就近闲逛'], act: ['跑跳出游'] }, rev: { loc: ['陌生的户外'], act: ['迷路打转'] } },
-        { name: '权杖骑士', suit: '权杖', emoji: '🔥', up: { loc: ['开阔的道路'], act: ['骑行自驾飞驰'] }, rev: { loc: ['意外的停靠点'], act: ['偏离路线停下'] } },
-        { name: '权杖王后', suit: '权杖', emoji: '🔥', up: { loc: ['阳光庭院', '热闹集市'], act: ['自在停留'] }, rev: { loc: ['喧闹的场地'], act: ['不断换位置'] } },
-        { name: '权杖国王', suit: '权杖', emoji: '🔥', up: { loc: ['户外带队途中'], act: ['掌控出行节奏'] }, rev: { loc: ['被困的户外场地'], act: ['出行决策失误'] } },
-        { name: '圣杯ACE', suit: '圣杯', emoji: '💧', up: { loc: ['江边', '泳池边', '安静卧室'], act: ['放松享受'] }, rev: { loc: ['水边之外', '密闭房间外'], act: ['换地方透气'] } },
-        { name: '圣杯2', suit: '圣杯', emoji: '💧', up: { loc: ['情侣影院', '奶茶店双人座'], act: ['二人约会'] }, rev: { loc: ['各自的地方'], act: ['分开行动'] } },
-        { name: '圣杯3', suit: '圣杯', emoji: '💧', up: { loc: ['餐厅包厢', '小型轰趴馆'], act: ['好友小聚'] }, rev: { loc: ['别处'], act: ['散场离开'] } },
-        { name: '圣杯4', suit: '圣杯', emoji: '💧', up: { loc: ['窗边沙发', '咖啡馆角落'], act: ['发呆久坐'] }, rev: { loc: ['别处'], act: ['起身动身'] } },
-        { name: '圣杯5', suit: '圣杯', emoji: '💧', up: { loc: ['河边', '家里角落'], act: ['心情低落停留'] }, rev: { loc: ['别处'], act: ['走出情绪'] } },
-        { name: '圣杯6', suit: '圣杯', emoji: '💧', up: { loc: ['老家旧房间', '童年常去的老店'], act: ['回忆往事'] }, rev: { loc: ['别处'], act: ['离开旧地'] } },
-        { name: '圣杯7', suit: '圣杯', emoji: '💧', up: { loc: ['卧室卧床', '梦幻网红店'], act: ['沉迷幻想'] }, rev: { loc: ['现实的地点'], act: ['回过神离开'] } },
-        { name: '圣杯8', suit: '圣杯', emoji: '💧', up: { loc: ['通往水边的路'], act: ['徒步远行'] }, rev: { loc: ['原来的舒适区'], act: ['半路退回'] } },
-        { name: '圣杯9', suit: '圣杯', emoji: '💧', up: { loc: ['私人影院', '专属卧室'], act: ['安心满足'] }, rev: { loc: ['别处'], act: ['被打扰离开'] } },
-        { name: '圣杯10', suit: '圣杯', emoji: '💧', up: { loc: ['家庭餐厅', '带庭院的住宅客厅'], act: ['全家团聚'] }, rev: { loc: ['各自的地方'], act: ['家人分散'] } },
-        { name: '圣杯侍从', suit: '圣杯', emoji: '💧', up: { loc: ['可爱小店', '水边'], act: ['拿着饮品闲逛'] }, rev: { loc: ['原地'], act: ['沉迷手机发呆'] } },
-        { name: '圣杯骑士', suit: '圣杯', emoji: '💧', up: { loc: ['沿江路'], act: ['慢悠悠骑行自驾'] }, rev: { loc: ['错误的路上'], act: ['走错路错过'] } },
-        { name: '圣杯王后', suit: '圣杯', emoji: '💧', up: { loc: ['温馨居家', '精致咖啡馆'], act: ['舒适久坐'] }, rev: { loc: ['场所内'], act: ['烦躁来回走动'] } },
-        { name: '圣杯国王', suit: '圣杯', emoji: '💧', up: { loc: ['高端休闲会所', '临水私人会所'], act: ['掌控休闲节奏'] }, rev: { loc: ['别处'], act: ['错误决策变更地点'] } },
-        { name: '宝剑ACE', suit: '宝剑', emoji: '🗡️', up: { loc: ['办公桌前', '写字楼窗边'], act: ['开启工作或赶路'] }, rev: { loc: ['原地'], act: ['思路中断停下'] } },
-        { name: '宝剑2', suit: '宝剑', emoji: '🗡️', up: { loc: ['锁门的书房'], act: ['闭眼隔绝外界'] }, rev: { loc: ['房间外'], act: ['睁眼离开'] } },
-        { name: '宝剑3', suit: '宝剑', emoji: '🗡️', up: { loc: ['窗边', '高铁站台'], act: ['情绪低落'] }, rev: { loc: ['别处'], act: ['伤痛缓解离开'] } },
-        { name: '宝剑4', suit: '宝剑', emoji: '🗡️', up: { loc: ['图书馆角落', '医院休息区'], act: ['静养不动'] }, rev: { loc: ['别处'], act: ['休整结束离开'] } },
-        { name: '宝剑5', suit: '宝剑', emoji: '🗡️', up: { loc: ['争吵的办公室', '拥挤的地铁站'], act: ['争执混乱'] }, rev: { loc: ['别处'], act: ['争执结束离开'] } },
-        { name: '宝剑6', suit: '宝剑', emoji: '🗡️', up: { loc: ['轮渡', '长途大巴'], act: ['跨水长途赶路'] }, rev: { loc: ['出发点'], act: ['遇阻返程'] } },
-        { name: '宝剑7', suit: '宝剑', emoji: '🗡️', up: { loc: ['隐蔽的办公区域', '未开放场馆'], act: ['躲着摸鱼'] }, rev: { loc: ['被发现的地方'], act: ['行踪暴露'] } },
-        { name: '宝剑8', suit: '宝剑', emoji: '🗡️', up: { loc: ['电梯间', '格子间工位'], act: ['被束缚住'] }, rev: { loc: ['别处'], act: ['挣脱离开'] } },
-        { name: '宝剑9', suit: '宝剑', emoji: '🗡️', up: { loc: ['深夜亮灯的书房', '失眠的卧室'], act: ['焦虑熬夜'] }, rev: { loc: ['卧室'], act: ['焦虑散去休息'] } },
-        { name: '宝剑10', suit: '宝剑', emoji: '🗡️', up: { loc: ['工位', '交通工具上'], act: ['累到昏睡'] }, rev: { loc: ['别处'], act: ['熬过低谷起身'] } },
-        { name: '宝剑侍从', suit: '宝剑', emoji: '🗡️', up: { loc: ['楼层间', '图书馆书架间'], act: ['跑着送文件找资料'] }, rev: { loc: ['跑错的楼层'], act: ['找错地点'] } },
-        { name: '宝剑骑士', suit: '宝剑', emoji: '🗡️', up: { loc: ['高速高铁', '地铁', '交通枢纽'], act: ['飞速穿梭'] }, rev: { loc: ['半路'], act: ['急刹停下'] } },
-        { name: '宝剑王后', suit: '宝剑', emoji: '🗡️', up: { loc: ['独立办公室', '图书馆自习区'], act: ['专注伏案'] }, rev: { loc: ['别处'], act: ['焦躁离开工位'] } },
-        { name: '宝剑国王', suit: '宝剑', emoji: '🗡️', up: { loc: ['顶层办公室', '交通调度中心'], act: ['掌控行程'] }, rev: { loc: ['被困的枢纽'], act: ['决策失误延误'] } },
-        { name: '星币ACE', suit: '星币', emoji: '🪙', up: { loc: ['小区楼下商铺', '工地入口'], act: ['落脚安顿'] }, rev: { loc: ['无处落脚'], act: ['找不到固定停留地'] } },
-        { name: '星币2', suit: '星币', emoji: '🪙', up: { loc: ['街边商铺', '停车场'], act: ['兼顾琐事忙碌'] }, rev: { loc: ['原地'], act: ['被琐事缠住'] } },
-        { name: '星币3', suit: '星币', emoji: '🪙', up: { loc: ['工地', '餐厅后厨', '装修现场'], act: ['一起干活'] }, rev: { loc: ['别处'], act: ['工作中断离场'] } },
-        { name: '星币4', suit: '星币', emoji: '🪙', up: { loc: ['自己家', '商铺收银台'], act: ['守着财物不动'] }, rev: { loc: ['别处'], act: ['不得不出门'] } },
-        { name: '星币5', suit: '星币', emoji: '🪙', up: { loc: ['户外工地', '破败小区'], act: ['艰难行走'] }, rev: { loc: ['暖和的商铺或住宅'], act: ['走出困境落脚'] } },
-        { name: '星币6', suit: '星币', emoji: '🪙', up: { loc: ['商铺门口', '公益发放点'], act: ['发放或接收物资'] }, rev: { loc: ['各自的地方'], act: ['利益纠纷离场'] } },
-        { name: '星币7', suit: '星币', emoji: '🪙', up: { loc: ['农田', '店铺仓库'], act: ['耐心等待收获'] }, rev: { loc: ['别处'], act: ['失去耐心离开'] } },
-        { name: '星币8', suit: '星币', emoji: '🪙', up: { loc: ['工坊', '门店操作台', '工地现场'], act: ['埋头干活'] }, rev: { loc: ['别处'], act: ['分心闲逛'] } },
-        { name: '星币9', suit: '星币', emoji: '🪙', up: { loc: ['带庭院的住宅', '私人商铺'], act: ['安逸享受'] }, rev: { loc: ['别处'], act: ['场地出问题不安稳'] } },
-        { name: '星币10', suit: '星币', emoji: '🪙', up: { loc: ['家族住宅', '产业园大院'], act: ['全家共处'] }, rev: { loc: ['各自的地方'], act: ['家族拆分分散'] } },
-        { name: '星币侍从', suit: '星币', emoji: '🪙', up: { loc: ['地面商铺', '工地学徒处'], act: ['专注琐事'] }, rev: { loc: ['原地'], act: ['偷懒拖延'] } },
-        { name: '星币骑士', suit: '星币', emoji: '🪙', up: { loc: ['住宅区公路', '商铺区'], act: ['慢悠悠开车'] }, rev: { loc: ['路边'], act: ['车辆故障停下'] } },
-        { name: '星币王后', suit: '星币', emoji: '🪙', up: { loc: ['自家厨房', '温馨的实体店'], act: ['操持家务或看店'] }, rev: { loc: ['场所内'], act: ['琐事缠身走动'] } },
-        { name: '星币国王', suit: '星币', emoji: '🪙', up: { loc: ['自家庄园', '总部大楼一楼'], act: ['坐镇掌控'] }, rev: { loc: ['别处'], act: ['产业出状况不安稳'] } }
-      ];
-      var _ZK_ELEMENTS = {
+        { name: '愚者', emoji: '🃏', up: { loc: ['公路', '旅途路上', '路边集市'], act: '出门闲逛、短途出行、随便打发时间', state: '心态松弛随性，放空自己，没有太多顾虑，愿意迎接新变化' }, rev: { loc: ['陌生街头'], act: '漫无目的发呆，做事随意分心', state: '迷茫摆烂，做事缺乏规划，冲动行事，对现状感到无所适从' } },
+        { name: '魔术师', emoji: '✨', up: { loc: ['书桌电脑旁', '工作室', '直播间'], act: '主动处理事务、打字沟通、安排计划', state: '状态在线，精力充足，主动规划、处理手头事务，行动力很强' }, rev: { loc: ['杂乱的工作间'], act: '有心做事却拖延搁置', state: '精力枯竭，拖延摆烂，有心做事却没有执行力，计划搁置落空' } },
+        { name: '女祭司', emoji: '🌙', up: { loc: ['安静的私密房间', '图书馆'], act: '安静独处、刷手机看书、沉默发呆', state: '性格内敛安静，习惯独立思考，情绪不会轻易外露，保持冷静观望' }, rev: { loc: ['隐蔽的角落'], act: '心事重重，走神胡思乱想', state: '心事积压在心底，反复纠结犹豫，不愿说出自己真实的想法' } },
+        { name: '女皇', emoji: '👑', up: { loc: ['舒适的家里', '餐厅', '花园商场'], act: '居家放松、吃饭休闲、享受舒服的时光', state: '情绪稳定柔和，身心放松，享受当下，内心富足舒适' }, rev: { loc: ['热闹的商场'], act: '烦躁倦怠，无心做事', state: '身心疲惫烦躁，情绪敏感易怒，容易被琐事消耗，状态倦怠' } },
+        { name: '皇帝', emoji: '🏰', up: { loc: ['办公楼', '政务大厅', '办公室'], act: '认真处理工作，把控事务', state: '理性克制，情绪自控力强，目标清晰，专注处理现实事务' }, rev: { loc: ['办公楼外'], act: '压力紧绷，硬撑忙碌', state: '压力过载，精神紧绷压抑，控制欲变强，容易焦躁易怒' } },
+        { name: '教皇', emoji: '📜', up: { loc: ['学校', '培训机构', '办事大厅'], act: '和熟人相处、按流程完成琐事', state: '循规蹈矩，心态平稳克制，愿意听从建议，按既定节奏生活' }, rev: { loc: ['别处'], act: '应付社交，内心敷衍', state: '内心抗拒世俗规则，刻意压抑自我，不想迎合别人的期待' } },
+        { name: '恋人', emoji: '💞', up: { loc: ['咖啡馆', '公园', '约会的地方'], act: '和人聊天相处，面临选择', state: '内心在意一段关系，情绪柔软，正在权衡一份重要选择' }, rev: { loc: ['各自的地方'], act: '纠结犹豫，来回翻看消息', state: '内心纠结拉扯，难以做出决定，在情感当中陷入两难' } },
+        { name: '战车', emoji: '⚔️', up: { loc: ['车上', '路上'], act: '在路上开车赶路，奔赴目的地', state: '目标明确，斗志充足，主动奔波忙碌，愿意克服困难向前走' }, rev: { loc: ['中途停靠点'], act: '行程受阻，停下不动', state: '情绪互相拉扯，身心疲惫内耗，进退两难，做事容易半途而废' } },
+        { name: '力量', emoji: '🦁', up: { loc: ['健身房', '户外山野'], act: '耐心处理事情，从容应对琐事', state: '内心强大温柔，可以自我消化负面情绪，拥有耐心包容力' }, rev: { loc: ['休息处'], act: '烦躁不耐烦，不想继续做', state: '情绪失控，耐心耗尽，心力透支，很难稳住自己的脾气' } },
+        { name: '隐士', emoji: '🏮', up: { loc: ['山林', '空房间'], act: '独自待着，避开人群安静休息', state: '渴望独处安静，想要远离人群，向内自我反思、休整内心' }, rev: { loc: ['僻静的角落'], act: '孤独低落，封闭自己', state: '孤独低落，封闭自我，抗拒外界沟通，不愿意倾诉心事' } },
+        { name: '命运之轮', emoji: '🎡', up: { loc: ['路上', '即将换地方'], act: '事情正在变化，等待快递/安排变动', state: '当下状态正在发生转变，运势起伏，迎来新的契机与变化' }, rev: { loc: ['原地'], act: '事情卡住停滞不动', state: '状态停滞不前，陷入内耗低谷，短期很难摆脱糟糕的现状' } },
+        { name: '正义', emoji: '⚖️', up: { loc: ['政务大厅', '法院', '办事窗口'], act: '理性处理工作，核对事务', state: '理智客观，遇事公平冷静，愿意承担后果，情绪克制平稳' }, rev: { loc: ['等待处'], act: '反复权衡纠结，拖延决定', state: '内心委屈计较，情绪失衡，纠结得失，容易耿耿于怀' } },
+        { name: '倒吊人', emoji: '🙃', up: { loc: ['原地'], act: '被动等待，放空发呆什么都不做', state: '选择被动等待，暂时搁置手上的事情，停下脚步自我反思' }, rev: { loc: ['准备离开的地方'], act: '僵持消耗，无所事事', state: '长期单方面消耗自己，僵持太久，内心想要挣脱现状' } },
+        { name: '死神', emoji: '🍂', up: { loc: ['陌生新地方'], act: '结束手上的事，切换新状态', state: '告别旧的情绪与生活状态，迎来全新的心境转变，放下过往' }, rev: { loc: ['原地'], act: '停留在旧事情里不肯结束', state: '困在过去的负面情绪里走不出来，拒绝改变，原地停滞' } },
+        { name: '节制', emoji: '⚗️', up: { loc: ['水边小店', '茶室', '休闲处'], act: '悠闲放松，节奏舒缓地做事', state: '情绪平和松弛，懂得自我调节，身心平衡，状态安稳舒缓' }, rev: { loc: ['路上'], act: '浮躁分心，做事断断续续', state: '情绪起伏剧烈，浮躁不安，自我调节失败，容易焦虑烦躁' } },
+        { name: '恶魔', emoji: '🔗', up: { loc: ['酒吧', '包厢', '密闭娱乐场所'], act: '沉迷刷手机、熬夜娱乐，被琐事困住', state: '被欲望、压力、糟糕的关系束缚，内心压抑紧绷，难以挣脱' }, rev: { loc: ['娱乐场所外'], act: '想要放下手中的事脱身', state: '萌生摆脱困境的想法，想要逃离消耗自己的人和事' } },
+        { name: '高塔', emoji: '⚡', up: { loc: ['临时更换的地方'], act: '突发状况打断正在做的事', state: '突发变故冲击内心，情绪爆发，原本稳定的状态被打破' }, rev: { loc: ['暂时稳定的地方'], act: '强行压抑，勉强继续做事', state: '强行压抑负面情绪，问题没有解决，隐患一直留存' } },
+        { name: '星星', emoji: '🌟', up: { loc: ['河边湖边', '夜景开阔地'], act: '放空发呆，刷手机休闲，心怀期待', state: '心怀期待与希望，内心平静治愈，保有对未来的憧憬' }, rev: { loc: ['光线昏暗处'], act: '提不起兴致，无所事事', state: '期待落空，失落消沉，失去动力，对事物不再抱有盼望' } },
+        { name: '月亮', emoji: '🌙', up: { loc: ['夜晚的小路', '昏暗陌生区域'], act: '迷茫发呆，胡思乱想，熬夜刷视频', state: '内心不安焦虑，猜忌迷茫，被未知的事情困扰，思绪混乱' }, rev: { loc: ['渐渐清晰的地方'], act: '回过神，停止内耗', state: '迷雾慢慢散去，看清内心真实想法，不安与猜忌逐渐消散' } },
+        { name: '太阳', emoji: '☀️', up: { loc: ['游乐园', '广场', '明亮的露天处'], act: '开心休闲娱乐，和朋友轻松相处', state: '活力充足，心情轻松愉悦，状态饱满，对外充满热情' }, rev: { loc: ['暴晒的车内'], act: '短暂倦怠，热情消退', state: '短暂疲惫倦怠，热情褪去，开心只是表面，内心略显乏味' } },
+        { name: '审判', emoji: '📯', up: { loc: ['准备出发的地方'], act: '复盘事情，翻看消息回顾过往', state: '自我复盘反思，审视过往，已经做好准备做出改变' }, rev: { loc: ['原地'], act: '回避问题，刻意不去处理', state: '刻意回避自身问题，拒绝调整自己，不愿面对现实' } },
+        { name: '世界', emoji: '🌍', up: { loc: ['目的地', '固定的地点'], act: '做完手头事情，放松收尾休息', state: '状态圆满安稳，手头事情顺利收尾，身心充实完整' }, rev: { loc: ['路上'], act: '事情还没做完，疲惫拖延', state: '身心疲惫倦怠，事情迟迟无法收尾，留有遗憾与无力感' } },
+        { name: '权杖ACE', suit: '权杖', emoji: '🔥', up: { loc: ['阳光充足的户外开阔处'], act: '开启一件新事，准备出门', state: '全新的动力涌现，充满热情，准备开启新计划' }, rev: { loc: ['原地'], act: '放弃行动，原地不动', state: '提不起干劲，没有行动欲望，新想法直接搁置' } },
+        { name: '权杖2', suit: '权杖', emoji: '🔥', up: { loc: ['楼顶', '观景台', '高处'], act: '观望手机，犹豫要不要出门', state: '观望权衡现状，思考未来方向，在做取舍' }, rev: { loc: ['原地'], act: '纠结迟疑，迟迟不动', state: '犹豫内耗，害怕选择，对前路感到迷茫迟疑' } },
+        { name: '权杖3', suit: '权杖', emoji: '🔥', up: { loc: ['车站', '港口'], act: '等待消息、眺望等待结果', state: '眺望规划未来，耐心等待结果，心态充满期待' }, rev: { loc: ['原地'], act: '期待落空，停下计划', state: '期待落空，计划受阻，等待很久看不到进展' } },
+        { name: '权杖4', suit: '权杖', emoji: '🔥', up: { loc: ['庆典现场', '热闹的户外聚会'], act: '居家休息，休闲放松', state: '身心放松休息，处在安稳休闲的状态，内心安定' }, rev: { loc: ['别处'], act: '心神不宁无法安静', state: '心神浮躁不安，无法静下心休息，琐事不断打扰' } },
+        { name: '权杖5', suit: '权杖', emoji: '🔥', up: { loc: ['闹市', '运动场', '拥挤的户外'], act: '争执沟通，忙碌应付琐碎冲突', state: '环境充满争执拉扯，内心烦躁躁动，处在冲突之中' }, rev: { loc: ['安静的角落'], act: '疲惫不想争执，停下', state: '冲突平息过后，身心疲惫无力，不想再争执消耗' } },
+        { name: '权杖6', suit: '权杖', emoji: '🔥', up: { loc: ['游行的户外', '公开活动场地'], act: '完成一件事，获得放松', state: '获得成就感，自信心提升，状态积极昂扬' }, rev: { loc: ['半路'], act: '事情不顺，受挫搁置', state: '成果不如预期，失落受挫，短暂失去自信' } },
+        { name: '权杖7', suit: '权杖', emoji: '🔥', up: { loc: ['山坡', '阶梯', '户外高处'], act: '独自应付压力，忙碌处理难题', state: '独自承受压力，时刻保持戒备，费力抵挡外界困扰' }, rev: { loc: ['往回走的路'], act: '放弃硬扛，停下来休息', state: '选择放弃抵抗，不再硬撑，卸下身上的压力' } },
+        { name: '权杖8', suit: '权杖', emoji: '🔥', up: { loc: ['高速行驶的车', '高铁上'], act: '赶路、快速处理消息，节奏很快', state: '节奏飞快，奔波忙碌，事情推进迅速' }, rev: { loc: ['途中'], act: '行程中断，被迫停下', state: '行程被迫中断，行动停滞，忙碌过后陷入疲惫' } },
+        { name: '权杖9', suit: '权杖', emoji: '🔥', up: { loc: ['围栏边', '围墙旁'], act: '紧绷坚持做事，强撑忙碌', state: '身心紧绷戒备，经历消耗之后强撑着坚持' }, rev: { loc: ['别处'], act: '放下压力，选择休息', state: '放下防备，不再硬扛紧绷的状态，选择休息' } },
+        { name: '权杖10', suit: '权杖', emoji: '🔥', up: { loc: ['搬运行李的路上'], act: '背负繁重工作，辛苦忙碌', state: '背负过多压力，独自承担繁重的事务，身心劳累' }, rev: { loc: ['原地'], act: '放下负担，不再劳累', state: '放下沉重的负担，不再勉强自己负重前行' } },
+        { name: '权杖侍从', suit: '权杖', emoji: '🔥', up: { loc: ['热闹的户外', '就近闲逛'], act: '新鲜消遣，刷短视频打发时间', state: '充满新鲜感，好奇心强，愿意尝试新事物' }, rev: { loc: ['陌生的户外'], act: '三分钟热度很快放弃', state: '三分钟热度，容易浮躁分心，做事难以坚持' } },
+        { name: '权杖骑士', suit: '权杖', emoji: '🔥', up: { loc: ['开阔的道路'], act: '出门赶路，行动力很强', state: '干劲十足，主动出击，行动力旺盛，热情高涨' }, rev: { loc: ['意外的停靠点'], act: '冲动过后半途停下', state: '冲动急躁，耐心不足，热情消退之后半途放弃' } },
+        { name: '权杖王后', suit: '权杖', emoji: '🔥', up: { loc: ['阳光庭院', '热闹集市'], act: '出门玩乐，活力休闲', state: '活力外放，乐观主动，拥有充沛的感染力' }, rev: { loc: ['喧闹的场地'], act: '烦躁易怒，无心继续', state: '情绪急躁易怒，容易冲动发火，内心烦躁压抑' } },
+        { name: '权杖国王', suit: '权杖', emoji: '🔥', up: { loc: ['户外带队途中'], act: '主动推进工作，掌控事务', state: '充满魄力，主动掌控局面，精力充沛稳定' }, rev: { loc: ['被困的户外场地'], act: '暴躁疲惫，暂停做事', state: '暴躁强势，精力透支，做事冲动缺乏耐心' } },
+        { name: '圣杯ACE', suit: '圣杯', emoji: '💧', up: { loc: ['江边', '泳池边', '安静卧室'], act: '享受轻松时光，沉浸愉悦的小事', state: '内心柔软丰盈，感受到爱意与美好，情绪饱满' }, rev: { loc: ['水边之外', '密闭房间外'], act: '情绪低落，提不起兴趣', state: '内心空虚低落，感受不到温暖，情绪麻木冷漠' } },
+        { name: '圣杯2', suit: '圣杯', emoji: '💧', up: { loc: ['情侣影院', '奶茶店双人座'], act: '和别人聊天对话，线上发消息', state: '内心渴望联结，享受双向温柔的情感互动' }, rev: { loc: ['各自的地方'], act: '沟通中断，不想聊天', state: '情感错位，沟通隔阂，在关系里感受到失落' } },
+        { name: '圣杯3', suit: '圣杯', emoji: '💧', up: { loc: ['餐厅包厢', '小型轰趴馆'], act: '多人聚会玩乐，和朋友消遣', state: '享受陪伴与热闹，心情愉悦放松，乐于社交' }, rev: { loc: ['别处'], act: '社交疲惫，想要独处', state: '热闹过后只剩空虚，社交消耗自身，想要独处' } },
+        { name: '圣杯4', suit: '圣杯', emoji: '💧', up: { loc: ['窗边沙发', '咖啡馆角落'], act: '发呆放空，刷手机麻木消磨时间', state: '对当下事物感到倦怠麻木，提不起兴趣，无动于衷' }, rev: { loc: ['别处'], act: '重新找到事情打发时间', state: '重新找回心动，愿意接纳美好，走出麻木的状态' } },
+        { name: '圣杯5', suit: '圣杯', emoji: '💧', up: { loc: ['河边', '家里角落'], act: '情绪低落，独自难过发呆', state: '沉浸在失落悲伤之中，盯着失去的东西无法释怀' }, rev: { loc: ['别处'], act: '走出坏情绪，开始放松', state: '慢慢走出难过，看见身边尚存的美好，情绪自愈' } },
+        { name: '圣杯6', suit: '圣杯', emoji: '💧', up: { loc: ['老家旧房间', '童年常去的老店'], act: '翻看旧聊天记录，怀旧回忆', state: '怀念过往，内心温柔怀旧，渴望安稳温暖的治愈感' }, rev: { loc: ['别处'], act: '沉溺回忆，无心当下', state: '沉溺回忆无法向前，拒绝接纳当下新的生活' } },
+        { name: '圣杯7', suit: '圣杯', emoji: '💧', up: { loc: ['卧室卧床', '梦幻网红店'], act: '幻想走神，刷短视频、刷社交软件', state: '脑海充满幻想，想法繁多，活在美好的想象之中' }, rev: { loc: ['现实的地点'], act: '收回思绪，回归现实', state: '认清现实，放下不切实际的空想，回归理性' } },
+        { name: '圣杯8', suit: '圣杯', emoji: '💧', up: { loc: ['通往水边的路'], act: '放下手上的事，离开当前环境', state: '主动抽离当下的环境与状态，选择离开去寻找更好的方向' }, rev: { loc: ['原来的舒适区'], act: '舍不得停下，继续停留', state: '舍不得放下现状，犹豫徘徊，不敢做出改变' } },
+        { name: '圣杯9', suit: '圣杯', emoji: '💧', up: { loc: ['私人影院', '专属卧室'], act: '独自享受悠闲时光，独处放松', state: '自我满足，享受独处，内心充实快乐' }, rev: { loc: ['别处'], act: '独处孤单，渴望找人聊天', state: '表面圆满，内心孤单空虚，渴望他人陪伴' } },
+        { name: '圣杯10', suit: '圣杯', emoji: '💧', up: { loc: ['家庭餐厅', '带庭院的住宅客厅'], act: '和家人伴侣轻松陪伴相处', state: '内心安稳幸福，拥有归属感，享受温暖安稳的时光' }, rev: { loc: ['各自的地方'], act: '氛围低落，彼此沉默', state: '美好的状态破碎，内心失落，缺少安全感' } },
+        { name: '圣杯侍从', suit: '圣杯', emoji: '💧', up: { loc: ['可爱小店', '水边'], act: '感性刷内容，翻看动态', state: '心思细腻浪漫，容易心动，感知力丰富柔软' }, rev: { loc: ['原地'], act: '情绪敏感，容易多想', state: '情绪敏感脆弱，容易患得患失，情绪忽好忽坏' } },
+        { name: '圣杯骑士', suit: '圣杯', emoji: '💧', up: { loc: ['沿江路'], act: '温柔闲聊，慢慢消磨时光', state: '温柔感性，慢慢投入情绪，浪漫细腻' }, rev: { loc: ['错误的路上'], act: '热情褪去，停止主动聊天', state: '热情慢慢消退，情感抽离，变得冷淡疏离' } },
+        { name: '圣杯王后', suit: '圣杯', emoji: '💧', up: { loc: ['温馨居家', '精致咖啡馆'], act: '沉浸式追剧听歌，舒缓放松', state: '共情力强，情绪柔软包容，懂得安抚自己与他人' }, rev: { loc: ['场所内'], act: '情绪泛滥，无心做事', state: '情绪泛滥敏感，容易内耗悲伤，被负面情绪裹挟' } },
+        { name: '圣杯国王', suit: '圣杯', emoji: '💧', up: { loc: ['高端休闲会所', '临水私人会所'], act: '安静克制地休闲，平稳打发时间', state: '情绪成熟稳定，温柔克制，能够掌控自己的感性' }, rev: { loc: ['别处'], act: '封闭自己，拒绝交流', state: '封闭自己的情绪，冷漠回避，不愿意流露真心' } },
+        { name: '宝剑ACE', suit: '宝剑', emoji: '🗡️', up: { loc: ['办公桌前', '写字楼窗边'], act: '快速打字处理消息，果断解决问题', state: '思路清晰，理性果断，直面问题，主动解决矛盾' }, rev: { loc: ['原地'], act: '思绪混乱，停止沟通', state: '思绪混乱，言语伤人，矛盾爆发带来精神内耗' } },
+        { name: '宝剑2', suit: '宝剑', emoji: '🗡️', up: { loc: ['锁门的书房'], act: '闭眼放空，刻意不看消息回避事情', state: '刻意回避问题，封闭内心，拒绝看清现实' }, rev: { loc: ['房间外'], act: '直面信息，开始处理', state: '愿意摘下伪装，直面问题，不再自我欺骗' } },
+        { name: '宝剑3', suit: '宝剑', emoji: '🗡️', up: { loc: ['窗边', '高铁站台'], act: '因为消息难过，独自伤感', state: '内心受伤难过，被言语或是事件刺痛，情绪痛苦' }, rev: { loc: ['别处'], act: '慢慢平复，不再纠结', state: '伤口慢慢愈合，伤痛淡化，逐渐放下心结' } },
+        { name: '宝剑4', suit: '宝剑', emoji: '🗡️', up: { loc: ['图书馆角落', '医院休息区'], act: '安静休息，暂停所有事务休养', state: '身心透支疲惫，暂停一切消耗，安静休养恢复精力' }, rev: { loc: ['别处'], act: '休整完毕重新开始做事', state: '休整结束，恢复状态，重新开始面对事务' } },
+        { name: '宝剑5', suit: '宝剑', emoji: '🗡️', up: { loc: ['争吵的办公室', '拥挤的地铁站'], act: '争执辩论，文字拉扯', state: '争执过后就算赢了，内心依旧空虚疲惫' }, rev: { loc: ['别处'], act: '停止争吵，不再纠缠', state: '放下争执输赢，不再纠缠无谓的矛盾' } },
+        { name: '宝剑6', suit: '宝剑', emoji: '🗡️', up: { loc: ['轮渡', '长途大巴'], act: '慢慢放下烦心事，平缓调整状态', state: '慢慢离开伤痛的处境，一点点抚平内心伤痕' }, rev: { loc: ['出发点'], act: '重新陷入烦恼', state: '折返回到痛苦的状态，不愿离开内耗的环境' } },
+        { name: '宝剑7', suit: '宝剑', emoji: '🗡️', up: { loc: ['隐蔽的办公区域', '未开放场馆'], act: '偷偷翻看动态，暗自观察', state: '刻意隐瞒想法，回避坦诚，偷偷保护自己' }, rev: { loc: ['被发现的地方'], act: '不再刻意留意，放下窥探', state: '不再伪装躲藏，愿意坦诚面对问题' } },
+        { name: '宝剑8', suit: '宝剑', emoji: '🗡️', up: { loc: ['电梯间', '格子间工位'], act: '自我纠结，反复翻看消息内耗', state: '自我设限困住自己，内心焦虑无助，被想法束缚' }, rev: { loc: ['别处'], act: '解开思绪，不再胡思乱想', state: '挣脱内心枷锁，看清束缚，找回自主选择权' } },
+        { name: '宝剑9', suit: '宝剑', emoji: '🗡️', up: { loc: ['深夜亮灯的书房', '失眠的卧室'], act: '深夜焦虑，反复思虑失眠', state: '深夜胡思乱想，焦虑失眠，被忧虑与恐惧折磨' }, rev: { loc: ['卧室'], act: '停止担忧，放下杂念', state: '放下过度内耗，不再反复担忧尚未发生的事' } },
+        { name: '宝剑10', suit: '宝剑', emoji: '🗡️', up: { loc: ['工位', '交通工具上'], act: '事情彻底结束，疲惫放空', state: '精神彻底耗竭，承受巨大打击，状态跌到谷底' }, rev: { loc: ['别处'], act: '短暂回味伤痛', state: '谷底迎来转机，痛苦的阶段即将结束' } },
+        { name: '宝剑侍从', suit: '宝剑', emoji: '🗡️', up: { loc: ['楼层间', '图书馆书架间'], act: '浏览资讯，刷新闻看八卦', state: '思维敏锐，善于观察思考，好奇心重，思虑较多' }, rev: { loc: ['跑错的楼层'], act: '胡思乱想捕风捉影', state: '胡思乱想，捕风捉影，容易被流言影响情绪' } },
+        { name: '宝剑骑士', suit: '宝剑', emoji: '🗡️', up: { loc: ['高速高铁', '地铁', '交通枢纽'], act: '快速打字辩论，急躁沟通', state: '思维敏捷果断，做事干脆利落，表达直接' }, rev: { loc: ['半路'], act: '冷静下来停止争执', state: '言语尖锐冲动，急躁易怒，容易引发争吵矛盾' } },
+        { name: '宝剑王后', suit: '宝剑', emoji: '🗡️', up: { loc: ['独立办公室', '图书馆自习区'], act: '理性审视消息，冷静思考', state: '理智清醒独立，遇事冷静客观，边界感清晰' }, rev: { loc: ['别处'], act: '言语尖锐，刻意冷淡', state: '言语刻薄尖锐，内心冷漠挑剔，习惯性否定他人' } },
+        { name: '宝剑国王', suit: '宝剑', emoji: '🗡️', up: { loc: ['顶层办公室', '交通调度中心'], act: '冷静分析事务，理性处理工作', state: '逻辑强大，情绪冷静克制，理性掌控思绪' }, rev: { loc: ['被困的枢纽'], act: '固执冷漠，拒绝沟通', state: '固执冷漠，不近人情，用理性压抑全部感受' } },
+        { name: '星币ACE', suit: '星币', emoji: '🪙', up: { loc: ['小区楼下商铺', '工地入口'], act: '处理现实事务，安稳做事', state: '现实迎来好机会，生活安稳充实，身心踏实满足' }, rev: { loc: ['无处落脚'], act: '现实受阻，事情搁置', state: '现实阻碍重重，物质或生活层面出现压力困境' } },
+        { name: '星币2', suit: '星币', emoji: '🪙', up: { loc: ['街边商铺', '停车场'], act: '同时处理好几件琐事，来回忙碌', state: '平衡处理多项琐事，来回奔波适应变化' }, rev: { loc: ['原地'], act: '分身乏术，节奏混乱', state: '分身乏术，无法兼顾事务，现实节奏混乱疲惫' } },
+        { name: '星币3', suit: '星币', emoji: '🪙', up: { loc: ['工地', '餐厅后厨', '装修现场'], act: '团队协作工作，认真干活', state: '踏实专注投入工作，稳步推进手上的事情' }, rev: { loc: ['别处'], act: '疲惫敷衍，不想工作', state: '身心劳累倦怠，没有动力干活，做事敷衍拖延' } },
+        { name: '星币4', suit: '星币', emoji: '🪙', up: { loc: ['自己家', '商铺收银台'], act: '守在原地，安静待着不动', state: '谨慎保守，守住当下拥有的一切，追求安稳不变' }, rev: { loc: ['别处'], act: '放下执念，开始改变', state: '放下执念，不再紧抓不放，愿意做出取舍改变' } },
+        { name: '星币5', suit: '星币', emoji: '🪙', up: { loc: ['户外工地', '破败小区'], act: '处境窘迫，疲惫应付生活琐事', state: '身处低谷困境，现实带来疲惫窘迫，内心孤单无助' }, rev: { loc: ['暖和的商铺或住宅'], act: '渡过难关，慢慢放松', state: '走出艰难时期，慢慢渡过难关，情况开始好转' } },
+        { name: '星币6', suit: '星币', emoji: '🪙', up: { loc: ['商铺门口', '公益发放点'], act: '给予帮助或者接受他人照顾', state: '状态平稳，收支与付出平衡，愿意给予与接纳帮助' }, rev: { loc: ['各自的地方'], act: '不再付出，减少互动', state: '关系与付出失衡，内心感到不公，不愿继续投入' } },
+        { name: '星币7', suit: '星币', emoji: '🪙', up: { loc: ['农田', '店铺仓库'], act: '耐心等待成果，观望现状', state: '耐心默默付出，静静等待努力收获回报' }, rev: { loc: ['别处'], act: '放弃等待，不再投入', state: '等待太久看不到结果，内心失望想要放弃投入' } },
+        { name: '星币8', suit: '星币', emoji: '🪙', up: { loc: ['工坊', '门店操作台', '工地现场'], act: '专注认真打磨工作，踏实干活', state: '踏实专注打磨自己，耐心耕耘，稳步提升自我' }, rev: { loc: ['别处'], act: '厌倦枯燥，偷懒拖延', state: '失去耐心，厌倦枯燥重复的日常，不愿继续付出' } },
+        { name: '星币9', suit: '星币', emoji: '🪙', up: { loc: ['带庭院的住宅', '私人商铺'], act: '独自享受安逸居家时光', state: '经济与精神独立，享受独居安逸自在的生活' }, rev: { loc: ['别处'], act: '生活乏味，觉得无聊', state: '生活枯燥乏味，独自久了感到孤独无趣' } },
+        { name: '星币10', suit: '星币', emoji: '🪙', up: { loc: ['家族住宅', '产业园大院'], act: '陪伴家人处理家庭琐事', state: '生活根基稳固，家庭或现实基础安稳富足' }, rev: { loc: ['各自的地方'], act: '家庭事务出现变动分心', state: '现实安稳被打破，物质或是家庭方面出现变动' } },
+        { name: '星币侍从', suit: '星币', emoji: '🪙', up: { loc: ['地面商铺', '工地学徒处'], act: '慢慢学习、处理细碎小事', state: '踏实细心，慢慢积累经验，认真对待现实事务' }, rev: { loc: ['原地'], act: '浮躁偷懒不想干活', state: '浮躁没有耐心，不愿意脚踏实地付出努力' } },
+        { name: '星币骑士', suit: '星币', emoji: '🪙', up: { loc: ['住宅区公路', '商铺区'], act: '稳定按节奏完成日常工作', state: '节奏缓慢稳重，一步一个脚印踏实前进' }, rev: { loc: ['路边'], act: '拖沓懒散进度停滞', state: '做事拖沓懒散，进度停滞，缺少行动动力' } },
+        { name: '星币王后', suit: '星币', emoji: '🪙', up: { loc: ['自家厨房', '温馨的实体店'], act: '做家务、做饭打理生活', state: '安稳务实，懂得照顾自己的身心，踏实知足' }, rev: { loc: ['场所内'], act: '操劳疲惫不想打理', state: '过度在意物质得失，疲惫操劳，忽略自我感受' } },
+        { name: '星币国王', suit: '星币', emoji: '🪙', up: { loc: ['自家庄园', '总部大楼一楼'], act: '处理重要现实事务，打理生计', state: '现实根基稳固，处事稳重可靠，拥有掌控力' }, rev: { loc: ['别处'], act: '功利疲惫停下打拼', state: '功利固执，过度劳累打拼，忽略身心的健康' } },
+      ];_ZK_ELEMENTS = {
         权杖: { element: '火', direction: '正南', domain: '户外、马路、车站、热闹商圈、阳光下、赶路途中、运动场地' },
         圣杯: { element: '水', direction: '正西', domain: '靠近水源，江边、奶茶店、卧室、咖啡馆、浴室、休闲安静室内' },
         宝剑: { element: '风', direction: '正东', domain: '高楼写字楼、窗边、高铁站、图书馆、通风开阔、交通枢纽' },
@@ -14997,7 +14999,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         for (i = 0; i < 3; i++) {
           var ac = take(), au = up();
           actNames.push([ac.name, au]);
-          acts.push(pick(au ? ac.up.act : ac.rev.act));
+          acts.push(au ? ac.up.act : ac.rev.act);
+        }
+
+        var stateNames = [], states = [];
+        for (i = 0; i < 3; i++) {
+          var sc = take(), su2 = up();
+          stateNames.push([sc.name, su2]);
+          states.push(su2 ? sc.up.state : sc.rev.state);
         }
 
         var disNames = [];
@@ -15040,9 +15049,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
         contact.location = '看这几张牌，他这会儿人应该在' + locs[0] + '，也可能在' + locs[1] + '那一带，' + locs[2] + '、' + locs[3] + '、' + locs[4] + '这些地方多多少少都沾了边。';
         contact.doing = '他这会儿多半是' + acts[0] + '，也可能' + acts[1] + '，再不就是' + acts[2] + '。';
+        contact.stateText = '他这会儿的状态是' + states[0] + '；另外呢，' + states[1] + '；再就是，' + states[2] + '。';
         contact.distance = main;
         contact.distanceText = distText + '。';
-        contact.tarot = { loc: locNames, act: actNames, dis: disNames };
+        contact.tarot = { loc: locNames, act: actNames, state: stateNames, dis: disNames };
       }
       function _zkRenderCardChips(container, list) {
         if (!container) return;
@@ -15062,11 +15072,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       function _zkRenderContactState(contact) {
         _zkContactLocationState.textContent = contact.location || '—';
         _zkContactDoingState.textContent = contact.doing || '—';
+        _zkContactStateState.textContent = contact.stateText || contact.state || '—';
         var dm = null;
         for (var i = 0; i < _ZK_DISTANCES.length; i++) { if (_ZK_DISTANCES[i].v === contact.distance) { dm = _ZK_DISTANCES[i]; break; } }
         _zkContactDistanceState.textContent = contact.distanceText || (dm ? (contact.distance + ' · ' + dm.t) : '—');
         _zkRenderCardChips(_zkContactLocCards, contact.tarot ? contact.tarot.loc : null);
         _zkRenderCardChips(_zkContactActCards, contact.tarot ? contact.tarot.act : null);
+        _zkRenderCardChips(_zkContactStateCards, contact.tarot ? contact.tarot.state : null);
         _zkRenderCardChips(_zkContactDisCards, contact.tarot ? contact.tarot.dis : null);
       }
       _zkContactTarotBtn.addEventListener('click', function () {
@@ -15098,7 +15110,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
-        var _zkNeed = !contact.location || !contact.doing || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
+        var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
           _zkRollContactState(contact);
           saveContacts();
