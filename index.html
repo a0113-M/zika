@@ -12606,10 +12606,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             写信
           </button>
-          <button id="letterRefreshBtn" style="background:none;border:none;cursor:pointer;padding:6px 8px;color:#555;font-size:13px;display:flex;align-items:center;gap:4px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-            刷新
-          </button>
         </div>
         <!-- 匿名信箱入口 -->
         <div class="mailbox-entrance" id="mailboxEntrance">
@@ -23261,23 +23257,6 @@ patText2 = patText2.replace(/你/g, '我');
           return;
         }
         closeLetterModule();
-      });
-
-      // 刷新信件按钮
-      document.getElementById('letterRefreshBtn').addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (contacts.length === 0) {
-          showToast('请先添加联系人');
-          return;
-        }
-        const letter = generateLetter();
-        if (letter) {
-          letterList.unshift(letter);
-          saveLetters();
-          // populateContactFilter removed
-          renderLetterList();
-          showToast('收到新信件');
-        }
       });
 
       // 统计面板按钮
