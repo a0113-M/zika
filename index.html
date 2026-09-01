@@ -1713,6 +1713,7 @@
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      vertical-align: middle;
       transition: all 0.15s ease;
       margin-right: 6px;
       margin-bottom: 4px;
@@ -1723,6 +1724,23 @@
       padding: 2px 4px;
       font-size: 14px;
       line-height: 1;
+    }
+    /* 表情包字卡：图片缩小，与文字同行并排 */
+    .word-chip-wrap.img-word {
+      height: auto;
+      align-items: center;
+    }
+    .word-chip-wrap.img-word .letter-word {
+      padding: 0;
+      line-height: 0;
+    }
+    .letter-emoji-img {
+      height: 44px;
+      width: auto;
+      max-width: 120px;
+      border-radius: 6px;
+      display: block;
+      object-fit: contain;
     }
     /* 标注模式下选中状态 */
     .word-chip-wrap.selectable {
@@ -14864,6 +14882,39 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
       // ----- 表情包功能 -----
       let emojiList = [];
+      function saveEmojiList() {
+        if (typeof _zkCardOpenDb !== 'function') return;
+        _zkCardOpenDb().then(function (db) {
+          try {
+            var tx = db.transaction('kv', 'readwrite');
+            var store = tx.objectStore('kv');
+            store.put(JSON.stringify(emojiList), 'emojiList');
+          } catch (e) {}
+          try { db.close(); } catch (e2) {}
+        }).catch(function () {});
+      }
+      function loadEmojiList(cb) {
+        if (typeof _zkCardOpenDb !== 'function') { if (cb) cb(); return; }
+        _zkCardOpenDb().then(function (db) {
+          var done = false;
+          var finish = function () { if (!done) { done = true; try { db.close(); } catch (e2) {} if (cb) cb(); } };
+          try {
+            var tx = db.transaction('kv', 'readonly');
+            var store = tx.objectStore('kv');
+            var req = store.get('emojiList');
+            req.onsuccess = function () {
+              try {
+                if (req.result) {
+                  var arr = JSON.parse(req.result);
+                  if (Array.isArray(arr)) emojiList = arr;
+                }
+              } catch (e) {}
+              finish();
+            };
+            req.onerror = finish;
+          } catch (e) { finish(); }
+        }).catch(function () { if (cb) cb(); });
+      }
       const emojiModule = document.getElementById('emojiModule');
       const emojiGrid = document.getElementById('emojiGrid');
       const emojiBackBtn = document.getElementById('emojiBackBtn');
@@ -14894,6 +14945,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             if (confirm('确定要删除该表情包吗？')) {
               emojiList.splice(index, 1);
               renderEmojis();
+              saveEmojiList();
               showToast('已删除');
             }
           });
@@ -14984,6 +15036,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
             if (loaded === validFiles.length) {
               renderEmojis(); // 最后完整刷新一次
+              saveEmojiList();
               if (!hasError) {
                 showToast(`✅ 已添加 ${loaded} 张表情包`);
               } else {
@@ -20694,6 +20747,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       renderCardLists();
       refreshList();
       loadCardData();
+      loadEmojiList(renderEmojis);
       // 启动聊天顶部信息自动更新（每天随机时间刷新）
       // ----- 多选工具栏按钮事件 -----
       document.getElementById('btnSelectAll').addEventListener('click', function () {
@@ -21727,7 +21781,7 @@ patText2 = patText2.replace(/你/g, '我');
               const chip = document.createElement('span');
               chip.className = 'letter-word';
               chip.style.color = cc[1];
-              if (gw.img) { chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.style.cssText = 'max-width:100%;max-height:72px;border-radius:6px;display:block;'; chip.appendChild(_imgA); } else { chip.textContent = gw.name; }
+              if (gw.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.className = 'letter-emoji-img'; chip.appendChild(_imgA); } else { chip.textContent = gw.name; }
               chipWrap.appendChild(chip);
               if (annotationMode) {
                 chipWrap.classList.add('selectable');
@@ -21757,7 +21811,7 @@ patText2 = patText2.replace(/你/g, '我');
             const chip = document.createElement('span');
             chip.className = 'letter-word';
             chip.style.color = cc[1];
-            if (w.img) { chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.style.cssText = 'max-width:100%;max-height:72px;border-radius:6px;display:block;'; chip.appendChild(_imgB); } else { chip.textContent = w.name; }
+            if (w.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.className = 'letter-emoji-img'; chip.appendChild(_imgB); } else { chip.textContent = w.name; }
             chipWrap.appendChild(chip);
             if (annotationMode) {
               chipWrap.classList.add('selectable');
