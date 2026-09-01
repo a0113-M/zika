@@ -14903,31 +14903,31 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactTarotCard3 = document.getElementById('contactTarotCard3');
       const _zkContactTarotName3 = document.getElementById('contactTarotName3');
       const _zkContactTarotBtn = document.getElementById('contactTarotBtn');
-      var _ZK_TAROT = [
-        { name: '愚者', emoji: '🃏', loc: '路上', act: '散步', dis: '远' },
-        { name: '魔术师', emoji: '✨', loc: '家里', act: '工作', dis: '中' },
-        { name: '女祭司', emoji: '🌙', loc: '书店', act: '思考', dis: '中' },
-        { name: '皇后', emoji: '👑', loc: '家里', act: '做饭', dis: '近' },
-        { name: '皇帝', emoji: '🏰', loc: '公司', act: '工作', dis: '远' },
-        { name: '教皇', emoji: '📜', loc: '学校', act: '学习', dis: '中' },
-        { name: '恋人', emoji: '💞', loc: '在你身边', act: '与人交谈', dis: '靠近' },
-        { name: '战车', emoji: '⚔️', loc: '路上', act: '散步', dis: '靠近' },
-        { name: '力量', emoji: '🦁', loc: '在你身边', act: '等消息', dis: '近' },
-        { name: '隐士', emoji: '🏮', loc: '图书馆', act: '思考', dis: '远' },
-        { name: '命运之轮', emoji: '🎡', loc: '街上', act: '等消息', dis: '中' },
-        { name: '正义', emoji: '⚖️', loc: '公司', act: '工作', dis: '中' },
-        { name: '倒吊人', emoji: '🙃', loc: '家里', act: '思考', dis: '中' },
-        { name: '死神', emoji: '🍂', loc: '家里', act: '睡觉', dis: '远离' },
-        { name: '节制', emoji: '⚗️', loc: '公园', act: '散步', dis: '中' },
-        { name: '恶魔', emoji: '🔗', loc: '床上', act: '刷视频', dis: '近' },
-        { name: '高塔', emoji: '⚡', loc: '医院', act: '等消息', dis: '远离' },
-        { name: '星星', emoji: '🌟', loc: '家里', act: '等消息', dis: '中' },
-        { name: '月亮', emoji: '🌙', loc: '床上', act: '睡觉', dis: '远' },
-        { name: '太阳', emoji: '☀️', loc: '集市', act: '吃饭', dis: '近' },
-        { name: '审判', emoji: '📯', loc: '家里', act: '思考', dis: '中' },
-        { name: '世界', emoji: '🌍', loc: '街上', act: '散步', dis: '近' }
+            var _ZK_TAROT = [
+        { name: '愚者', emoji: '🃏', loc: ['路上', '远方', '街上'], act: ['散步', '发呆', '出发'], dis: ['远', '靠近'] },
+        { name: '魔术师', emoji: '✨', loc: ['家里', '工作室'], act: ['工作', '思考', '看书'], dis: ['中', '近'] },
+        { name: '女祭司', emoji: '🌙', loc: ['书店', '图书馆'], act: ['思考', '看书'], dis: ['中', '远'] },
+        { name: '皇后', emoji: '👑', loc: ['家里', '餐厅'], act: ['做饭', '吃饭'], dis: ['近', '中'] },
+        { name: '皇帝', emoji: '🏰', loc: ['公司', '办公室'], act: ['工作', '开会'], dis: ['远', '中'] },
+        { name: '教皇', emoji: '📜', loc: ['学校', '图书馆'], act: ['学习', '看书'], dis: ['中', '远'] },
+        { name: '恋人', emoji: '💞', loc: ['在你身边', '餐厅'], act: ['与人交谈', '等你'], dis: ['靠近', '近'] },
+        { name: '战车', emoji: '⚔️', loc: ['路上', '车上'], act: ['散步', '赶路'], dis: ['靠近', '中'] },
+        { name: '力量', emoji: '🦁', loc: ['在你身边', '家里'], act: ['等消息', '陪伴'], dis: ['近', '中'] },
+        { name: '隐士', emoji: '🏮', loc: ['图书馆', '家里'], act: ['思考', '独处'], dis: ['远', '中'] },
+        { name: '命运之轮', emoji: '🎡', loc: ['街上', '集市'], act: ['等消息', '闲逛'], dis: ['中', '靠近'] },
+        { name: '正义', emoji: '⚖️', loc: ['公司', '学校'], act: ['工作', '思考'], dis: ['中', '远'] },
+        { name: '倒吊人', emoji: '🙃', loc: ['家里', '公园'], act: ['思考', '发呆'], dis: ['中', '远'] },
+        { name: '死神', emoji: '🍂', loc: ['家里', '医院'], act: ['睡觉', '收拾'], dis: ['远离', '远'] },
+        { name: '节制', emoji: '⚗️', loc: ['公园', '海边'], act: ['散步', '运动'], dis: ['中', '近'] },
+        { name: '恶魔', emoji: '🔗', loc: ['床上', '家里'], act: ['刷视频', '玩手机'], dis: ['近', '中'] },
+        { name: '高塔', emoji: '⚡', loc: ['医院', '街上'], act: ['等消息', '发呆'], dis: ['远离', '远'] },
+        { name: '星星', emoji: '🌟', loc: ['家里', '阳台'], act: ['等消息', '许愿'], dis: ['中', '远'] },
+        { name: '月亮', emoji: '🌙', loc: ['床上', '家里'], act: ['睡觉', '发呆'], dis: ['远', '中'] },
+        { name: '太阳', emoji: '☀️', loc: ['集市', '公园'], act: ['吃饭', '玩耍'], dis: ['近', '靠近'] },
+        { name: '审判', emoji: '📯', loc: ['家里', '学校'], act: ['思考', '回顾'], dis: ['中', '近'] },
+        { name: '世界', emoji: '🌍', loc: ['街上', '路上'], act: ['散步', '旅行'], dis: ['近', '中'] }
       ];
-      var _ZK_DISTANCES = [
+var _ZK_DISTANCES = [
         { v: '远', t: '他在他的世界里做自己的事情' },
         { v: '中', t: '他在你的不远处' },
         { v: '近', t: '就在你的旁边' },
@@ -14937,10 +14937,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       function _zkRollContactState(contact) {
         var pool = _ZK_TAROT.slice();
         function take() { return pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; }
+        function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
         var c1 = take(), c2 = take(), c3 = take();
-        contact.location = c1.loc;
-        contact.doing = c2.act;
-        contact.distance = c3.dis;
+        contact.location = pick(c1.loc);
+        contact.doing = pick(c2.act);
+        contact.distance = pick(c3.dis);
         contact.tarot = [c1.name, c2.name, c3.name];
         return { cards: [c1, c2, c3] };
       }
