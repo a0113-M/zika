@@ -7737,10 +7737,10 @@
     .dt-storage-bar { height: 6px; border-radius: 3px; background: var(--bg-soft2); overflow: hidden; }
     .dt-storage-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
     .dt-storage-total { margin-top: 10px; font-size: 11px; color: var(--text-muted); text-align: right; }
-    .dt-storage-quota { margin-top: 8px; }
+    .dt-storage-quota { margin: 2px 0 12px; padding: 10px 12px; border: 1px solid var(--bg-soft2); border-radius: 12px; background: var(--bg-soft); }
     .dt-storage-quota-bar { height: 6px; border-radius: 3px; background: var(--bg-soft2); overflow: hidden; }
     .dt-storage-quota-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
-    .dt-storage-quota-text { margin-top: 6px; font-size: 11px; color: var(--text-muted); text-align: right; }
+    .dt-storage-quota-text { margin-top: 6px; font-size: 11px; color: var(--text-secondary); }
     .dt-ovl {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.45); z-index: 20; display: none;
@@ -14108,9 +14108,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="dt-card">
           <div class="dt-card-title">存储占用</div>
           <div class="dt-card-hint">各类数据占用的本地空间（估算）</div>
+          <div class="dt-storage-quota" id="dtStorageQuota"></div>
           <div class="dt-storage-list" id="dtStorageList"></div>
           <div class="dt-storage-total" id="dtStorageTotal"></div>
-          <div class="dt-storage-quota" id="dtStorageQuota"></div>
         </div>
         <div class="dt-data-actions">
           <button class="dt-data-btn" id="dtExportBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出数据</button>
@@ -17229,12 +17229,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         });
         var ordered = groups.filter(function (g) { return (g._bytes || 0) > 0; }).sort(function (a, b) { return (b._bytes || 0) - (a._bytes || 0); });
         el.innerHTML = '';
-        ordered.forEach(function (g) {
+        var barColors = ['#9b8ec4', '#7fb3d5', '#7fc9a9', '#f2a7b8', '#e0c069', '#d8a7d8', '#93b8c9', '#f0a06a', '#8ec5c9', '#c9a2d8'];
+        ordered.forEach(function (g, idx) {
           var pct = total > 0 ? Math.max(1, Math.round((g._bytes / total) * 100)) : 0;
+          var c = barColors[idx % barColors.length];
           var item = document.createElement('div');
           item.className = 'dt-storage-item';
           item.innerHTML = '<div class="dt-storage-row"><span>' + g.name + '</span><span class="dt-storage-size">' + _zkFmtSize(g._bytes) + '</span></div>' +
-            '<div class="dt-storage-bar"><div class="dt-storage-bar-fill" style="width:' + pct + '%;"></div></div>';
+            '<div class="dt-storage-bar"><div class="dt-storage-bar-fill" style="width:' + pct + '%;background:' + c + ';"></div></div>';
           el.appendChild(item);
         });
         if (ordered.length === 0) el.innerHTML = '<div class="dt-empty">暂无数据</div>';
