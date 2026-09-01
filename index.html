@@ -14679,12 +14679,24 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     (function () {
       let userProfile = { name: "我", avatar: "我", avatarImage: null };
       // ----- 数据 -----
-      let contacts = [
-        { id: 1, name: '1', isGroup: false, lastMsg: '你好', time: '刚刚' },
-        { id: 2, name: '2', isGroup: false, lastMsg: '你好', time: '刚刚' },
-        { id: 3, name: '12', isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [1, 2] }
-      ];
-      let nextId = 4;
+      let contacts = (function () {
+        try {
+          var saved = localStorage.getItem('zk_contacts');
+          if (saved) {
+            var arr = JSON.parse(saved);
+            if (Array.isArray(arr)) return arr;
+          }
+        } catch (e) {}
+        return [
+          { id: 1, name: '1', isGroup: false, lastMsg: '你好', time: '刚刚' },
+          { id: 2, name: '2', isGroup: false, lastMsg: '你好', time: '刚刚' },
+          { id: 3, name: '12', isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [1, 2] }
+        ];
+      })();
+      let nextId = contacts.reduce(function (m, c) { return Math.max(m, c.id); }, 0) + 1;
+      function saveContacts() {
+        try { localStorage.setItem('zk_contacts', JSON.stringify(contacts)); } catch (e) {}
+      }
 
       // Expose contacts to todo module
       window.getContactById = function(id) {
@@ -16724,6 +16736,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!name.trim()) return false;
         contacts.push({ id: nextId++, name: name.trim(), isGroup: false, lastMsg: '新联系人', time: '刚刚', createdAt: Date.now() });
         _dtAutoRecordMet();
+        saveContacts();
         refreshList();
         return true;
       }
@@ -16733,6 +16746,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!memberIds.every(id => existIds.includes(id))) return false;
         contacts.push({ id: nextId++, name: name.trim(), isGroup: true, lastMsg: '群聊创建成功', time: '刚刚', members: [...memberIds] });
         _dtAutoRecordMet();
+        saveContacts();
         refreshList();
         return true;
       }
@@ -16828,6 +16842,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       modalOverlay.addEventListener('click', function (e) { if (e.target === this) closeModal(); });
       modalConfirm.addEventListener('click', handleConfirm);
       searchInput.addEventListener('input', function () { renderContacts(this.value); });
+      renderContacts();
 
       // ----- 滑动删除 (联系人) -----
       let startX = 0, startY = 0, currentTarget = null, isSwiping = false;
@@ -16916,7 +16931,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!id) return;
         if (confirm('确定要删除该联系人吗？')) {
           const index = contacts.findIndex(c => c.id === id);
-          if (index !== -1) { contacts.splice(index, 1); refreshList(); }
+          if (index !== -1) { contacts.splice(index, 1); saveContacts(); refreshList(); }
         } else {
           const item = delBtn.closest('.contact-item-wrap')?.querySelector('.contact-item');
           if (item) { item.classList.remove('swiped'); item.style.transform = 'translateX(0)'; item.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; }
