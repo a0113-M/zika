@@ -7738,8 +7738,10 @@
     .dt-storage-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
     .dt-storage-total { margin-top: 10px; font-size: 11px; color: var(--text-muted); text-align: right; }
     .dt-storage-quota { margin: 2px 0 12px; padding: 10px 12px; border: 1px solid var(--bg-soft2); border-radius: 12px; background: var(--bg-soft); }
-    .dt-storage-quota-bar { height: 6px; border-radius: 3px; background: var(--bg-soft2); overflow: hidden; }
-    .dt-storage-quota-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
+    .dt-storage-quota-bar { display: flex; height: 8px; border-radius: 4px; background: var(--bg-soft2); overflow: hidden; }
+    .dt-storage-quota-fill { display: flex; height: 100%; }
+    .dt-storage-quota-seg { height: 100%; }
+    .dt-storage-quota-remain { flex: 1; background: var(--bg-soft2); }
     .dt-storage-quota-text { margin-top: 6px; font-size: 11px; color: var(--text-secondary); }
     .dt-ovl {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
@@ -17233,6 +17235,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         ordered.forEach(function (g, idx) {
           var pct = total > 0 ? Math.max(1, Math.round((g._bytes / total) * 100)) : 0;
           var c = barColors[idx % barColors.length];
+          g._color = c;
           var item = document.createElement('div');
           item.className = 'dt-storage-item';
           item.innerHTML = '<div class="dt-storage-row"><span>' + g.name + '</span><span class="dt-storage-size">' + _zkFmtSize(g._bytes) + '</span></div>' +
@@ -17241,7 +17244,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         });
         if (ordered.length === 0) el.innerHTML = '<div class="dt-empty">暂无数据</div>';
         if (totalEl) totalEl.textContent = '共占用 ' + _zkFmtSize(total);
-        renderStorageQuota(total);
+        renderStorageQuota(total, ordered);
       }
       function _zkPctTxt(p) {
         if (p <= 0) return '0%';
@@ -17249,7 +17252,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (p >= 100) return '100%';
         return p.toFixed(2).replace(/\.?0+$/, '') + '%';
       }
-      function renderStorageQuota(total) {
+      function renderStorageQuota(total, groups) {
         var el = document.getElementById('dtStorageQuota');
         if (!el) return;
         if (navigator.storage && navigator.storage.estimate) {
@@ -17258,8 +17261,22 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             if (quota <= 0) { el.textContent = ''; return; }
             var remain = Math.max(0, quota - total);
             var pct = total > 0 ? (total / quota) * 100 : 0;
-            var barW = total > 0 ? Math.max(pct, 0.5) : 0;
-            el.innerHTML = '<div class="dt-storage-quota-bar"><div class="dt-storage-quota-bar-fill" style="width:' + Math.min(100, barW) + '%;"></div></div>' +
+            var segs = '';
+            if (total > 0) {
+              (groups || []).forEach(function (g) {
+                if (!(g._bytes > 0)) return;
+                var w = (g._bytes / total) * 100;
+                segs += '<span class="dt-storage-quota-seg" style="width:' + w.toFixed(3) + '%;background:' + (g._color || '#9b8ec4') + ';"></span>';
+              });
+            }
+            var bar;
+            if (total > 0) {
+              var usedPct = Math.min(100, Math.max(pct, 12));
+              bar = '<div class="dt-storage-quota-bar"><div class="dt-storage-quota-fill" style="width:' + usedPct + '%;">' + segs + '</div><div class="dt-storage-quota-remain"></div></div>';
+            } else {
+              bar = '<div class="dt-storage-quota-bar"><div class="dt-storage-quota-remain"></div></div>';
+            }
+            el.innerHTML = bar +
               '<div class="dt-storage-quota-text">浏览器总 ' + _zkFmtSize(quota) + '，已用 ' + _zkFmtSize(total) + '（占 ' + _zkPctTxt(pct) + '），剩余 ' + _zkFmtSize(remain) + '</div>';
           }).catch(function () { el.textContent = ''; });
         } else {
