@@ -14983,21 +14983,68 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         function take() { return pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; }
         function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
         function up() { return Math.random() < 0.5; }
-        var locCards = [], locUs = [], locNames = [];
-        var actCards = [], actUs = [], actNames = [];
+
         var i;
-        for (i = 0; i < 5; i++) { var lc = take(); locCards.push(lc); var lu = up(); locUs.push(lu); locNames.push([lc.name, lu]); }
-        for (i = 0; i < 3; i++) { var ac = take(); actCards.push(ac); var au = up(); actUs.push(au); actNames.push([ac.name, au]); }
-        var dc = take(), du = up();
-        var locs = locCards.map(function (c, k) { return pick(locUs[k] ? c.up.loc : c.rev.loc); });
-        var acts = actCards.map(function (c, k) { return pick(actUs[k] ? c.up.act : c.rev.act); });
-        contact.location = '牌面指向：' + locs.join('、') + '。';
-        contact.doing = '他此刻可能：' + acts.join('、') + '。';
-        var nearPool = du ? ['近', '中'] : ['远', '远离', '靠近'];
-        contact.distance = nearPool[Math.floor(Math.random() * nearPool.length)];
-        contact.tarot = { loc: locNames, act: actNames, dis: [[dc.name, du]] };
+
+        var locNames = [], locs = [];
+        for (i = 0; i < 5; i++) {
+          var lc = take(), lu = up();
+          locNames.push([lc.name, lu]);
+          locs.push(pick(lu ? lc.up.loc : lc.rev.loc));
+        }
+
+        var actNames = [], acts = [];
+        for (i = 0; i < 3; i++) {
+          var ac = take(), au = up();
+          actNames.push([ac.name, au]);
+          acts.push(pick(au ? ac.up.act : ac.rev.act));
+        }
+
+        var disNames = [];
+        for (i = 0; i < 3; i++) { var dc = take(); disNames.push([dc.name, up()]); }
+
+        var distGroup = {
+          '圣杯2':'近','圣杯9':'近','圣杯10':'近','太阳':'近','世界':'近','星币4':'近','恋人':'近','节制':'近',
+          '女皇':'中','皇帝':'中','命运之轮':'中','权杖4':'中','星币6':'中','圣杯6':'中','星币9':'中',
+          '隐士':'远','月亮':'远','宝剑8':'远','宝剑7':'远','宝剑6':'远','圣杯8':'远','倒吊人':'远',
+          '战车':'动态','权杖8':'动态','死神':'动态','高塔':'动态','权杖3':'动态'
+        };
+        function dLevel(name) { return distGroup[name] || '中'; }
+
+        var phys = dLevel(disNames[0][0]), physU = disNames[0][1];
+        var psy  = dLevel(disNames[1][0]);
+        var trd  = dLevel(disNames[2][0]), trdU = disNames[2][1];
+
+        var main;
+        if (phys === '动态') { main = physU ? '近' : '远'; }
+        else { main = phys; }
+
+        var trend;
+        if (trd === '动态') { trend = trdU ? '靠近' : '远离'; }
+        else { trend = trdU ? '稳' : '松'; }
+
+        var distText;
+        if (main === '近') distText = '你俩现在离得不远，见一面不费劲';
+        else if (main === '远') distText = '眼下你们中间隔着点距离，见面没那么方便';
+        else distText = '他离你不远不近，中间留着一截子空间';
+
+        if (psy === '近') distText += '，他心里头对你是亲近的';
+        else if (psy === '远') distText += '，他心里有点敬而远之';
+        else if (psy === '动态') distText += '，他的心思还在晃，没个定数';
+        else distText += '，他待你还客客气气，留了点余地';
+
+        if (trend === '靠近') distText += '，而且正慢慢朝你这边靠过来';
+        else if (trend === '远离') distText += '，看着倒是有越走越远的意思';
+        else if (trend === '松') distText += '，不过这个距离最近有松动的迹象';
+        else distText += '，短期之内大概就是这副光景';
+
+        contact.location = '看这几张牌，他这会儿人应该在' + locs[0] + '，也可能在' + locs[1] + '那一带，' + locs[2] + '、' + locs[3] + '、' + locs[4] + '这些地方多多少少都沾了边。';
+        contact.doing = '他这会儿多半是' + acts[0] + '，也可能' + acts[1] + '，再不就是' + acts[2] + '。';
+        contact.distance = main;
+        contact.distanceText = distText + '。';
+        contact.tarot = { loc: locNames, act: actNames, dis: disNames };
       }
-function _zkRenderCardChips(container, list) {
+      function _zkRenderCardChips(container, list) {
         if (!container) return;
         container.innerHTML = '';
         if (!list || !list.length) return;
@@ -15017,7 +15064,7 @@ function _zkRenderCardChips(container, list) {
         _zkContactDoingState.textContent = contact.doing || '—';
         var dm = null;
         for (var i = 0; i < _ZK_DISTANCES.length; i++) { if (_ZK_DISTANCES[i].v === contact.distance) { dm = _ZK_DISTANCES[i]; break; } }
-        _zkContactDistanceState.textContent = dm ? (contact.distance + ' · ' + dm.t) : '—';
+        _zkContactDistanceState.textContent = contact.distanceText || (dm ? (contact.distance + ' · ' + dm.t) : '—');
         _zkRenderCardChips(_zkContactLocCards, contact.tarot ? contact.tarot.loc : null);
         _zkRenderCardChips(_zkContactActCards, contact.tarot ? contact.tarot.act : null);
         _zkRenderCardChips(_zkContactDisCards, contact.tarot ? contact.tarot.dis : null);
@@ -15051,7 +15098,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
-        var _zkNeed = !contact.location || !contact.doing || !contact.tarot || !Array.isArray(contact.tarot.loc);
+        var _zkNeed = !contact.location || !contact.doing || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
           _zkRollContactState(contact);
           saveContacts();
