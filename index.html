@@ -14677,7 +14677,44 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     })();
 
     (function () {
-      let userProfile = { name: "我", avatar: "我", avatarImage: null };
+      let userProfile = (function () {
+        try {
+          const raw = localStorage.getItem('zk_userProfile');
+          if (raw) {
+            const p = JSON.parse(raw);
+            if (p && typeof p === 'object') {
+              return { name: p.name || '我', avatar: p.avatar || '我', avatarImage: p.avatarImage || null };
+            }
+          }
+        } catch (e) {}
+        return { name: "我", avatar: "我", avatarImage: null };
+      })();
+      function saveUserProfile() {
+        try {
+          localStorage.setItem('zk_userProfile', JSON.stringify({ name: userProfile.name, avatar: userProfile.avatar, avatarImage: userProfile.avatarImage || null }));
+        } catch (e) {}
+      }
+      function renderSelfAvatar() {
+        const seg = [
+          { el: 'sideAvatar', size: '56px' },
+          { el: 'userAvatar', size: '36px' }
+        ];
+        for (var i = 0; i < seg.length; i++) {
+          const node = document.getElementById(seg[i].el);
+          if (!node) continue;
+          const base = 'display:flex;align-items:center;justify-content:center;width:' + seg[i].size + ';height:' + seg[i].size + ';border-radius:50%;background:var(--primary);overflow:hidden;';
+          if (userProfile.avatarImage) {
+            node.innerHTML = '';
+            node.style.cssText = base;
+            const im = document.createElement('img');
+            im.src = userProfile.avatarImage;
+            im.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            node.appendChild(im);
+          } else {
+            node.innerHTML = userProfile.avatar || '我';
+          }
+        }
+      }
       // ----- 数据 -----
       let contacts = (function () {
         try {
@@ -19420,6 +19457,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         }
       }
       updateMomentsUserAvatar();
+      renderSelfAvatar();
 
       function updateImagePicker() {
         momentsImagePicker.innerHTML = '';
@@ -19958,6 +19996,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         };
         reader.readAsDataURL(file);
         this.value = '';
+        saveUserProfile();
       });
       document.getElementById('profileSave').addEventListener('click', function () {
         const newName = profileNameInput.value.trim() || '我';
@@ -19972,6 +20011,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         }
         document.getElementById('sideName').innerHTML = `${userProfile.name}<small>点击头像设置个人信息</small>`;
         showToast('个人信息已更新！');
+        saveUserProfile();
         closeProfileModal();
       });
       document.getElementById('profileCancel').addEventListener('click', closeProfileModal);
