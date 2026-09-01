@@ -744,6 +744,15 @@
       gap: 8px;
     }
 
+    .chat-header-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      font-size: 16px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0; cursor: pointer;
+    }
+    .chat-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
     .chat-header-center {
       flex: 1;
       display: flex;
@@ -11947,6 +11956,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <div class="chat-view" id="chatView">
       <div class="chat-header">
         <button class="chat-back" id="chatBack"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div class="chat-header-avatar" id="chatHeaderAvatar"></div>
         <div class="chat-header-center" id="chatHeaderCenter">
           <span class="chat-title" id="chatTitle">联系人</span>
           <div class="chat-header-info" id="chatHeaderInfo">
@@ -13130,6 +13140,26 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
       <input type="file" id="avatarFileInput" accept="image/*">
+    </div>
+
+    <!-- 联系人编辑弹窗 -->
+    <div class="profile-modal" id="contactModal">
+      <div class="profile-box">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar-edit" id="contactAvatarEdit">
+            <img id="contactModalAvatarImg" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            <span id="contactModalAvatarText">?</span>
+          </div>
+        </div>
+        <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
+        <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
+        <div class="profile-actions">
+          <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
+          <button class="btn-cancel" id="contactModalCancel">取消</button>
+          <button class="btn-save" id="contactModalSave">保存</button>
+        </div>
+      </div>
+      <input type="file" id="contactAvatarFileInput" accept="image/*">
     </div>
 
     <!-- 功能页面 -->
@@ -14753,6 +14783,99 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         try { localStorage.setItem('zk_contacts', JSON.stringify(contacts)); } catch (e) {}
       }
 
+      // ----- 联系人头像渲染 helper -----
+      function _zkSetContactAvatar(el, contact) {
+        if (!el) return;
+        el.innerHTML = '';
+        el.style.background = '';
+        el.style.overflow = '';
+        if (contact && contact.avatarImage) {
+          el.style.background = 'transparent';
+          el.style.overflow = 'hidden';
+          var _im = document.createElement('img');
+          _im.src = contact.avatarImage;
+          _im.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:inherit;';
+          el.appendChild(_im);
+        } else {
+          el.textContent = (contact && contact.name) ? contact.name.charAt(0).toUpperCase() : '?';
+          if (contact && contact.isGroup) el.style.background = '#9b9b9b';
+          else if (contact) el.style.background = 'var(--primary)';
+        }
+      }
+
+      // ----- 联系人编辑弹窗 -----
+      let contactModalEditId = null;
+      const _zkContactModal = document.getElementById('contactModal');
+      const _zkContactAvatarEdit = document.getElementById('contactAvatarEdit');
+      const _zkContactAvatarFileInput = document.getElementById('contactAvatarFileInput');
+      const _zkContactNameInput = document.getElementById('contactNameInput');
+      const _zkContactMetDateInput = document.getElementById('contactMetDateInput');
+      function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
+      function _zkSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
+      function _zkDateToStr(ts) { if (!ts) return ''; var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+      function renderContactModalAvatar(contact) {
+        var img = document.getElementById('contactModalAvatarImg');
+        var txt = document.getElementById('contactModalAvatarText');
+        if (!contact) return;
+        if (contact.avatarImage) {
+          img.src = contact.avatarImage; img.style.display = 'block'; txt.style.display = 'none';
+        } else {
+          img.style.display = 'none'; txt.style.display = 'block';
+          txt.textContent = (contact.name || '?').charAt(0).toUpperCase();
+        }
+      }
+      function _zkOpenContactModal(contactId) {
+        var contact = contacts.find(function (c) { return c.id === contactId; });
+        if (!contact) return;
+        contactModalEditId = contactId;
+        _zkContactNameInput.value = contact.name || '';
+        renderContactModalAvatar(contact);
+        var met = _zkGetMetDates();
+        _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
+        _zkContactModal.classList.add('show');
+      }
+      function closeContactModal() {
+        _zkContactModal.classList.remove('show');
+        contactModalEditId = null;
+      }
+      _zkContactAvatarEdit.addEventListener('click', function () { _zkContactAvatarFileInput.click(); });
+      _zkContactAvatarFileInput.addEventListener('change', function (e) {
+        var file = this.files[0]; if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function (ev) {
+          var imageData = ev.target.result;
+          var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
+          if (contact) { contact.avatarImage = imageData; renderContactModalAvatar(contact); }
+        };
+        reader.readAsDataURL(file);
+        this.value = '';
+      });
+      document.getElementById('contactResetAvatar').addEventListener('click', function () {
+        var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
+        if (contact) { contact.avatarImage = null; renderContactModalAvatar(contact); }
+      });
+      document.getElementById('contactModalCancel').addEventListener('click', closeContactModal);
+      _zkContactModal.addEventListener('click', function (e) { if (e.target === this) closeContactModal(); });
+      document.getElementById('contactModalSave').addEventListener('click', function () {
+        var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
+        if (!contact) { closeContactModal(); return; }
+        var newName = _zkContactNameInput.value.trim();
+        if (newName) contact.name = newName;
+        var met = _zkGetMetDates();
+        var dv = _zkContactMetDateInput.value;
+        if (dv) { var pp = dv.split('-'); met[contact.id] = new Date(parseInt(pp[0],10), parseInt(pp[1],10)-1, parseInt(pp[2],10)).getTime(); }
+        else { delete met[contact.id]; }
+        _zkSaveMetDates(met);
+        saveContacts();
+        renderContacts();
+        if (currentChatId === contact.id) {
+          chatTitle.textContent = contact.name;
+          _zkSetContactAvatar(document.getElementById('chatHeaderAvatar'), contact);
+        }
+        showToast('已保存');
+        closeContactModal();
+      });
+
       // Expose contacts to todo module
       window.getContactById = function(id) {
         return contacts.find(function(c) { return c.id === id; });
@@ -14806,8 +14929,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           div.dataset.id = item.id;
           const avatar = document.createElement('div');
           avatar.className = 'contact-avatar';
-          avatar.textContent = item.name.charAt(0).toUpperCase() || '?';
-          avatar.style.background = item.isGroup ? '#9b9b9b' : 'var(--primary)';
+          _zkSetContactAvatar(avatar, item);
+          avatar.addEventListener('click', function (e) { e.stopPropagation(); _zkOpenContactModal(item.id); });
           const info = document.createElement('div');
           info.className = 'contact-info';
           const nameDiv = document.createElement('div');
@@ -15269,6 +15392,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!contact) return;
         currentChatId = contactId;
         chatTitle.textContent = contact.name;
+        _zkSetContactAvatar(document.getElementById('chatHeaderAvatar'), contact);
         if (!chatHistories[contactId]) {
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
         }
@@ -15288,6 +15412,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
       const chatMenuBtn = document.getElementById('chatMenuBtn');
       const chatMenuDropdown = document.getElementById('chatMenuDropdown');
+      document.getElementById('chatHeaderAvatar').addEventListener('click', function () {
+        if (currentChatId !== null) _zkOpenContactModal(currentChatId);
+      });
 
       chatMenuBtn.addEventListener('click', function (e) {
         e.stopPropagation();
@@ -15864,8 +15991,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 vAvatar.style.background = 'transparent';
               } else { vAvatar.textContent = userProfile.avatar || '我'; vAvatar.style.background = 'var(--primary)'; }
             } else if (vContact) {
-              vAvatar.textContent = (vContact.name || '?').charAt(0).toUpperCase();
-              vAvatar.style.background = vContact.isGroup ? '#9b9b9b' : 'var(--primary)';
+              _zkSetContactAvatar(vAvatar, vContact);
             } else { vAvatar.textContent = '?'; vAvatar.style.background = '#999'; }
             const vWrapper = document.createElement('div');
             vWrapper.style.cssText = 'display:flex;flex-direction:column;max-width:78%;';
@@ -15918,7 +16044,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+              if (contact) { _zkSetContactAvatar(avatar, contact); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const img = document.createElement('img');
@@ -15950,7 +16076,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; }
             } else {
               const contact = contacts.find(c => c.id === contactId);
-              if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+              if (contact) { _zkSetContactAvatar(avatar, contact); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
             const videoWrap = document.createElement('div');
@@ -16007,9 +16133,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               } else { avatar.textContent = userProfile.avatar || '我'; avatar.style.background = 'var(--primary)'; avatar.style.display = 'flex'; avatar.style.alignItems = 'center'; avatar.style.justifyContent = 'center'; }
             } else if (contact && contact.isGroup && senderName !== 'me' && senderName !== 'other') {
               const member = contacts.find(c => c.name === senderName);
-              if (member) { avatar.textContent = member.name.charAt(0).toUpperCase(); avatar.style.background = 'var(--primary)'; }
+              if (member) { _zkSetContactAvatar(avatar, member); }
               else { avatar.textContent = senderName.charAt(0).toUpperCase(); avatar.style.background = '#9b9b9b'; }
-            } else if (contact) { avatar.textContent = contact.name.charAt(0).toUpperCase(); avatar.style.background = contact.isGroup ? '#9b9b9b' : 'var(--primary)'; }
+            } else if (contact) { _zkSetContactAvatar(avatar, contact); }
             else { avatar.textContent = '?'; avatar.style.background = '#999'; }
 
             const bubble = document.createElement('div');
