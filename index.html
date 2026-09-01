@@ -14678,16 +14678,34 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
     (function () {
       let userProfile = (function () {
+        let base = { name: "我", avatar: "我", avatarImage: null };
         try {
           const raw = localStorage.getItem('zk_userProfile');
           if (raw) {
             const p = JSON.parse(raw);
             if (p && typeof p === 'object') {
-              return { name: p.name || '我', avatar: p.avatar || '我', avatarImage: p.avatarImage || null };
+              base = { name: p.name || '我', avatar: p.avatar || '我', avatarImage: p.avatarImage || null };
             }
           }
         } catch (e) {}
-        return { name: "我", avatar: "我", avatarImage: null };
+        if (!base.avatarImage) {
+          try {
+            const ml = localStorage.getItem('moments');
+            if (ml) {
+              const arr = JSON.parse(ml);
+              if (Array.isArray(arr)) {
+                for (var i = 0; i < arr.length; i++) {
+                  const m = arr[i];
+                  if (m && m.avatarImage && (m.author === base.name || m.author === '我')) {
+                    base.avatarImage = m.avatarImage;
+                    break;
+                  }
+                }
+              }
+            }
+          } catch (e) {}
+        }
+        return base;
       })();
       function saveUserProfile() {
         try {
