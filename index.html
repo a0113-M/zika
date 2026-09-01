@@ -5326,6 +5326,12 @@
       text-overflow: ellipsis;
       max-width: 100%;
     }
+    .contact-tarot-up {
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .contact-tarot-up.up { color: var(--primary-deep); }
+    .contact-tarot-up.rev { color: var(--accent); }
     .contact-tarot-btn {
       width: 100%;
       margin-top: 10px;
@@ -13222,16 +13228,19 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="contact-tarot-slot">
             <div class="contact-tarot-card" id="contactTarotCard1">🂠</div>
             <div class="contact-tarot-name" id="contactTarotName1">—</div>
+            <div class="contact-tarot-up" id="contactTarotUp1">—</div>
             <div class="contact-tarot-slot-label">地点</div>
           </div>
           <div class="contact-tarot-slot">
             <div class="contact-tarot-card" id="contactTarotCard2">🂠</div>
             <div class="contact-tarot-name" id="contactTarotName2">—</div>
+            <div class="contact-tarot-up" id="contactTarotUp2">—</div>
             <div class="contact-tarot-slot-label">在做什么</div>
           </div>
           <div class="contact-tarot-slot">
             <div class="contact-tarot-card" id="contactTarotCard3">🂠</div>
             <div class="contact-tarot-name" id="contactTarotName3">—</div>
+            <div class="contact-tarot-up" id="contactTarotUp3">—</div>
             <div class="contact-tarot-slot-label">距离</div>
           </div>
         </div>
@@ -14896,38 +14905,41 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactLocationState = document.getElementById('contactLocationState');
       const _zkContactDoingState = document.getElementById('contactDoingState');
       const _zkContactDistanceState = document.getElementById('contactDistanceState');
-            const _zkContactTarotCard1 = document.getElementById('contactTarotCard1');
+                  const _zkContactTarotCard1 = document.getElementById('contactTarotCard1');
       const _zkContactTarotName1 = document.getElementById('contactTarotName1');
+      const _zkContactTarotUp1 = document.getElementById('contactTarotUp1');
       const _zkContactTarotCard2 = document.getElementById('contactTarotCard2');
       const _zkContactTarotName2 = document.getElementById('contactTarotName2');
+      const _zkContactTarotUp2 = document.getElementById('contactTarotUp2');
       const _zkContactTarotCard3 = document.getElementById('contactTarotCard3');
       const _zkContactTarotName3 = document.getElementById('contactTarotName3');
+      const _zkContactTarotUp3 = document.getElementById('contactTarotUp3');
       const _zkContactTarotBtn = document.getElementById('contactTarotBtn');
-            var _ZK_TAROT = [
-        { name: '愚者', emoji: '🃏', loc: ['路上', '远方', '街上'], act: ['散步', '发呆', '出发'], dis: ['远', '靠近'] },
-        { name: '魔术师', emoji: '✨', loc: ['家里', '工作室'], act: ['工作', '思考', '看书'], dis: ['中', '近'] },
-        { name: '女祭司', emoji: '🌙', loc: ['书店', '图书馆'], act: ['思考', '看书'], dis: ['中', '远'] },
-        { name: '皇后', emoji: '👑', loc: ['家里', '餐厅'], act: ['做饭', '吃饭'], dis: ['近', '中'] },
-        { name: '皇帝', emoji: '🏰', loc: ['公司', '办公室'], act: ['工作', '开会'], dis: ['远', '中'] },
-        { name: '教皇', emoji: '📜', loc: ['学校', '图书馆'], act: ['学习', '看书'], dis: ['中', '远'] },
-        { name: '恋人', emoji: '💞', loc: ['在你身边', '餐厅'], act: ['与人交谈', '等你'], dis: ['靠近', '近'] },
-        { name: '战车', emoji: '⚔️', loc: ['路上', '车上'], act: ['散步', '赶路'], dis: ['靠近', '中'] },
-        { name: '力量', emoji: '🦁', loc: ['在你身边', '家里'], act: ['等消息', '陪伴'], dis: ['近', '中'] },
-        { name: '隐士', emoji: '🏮', loc: ['图书馆', '家里'], act: ['思考', '独处'], dis: ['远', '中'] },
-        { name: '命运之轮', emoji: '🎡', loc: ['街上', '集市'], act: ['等消息', '闲逛'], dis: ['中', '靠近'] },
-        { name: '正义', emoji: '⚖️', loc: ['公司', '学校'], act: ['工作', '思考'], dis: ['中', '远'] },
-        { name: '倒吊人', emoji: '🙃', loc: ['家里', '公园'], act: ['思考', '发呆'], dis: ['中', '远'] },
-        { name: '死神', emoji: '🍂', loc: ['家里', '医院'], act: ['睡觉', '收拾'], dis: ['远离', '远'] },
-        { name: '节制', emoji: '⚗️', loc: ['公园', '海边'], act: ['散步', '运动'], dis: ['中', '近'] },
-        { name: '恶魔', emoji: '🔗', loc: ['床上', '家里'], act: ['刷视频', '玩手机'], dis: ['近', '中'] },
-        { name: '高塔', emoji: '⚡', loc: ['医院', '街上'], act: ['等消息', '发呆'], dis: ['远离', '远'] },
-        { name: '星星', emoji: '🌟', loc: ['家里', '阳台'], act: ['等消息', '许愿'], dis: ['中', '远'] },
-        { name: '月亮', emoji: '🌙', loc: ['床上', '家里'], act: ['睡觉', '发呆'], dis: ['远', '中'] },
-        { name: '太阳', emoji: '☀️', loc: ['集市', '公园'], act: ['吃饭', '玩耍'], dis: ['近', '靠近'] },
-        { name: '审判', emoji: '📯', loc: ['家里', '学校'], act: ['思考', '回顾'], dis: ['中', '近'] },
-        { name: '世界', emoji: '🌍', loc: ['街上', '路上'], act: ['散步', '旅行'], dis: ['近', '中'] }
+      var _ZK_TAROT = [
+        { name: '愚者', emoji: '🃏', up: { loc: ['公路', '旅途路上', '路边集市'], act: ['在移动漂泊', '出发上路'] }, rev: { loc: ['陌生街头'], act: ['漫无目的闲逛', '临时停留'] } },
+        { name: '魔术师', emoji: '✨', up: { loc: ['书桌电脑旁', '工作室', '直播间'], act: ['专注处理工作'] }, rev: { loc: ['杂乱的工作间'], act: ['事情中断', '分心'] } },
+        { name: '女祭司', emoji: '🌙', up: { loc: ['安静的私密房间', '图书馆'], act: ['独处', '静思'] }, rev: { loc: ['隐蔽的角落'], act: ['刻意回避'] } },
+        { name: '女皇', emoji: '👑', up: { loc: ['舒适的家里', '餐厅', '花园商场'], act: ['享受生活', '用餐'] }, rev: { loc: ['热闹的商场'], act: ['临时外出'] } },
+        { name: '皇帝', emoji: '🏰', up: { loc: ['办公楼', '政务大厅', '办公室'], act: ['处理公务', '工作'] }, rev: { loc: ['办公楼外'], act: ['外出办事'] } },
+        { name: '教皇', emoji: '📜', up: { loc: ['学校', '培训机构', '办事大厅'], act: ['上课', '办手续'] }, rev: { loc: ['别处'], act: ['临时离场'] } },
+        { name: '恋人', emoji: '💞', up: { loc: ['咖啡馆', '公园', '约会的地方'], act: ['与人约会', '相伴'] }, rev: { loc: ['各自的地方'], act: ['争执', '分开行动'] } },
+        { name: '战车', emoji: '⚔️', up: { loc: ['车上', '路上'], act: ['赶路', '开车'] }, rev: { loc: ['中途停靠点'], act: ['堵车', '停靠'] } },
+        { name: '力量', emoji: '🦁', up: { loc: ['健身房', '户外山野'], act: ['运动', '耗费体力'] }, rev: { loc: ['休息处'], act: ['疲惫停歇'] } },
+        { name: '隐士', emoji: '🏮', up: { loc: ['山林', '空房间'], act: ['独处', '静修'] }, rev: { loc: ['僻静的角落'], act: ['散心', '避开人群'] } },
+        { name: '命运之轮', emoji: '🎡', up: { loc: ['路上', '即将换地方'], act: ['准备离开', '移动中'] }, rev: { loc: ['原地'], act: ['滞留', '等待'] } },
+        { name: '正义', emoji: '⚖️', up: { loc: ['政务大厅', '法院', '办事窗口'], act: ['办手续', '处理事务'] }, rev: { loc: ['等待处'], act: ['事情搁置', '等待'] } },
+        { name: '倒吊人', emoji: '🙃', up: { loc: ['原地'], act: ['停留等待'] }, rev: { loc: ['准备离开的地方'], act: ['僵持结束', '准备走'] } },
+        { name: '死神', emoji: '🍂', up: { loc: ['陌生新地方'], act: ['离开', '前往新地方'] }, rev: { loc: ['原地'], act: ['不愿离开'] } },
+        { name: '节制', emoji: '⚗️', up: { loc: ['水边小店', '茶室', '休闲处'], act: ['放松', '小憩'] }, rev: { loc: ['路上'], act: ['短暂停留', '继续赶路'] } },
+        { name: '恶魔', emoji: '🔗', up: { loc: ['酒吧', '包厢', '密闭娱乐场所'], act: ['沉迷娱乐'] }, rev: { loc: ['娱乐场所外'], act: ['打算离开'] } },
+        { name: '高塔', emoji: '⚡', up: { loc: ['临时更换的地方'], act: ['应对突发', '慌乱'] }, rev: { loc: ['暂时稳定的地方'], act: ['危机缓和', '安定'] } },
+        { name: '星星', emoji: '🌟', up: { loc: ['河边湖边', '夜景开阔地'], act: ['看夜景', '许愿'] }, rev: { loc: ['光线昏暗处'], act: ['位置模糊', '徘徊'] } },
+        { name: '月亮', emoji: '🌙', up: { loc: ['夜晚的小路', '昏暗陌生区域'], act: ['夜里行走', '心神不宁'] }, rev: { loc: ['渐渐清晰的地方'], act: ['迷雾散去'] } },
+        { name: '太阳', emoji: '☀️', up: { loc: ['游乐园', '广场', '明亮的露天处'], act: ['玩乐', '晒太阳'] }, rev: { loc: ['暴晒的车内'], act: ['短暂逗留'] } },
+        { name: '审判', emoji: '📯', up: { loc: ['准备出发的地方'], act: ['准备动身', '联系见面'] }, rev: { loc: ['原地'], act: ['拖延', '迟迟未动'] } },
+        { name: '世界', emoji: '🌍', up: { loc: ['目的地', '固定的地点'], act: ['安定下来', '停留'] }, rev: { loc: ['路上'], act: ['奔波', '行程未完'] } }
       ];
-var _ZK_DISTANCES = [
+      var _ZK_DISTANCES = [
         { v: '远', t: '他在他的世界里做自己的事情' },
         { v: '中', t: '他在你的不远处' },
         { v: '近', t: '就在你的旁边' },
@@ -14938,12 +14950,15 @@ var _ZK_DISTANCES = [
         var pool = _ZK_TAROT.slice();
         function take() { return pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; }
         function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+        function upright() { return Math.random() < 0.5; }
         var c1 = take(), c2 = take(), c3 = take();
-        contact.location = pick(c1.loc);
-        contact.doing = pick(c2.act);
-        contact.distance = pick(c3.dis);
-        contact.tarot = [c1.name, c2.name, c3.name];
-        return { cards: [c1, c2, c3] };
+        var u1 = upright(), u2 = upright(), u3 = upright();
+        contact.location = pick(u1 ? c1.up.loc : c1.rev.loc);
+        contact.doing = pick(u2 ? c2.up.act : c2.rev.act);
+        var nearPool = u3 ? ['近', '中'] : ['远', '远离', '靠近'];
+        contact.distance = nearPool[Math.floor(Math.random() * nearPool.length)];
+        contact.tarot = [[c1.name, u1], [c2.name, u2], [c3.name, u3]];
+        return { cards: [c1, c2, c3], u: [u1, u2, u3] };
       }
       function _zkRenderContactState(contact, result) {
         _zkContactLocationState.textContent = contact.location || '—';
@@ -14952,15 +14967,21 @@ var _ZK_DISTANCES = [
         for (var i = 0; i < _ZK_DISTANCES.length; i++) { if (_ZK_DISTANCES[i].v === contact.distance) { dm = _ZK_DISTANCES[i]; break; } }
         _zkContactDistanceState.textContent = dm ? (contact.distance + ' · ' + dm.t) : '—';
         var cards = result && result.cards ? result.cards : [null, null, null];
+        var us = result && result.u ? result.u : [null, null, null];
         var elsC = [_zkContactTarotCard1, _zkContactTarotCard2, _zkContactTarotCard3];
         var elsN = [_zkContactTarotName1, _zkContactTarotName2, _zkContactTarotName3];
+        var elsU = [_zkContactTarotUp1, _zkContactTarotUp2, _zkContactTarotUp3];
         for (var k = 0; k < 3; k++) {
           if (cards[k]) {
             elsC[k].textContent = cards[k].emoji || '🃏';
             elsN[k].textContent = cards[k].name;
+            elsU[k].textContent = us[k] ? '正位' : '逆位';
+            elsU[k].className = 'contact-tarot-up ' + (us[k] ? 'up' : 'rev');
           } else {
             elsC[k].textContent = '🂠';
             elsN[k].textContent = '—';
+            elsU[k].textContent = '—';
+            elsU[k].className = 'contact-tarot-up';
           }
         }
       }
@@ -14994,7 +15015,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
         var _zkRolled = null;
-        var _zkNeed = !contact.location || !contact.doing || !Array.isArray(contact.tarot);
+        var _zkNeed = !contact.location || !contact.doing || !Array.isArray(contact.tarot) || !Array.isArray(contact.tarot[0]);
         if (_zkNeed) {
           _zkRolled = _zkRollContactState(contact);
           saveContacts();
@@ -15003,12 +15024,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           saveContacts();
         }
         var _zkResult = _zkRolled;
-        if (!_zkResult && Array.isArray(contact.tarot)) {
+        if (!_zkResult && Array.isArray(contact.tarot) && Array.isArray(contact.tarot[0])) {
           var _zkCards = [];
+          var _zkUs = [];
           for (var _ki = 0; _ki < 3; _ki++) {
-            _zkCards.push(_ZK_TAROT.filter(function (x) { return x.name === contact.tarot[_ki]; })[0] || null);
+            _zkCards.push(_ZK_TAROT.filter(function (x) { return x.name === contact.tarot[_ki][0]; })[0] || null);
+            _zkUs.push(contact.tarot[_ki][1]);
           }
-          if (_zkCards[0] && _zkCards[1] && _zkCards[2]) _zkResult = { cards: _zkCards };
+          if (_zkCards[0] && _zkCards[1] && _zkCards[2]) _zkResult = { cards: _zkCards, u: _zkUs };
         }
         _zkRenderContactState(contact, _zkResult);
         _zkContactModal.classList.add('show');
