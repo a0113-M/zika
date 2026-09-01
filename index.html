@@ -5280,6 +5280,55 @@
       background: #fafafa;
       color: #333;
     }
+    .profile-field .contact-state {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      font-size: 15px;
+      background: var(--bg-card);
+      color: var(--text-main);
+      min-height: 20px;
+    }
+    .contact-tarot {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 6px;
+      padding: 14px 12px;
+      border: 1px solid var(--border-light);
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--bg-soft2), var(--bg-card));
+    }
+    .contact-tarot-card {
+      font-size: 34px;
+      line-height: 1;
+      flex: 0 0 auto;
+    }
+    .contact-tarot-info { flex: 1 1 auto; min-width: 0; }
+    .contact-tarot-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--primary-deep);
+    }
+    .contact-tarot-desc {
+      margin-top: 3px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .contact-tarot-btn {
+      width: 100%;
+      margin-top: 10px;
+      padding: 11px 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      color: #fff;
+      background: var(--primary);
+      cursor: pointer;
+    }
+    .contact-tarot-btn:active { opacity: 0.85; }
 
     .profile-box .profile-field input:focus {
       border-color: var(--primary);
@@ -13157,48 +13206,17 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
-        <div class="profile-field"><label>所在地方</label><select id="contactLocationSelect">
-          <option value="">未设置</option>
-          <option>在你身边</option>
-          <option>家里</option>
-          <option>街上</option>
-          <option>商店</option>
-          <option>公司</option>
-          <option>医院</option>
-          <option>集市</option>
-          <option>书店</option>
-          <option>床上</option>
-          <option>学校</option>
-          <option>公园</option>
-          <option>图书馆</option>
-          <option>餐厅</option>
-          <option>路上</option>
-        </select></div>
-        <div class="profile-field"><label>在做什么</label><select id="contactDoingSelect">
-          <option value="">未设置</option>
-          <option>吃饭</option>
-          <option>与人交谈</option>
-          <option>工作</option>
-          <option>思考</option>
-          <option>看电视</option>
-          <option>玩手机</option>
-          <option>刷视频</option>
-          <option>等消息</option>
-          <option>睡觉</option>
-          <option>学习</option>
-          <option>看书</option>
-          <option>做饭</option>
-          <option>散步</option>
-          <option>听歌</option>
-        </select></div>
-        <div class="profile-field"><label>距离</label><select id="contactDistanceSelect">
-          <option value="">未设置</option>
-          <option value="远">远 · 他在他的世界里做自己的事情</option>
-          <option value="中">中 · 他在你的不远处</option>
-          <option value="近">近 · 就在你的旁边</option>
-          <option value="靠近">靠近 · 他在向你接近</option>
-          <option value="远离">远离 · 他正在离你远去</option>
-        </select></div>
+        <div class="profile-field"><label>所在地方</label><div class="contact-state" id="contactLocationState">—</div></div>
+        <div class="profile-field"><label>在做什么</label><div class="contact-state" id="contactDoingState">—</div></div>
+        <div class="profile-field"><label>距离</label><div class="contact-state" id="contactDistanceState">—</div></div>
+        <div class="contact-tarot">
+          <div class="contact-tarot-card" id="contactTarotCard">🃏</div>
+          <div class="contact-tarot-info">
+            <div class="contact-tarot-name" id="contactTarotName">抽一张塔罗牌</div>
+            <div class="contact-tarot-desc" id="contactTarotDesc">看看 TA 此刻的状态</div>
+          </div>
+        </div>
+        <button type="button" class="contact-tarot-btn" id="contactTarotBtn">🔮 重新占卜</button>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -14856,9 +14874,78 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactAvatarFileInput = document.getElementById('contactAvatarFileInput');
       const _zkContactNameInput = document.getElementById('contactNameInput');
       const _zkContactMetDateInput = document.getElementById('contactMetDateInput');
-      const _zkContactLocationSelect = document.getElementById('contactLocationSelect');
-      const _zkContactDoingSelect = document.getElementById('contactDoingSelect');
-      const _zkContactDistanceSelect = document.getElementById('contactDistanceSelect');
+      const _zkContactLocationState = document.getElementById('contactLocationState');
+      const _zkContactDoingState = document.getElementById('contactDoingState');
+      const _zkContactDistanceState = document.getElementById('contactDistanceState');
+      const _zkContactTarotCard = document.getElementById('contactTarotCard');
+      const _zkContactTarotName = document.getElementById('contactTarotName');
+      const _zkContactTarotDesc = document.getElementById('contactTarotDesc');
+      const _zkContactTarotBtn = document.getElementById('contactTarotBtn');
+      var _ZK_TAROT = [
+        { name: '愚者', emoji: '🃏', desc: '新的开始，随心出发' },
+        { name: '魔术师', emoji: '✨', desc: '他在酝酿与创造' },
+        { name: '女祭司', emoji: '🌙', desc: '他沉默，藏着心事' },
+        { name: '皇后', emoji: '👑', desc: '温柔丰盛，享受当下' },
+        { name: '皇帝', emoji: '🏰', desc: '掌控与承担，忙碌正经' },
+        { name: '教皇', emoji: '📜', desc: '遵循规则，安稳有序' },
+        { name: '恋人', emoji: '💞', desc: '心有所动，想要靠近' },
+        { name: '战车', emoji: '⚔️', desc: '一往无前，行色匆匆' },
+        { name: '力量', emoji: '🦁', desc: '温柔而坚定地陪伴' },
+        { name: '隐士', emoji: '🏮', desc: '独处思索，需要空间' },
+        { name: '命运之轮', emoji: '🎡', desc: '际遇流转，转机将至' },
+        { name: '正义', emoji: '⚖️', desc: '权衡与抉择，认真面对' },
+        { name: '倒吊人', emoji: '🙃', desc: '暂停一下，换个角度看' },
+        { name: '死神', emoji: '🍂', desc: '告别旧的，正在转变' },
+        { name: '节制', emoji: '⚗️', desc: '调和平静，节奏从容' },
+        { name: '恶魔', emoji: '🔗', desc: '被什么牵绊着' },
+        { name: '高塔', emoji: '⚡', desc: '突变与释放，情绪起伏' },
+        { name: '星星', emoji: '🌟', desc: '心怀希望，安静期待' },
+        { name: '月亮', emoji: '🌙', desc: '思绪朦胧，有些不安' },
+        { name: '太阳', emoji: '☀️', desc: '明朗开心，活力满满' },
+        { name: '审判', emoji: '📯', desc: '回顾与醒悟，重新决定' },
+        { name: '世界', emoji: '🌍', desc: '圆满自在，步伐从容' }
+      ];
+      var _ZK_LOCATIONS = ['在你身边', '家里', '街上', '商店', '公司', '医院', '集市', '书店', '床上', '学校', '公园', '图书馆', '餐厅', '路上'];
+      var _ZK_DOINGS = ['吃饭', '与人交谈', '工作', '思考', '看电视', '玩手机', '刷视频', '等消息', '睡觉', '学习', '看书', '做饭', '散步', '听歌'];
+      var _ZK_DISTANCES = [
+        { v: '远', t: '他在他的世界里做自己的事情' },
+        { v: '中', t: '他在你的不远处' },
+        { v: '近', t: '就在你的旁边' },
+        { v: '靠近', t: '他在向你接近' },
+        { v: '远离', t: '他正在离你远去' }
+      ];
+      function _zkRollContactState(contact) {
+        contact.location = _ZK_LOCATIONS[Math.floor(Math.random() * _ZK_LOCATIONS.length)];
+        contact.doing = _ZK_DOINGS[Math.floor(Math.random() * _ZK_DOINGS.length)];
+        var d = _ZK_DISTANCES[Math.floor(Math.random() * _ZK_DISTANCES.length)];
+        contact.distance = d.v;
+        var c = _ZK_TAROT[Math.floor(Math.random() * _ZK_TAROT.length)];
+        contact.tarot = c.name;
+        return c;
+      }
+      function _zkRenderContactState(contact, card) {
+        _zkContactLocationState.textContent = contact.location || '—';
+        _zkContactDoingState.textContent = contact.doing || '—';
+        var dm = null;
+        for (var i = 0; i < _ZK_DISTANCES.length; i++) { if (_ZK_DISTANCES[i].v === contact.distance) { dm = _ZK_DISTANCES[i]; break; } }
+        _zkContactDistanceState.textContent = dm ? (contact.distance + ' · ' + dm.t) : '—';
+        if (card) {
+          _zkContactTarotCard.textContent = card.emoji || '🃏';
+          _zkContactTarotName.textContent = card.name;
+          _zkContactTarotDesc.textContent = card.desc;
+        } else {
+          _zkContactTarotCard.textContent = '🃏';
+          _zkContactTarotName.textContent = '命运之轮';
+          _zkContactTarotDesc.textContent = '你还没为 TA 抽过牌';
+        }
+      }
+      _zkContactTarotBtn.addEventListener('click', function () {
+        var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
+        if (!contact) return;
+        var c = _zkRollContactState(contact);
+        saveContacts();
+        _zkRenderContactState(contact, c);
+      });
       function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
       function _zkSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
       function _zkDateToStr(ts) { if (!ts) return ''; var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -14881,9 +14968,19 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
-        _zkContactLocationSelect.value = contact.location || '';
-        _zkContactDoingSelect.value = contact.doing || '';
-        _zkContactDistanceSelect.value = contact.distance || '';
+        var _zkRolled = null;
+        if (!contact.location && !contact.doing) {
+          _zkRolled = _zkRollContactState(contact);
+          saveContacts();
+        } else if (Math.random() < 0.45) {
+          _zkRolled = _zkRollContactState(contact);
+          saveContacts();
+        }
+        var _zkShowCard = _zkRolled;
+        if (!_zkShowCard && contact.tarot) {
+          _zkShowCard = _ZK_TAROT.filter(function (x) { return x.name === contact.tarot; })[0] || null;
+        }
+        _zkRenderContactState(contact, _zkShowCard);
         _zkContactModal.classList.add('show');
       }
       function closeContactModal() {
@@ -14926,9 +15023,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (dv) { var pp = dv.split('-'); met[contact.id] = new Date(parseInt(pp[0],10), parseInt(pp[1],10)-1, parseInt(pp[2],10)).getTime(); }
         else { delete met[contact.id]; }
         _zkSaveMetDates(met);
-        contact.location = _zkContactLocationSelect.value;
-        contact.doing = _zkContactDoingSelect.value;
-        contact.distance = _zkContactDistanceSelect.value;
         saveContacts();
         renderContacts();
         if (currentChatId === contact.id) {
