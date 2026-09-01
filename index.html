@@ -5291,47 +5291,43 @@
       color: var(--text-main);
       min-height: 20px;
     }
-        .contact-tarot {
+        .contact-tarot-cards {
       display: flex;
-      gap: 10px;
-      margin-top: 6px;
-      padding: 12px;
-      border: 1px solid var(--border-light);
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--bg-soft2), var(--bg-card));
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
     }
-    .contact-tarot-slot {
-      flex: 1 1 0;
-      min-width: 0;
+    .contact-tarot-chip {
       display: flex;
       flex-direction: column;
       align-items: center;
+      gap: 3px;
+      padding: 6px 9px;
+      border: 1px solid var(--border-light);
+      border-radius: 9px;
+      background: var(--bg-card);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+    .contact-tarot-chip-line {
+      display: flex;
+      align-items: center;
       gap: 5px;
-      text-align: center;
     }
-    .contact-tarot-card {
-      font-size: 28px;
-      line-height: 1;
+    .contact-tarot-chip-name {
+      font-weight: 600;
+      color: var(--text-main);
     }
-    .contact-tarot-slot-label {
+    .contact-tarot-chip-up {
+      font-weight: 600;
       font-size: 11px;
+    }
+    .contact-tarot-chip-up.up { color: var(--primary-deep); }
+    .contact-tarot-chip-up.rev { color: var(--accent); }
+    .contact-tarot-chip-elem {
+      font-size: 10px;
       color: var(--text-muted);
     }
-    .contact-tarot-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--primary-deep);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-    .contact-tarot-up {
-      font-size: 11px;
-      font-weight: 600;
-    }
-    .contact-tarot-up.up { color: var(--primary-deep); }
-    .contact-tarot-up.rev { color: var(--accent); }
     .contact-tarot-btn {
       width: 100%;
       margin-top: 10px;
@@ -13221,29 +13217,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
-        <div class="profile-field"><label>所在地方</label><div class="contact-state" id="contactLocationState">—</div></div>
-        <div class="profile-field"><label>在做什么</label><div class="contact-state" id="contactDoingState">—</div></div>
-        <div class="profile-field"><label>距离</label><div class="contact-state" id="contactDistanceState">—</div></div>
-                <div class="contact-tarot">
-          <div class="contact-tarot-slot">
-            <div class="contact-tarot-card" id="contactTarotCard1">🂠</div>
-            <div class="contact-tarot-name" id="contactTarotName1">—</div>
-            <div class="contact-tarot-up" id="contactTarotUp1">—</div>
-            <div class="contact-tarot-slot-label">地点</div>
-          </div>
-          <div class="contact-tarot-slot">
-            <div class="contact-tarot-card" id="contactTarotCard2">🂠</div>
-            <div class="contact-tarot-name" id="contactTarotName2">—</div>
-            <div class="contact-tarot-up" id="contactTarotUp2">—</div>
-            <div class="contact-tarot-slot-label">在做什么</div>
-          </div>
-          <div class="contact-tarot-slot">
-            <div class="contact-tarot-card" id="contactTarotCard3">🂠</div>
-            <div class="contact-tarot-name" id="contactTarotName3">—</div>
-            <div class="contact-tarot-up" id="contactTarotUp3">—</div>
-            <div class="contact-tarot-slot-label">距离</div>
-          </div>
-        </div>
+        <div class="profile-field"><label>所在地方</label><div class="contact-state" id="contactLocationState">—</div><div class="contact-tarot-cards" id="contactLocCards"></div></div>
+        <div class="profile-field"><label>在做什么</label><div class="contact-state" id="contactDoingState">—</div><div class="contact-tarot-cards" id="contactActCards"></div></div>
+        <div class="profile-field"><label>距离</label><div class="contact-state" id="contactDistanceState">—</div><div class="contact-tarot-cards" id="contactDisCards"></div></div>
 <button type="button" class="contact-tarot-btn" id="contactTarotBtn">🔮 重新占卜</button>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
@@ -14905,15 +14881,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactLocationState = document.getElementById('contactLocationState');
       const _zkContactDoingState = document.getElementById('contactDoingState');
       const _zkContactDistanceState = document.getElementById('contactDistanceState');
-                  const _zkContactTarotCard1 = document.getElementById('contactTarotCard1');
-      const _zkContactTarotName1 = document.getElementById('contactTarotName1');
-      const _zkContactTarotUp1 = document.getElementById('contactTarotUp1');
-      const _zkContactTarotCard2 = document.getElementById('contactTarotCard2');
-      const _zkContactTarotName2 = document.getElementById('contactTarotName2');
-      const _zkContactTarotUp2 = document.getElementById('contactTarotUp2');
-      const _zkContactTarotCard3 = document.getElementById('contactTarotCard3');
-      const _zkContactTarotName3 = document.getElementById('contactTarotName3');
-      const _zkContactTarotUp3 = document.getElementById('contactTarotUp3');
+      const _zkContactLocCards = document.getElementById('contactLocCards');
+      const _zkContactActCards = document.getElementById('contactActCards');
+      const _zkContactDisCards = document.getElementById('contactDisCards');
       const _zkContactTarotBtn = document.getElementById('contactTarotBtn');
       var _ZK_TAROT = [
         { name: '愚者', emoji: '🃏', up: { loc: ['公路', '旅途路上', '路边集市'], act: ['在移动漂泊', '出发上路'] }, rev: { loc: ['陌生街头'], act: ['漫无目的闲逛', '临时停留'] } },
@@ -15012,48 +14982,52 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         var pool = _ZK_TAROT.slice();
         function take() { return pool.splice(Math.floor(Math.random() * pool.length), 1)[0]; }
         function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-        function upright() { return Math.random() < 0.5; }
-        var c1 = take(), c2 = take(), c3 = take();
-        var u1 = upright(), u2 = upright(), u3 = upright();
-        contact.location = pick(u1 ? c1.up.loc : c1.rev.loc);
-        contact.doing = pick(u2 ? c2.up.act : c2.rev.act);
-        var nearPool = u3 ? ['近', '中'] : ['远', '远离', '靠近'];
+        function up() { return Math.random() < 0.5; }
+        var locCards = [], locUs = [], locNames = [];
+        var actCards = [], actUs = [], actNames = [];
+        var i;
+        for (i = 0; i < 5; i++) { var lc = take(); locCards.push(lc); var lu = up(); locUs.push(lu); locNames.push([lc.name, lu]); }
+        for (i = 0; i < 3; i++) { var ac = take(); actCards.push(ac); var au = up(); actUs.push(au); actNames.push([ac.name, au]); }
+        var dc = take(), du = up();
+        var locs = locCards.map(function (c, k) { return pick(locUs[k] ? c.up.loc : c.rev.loc); });
+        var acts = actCards.map(function (c, k) { return pick(actUs[k] ? c.up.act : c.rev.act); });
+        contact.location = '牌面指向：' + locs.join('、') + '。';
+        contact.doing = '他此刻可能：' + acts.join('、') + '。';
+        var nearPool = du ? ['近', '中'] : ['远', '远离', '靠近'];
         contact.distance = nearPool[Math.floor(Math.random() * nearPool.length)];
-        contact.tarot = [[c1.name, u1], [c2.name, u2], [c3.name, u3]];
-        return { cards: [c1, c2, c3], u: [u1, u2, u3] };
+        contact.tarot = { loc: locNames, act: actNames, dis: [[dc.name, du]] };
       }
-      function _zkRenderContactState(contact, result) {
+function _zkRenderCardChips(container, list) {
+        if (!container) return;
+        container.innerHTML = '';
+        if (!list || !list.length) return;
+        list.forEach(function (item) {
+          var name = item[0], upright = item[1];
+          var card = _ZK_TAROT.filter(function (x) { return x.name === name; })[0] || null;
+          var suit = card && card.suit;
+          var elem = suit && _ZK_ELEMENTS[suit] ? (_ZK_ELEMENTS[suit].element + '·' + _ZK_ELEMENTS[suit].direction) : '';
+          var chip = document.createElement('span');
+          chip.className = 'contact-tarot-chip';
+          chip.innerHTML = '<div class="contact-tarot-chip-line"><span class="contact-tarot-chip-name">' + name + '</span><span class="contact-tarot-chip-up ' + (upright ? 'up' : 'rev') + '">' + (upright ? '正位' : '逆位') + '</span></div>' + (elem ? '<div class="contact-tarot-chip-elem">' + elem + '</div>' : '');
+          container.appendChild(chip);
+        });
+      }
+      function _zkRenderContactState(contact) {
         _zkContactLocationState.textContent = contact.location || '—';
         _zkContactDoingState.textContent = contact.doing || '—';
         var dm = null;
         for (var i = 0; i < _ZK_DISTANCES.length; i++) { if (_ZK_DISTANCES[i].v === contact.distance) { dm = _ZK_DISTANCES[i]; break; } }
         _zkContactDistanceState.textContent = dm ? (contact.distance + ' · ' + dm.t) : '—';
-        var cards = result && result.cards ? result.cards : [null, null, null];
-        var us = result && result.u ? result.u : [null, null, null];
-        var elsC = [_zkContactTarotCard1, _zkContactTarotCard2, _zkContactTarotCard3];
-        var elsN = [_zkContactTarotName1, _zkContactTarotName2, _zkContactTarotName3];
-        var elsU = [_zkContactTarotUp1, _zkContactTarotUp2, _zkContactTarotUp3];
-        for (var k = 0; k < 3; k++) {
-          if (cards[k]) {
-            elsC[k].textContent = cards[k].emoji || '🃏';
-            var _zkSuit = cards[k] && cards[k].suit;
-            elsN[k].textContent = (_zkSuit && _ZK_ELEMENTS[_zkSuit]) ? (cards[k].name + ' · ' + _ZK_ELEMENTS[_zkSuit].element + '·' + _ZK_ELEMENTS[_zkSuit].direction) : cards[k].name;
-            elsU[k].textContent = us[k] ? '正位' : '逆位';
-            elsU[k].className = 'contact-tarot-up ' + (us[k] ? 'up' : 'rev');
-          } else {
-            elsC[k].textContent = '🂠';
-            elsN[k].textContent = '—';
-            elsU[k].textContent = '—';
-            elsU[k].className = 'contact-tarot-up';
-          }
-        }
+        _zkRenderCardChips(_zkContactLocCards, contact.tarot ? contact.tarot.loc : null);
+        _zkRenderCardChips(_zkContactActCards, contact.tarot ? contact.tarot.act : null);
+        _zkRenderCardChips(_zkContactDisCards, contact.tarot ? contact.tarot.dis : null);
       }
       _zkContactTarotBtn.addEventListener('click', function () {
         var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
         if (!contact) return;
-        var r = _zkRollContactState(contact);
+        _zkRollContactState(contact);
         saveContacts();
-        _zkRenderContactState(contact, r);
+        _zkRenderContactState(contact);
       });
 function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
       function _zkSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
@@ -15077,26 +15051,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
-        var _zkRolled = null;
-        var _zkNeed = !contact.location || !contact.doing || !Array.isArray(contact.tarot) || !Array.isArray(contact.tarot[0]);
+        var _zkNeed = !contact.location || !contact.doing || !contact.tarot || !Array.isArray(contact.tarot.loc);
         if (_zkNeed) {
-          _zkRolled = _zkRollContactState(contact);
+          _zkRollContactState(contact);
           saveContacts();
         } else if (Math.random() < 0.45) {
-          _zkRolled = _zkRollContactState(contact);
+          _zkRollContactState(contact);
           saveContacts();
         }
-        var _zkResult = _zkRolled;
-        if (!_zkResult && Array.isArray(contact.tarot) && Array.isArray(contact.tarot[0])) {
-          var _zkCards = [];
-          var _zkUs = [];
-          for (var _ki = 0; _ki < 3; _ki++) {
-            _zkCards.push(_ZK_TAROT.filter(function (x) { return x.name === contact.tarot[_ki][0]; })[0] || null);
-            _zkUs.push(contact.tarot[_ki][1]);
-          }
-          if (_zkCards[0] && _zkCards[1] && _zkCards[2]) _zkResult = { cards: _zkCards, u: _zkUs };
-        }
-        _zkRenderContactState(contact, _zkResult);
+        _zkRenderContactState(contact);
         _zkContactModal.classList.add('show');
       }
       function closeContactModal() {
