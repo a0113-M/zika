@@ -14599,6 +14599,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           bw.style.right = 'auto';
           bw.style.zIndex = 'auto';
         }
+        // 键盘弹出时把聊天消息滚到底，保证最新消息被「推」到输入框上方可见（贴底，避免偶尔停在旧消息段）
+        var cm = document.getElementById('chatMessages');
+        if (cm && inputFocused && !divineInput) {
+          cm.scrollTop = cm.scrollHeight;
+        }
       }
 
       document.addEventListener('focusin', function(e) {
