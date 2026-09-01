@@ -7737,6 +7737,10 @@
     .dt-storage-bar { height: 6px; border-radius: 3px; background: var(--bg-soft2); overflow: hidden; }
     .dt-storage-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
     .dt-storage-total { margin-top: 10px; font-size: 11px; color: var(--text-muted); text-align: right; }
+    .dt-storage-quota { margin-top: 8px; }
+    .dt-storage-quota-bar { height: 6px; border-radius: 3px; background: var(--bg-soft2); overflow: hidden; }
+    .dt-storage-quota-bar-fill { height: 100%; background: var(--primary); border-radius: 3px; }
+    .dt-storage-quota-text { margin-top: 6px; font-size: 11px; color: var(--text-muted); text-align: right; }
     .dt-ovl {
       position: absolute; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.45); z-index: 20; display: none;
@@ -14106,6 +14110,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="dt-card-hint">各类数据占用的本地空间（估算）</div>
           <div class="dt-storage-list" id="dtStorageList"></div>
           <div class="dt-storage-total" id="dtStorageTotal"></div>
+          <div class="dt-storage-quota" id="dtStorageQuota"></div>
         </div>
         <div class="dt-data-actions">
           <button class="dt-data-btn" id="dtExportBtn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>导出数据</button>
@@ -17179,7 +17184,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       function _zkFmtSize(n) {
         if (n < 1024) return n + ' B';
         if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
-        return (n / 1024 / 1024).toFixed(2) + ' MB';
+        if (n < 1024 * 1024 * 1024) return (n / 1024 / 1024).toFixed(2) + ' MB';
+        return (n / 1024 / 1024 / 1024).toFixed(2) + ' GB';
       }
       function _zkByteSize(str) {
         if (str == null) return 0;
@@ -17233,6 +17239,30 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         });
         if (ordered.length === 0) el.innerHTML = '<div class="dt-empty">暂无数据</div>';
         if (totalEl) totalEl.textContent = '共占用 ' + _zkFmtSize(total);
+        renderStorageQuota(total);
+      }
+      function _zkPctTxt(p) {
+        if (p <= 0) return '0%';
+        if (p < 0.01) return '<0.01%';
+        if (p >= 100) return '100%';
+        return p.toFixed(2).replace(/\.?0+$/, '') + '%';
+      }
+      function renderStorageQuota(total) {
+        var el = document.getElementById('dtStorageQuota');
+        if (!el) return;
+        if (navigator.storage && navigator.storage.estimate) {
+          navigator.storage.estimate().then(function (est) {
+            var quota = est.quota || 0;
+            if (quota <= 0) { el.textContent = ''; return; }
+            var remain = Math.max(0, quota - total);
+            var pct = total > 0 ? (total / quota) * 100 : 0;
+            var barW = total > 0 ? Math.max(pct, 0.5) : 0;
+            el.innerHTML = '<div class="dt-storage-quota-bar"><div class="dt-storage-quota-bar-fill" style="width:' + Math.min(100, barW) + '%;"></div></div>' +
+              '<div class="dt-storage-quota-text">浏览器总 ' + _zkFmtSize(quota) + '，已用 ' + _zkFmtSize(total) + '（占 ' + _zkPctTxt(pct) + '），剩余 ' + _zkFmtSize(remain) + '</div>';
+          }).catch(function () { el.textContent = ''; });
+        } else {
+          el.textContent = '浏览器不支持读取配额（需 HTTPS 环境）';
+        }
       }
 
       document.getElementById('dataBackBtn').addEventListener('click', function () {
