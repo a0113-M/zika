@@ -10664,9 +10664,29 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   padding: 8px 14px; border-radius: 8px; background: var(--primary); color: #fff;
   font-size: 12px; border: none; cursor: pointer; white-space: nowrap;
 }
-.theme-color-picker {
-  width: 46px; height: 36px; padding: 0; border: 1.5px solid var(--border-light);
-  border-radius: 8px; background: var(--bg-card); cursor: pointer; flex-shrink: 0;
+.theme-picker-sv {
+  position: relative; width: 100%; height: 150px; border-radius: 10px;
+  border: 1.5px solid var(--border-light); cursor: crosshair; overflow: hidden;
+  touch-action: none; box-sizing: border-box; margin-bottom: 10px;
+}
+.theme-picker-sv-cursor {
+  position: absolute; width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+  transform: translate(-50%, -50%); pointer-events: none;
+}
+.theme-picker-swatch {
+  width: 38px; height: 38px; border-radius: 8px; border: 1.5px solid var(--border-light);
+  flex-shrink: 0; box-sizing: border-box; background: #9b8ec4;
+}
+.theme-picker-hue {
+  position: relative; width: 100%; height: 18px; border-radius: 9px; cursor: pointer;
+  touch-action: none; box-sizing: border-box; margin-top: 10px;
+  background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+}
+.theme-picker-hue-cursor {
+  position: absolute; top: 50%; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+  transform: translate(-50%, -50%); pointer-events: none;
 }
 /* Custom bubble CSS textarea */
 .theme-css-label {
@@ -14463,11 +14483,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
       <div class="theme-custom-color" id="themeCustomColorBox" style="display:none">
+        <div class="theme-picker-sv" id="themePickerSv"><div class="theme-picker-sv-cursor" id="themePickerSvCursor"></div></div>
         <div class="theme-custom-row">
-          <input type="color" class="theme-color-picker" id="themeColorPicker" value="#9b8ec4">
+          <div class="theme-picker-swatch" id="themePickerSwatch"></div>
           <input class="theme-custom-input" id="themeColorInput" placeholder="输入色卡 #9b8ec4" maxlength="7">
           <button class="theme-custom-btn" id="themeColorApply">应用</button>
         </div>
+        <div class="theme-picker-hue" id="themePickerHue"><div class="theme-picker-hue-cursor" id="themePickerHueCursor"></div></div>
         <div class="theme-css-hint" id="themeColorHint"></div>
       </div>
     </div>
@@ -31985,12 +32007,11 @@ function addToCart(goodId) {
     var cssInput = document.getElementById('customBubbleCss');
     if (cssInput) cssInput.value = localStorage.getItem(CUSTOM_CSS_KEY) || '';
     var colorBox = document.getElementById('themeCustomColorBox');
-    var colorPicker = document.getElementById('themeColorPicker');
     var colorInput = document.getElementById('themeColorInput');
     var isCustom = s.theme === 'custom';
     if (colorBox) colorBox.style.display = isCustom ? 'block' : 'none';
     var savedColor = localStorage.getItem(CUSTOM_COLOR_KEY) || '#9b8ec4';
-    if (colorPicker) colorPicker.value = savedColor;
+    setPickerFromHex(savedColor);
     if (colorInput) colorInput.value = isCustom ? savedColor : '';
   }
 
@@ -32118,6 +32139,84 @@ function addToCart(goodId) {
     });
   }
 
+  // ===== 自定义取色器（纯 DOM 实现，规避 input[type=color] 在 App WebView 内闪退）=====
+  var pickerH = 254, pickerS = 0.28, pickerV = 0.77;
+  function hsvToRgb(h, s, v) {
+    var c = v * s, hp = ((h % 360) / 60) % 6, x = c * (1 - Math.abs((hp % 2) - 1)), m = v - c;
+    var r = 0, g = 0, b = 0;
+    if (hp < 1) { r = c; g = x; } else if (hp < 2) { r = x; g = c; } else if (hp < 3) { g = c; b = x; }
+    else if (hp < 4) { g = x; b = c; } else if (hp < 5) { r = x; b = c; } else { r = c; b = x; }
+    return { r: Math.round((r + m) * 255), g: Math.round((g + m) * 255), b: Math.round((b + m) * 255) };
+  }
+  function hexToHsv(hex) {
+    var c = hexToRgb(hex) || { r: 155, g: 142, b: 196 };
+    var r = c.r / 255, g = c.g / 255, b = c.b / 255;
+    var max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    var h = 0, s = 0, v = max;
+    if (d > 0) {
+      if (max === r) h = 60 * (((g - b) / d) % 6); else if (max === g) h = 60 * ((b - r) / d + 2); else h = 60 * ((r - g) / d + 4);
+      if (h < 0) h += 360;
+      s = d / max;
+    }
+    return { h: h, s: s, v: v };
+  }
+  function pickerEls() {
+    return {
+      sv: document.getElementById('themePickerSv'),
+      svCursor: document.getElementById('themePickerSvCursor'),
+      hue: document.getElementById('themePickerHue'),
+      hueCursor: document.getElementById('themePickerHueCursor'),
+      swatch: document.getElementById('themePickerSwatch'),
+      input: document.getElementById('themeColorInput')
+    };
+  }
+  function pickerHex() { return rgbToHex(hsvToRgb(pickerH, pickerS, pickerV)); }
+  function renderPicker() {
+    var el = pickerEls();
+    var hueColor = rgbToHex(hsvToRgb(pickerH, 1, 1));
+    if (el.sv) el.sv.style.background = 'linear-gradient(to top, #000 0%, transparent 100%), linear-gradient(to right, #fff 0%, ' + hueColor + ' 100%)';
+    if (el.svCursor) { el.svCursor.style.left = (pickerS * 100) + '%'; el.svCursor.style.top = ((1 - pickerV) * 100) + '%'; }
+    if (el.hueCursor) el.hueCursor.style.left = (pickerH / 360 * 100) + '%';
+    if (el.swatch) el.swatch.style.background = pickerHex();
+  }
+  function setPickerFromHex(hex) {
+    var hv = hexToHsv(hex);
+    pickerH = hv.h; pickerS = hv.s; pickerV = hv.v;
+    renderPicker();
+  }
+  function pickerPos(e, el) {
+    var r = el.getBoundingClientRect();
+    var x = (e.clientX - r.left) / (r.width || 1);
+    var y = (e.clientY - r.top) / (r.height || 1);
+    return { x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)) };
+  }
+  function pickerSyncInput() { var el = pickerEls(); if (el.input) el.input.value = pickerHex(); }
+  function pickerOnSv(e) {
+    var el = pickerEls(); if (!el.sv) return;
+    var p = pickerPos(e, el.sv);
+    pickerS = p.x; pickerV = 1 - p.y;
+    renderPicker(); pickerSyncInput();
+    applyCustomColor(pickerHex(), true);
+  }
+  function pickerOnHue(e) {
+    var el = pickerEls(); if (!el.hue) return;
+    var p = pickerPos(e, el.hue);
+    pickerH = p.x * 360;
+    renderPicker(); pickerSyncInput();
+    applyCustomColor(pickerHex(), true);
+  }
+  function pickerBindDrag(el, fn) {
+    if (!el) return;
+    var dragging = false;
+    el.addEventListener('pointerdown', function (e) {
+      dragging = true;
+      try { if (el.setPointerCapture) el.setPointerCapture(e.pointerId); } catch (err) {}
+      fn(e);
+    });
+    el.addEventListener('pointermove', function (e) { if (dragging) fn(e); });
+    el.addEventListener('pointerup', function () { dragging = false; });
+    el.addEventListener('pointercancel', function () { dragging = false; });
+  }
   function commitCustomColor(hex) {
     var raw = String(hex || '').trim().replace('#', '');
     if (/^[0-9a-fA-F]{3}$/.test(raw)) raw = raw.split('').map(function (x) { return x + x; }).join('');
@@ -32129,10 +32228,11 @@ function addToCart(goodId) {
     updateThemePageUI();
     return true;
   }
-  var themeColorPicker = document.getElementById('themeColorPicker');
-  if (themeColorPicker) {
-    themeColorPicker.addEventListener('input', function () { commitCustomColor(this.value); });
-  }
+  var svPanelEl = document.getElementById('themePickerSv');
+  var hueBarEl = document.getElementById('themePickerHue');
+  pickerBindDrag(svPanelEl, pickerOnSv);
+  pickerBindDrag(hueBarEl, pickerOnHue);
+  setPickerFromHex(localStorage.getItem(CUSTOM_COLOR_KEY) || '#9b8ec4');
   var themeColorInput = document.getElementById('themeColorInput');
   if (themeColorInput) {
     themeColorInput.addEventListener('input', function () {
