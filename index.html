@@ -981,8 +981,8 @@
       position: fixed;
       background: rgba(50, 50, 50, 0.95);
       backdrop-filter: blur(8px);
-      border-radius: 16px;
-      padding: 8px 12px;
+      border-radius: 12px;
+      padding: 6px 8px;
       min-width: auto;
       box-shadow: 0 8px 32px rgba(30, 25, 50, 0.55);
       z-index: 9999;
@@ -1005,7 +1005,7 @@
     .chat-msg-context-menu .menu-items {
       display: flex;
       flex-direction: row;
-      gap: 4px;
+      gap: 2px;
       align-items: center;
     }
 
@@ -1015,15 +1015,15 @@
       align-items: center;
       justify-content: center;
       gap: 2px;
-      padding: 6px 10px;
+      padding: 4px 7px;
       color: rgba(255, 255, 255, 0.9);
       font-size: 10px;
       background: none;
       border: none;
       cursor: pointer;
       transition: background 0.15s;
-      border-radius: 10px;
-      min-width: 48px;
+      border-radius: 8px;
+      min-width: 38px;
     }
 
     .chat-msg-context-menu .menu-item:active {
@@ -1034,14 +1034,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 28px;
-      height: 28px;
+      width: 20px;
+      height: 20px;
       flex-shrink: 0;
     }
 
     .chat-msg-context-menu .menu-item .menu-icon svg {
-      width: 22px;
-      height: 22px;
+      width: 16px;
+      height: 16px;
       stroke: rgba(255, 255, 255, 0.9);
       fill: none;
       stroke-width: 2;
@@ -1050,16 +1050,16 @@
     }
 
     .chat-msg-context-menu .menu-item .menu-label {
-      font-size: 9px;
+      font-size: 8px;
       color: rgba(255, 255, 255, 0.6);
       letter-spacing: 0.3px;
     }
 
     .chat-msg-context-menu .menu-divider {
       width: 0.5px;
-      height: 32px;
+      height: 22px;
       background: rgba(255, 255, 255, 0.15);
-      margin: 0 4px;
+      margin: 0 2px;
       flex-shrink: 0;
     }
 
@@ -15745,7 +15745,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
         const now = new Date();
         const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-        chatHistories[currentChatId].push({ text: '[图片]', from: 'me', time: timeStr, image: imageSrc });
+        chatHistories[currentChatId].push({ text: '[图片]', from: 'me', time: timeStr, image: imageSrc, sentAt: Date.now() });
         renderMessages(currentChatId);
         emojiModule.classList.remove('active');
         document.getElementById('toolbarGrid').classList.remove('hidden');
@@ -16712,8 +16712,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                   }
                 }
                 quotePreview.textContent = `${quotedFrom}：${quotedText}`;
-                if (quotePreview.textContent.length > 30) {
-                  quotePreview.textContent = quotePreview.textContent.substring(0, 30) + '...';
+                if (quotePreview.textContent.length > 100) {
+                  quotePreview.textContent = quotePreview.textContent.substring(0, 100) + '...';
                 }
               } else {
                 quotePreview.textContent = '引用消息已不存在';
@@ -16829,8 +16829,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           action: 'quote'
         });
 
-        // 撤回（只有自己发的消息可以撤回）
-        if (msgData.from === 'me') {
+        // 撤回（只有自己发的、两分钟以内的消息可以撤回）
+        if (msgData.from === 'me' && msgData.sentAt && (Date.now() - msgData.sentAt) <= 2 * 60 * 1000) {
           menuItems.push({
             icon: `<svg viewBox="0 0 24 24" stroke="currentColor"><path d="M3 12a9 9 0 1 0 9-9m0 0v6m0-6h-6"/><path d="M12 3v6h6"/><path d="M21 12a9 9 0 1 1-18 0"/></svg>`,
             label: '撤回',
@@ -17079,7 +17079,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         // 检查是否有引用
         const replyTo = chatInput.dataset.replyTo;
-        const msgData = { text: text, from: 'me', time: timeStr };
+        const msgData = { text: text, from: 'me', time: timeStr, sentAt: Date.now() };
         if (replyTo !== undefined && replyTo !== '') {
           msgData.replyTo = parseInt(replyTo);
           delete chatInput.dataset.replyTo;
@@ -17132,7 +17132,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
         const now = new Date();
         const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-        chatHistories[currentChatId].push({ text: text, from: 'me', time: timeStr });
+        chatHistories[currentChatId].push({ text: text, from: 'me', time: timeStr, sentAt: Date.now() });
         chatInput.value = '';
         renderMessages(currentChatId);
         setTimeout(() => {
@@ -21740,6 +21740,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           text: patText,  // 直接是字卡内容
           from: 'me',
           time: timeStr,
+          sentAt: Date.now(),
           isPat: true,
           isPatMessage: true  // 标记为拍一拍消息
         });
@@ -21842,9 +21843,9 @@ patText2 = patText2.replace(/你/g, '我');
             var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
             if (isVideo) {
-              newMsgs[idx] = { text: '[视频]', from: 'me', time: timeStr, video: dataUrl };
+              newMsgs[idx] = { text: '[视频]', from: 'me', time: timeStr, video: dataUrl, sentAt: Date.now() };
             } else {
-              newMsgs[idx] = { text: '[图片]', from: 'me', time: timeStr, image: dataUrl };
+              newMsgs[idx] = { text: '[图片]', from: 'me', time: timeStr, image: dataUrl, sentAt: Date.now() };
             }
 
             processed++;
@@ -21992,7 +21993,7 @@ patText2 = patText2.replace(/你/g, '我');
             // 问题消息
             chatHistories[currentChatId].push({
               text: '帮我决定一下：' + question,
-              from: 'me', time: timeStr, isDecision: true
+              from: 'me', time: timeStr, sentAt: Date.now(), isDecision: true
             });
             // 答案消息（对方发来）
             var contact = contacts.find(function(c) { return c.id === currentChatId; });
@@ -32240,7 +32241,7 @@ function addToCart(goodId) {
         if (currentChatId !== null && chatHistories[currentChatId]) {
           var now = new Date();
           var timeStr = padTime(now);
-          chatHistories[currentChatId].push({ text: text, from: 'me', time: timeStr });
+          chatHistories[currentChatId].push({ text: text, from: 'me', time: timeStr, sentAt: Date.now() });
           if (currentChatId === callContactId) renderMessages(currentChatId);
         }
       }
