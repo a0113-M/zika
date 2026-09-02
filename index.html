@@ -5417,19 +5417,26 @@
       white-space: pre-line;
     }
 
-.zk-met-card { position: relative; padding: 14px 16px; border-radius: 14px; background: linear-gradient(135deg, var(--primary-lighter), var(--bg-soft)); border: 1px solid var(--border-light); }
-.zk-met-days { font-size: 14px; font-weight: 500; color: var(--text-main); line-height: 1.5; }
+.zk-met-card { position: relative; padding: 14px; border-radius: 14px; background: linear-gradient(135deg, var(--primary-lighter), var(--bg-soft)); border: 1px solid var(--border-light); }
+.zk-met-top { display: flex; align-items: center; gap: 6px; }
+.zk-met-avatar { width: 40px; height: 40px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; font-size: 17px; font-weight: 600; overflow: hidden; }
+.zk-met-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+.zk-met-seg { flex: 1 1 auto; height: 18px; min-width: 0; }
+.zk-met-heart { flex: 0 0 auto; width: 26px; height: 24px; }
+.zk-ecg { fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.zk-heart-line { fill: none; stroke: var(--primary); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.zk-met-days { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--text-main); line-height: 1.5; text-align: center; }
 .zk-met-days .zk-num { font-size: 22px; font-weight: 700; color: var(--primary); margin: 0 3px; }
-.zk-met-date { margin-top: 5px; font-size: 12px; color: var(--text-muted); }
-.zk-range { position: relative; height: 46px; margin: 6px 0 4px; }
-.zk-range-track { position: absolute; left: 0; right: 0; top: 50%; height: 8px; transform: translateY(-50%); border-radius: 999px; background: #ececec; }
-.zk-range-fill { position: absolute; top: 50%; height: 8px; transform: translateY(-50%); border-radius: 999px; background: var(--primary); opacity: 0.92; }
-.zk-range input[type="range"] { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 46px; margin: 0; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; }
+.zk-met-date { margin-top: 4px; font-size: 12px; color: var(--text-muted); text-align: center; }
+.zk-range { position: relative; height: 36px; margin: 2px 0 0; }
+.zk-range-line { position: absolute; left: 0; right: 0; top: 50%; height: 3px; transform: translateY(-50%); border-radius: 999px; background: var(--border-light); }
+.zk-range-fill { position: absolute; top: 50%; height: 3px; transform: translateY(-50%); background: var(--primary); }
+.zk-range input[type="range"] { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 36px; margin: 0; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; }
 .zk-range input[type="range"]::-webkit-slider-runnable-track { background: transparent; border: none; }
-.zk-range input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--primary); border: 3px solid #fff; box-shadow: 0 2px 7px rgba(0,0,0,0.20); pointer-events: auto; cursor: pointer; }
-.zk-range input[type="range"]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--primary); border: 3px solid #fff; box-shadow: 0 2px 7px rgba(0,0,0,0.20); pointer-events: auto; cursor: pointer; }
+.zk-range input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.25); pointer-events: auto; cursor: pointer; }
+.zk-range input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.25); pointer-events: auto; cursor: pointer; }
 .zk-range input[type="range"]::-moz-range-track { background: transparent; }
-.zk-range-hint { font-size: 12px; color: #999; text-align: center; margin-top: -4px; }
+.zk-range-hint { display: flex; justify-content: space-between; font-size: 12px; color: #999; margin-top: 2px; }
     .profile-box .profile-field input:focus {
       border-color: var(--primary);
       background: white;
@@ -13305,7 +13312,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           </div>
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
-        <div class="profile-field"><label>相识</label><div class="zk-met-card"><div class="zk-met-days" id="contactMetDays">💗 还没记录相识那天</div><div class="zk-met-date" id="contactMetDate">去侧边栏「设置认识日期」写下它</div></div></div>
+        <div class="profile-field"><label>相识</label><div class="zk-met-card"><div class="zk-met-top"><div class="zk-met-avatar" id="metUserAvatar">我</div><svg class="zk-met-seg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="zk-ecg" points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16" vector-effect="non-scaling-stroke"></polyline></svg><svg class="zk-met-heart" viewBox="0 0 40 36"><path class="zk-heart-line" d="M20 34 C8 26 0 20 0 12 C0 6 5 2 11 2 C15 2 18 5 20 9 C22 5 25 2 29 2 C35 2 40 6 40 12 C40 20 32 26 20 34 Z"></path></svg><svg class="zk-met-seg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="zk-ecg" points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16" vector-effect="non-scaling-stroke"></polyline></svg><div class="zk-met-avatar" id="metContactAvatar">?</div></div><div class="zk-met-days" id="contactMetDays">还没记录相识那天</div><div class="zk-met-date" id="contactMetDate">去侧边栏「设置认识日期」写下它</div></div></div>
         <div class="contact-tarot-grid">
   <div class="contact-tarot-item">
     <div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div>
@@ -13345,7 +13352,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <div class="contact-flip-card" data-rule="dis"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactDisCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactDistanceState">—</div></div></div></div>
   </div>
 </div>
-        <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-track"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint">最快 1 秒 · 最慢 1 分钟</div></div>
+        <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-line"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint"><span>最快 1 秒</span><span>最慢 1 分钟</span></div></div>
         <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
@@ -15005,6 +15012,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactNameInput = document.getElementById('contactNameInput');
       const _zkContactMetDays = document.getElementById('contactMetDays');
       const _zkContactMetDate = document.getElementById('contactMetDate');
+      const _zkMetUserAvatar = document.getElementById('metUserAvatar');
+      const _zkMetContactAvatar = document.getElementById('metContactAvatar');
       const _zkContactReplyMin = document.getElementById('contactReplyMin');
       const _zkContactReplyMax = document.getElementById('contactReplyMax');
       const _zkContactReadOnly = document.getElementById('contactReadOnly');
@@ -15248,9 +15257,23 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
       function _zkUpdateMetCard(contactId) {
+        var contact = contacts.find(function (c) { return c.id === contactId; });
+        if (_zkMetUserAvatar) {
+          _zkMetUserAvatar.innerHTML = '';
+          _zkMetUserAvatar.style.background = 'var(--primary)';
+          _zkMetUserAvatar.style.overflow = 'hidden';
+          if (userProfile.avatarImage) {
+            var uim = document.createElement('img');
+            uim.src = userProfile.avatarImage;
+            _zkMetUserAvatar.appendChild(uim);
+          } else {
+            _zkMetUserAvatar.textContent = (userProfile.avatar || '我').charAt(0).toUpperCase();
+          }
+        }
+        if (_zkMetContactAvatar) { _zkSetContactAvatar(_zkMetContactAvatar, contact); }
         var ts = _zkGetMetDates()[contactId];
         if (!ts) {
-          _zkContactMetDays.innerHTML = '💗 还没记录相识那天';
+          _zkContactMetDays.textContent = '还没记录相识那天';
           _zkContactMetDate.textContent = '去侧边栏「设置认识日期」写下它';
           return;
         }
@@ -15258,11 +15281,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var b = new Date(ts); b.setHours(0, 0, 0, 0);
         var days = Math.round((a - b) / 86400000);
         if (days === 0) {
-          _zkContactMetDays.innerHTML = '💗 今天，是我们相识的日子';
+          _zkContactMetDays.textContent = '今天，是我们相识的日子';
         } else if (days > 0) {
-          _zkContactMetDays.innerHTML = '💗 已经相识 <b class="zk-num">' + days + '</b> 天';
+          _zkContactMetDays.innerHTML = '已经相识 <b class="zk-num">' + days + '</b> 天';
         } else {
-          _zkContactMetDays.innerHTML = '💗 还有 <b class="zk-num">' + (-days) + '</b> 天相遇';
+          _zkContactMetDays.innerHTML = '还有 <b class="zk-num">' + (-days) + '</b> 天相遇';
         }
         _zkContactMetDate.textContent = _zkDateToStr(ts).replace(/-/g, '.');
       }
@@ -15282,7 +15305,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var rp = ((mx - min) / (max - min)) * 100;
         _zkContactReplyFill.style.left = lp + '%';
         _zkContactReplyFill.style.right = (100 - rp) + '%';
-        _zkContactReplyHint.textContent = '最快 ' + _zkFmtSec(mn) + ' · 最慢 ' + _zkFmtSec(mx);
+        _zkContactReplyHint.innerHTML = '<span>最快 ' + _zkFmtSec(mn) + '</span><span>最慢 ' + _zkFmtSec(mx) + '</span>';
       }
       _zkContactReplyMin.addEventListener('input', function () {
         if (parseInt(_zkContactReplyMin.value, 10) > parseInt(_zkContactReplyMax.value, 10)) { _zkContactReplyMax.value = _zkContactReplyMin.value; }
