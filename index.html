@@ -5328,18 +5328,42 @@
       font-size: 9px;
       color: var(--text-muted);
     }
-    .contact-tarot-btn {
-      width: 100%;
-      margin-top: 10px;
-      padding: 11px 12px;
-      border: none;
-      border-radius: 10px;
-      font-size: 15px;
-      color: #fff;
-      background: var(--primary);
+    .contact-tarot-notice {
+      margin-bottom: 14px;
+    }
+    .contact-tarot-notice-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 1.5px solid var(--primary);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1;
+      background: transparent;
       cursor: pointer;
     }
-    .contact-tarot-btn:active { opacity: 0.85; }
+    .contact-tarot-notice-label {
+      display: inline-block;
+      font-size: 12px;
+      color: #888;
+      margin-left: 6px;
+      cursor: pointer;
+    }
+    .contact-tarot-notice-panel {
+      margin-top: 8px;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: var(--text-main);
+      white-space: pre-line;
+    }
 
     .profile-box .profile-field input:focus {
       border-color: var(--primary);
@@ -13217,11 +13241,20 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
+      <div class="contact-tarot-notice">
+        <button type="button" class="contact-tarot-notice-btn" id="contactTarotNoticeBtn">!</button><span class="contact-tarot-notice-label">占卜说明</span>
+        <div class="contact-tarot-notice-panel" id="contactTarotNoticePanel" style="display:none;">塔罗仅为象征性心理参考，无法真正窥探他人隐私或监控对方；解读只代表抽牌瞬间的情绪、想法与处境，人的状态随时会改变，不可用于监视或操控。真实了解一个人，依靠现实的沟通与关心。
+
+单次占卜有时效，约 1–2 小时后结果才会更新，短时间请勿反复查看。
+
+释义：正位＝能量顺畅自然；逆位＝压抑内耗、能量受阻。元素：火＝行动力，水＝情绪感受，风＝思绪压力，土＝现实身体。
+
+判断：大牌占多＝对当下影响深，属心境与人生转折期；小牌占多＝日常情绪起伏与琐事变化；多张逆位＝近期疲惫内耗，处在自我调整阶段。</div>
+      </div>
         <div class="profile-field"><label>所在地方</label><div class="contact-state" id="contactLocationState">—</div><div class="contact-tarot-cards" id="contactLocCards"></div></div>
         <div class="profile-field"><label>在做什么</label><div class="contact-state" id="contactDoingState">—</div><div class="contact-tarot-cards" id="contactActCards"></div></div>
         <div class="profile-field"><label>状态</label><div class="contact-state" id="contactStateState">—</div><div class="contact-tarot-cards" id="contactStateCards"></div></div>
         <div class="profile-field"><label>距离</label><div class="contact-state" id="contactDistanceState">—</div><div class="contact-tarot-cards" id="contactDisCards"></div></div>
-<button type="button" class="contact-tarot-btn" id="contactTarotBtn">🔮 重新占卜</button>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -14887,7 +14920,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactStateState = document.getElementById('contactStateState');
       const _zkContactStateCards = document.getElementById('contactStateCards');
       const _zkContactDisCards = document.getElementById('contactDisCards');
-      const _zkContactTarotBtn = document.getElementById('contactTarotBtn');
       var _ZK_TAROT = [
         { name: '愚者', emoji: '🃏', up: { loc: ['公路', '旅途路上', '路边集市'], act: '出门闲逛，或是短途走动，消磨时间', state: '心态松弛，没有顾虑，愿意迎向新变化' }, rev: { loc: ['陌生街头'], act: '漫无目的地待着，做事有些分心', state: '迷茫无措，做事欠规划，有些冲动' } },
         { name: '魔术师', emoji: '✨', up: { loc: ['书桌电脑旁', '工作室', '直播间'], act: '主动处理事务，沟通安排计划', state: '精力充沛，主动规划，行动力十足' }, rev: { loc: ['杂乱的工作间'], act: '有心做事，却一拖再拖搁置下来', state: '精力不足，有心做事却提不起劲，计划搁置' } },
@@ -15081,13 +15113,16 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         _zkRenderCardChips(_zkContactStateCards, contact.tarot ? contact.tarot.state : null);
         _zkRenderCardChips(_zkContactDisCards, contact.tarot ? contact.tarot.dis : null);
       }
-      _zkContactTarotBtn.addEventListener('click', function () {
-        var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
-        if (!contact) return;
-        _zkRollContactState(contact);
-        saveContacts();
-        _zkRenderContactState(contact);
-      });
+      var _zkContactTarotNoticeBtn = document.getElementById('contactTarotNoticeBtn');
+      var _zkContactTarotNoticePanel = document.getElementById('contactTarotNoticePanel');
+      function _zkToggleTarotNotice() {
+        if (_zkContactTarotNoticePanel.style.display === 'none') {
+          _zkContactTarotNoticePanel.style.display = 'block';
+        } else {
+          _zkContactTarotNoticePanel.style.display = 'none';
+        }
+      }
+      _zkContactTarotNoticeBtn.addEventListener('click', _zkToggleTarotNotice);
 function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
       function _zkSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
       function _zkDateToStr(ts) { if (!ts) return ''; var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -15113,9 +15148,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
           _zkRollContactState(contact);
+          contact.tarotNextTs = Date.now() + 3600000 + Math.floor(Math.random() * 3600000);
           saveContacts();
-        } else if (Math.random() < 0.45) {
+        } else if (!contact.tarotNextTs || Date.now() >= contact.tarotNextTs) {
           _zkRollContactState(contact);
+          contact.tarotNextTs = Date.now() + 3600000 + Math.floor(Math.random() * 3600000);
           saveContacts();
         }
         _zkRenderContactState(contact);
