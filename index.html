@@ -5328,6 +5328,62 @@
       font-size: 9px;
       color: var(--text-muted);
     }
+    .contact-tarot-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .contact-tarot-item {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+    .contact-flip-card {
+      perspective: 900px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .contact-flip-inner {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.55s;
+    }
+    .contact-flip-card.flipped .contact-flip-inner {
+      transform: rotateY(180deg);
+    }
+    .contact-flip-face {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      background: var(--bg-card);
+      padding: 8px;
+      box-sizing: border-box;
+      min-height: 120px;
+    }
+    .contact-flip-front {
+      position: relative;
+      z-index: 2;
+    }
+    .contact-flip-front .contact-tarot-cards {
+      margin-top: 0;
+    }
+    .contact-flip-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: rotateY(180deg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .contact-flip-back .contact-state {
+      text-align: center;
+    }
     .contact-rule-head {
       display: flex;
       align-items: center;
@@ -13243,26 +13299,44 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
-        <div class="profile-field"><div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div><div class="contact-rule-panel" id="ruleLocPanel" style="display:none;">所在地方 · 5 张牌
+        <div class="contact-tarot-grid">
+  <div class="contact-tarot-item">
+    <div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div>
+    <div class="contact-rule-panel" id="ruleLocPanel" style="display:none;">所在地方 · 5 张牌
 由牌的元素与方位，推演对方可能身处的大致场景。
 
 塔罗无法精准定位，仅作场景氛围参考；
-结果约 1–2 小时后更新。</div><div class="contact-state" id="contactLocationState">—</div><div class="contact-tarot-cards" id="contactLocCards"></div></div>
-        <div class="profile-field"><div class="contact-rule-head"><label>在做什么</label><button type="button" class="contact-rule-tip" data-rule="act">!</button></div><div class="contact-rule-panel" id="ruleActPanel" style="display:none;">在做什么 · 3 张牌
+结果约 1–2 小时后更新。</div>
+    <div class="contact-flip-card" data-rule="loc"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactLocCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactLocationState">—</div></div></div></div>
+  </div>
+  <div class="contact-tarot-item">
+    <div class="contact-rule-head"><label>在做什么</label><button type="button" class="contact-rule-tip" data-rule="act">!</button></div>
+    <div class="contact-rule-panel" id="ruleActPanel" style="display:none;">在做什么 · 3 张牌
 由牌的行为牌义，推演对方此刻可能在忙的事。
 
 无法获取实时画面，只是行为方向的象征参考；
-单次结果有时效。</div><div class="contact-state" id="contactDoingState">—</div><div class="contact-tarot-cards" id="contactActCards"></div></div>
-        <div class="profile-field"><div class="contact-rule-head"><label>状态</label><button type="button" class="contact-rule-tip" data-rule="state">!</button></div><div class="contact-rule-panel" id="ruleStatePanel" style="display:none;">状态 · 3 张牌
+单次结果有时效。</div>
+    <div class="contact-flip-card" data-rule="act"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactActCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactDoingState">—</div></div></div></div>
+  </div>
+  <div class="contact-tarot-item">
+    <div class="contact-rule-head"><label>状态</label><button type="button" class="contact-rule-tip" data-rule="state">!</button></div>
+    <div class="contact-rule-panel" id="ruleStatePanel" style="display:none;">状态 · 3 张牌
 由牌的心境牌义，推演对方当下的情绪与状态。
 
 解读只代表抽牌瞬间，人的状态随时会变；
-结果约 1–2 小时后更新。</div><div class="contact-state" id="contactStateState">—</div><div class="contact-tarot-cards" id="contactStateCards"></div></div>
-        <div class="profile-field"><div class="contact-rule-head"><label>距离</label><button type="button" class="contact-rule-tip" data-rule="dis">!</button></div><div class="contact-rule-panel" id="ruleDisPanel" style="display:none;">距离 · 3 张牌
+结果约 1–2 小时后更新。</div>
+    <div class="contact-flip-card" data-rule="state"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactStateCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactStateState">—</div></div></div></div>
+  </div>
+  <div class="contact-tarot-item">
+    <div class="contact-rule-head"><label>距离</label><button type="button" class="contact-rule-tip" data-rule="dis">!</button></div>
+    <div class="contact-rule-panel" id="ruleDisPanel" style="display:none;">距离 · 3 张牌
 由牌推演双方的亲疏远近与变化趋势。
 
 不可据此窥探隐私或监控对方；
-结果有时效。</div><div class="contact-state" id="contactDistanceState">—</div><div class="contact-tarot-cards" id="contactDisCards"></div></div>
+结果有时效。</div>
+    <div class="contact-flip-card" data-rule="dis"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactDisCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactDistanceState">—</div></div></div></div>
+  </div>
+</div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -15122,6 +15196,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         _zkRenderCardChips(_zkContactDisCards, contact.tarot ? contact.tarot.dis : null);
       }
       var _zkRulePanelMap = { loc: 'ruleLocPanel', act: 'ruleActPanel', state: 'ruleStatePanel', dis: 'ruleDisPanel' };
+      document.querySelectorAll('.contact-flip-card').forEach(function (card) {
+        card.addEventListener('click', function () {
+          card.classList.toggle('flipped');
+        });
+      });
       document.querySelectorAll('.contact-rule-tip').forEach(function (btn) {
         btn.addEventListener('click', function (e) {
           e.stopPropagation();
@@ -15166,6 +15245,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           saveContacts();
         }
         _zkRenderContactState(contact);
+        document.querySelectorAll('.contact-flip-card').forEach(function (c) { c.classList.remove('flipped'); });
         _zkContactModal.classList.add('show');
       }
       function closeContactModal() {
