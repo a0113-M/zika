@@ -5285,7 +5285,7 @@
       box-sizing: border-box;
       padding: 0;
       border: none;
-      font-size: 12px;
+      font-size: 10px;
       background: transparent;
       color: var(--text-main);
       min-height: 20px;
@@ -5295,7 +5295,7 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       margin-top: 8px;
     }
     .contact-tarot-chip {
@@ -5314,9 +5314,6 @@
     }
     .contact-tarot-chip-up.up { color: var(--primary-deep); }
     .contact-tarot-chip-up.rev { color: var(--accent); }
-    .contact-tarot-chip-sep {
-      color: var(--text-muted);
-    }
     .contact-tarot-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -15164,12 +15161,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!list || !list.length) return;
         list.forEach(function (item, idx) {
           var name = item[0], upright = item[1];
-          if (idx > 0) {
-            var sep = document.createElement('span');
-            sep.className = 'contact-tarot-chip-sep';
-            sep.textContent = '、';
-            container.appendChild(sep);
-          }
           var chip = document.createElement('span');
           chip.className = 'contact-tarot-chip';
           var nm = document.createElement('span');
