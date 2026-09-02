@@ -5261,7 +5261,7 @@
       margin-bottom: 4px;
     }
 
-    .profile-box .profile-field input {
+    .profile-box .profile-field input:not([type="range"]) {
       width: 100%;
       padding: 10px 12px;
       border: 1px solid #e0e0e0;
@@ -5437,7 +5437,7 @@
 .zk-range input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--primary); box-shadow: 0 1px 4px rgba(155,142,196,0.4); pointer-events: auto; cursor: pointer; }
 .zk-range input[type="range"]::-moz-range-track { background: transparent; }
 .zk-range-hint { display: flex; justify-content: space-between; font-size: 12px; font-weight: 500; color: var(--primary); margin-top: 4px; }
-    .profile-box .profile-field input:focus {
+    .profile-box .profile-field input:not([type="range"]):focus {
       border-color: var(--primary);
       background: white;
     }
