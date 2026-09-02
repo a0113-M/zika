@@ -13352,7 +13352,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <div class="contact-flip-card" data-rule="dis"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactDisCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactDistanceState">—</div></div></div></div>
   </div>
 </div>
-        <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-line"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint"><span>最快 1 秒</span><span>最慢 1 分钟</span></div></div>
+        <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-line"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint"><span>1 秒</span><span>1 分钟</span></div></div>
         <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
@@ -15305,7 +15305,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var rp = ((mx - min) / (max - min)) * 100;
         _zkContactReplyFill.style.left = lp + '%';
         _zkContactReplyFill.style.right = (100 - rp) + '%';
-        _zkContactReplyHint.innerHTML = '<span>最快 ' + _zkFmtSec(mn) + '</span><span>最慢 ' + _zkFmtSec(mx) + '</span>';
+        _zkContactReplyHint.innerHTML = '<span>' + _zkFmtSec(mn) + '</span><span>' + _zkFmtSec(mx) + '</span>';
       }
       _zkContactReplyMin.addEventListener('input', function () {
         if (parseInt(_zkContactReplyMin.value, 10) > parseInt(_zkContactReplyMax.value, 10)) { _zkContactReplyMax.value = _zkContactReplyMin.value; }
