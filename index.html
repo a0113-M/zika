@@ -17183,9 +17183,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               // 如果找到了可以引用的消息，并且不是刚发的消息，则添加引用
               if (lastOtherIndex >= 0 && messages[lastOtherIndex]) {
                 msgData.replyTo = lastOtherIndex;
-                // 在回复内容前添加引用标识（可选）
-                reply = `「${messages[lastOtherIndex].from}：${messages[lastOtherIndex].text}」\n${reply}`;
-                msgData.text = reply;
                 showToast(`💬 ${senderName} 引用了一条消息`);
               }
             }
@@ -17239,8 +17236,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           if (lastOtherIndex >= 0 && messages[lastOtherIndex]) {
             msgData.replyTo = lastOtherIndex;
-            card = `「${messages[lastOtherIndex].from}：${messages[lastOtherIndex].text}」\n${card}`;
-            msgData.text = card;
           }
         }
 
