@@ -5328,10 +5328,17 @@
       font-size: 9px;
       color: var(--text-muted);
     }
-    .contact-tarot-notice {
-      margin-bottom: 14px;
+    .contact-rule-head {
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .contact-tarot-notice-btn {
+    .contact-rule-head label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 0;
+    }
+    .contact-rule-tip {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -5345,22 +5352,17 @@
       line-height: 1;
       background: transparent;
       cursor: pointer;
+      flex: none;
     }
-    .contact-tarot-notice-label {
-      display: inline-block;
-      font-size: 12px;
-      color: #888;
-      margin-left: 6px;
-      cursor: pointer;
-    }
-    .contact-tarot-notice-panel {
-      margin-top: 8px;
-      padding: 10px 12px;
+    .contact-rule-panel {
+      margin-top: 6px;
+      margin-bottom: 8px;
+      padding: 9px 11px;
       background: var(--bg-card);
       border: 1px solid var(--border-light);
-      border-radius: 10px;
+      border-radius: 9px;
       font-size: 12px;
-      line-height: 1.6;
+      line-height: 1.55;
       color: var(--text-main);
       white-space: pre-line;
     }
@@ -13241,20 +13243,32 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
-      <div class="contact-tarot-notice">
-        <button type="button" class="contact-tarot-notice-btn" id="contactTarotNoticeBtn">!</button><span class="contact-tarot-notice-label">占卜说明</span>
-        <div class="contact-tarot-notice-panel" id="contactTarotNoticePanel" style="display:none;">塔罗仅为象征性心理参考，无法真正窥探他人隐私或监控对方；解读只代表抽牌瞬间的情绪、想法与处境，人的状态随时会改变，不可用于监视或操控。真实了解一个人，依靠现实的沟通与关心。
-
-单次占卜有时效，约 1–2 小时后结果才会更新，短时间请勿反复查看。
-
-释义：正位＝能量顺畅自然；逆位＝压抑内耗、能量受阻。元素：火＝行动力，水＝情绪感受，风＝思绪压力，土＝现实身体。
-
-判断：大牌占多＝对当下影响深，属心境与人生转折期；小牌占多＝日常情绪起伏与琐事变化；多张逆位＝近期疲惫内耗，处在自我调整阶段。</div>
-      </div>
-        <div class="profile-field"><label>所在地方</label><div class="contact-state" id="contactLocationState">—</div><div class="contact-tarot-cards" id="contactLocCards"></div></div>
-        <div class="profile-field"><label>在做什么</label><div class="contact-state" id="contactDoingState">—</div><div class="contact-tarot-cards" id="contactActCards"></div></div>
-        <div class="profile-field"><label>状态</label><div class="contact-state" id="contactStateState">—</div><div class="contact-tarot-cards" id="contactStateCards"></div></div>
-        <div class="profile-field"><label>距离</label><div class="contact-state" id="contactDistanceState">—</div><div class="contact-tarot-cards" id="contactDisCards"></div></div>
+        <div class="profile-field"><div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div><div class="contact-rule-panel" id="ruleLocPanel" style="display:none;">所在地方 · 5 张牌
+由牌的元素与方位推演所在场景：
+火＝户外、马路、热闹商圈、运动场地
+水＝水边、卧室、奶茶店、咖啡馆
+风＝高楼、窗边、高铁站、图书馆
+土＝住宅、商铺、停车场、工地
+仅作场景氛围参考，无法精准定位。</div><div class="contact-state" id="contactLocationState">—</div><div class="contact-tarot-cards" id="contactLocCards"></div></div>
+        <div class="profile-field"><div class="contact-rule-head"><label>在做什么</label><button type="button" class="contact-rule-tip" data-rule="act">!</button></div><div class="contact-rule-panel" id="ruleActPanel" style="display:none;">在做什么 · 3 张牌
+由牌的行为牌义推演当下行为：
+火＝外出赶路、运动、忙碌做事
+水＝休息放松、刷手机、聊天聚会
+风＝思考沟通、处理消息、动脑学习
+土＝居家休息、上班干活、现实琐事
+逆位多为分心、暂停或拖延。</div><div class="contact-state" id="contactDoingState">—</div><div class="contact-tarot-cards" id="contactActCards"></div></div>
+        <div class="profile-field"><div class="contact-rule-head"><label>状态</label><button type="button" class="contact-rule-tip" data-rule="state">!</button></div><div class="contact-rule-panel" id="ruleStatePanel" style="display:none;">状态 · 3 张牌
+由牌的心境牌义推演当下状态：
+正位＝能量顺畅自然
+逆位＝压抑内耗、能量受阻
+大牌占多＝心境与人生转折期
+小牌占多＝日常情绪起伏
+多张逆位＝近期疲惫内耗、在自我调整</div><div class="contact-state" id="contactStateState">—</div><div class="contact-tarot-cards" id="contactStateCards"></div></div>
+        <div class="profile-field"><div class="contact-rule-head"><label>距离</label><button type="button" class="contact-rule-tip" data-rule="dis">!</button></div><div class="contact-rule-panel" id="ruleDisPanel" style="display:none;">距离 · 3 张牌
+由牌推演双方的远近关系：
+一张看实际距离，一张看心里亲疏，一张看距离变化趋势。
+塔罗仅为象征性心理参考，不可窥探隐私。
+单次结果约 1–2 小时后更新，勿频繁查看。</div><div class="contact-state" id="contactDistanceState">—</div><div class="contact-tarot-cards" id="contactDisCards"></div></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -15113,16 +15127,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         _zkRenderCardChips(_zkContactStateCards, contact.tarot ? contact.tarot.state : null);
         _zkRenderCardChips(_zkContactDisCards, contact.tarot ? contact.tarot.dis : null);
       }
-      var _zkContactTarotNoticeBtn = document.getElementById('contactTarotNoticeBtn');
-      var _zkContactTarotNoticePanel = document.getElementById('contactTarotNoticePanel');
-      function _zkToggleTarotNotice() {
-        if (_zkContactTarotNoticePanel.style.display === 'none') {
-          _zkContactTarotNoticePanel.style.display = 'block';
-        } else {
-          _zkContactTarotNoticePanel.style.display = 'none';
-        }
-      }
-      _zkContactTarotNoticeBtn.addEventListener('click', _zkToggleTarotNotice);
+      var _zkRulePanelMap = { loc: 'ruleLocPanel', act: 'ruleActPanel', state: 'ruleStatePanel', dis: 'ruleDisPanel' };
+      document.querySelectorAll('.contact-rule-tip').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          var panel = document.getElementById(_zkRulePanelMap[btn.getAttribute('data-rule')]);
+          if (!panel) return;
+          document.querySelectorAll('.contact-rule-panel').forEach(function (p) {
+            if (p !== panel) p.style.display = 'none';
+          });
+          panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        });
+      });
 function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
       function _zkSaveMetDates(o) { try { localStorage.setItem('contactMetDates', JSON.stringify(o)); } catch (e) {} }
       function _zkDateToStr(ts) { if (!ts) return ''; var d = new Date(ts); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
