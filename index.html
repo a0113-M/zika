@@ -1204,6 +1204,36 @@
       opacity: 0.7;
     }
 
+    /* 对方正在输入提示 */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 16px 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      min-height: 26px;
+    }
+    .typing-dots {
+      display: inline-flex;
+      gap: 3px;
+      align-items: center;
+    }
+    .typing-dots i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      animation: typingBounce 1.2s infinite ease-in-out;
+    }
+    .typing-dots i:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dots i:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+      30% { transform: translateY(-3px); opacity: 1; }
+    }
+
     /* --- 聊天工具栏 --- */
     .chat-toolbar {
       display: none;
@@ -12161,6 +12191,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
       <div class="chat-bottom-wrapper">
+        <div class="typing-indicator" id="typingIndicator" style="display:none">
+          <span class="typing-text" id="typingText">对方正在输入中</span>
+          <span class="typing-dots"><i></i><i></i><i></i></span>
+        </div>
         <div class="chat-input-bar">
           <button class="input-left-btn" id="chatToolbarToggle">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -15740,6 +15774,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderMessages(contactId);
       }
 
+      function _zkShowTyping(text) {
+        const el = document.getElementById('typingIndicator');
+        if (!el) return;
+        const t = document.getElementById('typingText');
+        if (t) t.textContent = text || '对方正在输入中';
+        el.style.display = 'flex';
+      }
+      function _zkHideTyping() {
+        const el = document.getElementById('typingIndicator');
+        if (el) el.style.display = 'none';
+      }
+
       function sendEmojiMessage(imageSrc) {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
@@ -15750,10 +15796,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         emojiModule.classList.remove('active');
         document.getElementById('toolbarGrid').classList.remove('hidden');
         if (isToolbarOpen) { chatToolbar.classList.remove('open'); isToolbarOpen = false; }
+        const _tkEmojiContact = contacts.find(c => c.id === currentChatId);
+        if (_tkEmojiContact && !_tkEmojiContact.readOnly) { _zkShowTyping(); }
         setTimeout(() => {
           if (currentChatId !== null && chatHistories[currentChatId]) {
             const contact = contacts.find(c => c.id === currentChatId);
-            if (contact && contact.readOnly) { _zkMarkMyLastRead(currentChatId); return; }
+            if (contact && contact.readOnly) { _zkHideTyping(); _zkMarkMyLastRead(currentChatId); return; }
             let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
@@ -15784,6 +15832,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
             chatHistories[currentChatId].push(msgData);
             renderMessages(currentChatId);
+            _zkHideTyping();
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
           }
         }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
@@ -16984,7 +17033,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             chatInput.dataset.replyTo = msgIndex;
             // 在输入框显示一个引用提示（但不清除用户输入的内容）
             showQuoteIndicator(msgIndex, contactId);
-            showToast('已引用该消息');
             break;
 
           case 'withdraw':
@@ -17093,11 +17141,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         renderMessages(currentChatId);
 
+        // 对方正在输入提示
+        const _tkContact = contacts.find(c => c.id === currentChatId);
+        if (_tkContact && !_tkContact.readOnly) { _zkShowTyping(); }
+
         // ... 后续自动回复逻辑保持不变
         setTimeout(() => {
           if (currentChatId !== null && chatHistories[currentChatId]) {
             const contact = contacts.find(c => c.id === currentChatId);
-            if (contact && contact.readOnly) { _zkMarkMyLastRead(currentChatId); return; }
+            if (contact && contact.readOnly) { _zkHideTyping(); _zkMarkMyLastRead(currentChatId); return; }
             let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
@@ -17109,6 +17161,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
             chatHistories[currentChatId].push({ text: reply, from: senderName, time: timeStr2 });
             renderMessages(currentChatId);
+            _zkHideTyping();
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
           }
         }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
@@ -21740,6 +21793,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           isPatMessage: true  // 标记为拍一拍消息
         });
         renderMessages(currentChatId);
+        _zkShowTyping();
 
         // 更新联系人最后一条消息
         const contact = contacts.find(c => c.id === currentChatId);
@@ -21780,6 +21834,7 @@ patText2 = patText2.replace(/你/g, '我');
                 isPatMessage: true
               });
               renderMessages(currentChatId);
+              _zkHideTyping();
               if (contact) {
                 contact.lastMsg = `拍了拍`;
                 contact.time = timeStr2;
@@ -21792,6 +21847,7 @@ patText2 = patText2.replace(/你/g, '我');
               const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
               chatHistories[currentChatId].push({ text: reply, from: senderName, time: timeStr2 });
               renderMessages(currentChatId);
+              _zkHideTyping();
               if (contact) {
                 contact.lastMsg = reply;
                 contact.time = timeStr2;
