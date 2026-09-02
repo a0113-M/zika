@@ -1099,8 +1099,8 @@
     .chat-bottom-wrapper {
       display: flex;
       flex-direction: column;
-      background: #f7f7f7;
-      border-top: 0.5px solid #d9d9d9;
+      background: var(--bg-card);
+      border-top: 0.5px solid var(--border-light);
       position: relative;
       padding-bottom: env(safe-area-inset-bottom, 2px);
       max-height: 50vh;
@@ -1111,7 +1111,7 @@
       display: flex;
       align-items: center;
       padding: 4px 12px;
-      background: #f7f7f7;
+      background: var(--bg-card);
       gap: 8px;
       flex-shrink: 0;
       transition: padding 0.25s ease;
@@ -1122,12 +1122,12 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: #f0f0f0;
-      border: 1px solid #d9d9d9;
+      background: var(--primary-lighter);
+      border: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #333;
+      color: var(--primary);
       cursor: pointer;
       flex-shrink: 0;
       transition: 0.2s;
@@ -1141,21 +1141,22 @@
       width: 24px;
       height: 24px;
       display: block;
-      stroke: #333;
+      stroke: var(--primary);
     }
 
     .chat-input-bar input {
       flex: 1;
-      padding: 6px 12px;
+      min-width: 0;
+      padding: 8px 16px;
       border: none;
-      border-radius: 6px;
-      background: white;
+      border-radius: 18px;
+      background: var(--bg-soft);
       font-size: 14px;
       outline: none;
     }
 
     .chat-input-bar input:focus {
-      background: white;
+      background: var(--bg-soft);
     }
 
     .chat-draw-btn {
@@ -1191,8 +1192,8 @@
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: 6px;
-      padding: 6px 14px;
+      border-radius: 18px;
+      padding: 8px 18px;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -13355,7 +13356,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-line"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint"><span>1 秒</span><span>1 分钟</span></div></div>
         <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
         <div class="profile-actions">
-          <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
           <button class="btn-save" id="contactModalSave">保存</button>
         </div>
@@ -15363,10 +15363,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         };
         reader.readAsDataURL(file);
         this.value = '';
-      });
-      document.getElementById('contactResetAvatar').addEventListener('click', function () {
-        var contact = contacts.find(function (c) { return c.id === contactModalEditId; });
-        if (contact) { contact.avatarImage = null; renderContactModalAvatar(contact); }
       });
       document.getElementById('contactModalCancel').addEventListener('click', closeContactModal);
       _zkContactModal.addEventListener('click', function (e) { if (e.target === this) closeContactModal(); });
