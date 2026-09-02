@@ -5291,28 +5291,19 @@
       min-height: 20px;
       line-height: 1.0;
     }
-        .contact-tarot-cards {
+    .contact-tarot-cards {
       display: flex;
       flex-wrap: wrap;
-      gap: 6px;
+      align-items: center;
+      gap: 4px;
       margin-top: 8px;
     }
     .contact-tarot-chip {
-      display: flex;
-      flex-direction: column;
+      display: inline-flex;
       align-items: center;
-      gap: 3px;
-      padding: 6px 9px;
-      border: 1px solid var(--border-light);
-      border-radius: 9px;
-      background: var(--bg-card);
+      gap: 0.35em;
       font-size: 10px;
-      line-height: 1.3;
-    }
-    .contact-tarot-chip-line {
-      display: flex;
-      align-items: center;
-      gap: 5px;
+      line-height: 1.6;
     }
     .contact-tarot-chip-name {
       font-weight: 600;
@@ -5320,12 +5311,10 @@
     }
     .contact-tarot-chip-up {
       font-weight: 600;
-      font-size: 9px;
     }
     .contact-tarot-chip-up.up { color: var(--primary-deep); }
     .contact-tarot-chip-up.rev { color: var(--accent); }
-    .contact-tarot-chip-elem {
-      font-size: 9px;
+    .contact-tarot-chip-sep {
       color: var(--text-muted);
     }
     .contact-tarot-grid {
@@ -13304,6 +13293,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div>
     <div class="contact-rule-panel" id="ruleLocPanel" style="display:none;">所在地方 · 5 张牌
 由牌的元素与方位，推演对方可能身处的大致场景。
+权杖=火·正南，圣杯=水·正西，宝剑=风·正东，星币=土·正北。
 
 塔罗无法精准定位，仅作场景氛围参考；
 结果约 1–2 小时后更新。</div>
@@ -15172,17 +15162,28 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!container) return;
         container.innerHTML = '';
         if (!list || !list.length) return;
-        list.forEach(function (item) {
+        list.forEach(function (item, idx) {
           var name = item[0], upright = item[1];
-          var card = _ZK_TAROT.filter(function (x) { return x.name === name; })[0] || null;
-          var suit = card && card.suit;
-          var elem = suit && _ZK_ELEMENTS[suit] ? (_ZK_ELEMENTS[suit].element + '·' + _ZK_ELEMENTS[suit].direction) : '';
+          if (idx > 0) {
+            var sep = document.createElement('span');
+            sep.className = 'contact-tarot-chip-sep';
+            sep.textContent = '、';
+            container.appendChild(sep);
+          }
           var chip = document.createElement('span');
           chip.className = 'contact-tarot-chip';
-          chip.innerHTML = '<div class="contact-tarot-chip-line"><span class="contact-tarot-chip-name">' + name + '</span><span class="contact-tarot-chip-up ' + (upright ? 'up' : 'rev') + '">' + (upright ? '正位' : '逆位') + '</span></div>' + (elem ? '<div class="contact-tarot-chip-elem">' + elem + '</div>' : '');
+          var nm = document.createElement('span');
+          nm.className = 'contact-tarot-chip-name';
+          nm.textContent = name;
+          var up = document.createElement('span');
+          up.className = 'contact-tarot-chip-up ' + (upright ? 'up' : 'rev');
+          up.textContent = upright ? '正位' : '逆位';
+          chip.appendChild(nm);
+          chip.appendChild(up);
           container.appendChild(chip);
         });
       }
+
       function _zkRenderContactState(contact) {
         _zkContactLocationState.textContent = contact.location || '—';
         _zkContactDoingState.textContent = contact.doing || '—';
