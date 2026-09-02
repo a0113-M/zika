@@ -17249,6 +17249,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        _zkHideTyping();
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
         const contact = contacts.find(c => c.id === currentChatId);
         let senderName = 'other';
