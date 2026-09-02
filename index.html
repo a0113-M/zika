@@ -5417,6 +5417,16 @@
       white-space: pre-line;
     }
 
+.profile-box .profile-field-static { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #e0e0e0; border-radius: 10px; font-size: 15px; color: #999; background: #f5f5f5; }
+.zk-range { position: relative; height: 40px; margin: 2px 0; }
+.zk-range-track { position: absolute; left: 0; right: 0; top: 50%; height: 6px; transform: translateY(-50%); border-radius: 3px; background: #e8e3f8; }
+.zk-range-fill { position: absolute; top: 50%; height: 6px; transform: translateY(-50%); border-radius: 3px; background: var(--primary); }
+.zk-range input[type="range"] { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 40px; margin: 0; -webkit-appearance: none; appearance: none; background: transparent; pointer-events: none; }
+.zk-range input[type="range"]::-webkit-slider-runnable-track { background: transparent; border: none; }
+.zk-range input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 3px solid var(--primary); box-shadow: 0 1px 5px rgba(0,0,0,0.22); pointer-events: auto; cursor: pointer; }
+.zk-range input[type="range"]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 3px solid var(--primary); box-shadow: 0 1px 5px rgba(0,0,0,0.22); pointer-events: auto; cursor: pointer; }
+.zk-range input[type="range"]::-moz-range-track { background: transparent; }
+.zk-range-hint { font-size: 12px; color: #999; text-align: center; margin-top: -2px; }
     .profile-box .profile-field input:focus {
       border-color: var(--primary);
       background: white;
@@ -13292,9 +13302,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           </div>
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
-        <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
-        <div class="profile-field"><label>回复速度（秒）</label><div style="display:flex;align-items:center;gap:6px;"><input type="number" id="contactReplyMin" min="0" step="0.5" placeholder="最快" style="width:56px;padding:6px 8px;"><span style="color:#999;">~</span><input type="number" id="contactReplyMax" min="0" step="0.5" placeholder="最慢" style="width:56px;padding:6px 8px;"></div></div>
-        <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
+        <div class="profile-field"><label>相识日期</label><div class="profile-field-static" id="contactMetDateInput">未设置</div></div>
         <div class="contact-tarot-grid">
   <div class="contact-tarot-item">
     <div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div>
@@ -13334,6 +13342,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <div class="contact-flip-card" data-rule="dis"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="contactDisCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="contactDistanceState">—</div></div></div></div>
   </div>
 </div>
+        <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-track"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint">最快 1 秒 · 最慢 1 分钟</div></div>
+        <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactResetAvatar">恢复默认</button>
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -14994,6 +15004,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactReplyMin = document.getElementById('contactReplyMin');
       const _zkContactReplyMax = document.getElementById('contactReplyMax');
       const _zkContactReadOnly = document.getElementById('contactReadOnly');
+      const _zkContactReplyFill = document.getElementById('contactReplyFill');
+      const _zkContactReplyHint = document.getElementById('contactReplyHint');
       const _zkContactLocationState = document.getElementById('contactLocationState');
       const _zkContactDoingState = document.getElementById('contactDoingState');
       const _zkContactDistanceState = document.getElementById('contactDistanceState');
@@ -15231,6 +15243,32 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           txt.textContent = (contact.name || '?').charAt(0).toUpperCase();
         }
       }
+      function _zkFmtSec(s) {
+        s = Math.max(1, Math.round(s));
+        if (s < 60) return s + ' 秒';
+        var m = Math.floor(s / 60), r = s % 60;
+        if (r === 0) return m + ' 分钟';
+        return m + ' 分 ' + r + ' 秒';
+      }
+      function _zkUpdateReplyRange() {
+        var mn = parseInt(_zkContactReplyMin.value, 10) || 1;
+        var mx = parseInt(_zkContactReplyMax.value, 10) || 60;
+        if (mn > mx) { var t = mn; mn = mx; mx = t; }
+        var min = 1, max = 300;
+        var lp = ((mn - min) / (max - min)) * 100;
+        var rp = ((mx - min) / (max - min)) * 100;
+        _zkContactReplyFill.style.left = lp + '%';
+        _zkContactReplyFill.style.right = (100 - rp) + '%';
+        _zkContactReplyHint.textContent = '最快 ' + _zkFmtSec(mn) + ' · 最慢 ' + _zkFmtSec(mx);
+      }
+      _zkContactReplyMin.addEventListener('input', function () {
+        if (parseInt(_zkContactReplyMin.value, 10) > parseInt(_zkContactReplyMax.value, 10)) { _zkContactReplyMax.value = _zkContactReplyMin.value; }
+        _zkUpdateReplyRange();
+      });
+      _zkContactReplyMax.addEventListener('input', function () {
+        if (parseInt(_zkContactReplyMax.value, 10) < parseInt(_zkContactReplyMin.value, 10)) { _zkContactReplyMin.value = _zkContactReplyMax.value; }
+        _zkUpdateReplyRange();
+      });
       function _zkOpenContactModal(contactId) {
         var contact = contacts.find(function (c) { return c.id === contactId; });
         if (!contact) return;
@@ -15238,10 +15276,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _zkContactNameInput.value = contact.name || '';
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
-        _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
-        _zkContactReplyMin.value = (contact.replyMin != null) ? contact.replyMin : 1;
-        _zkContactReplyMax.value = (contact.replyMax != null) ? contact.replyMax : 2.5;
+        _zkContactMetDateInput.textContent = met[contactId] ? _zkDateToStr(met[contactId]).replace(/-/g, '.') : '未设置';
+        _zkContactReplyMin.value = Math.min(300, Math.max(1, Math.round(contact.replyMin != null ? contact.replyMin : 1)));
+        _zkContactReplyMax.value = Math.min(300, Math.max(1, Math.round(contact.replyMax != null ? contact.replyMax : 60)));
         _zkContactReadOnly.checked = !!contact.readOnly;
+        _zkUpdateReplyRange();
         var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
           _zkRollContactState(contact);
@@ -15291,15 +15330,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!contact) { closeContactModal(); return; }
         var newName = _zkContactNameInput.value.trim();
         if (newName) contact.name = newName;
-        var met = _zkGetMetDates();
-        var dv = _zkContactMetDateInput.value;
-        if (dv) { var pp = dv.split('-'); met[contact.id] = new Date(parseInt(pp[0],10), parseInt(pp[1],10)-1, parseInt(pp[2],10)).getTime(); }
-        else { delete met[contact.id]; }
-        _zkSaveMetDates(met);
-        var _rmin = parseFloat(_zkContactReplyMin.value);
-        var _rmax = parseFloat(_zkContactReplyMax.value);
-        if (isFinite(_rmin) && _rmin >= 0) contact.replyMin = _rmin;
-        if (isFinite(_rmax) && _rmax >= 0) contact.replyMax = _rmax;
+        var _rmin = parseInt(_zkContactReplyMin.value, 10);
+        var _rmax = parseInt(_zkContactReplyMax.value, 10);
+        if (isFinite(_rmin) && _rmin >= 1) contact.replyMin = Math.min(300, _rmin);
+        if (isFinite(_rmax) && _rmax >= 1) contact.replyMax = Math.min(300, _rmax);
         if (contact.replyMin != null && contact.replyMax != null && contact.replyMax < contact.replyMin) {
           var _rt = contact.replyMin; contact.replyMin = contact.replyMax; contact.replyMax = _rt;
         }
