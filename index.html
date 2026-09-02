@@ -13293,6 +13293,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="profile-field"><label>昵称</label><input type="text" id="contactNameInput" placeholder="输入昵称" maxlength="20"></div>
         <div class="profile-field"><label>相识日期</label><input type="date" id="contactMetDateInput"></div>
+        <div class="profile-field"><label>回复速度（秒）</label><div style="display:flex;align-items:center;gap:6px;"><input type="number" id="contactReplyMin" min="0" step="0.5" placeholder="最快" style="width:56px;padding:6px 8px;"><span style="color:#999;">~</span><input type="number" id="contactReplyMax" min="0" step="0.5" placeholder="最慢" style="width:56px;padding:6px 8px;"></div></div>
+        <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
         <div class="contact-tarot-grid">
   <div class="contact-tarot-item">
     <div class="contact-rule-head"><label>所在地方</label><button type="button" class="contact-rule-tip" data-rule="loc">!</button></div>
@@ -14989,6 +14991,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactAvatarFileInput = document.getElementById('contactAvatarFileInput');
       const _zkContactNameInput = document.getElementById('contactNameInput');
       const _zkContactMetDateInput = document.getElementById('contactMetDateInput');
+      const _zkContactReplyMin = document.getElementById('contactReplyMin');
+      const _zkContactReplyMax = document.getElementById('contactReplyMax');
+      const _zkContactReadOnly = document.getElementById('contactReadOnly');
       const _zkContactLocationState = document.getElementById('contactLocationState');
       const _zkContactDoingState = document.getElementById('contactDoingState');
       const _zkContactDistanceState = document.getElementById('contactDistanceState');
@@ -15234,6 +15239,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderContactModalAvatar(contact);
         var met = _zkGetMetDates();
         _zkContactMetDateInput.value = met[contactId] ? _zkDateToStr(met[contactId]) : '';
+        _zkContactReplyMin.value = (contact.replyMin != null) ? contact.replyMin : 1;
+        _zkContactReplyMax.value = (contact.replyMax != null) ? contact.replyMax : 2.5;
+        _zkContactReadOnly.checked = !!contact.readOnly;
         var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
           _zkRollContactState(contact);
@@ -15288,6 +15296,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (dv) { var pp = dv.split('-'); met[contact.id] = new Date(parseInt(pp[0],10), parseInt(pp[1],10)-1, parseInt(pp[2],10)).getTime(); }
         else { delete met[contact.id]; }
         _zkSaveMetDates(met);
+        var _rmin = parseFloat(_zkContactReplyMin.value);
+        var _rmax = parseFloat(_zkContactReplyMax.value);
+        if (isFinite(_rmin) && _rmin >= 0) contact.replyMin = _rmin;
+        if (isFinite(_rmax) && _rmax >= 0) contact.replyMax = _rmax;
+        if (contact.replyMin != null && contact.replyMax != null && contact.replyMax < contact.replyMin) {
+          var _rt = contact.replyMin; contact.replyMin = contact.replyMax; contact.replyMax = _rt;
+        }
+        contact.readOnly = _zkContactReadOnly.checked;
         saveContacts();
         renderContacts();
         if (currentChatId === contact.id) {
@@ -15634,6 +15650,21 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
       }
 
+            function _zkGetReplyDelay(contact) {
+        var min = (contact && typeof contact.replyMin === 'number' && isFinite(contact.replyMin)) ? contact.replyMin : 1;
+        var max = (contact && typeof contact.replyMax === 'number' && isFinite(contact.replyMax)) ? contact.replyMax : 2.5;
+        if (max < min) { var t = min; min = max; max = t; }
+        return min * 1000 + Math.random() * (max - min) * 1000;
+      }
+      function _zkMarkMyLastRead(contactId) {
+        var msgs = chatHistories[contactId];
+        if (!msgs) return;
+        for (var i = msgs.length - 1; i >= 0; i--) {
+          if (msgs[i].from === 'me') { msgs[i].read = true; break; }
+        }
+        renderMessages(contactId);
+      }
+
       function sendEmojiMessage(imageSrc) {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
@@ -15647,6 +15678,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         setTimeout(() => {
           if (currentChatId !== null && chatHistories[currentChatId]) {
             const contact = contacts.find(c => c.id === currentChatId);
+            if (contact && contact.readOnly) { _zkMarkMyLastRead(currentChatId); return; }
             let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
@@ -15679,7 +15711,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             renderMessages(currentChatId);
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
           }
-        }, 800 + Math.random() * 1200);
+        }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
       }
 
       function addEmojis(files) {
@@ -16629,6 +16661,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             bubbleDiv.appendChild(avatar);
             bubbleDiv.appendChild(msgWrapper);
             bubbleDiv.appendChild(timeLabel);
+            if (msg.from === 'me' && msg.read) {
+              const readLabel = document.createElement('span');
+              readLabel.style.cssText = 'font-size:10px;color:#b0b0b0;flex-shrink:0;align-self:flex-end;margin:0 2px;';
+              readLabel.textContent = '已读';
+              bubbleDiv.appendChild(readLabel);
+            }
 
             // 在多选模式下点击消息切换选择
             bubbleDiv.addEventListener('click', function (e) {
@@ -16984,6 +17022,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         setTimeout(() => {
           if (currentChatId !== null && chatHistories[currentChatId]) {
             const contact = contacts.find(c => c.id === currentChatId);
+            if (contact && contact.readOnly) { _zkMarkMyLastRead(currentChatId); return; }
             let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
@@ -16997,7 +17036,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             renderMessages(currentChatId);
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
           }
-        }, 1000 + Math.random() * 1500);
+        }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
       };
 
       function showImagePreview(src) {
@@ -17024,6 +17063,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         setTimeout(() => {
           if (currentChatId !== null && chatHistories[currentChatId]) {
             const contact = contacts.find(c => c.id === currentChatId);
+            if (contact && contact.readOnly) { _zkMarkMyLastRead(currentChatId); return; }
             let senderName = 'other';  // ✅ 先定义
             if (contact && contact.isGroup && contact.members) {
               const memberId = contact.members[Math.floor(Math.random() * contact.members.length)];
@@ -17079,7 +17119,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             renderMessages(currentChatId);
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
           }
-        }, 1000 + Math.random() * 1500);
+        }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
       }
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
