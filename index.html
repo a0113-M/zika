@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="254";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="255";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v254</title>
+  <title>字卡 · 小手机 v255</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22185,9 +22185,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const now = new Date();
         const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-        // 直接发送字卡内容，不加主语（只显示"拍了拍你的头"而不是"我 拍了拍你的头"）
+        // 加主语：「我」+ 字卡内容（"你"替换为联系人昵称）
+        const patCname = (contacts.find(c => c.id === currentChatId) || {}).name || '你';
         chatHistories[currentChatId].push({
-          text: patText,  // 直接是字卡内容
+          text: '我' + String(patText).replace(/你/g, patCname),
           from: 'me',
           time: timeStr,
           sentAt: Date.now(),
@@ -22220,16 +22221,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const patCards = cardData.general['拍一拍'] || [];
             if (Math.random() < 0.3 && patCards.length > 0) {
               const randomPat = patCards[Math.floor(Math.random() * patCards.length)];
-let patText2 = randomPat.name || randomPat;
-
-// 联系人发送时，把“你”变成“我”
-patText2 = patText2.replace(/你/g, '我');
+let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               randomPat.useCount = (randomPat.useCount || 0) + 1;
 
               const now2 = new Date();
               const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
               chatHistories[currentChatId].push({
-                text: patText2,  // 只显示字卡内容，不加主语
+                text: senderName + patText2,  // 加昵称主语：「昵称」+ 内容
                 from: senderName,
                 time: timeStr2,
                 isPat: true,
