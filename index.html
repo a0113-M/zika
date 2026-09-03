@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="230";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="231";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v230</title>
+  <title>字卡 · 小手机 v231</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8689,6 +8689,42 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .ledger-contact-chip:active { background: #fbdce8; }
 .ledger-contact-chip.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
 
+/* 红包 */
+.hb-mask { position: absolute; inset: 0; z-index: 3400; display: none; background: rgba(0,0,0,0.45); }
+.hb-mask.show { display: block; }
+.hb-sheet {
+  position: absolute; z-index: 3401; left: 0; right: 0; bottom: 0;
+  background: #fff; border-radius: 20px 20px 0 0; overflow: hidden;
+  display: none; animation: zkHbUp 0.22s ease;
+}
+.hb-sheet.show { display: block; }
+@keyframes zkHbUp { from { transform: translateY(32%); opacity: 0.4; } to { transform: translateY(0); opacity: 1; } }
+.hb-head { position: relative; padding: 20px 18px 16px; background: linear-gradient(135deg, #f76d6d, #e05555); color: #fff; }
+.hb-head-title { font-size: 17px; font-weight: 700; }
+.hb-head-sub { font-size: 12px; opacity: 0.92; margin-top: 3px; }
+.hb-close { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; border: none; border-radius: 50%; background: rgba(255,255,255,0.22); color: #fff; font-size: 15px; cursor: pointer; line-height: 1; }
+.hb-body { padding: 18px 16px 22px; }
+.hb-to { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+.hb-to-avatar { width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0; background: #fdeef1; color: #e05555; font-size: 22px; display: flex; align-items: center; justify-content: center; }
+.hb-to-name { font-size: 16px; font-weight: 600; color: #333; }
+.hb-to-balance { font-size: 12px; color: #b0a8c0; margin-top: 3px; }
+.hb-to-balance b { color: #e05555; font-weight: 700; }
+.hb-amount-box { display: flex; align-items: center; gap: 6px; padding: 4px 2px 12px; border-bottom: 1px solid #f0e8f0; margin-bottom: 14px; }
+.hb-amount-symbol { font-size: 24px; font-weight: 700; color: #e05555; }
+.hb-amount-input { flex: 1; border: none; outline: none; font-size: 34px; font-weight: 800; color: #e05555; background: transparent; min-width: 0; }
+.hb-amount-input::placeholder { color: #ecc8c8; }
+.hb-label { display: block; font-size: 13px; color: #888; margin-bottom: 8px; }
+.hb-quick { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.hb-quick-chip { flex: 1 1 0; min-width: 52px; padding: 9px 0; text-align: center; border-radius: 12px; border: 1.5px solid #f6d9d9; background: #fff7f7; color: #e05555; font-size: 14px; font-weight: 600; cursor: pointer; }
+.hb-quick-chip:active { background: #fbe7e7; }
+.hb-note-input { width: 100%; box-sizing: border-box; padding: 10px 12px; margin-bottom: 16px; border: 1px solid #f0e8f0; border-radius: 12px; font-size: 14px; color: #333; outline: none; background: #faf8fb; }
+.hb-note-input:focus { border-color: #e05555; }
+.hb-sources { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 18px; }
+.hb-source-chip { flex-shrink: 0; padding: 8px 14px; border-radius: 18px; border: 1.5px solid #e8e0f0; background: #faf8ff; color: #666; font-size: 13px; cursor: pointer; white-space: nowrap; }
+.hb-source-chip.active { border-color: var(--primary); background: var(--primary); color: #fff; font-weight: 600; }
+.hb-send-btn { width: 100%; height: 46px; border: none; border-radius: 14px; background: linear-gradient(135deg, #f76d6d, #e05555); color: #fff; font-size: 16px; font-weight: 700; cursor: pointer; }
+.hb-send-btn:active { opacity: 0.9; transform: scale(0.99); }
+
 /* 商店视图 */
 .ledger-shop-view { display: none; z-index: 352; }
 .ledger-shop-view.show { display: flex; }
@@ -12347,6 +12383,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             </button>
             </div>
             <div class="toolbar-page">
+              <button class="toolbar-item" data-tool="hongbao">
+              <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="3" fill="#f76d6d"/><circle cx="12" cy="13" r="3" fill="#ffd93b"/><path d="M5 9.2c1.6-1.9 3.6-2.8 5.5-2.8 1.3 0 2.6.5 3.5 1.5L19 9.2V7.5C19 6.7 18.3 6 17.5 6h-11C5.7 6 5 6.7 5 7.5z" fill="#e05555"/></svg></span>
+              <span class="toolbar-label">红包</span>
+            </button>
               <button class="toolbar-item" data-tool="divine">
               <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -12540,6 +12580,41 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <button class="cdp-opt" id="acdHistBack">返回</button>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- 红包弹窗 -->
+      <div class="hb-mask" id="hbMask"></div>
+      <div class="hb-sheet" id="hbSheet">
+        <div class="hb-head">
+          <div class="hb-head-title">发红包</div>
+          <div class="hb-head-sub" id="hbHeadSub">给 TA 一份心意</div>
+          <button class="hb-close" id="hbClose">✕</button>
+        </div>
+        <div class="hb-body">
+          <div class="hb-to">
+            <div class="hb-to-avatar" id="hbAvatar">?</div>
+            <div>
+              <div class="hb-to-name" id="hbToName">联系人</div>
+              <div class="hb-to-balance">恋爱基金 <b id="hbBalance">¥0.00</b></div>
+            </div>
+          </div>
+          <div class="hb-amount-box">
+            <span class="hb-amount-symbol">¥</span>
+            <input class="hb-amount-input" id="hbAmount" type="text" inputmode="decimal" placeholder="0.00" />
+          </div>
+          <div class="hb-quick" id="hbQuick">
+            <button class="hb-quick-chip" data-amt="5.20">5.20</button>
+            <button class="hb-quick-chip" data-amt="52">52</button>
+            <button class="hb-quick-chip" data-amt="88">88</button>
+            <button class="hb-quick-chip" data-amt="131.40">131.4</button>
+            <button class="hb-quick-chip" data-amt="520">520</button>
+          </div>
+          <label class="hb-label">祝福语</label>
+          <input class="hb-note-input" id="hbNote" type="text" maxlength="24" placeholder="恭喜发财，大吉大利" />
+          <label class="hb-label">从哪个账本出钱</label>
+          <div class="hb-sources" id="hbSources"></div>
+          <button class="hb-send-btn" id="hbSend">塞进红包</button>
         </div>
       </div>
 
@@ -30879,6 +30954,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           { n: '日用', c: '#6dbf9c' },
           { n: '医疗', c: '#e55a5a' },
           { n: '居住', c: '#d49a6a' },
+          { n: '红包', c: '#e05555' },
           { n: '其他', c: '#9aa0a6' }
         ],
         income: [
@@ -32974,6 +33050,148 @@ function addToCart(goodId) {
     })();
 
     (function(){var d=document.getElementById("js-debug");if(d){d.style.background="linear-gradient(135deg,#f0faf5,#e8f5e9)";d.style.borderLeftColor=getComputedStyle(document.documentElement).getPropertyValue("--primary");d.style.color="#5c6b5c";d.textContent="✓ 加载完成";setTimeout(function(){d.style.transition="opacity 0.5s";d.style.opacity="0";setTimeout(function(){d.style.display="none";},500);},2000);}})();
+
+
+// ===== 红包功能 =====
+(function() {
+  var HB_BOOK_KEY = 'zk_ledger_books';
+  var HB_LEDGER_KEY = 'zk_ledger';
+  var _hbSourceId = null;
+
+  function hbSaveBooks(a) { try { localStorage.setItem(HB_BOOK_KEY, JSON.stringify(a)); } catch (e) {} }
+  function hbSaveLedger(a) { try { localStorage.setItem(HB_LEDGER_KEY, JSON.stringify(a)); } catch (e) {} }
+  function hbGetBooksLoose() {
+    var v = null;
+    try { v = JSON.parse(localStorage.getItem(HB_BOOK_KEY) || 'null'); } catch (e) { v = null; }
+    if (!v || !v.length) {
+      var names = ['微信', '支付宝', '银行卡', '零钱通', '余额宝'];
+      v = names.map(function(n) { return { id: 'bk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name: n, balance: 0, includeTotal: true }; });
+      hbSaveBooks(v);
+    }
+    return v;
+  }
+  function hbGetLedger() { try { return JSON.parse(localStorage.getItem(HB_LEDGER_KEY) || '[]'); } catch (e) { return []; } }
+  function hbMoney(n) { n = Number(n) || 0; return n.toFixed(2); }
+  function hbPad(n) { return n < 10 ? '0' + n : '' + n; }
+  function hbToday() { var d = new Date(); return d.getFullYear() + '-' + hbPad(d.getMonth() + 1) + '-' + hbPad(d.getDate()); }
+  function hbTime() { var d = new Date(); return hbPad(d.getHours()) + ':' + hbPad(d.getMinutes()); }
+  function hbEsc(x) { x = String(x == null ? '' : x); return x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  function hbCurrentContact() {
+    if (typeof currentChatId === 'undefined' || currentChatId === null) return null;
+    if (typeof contacts === 'undefined') return null;
+    for (var i = 0; i < contacts.length; i++) { if (contacts[i] && contacts[i].id === currentChatId) return contacts[i]; }
+    return null;
+  }
+
+  function hbClosePanels() {
+    var tb = document.getElementById('chatToolbar'); if (tb) tb.classList.remove('open');
+    if (typeof emojiModule !== 'undefined' && emojiModule) emojiModule.classList.remove('active');
+    var grid = document.getElementById('toolbarGrid'); if (grid) grid.classList.remove('hidden');
+    var list = ['chatLetterPanel', 'chatLetterDetail', 'clpBackdrop', 'chatDivinePanel', 'cdvBackdrop', 'chatAccompanyPanel', 'acdBackdrop', 'chatStatsPanel', 'cstBackdrop'];
+    for (var i = 0; i < list.length; i++) { var el = document.getElementById(list[i]); if (el) el.classList.remove('active'); }
+  }
+
+  function hbOpen() {
+    var c = hbCurrentContact();
+    if (!c) { if (typeof showToast === 'function') showToast('请先进入一个聊天'); return; }
+    hbClosePanels();
+    var ava = document.getElementById('hbAvatar');
+    var nm = document.getElementById('hbToName');
+    var bal = document.getElementById('hbBalance');
+    var sub = document.getElementById('hbHeadSub');
+    if (nm) nm.textContent = c.name;
+    if (ava) ava.textContent = (c.name || '?').charAt(0);
+    if (sub) sub.textContent = '给 ' + c.name + ' 发一个红包';
+    var books = hbGetBooksLoose();
+    var cb = null;
+    for (var k = 0; k < books.length; k++) { if (books[k].isContact && books[k].contactName === c.name) { cb = books[k]; break; } }
+    if (bal) bal.textContent = '¥' + hbMoney(cb ? cb.balance : 0);
+    var amt = document.getElementById('hbAmount'); if (amt) amt.value = '';
+    var note = document.getElementById('hbNote'); if (note) note.value = '';
+    _hbSourceId = null;
+    hbRenderSources();
+    var mask = document.getElementById('hbMask'); if (mask) mask.classList.add('show');
+    var sheet = document.getElementById('hbSheet'); if (sheet) sheet.classList.add('show');
+    var ai = document.getElementById('hbAmount'); if (ai) setTimeout(function() { ai.focus(); }, 80);
+  }
+
+  function hbClose() {
+    var mask = document.getElementById('hbMask'); if (mask) mask.classList.remove('show');
+    var sheet = document.getElementById('hbSheet'); if (sheet) sheet.classList.remove('show');
+  }
+
+  function hbRenderSources() {
+    var box = document.getElementById('hbSources');
+    if (!box) return;
+    var books = hbGetBooksLoose();
+    var sources = books.filter(function(b) { return !b.isContact; });
+    if (sources.length === 0) { box.innerHTML = '<span style="font-size:12px;color:#999;">暂无可用账本，请先去「记账」添加</span>'; return; }
+    if (_hbSourceId === null || !sources.some(function(b) { return b.id === _hbSourceId; })) { _hbSourceId = sources[0].id; }
+    var html = '';
+    sources.forEach(function(b) {
+      html += '<button type="button" class="hb-source-chip' + (b.id === _hbSourceId ? ' active' : '') + '" data-hbsrc="' + b.id + '">' + hbEsc(b.name) + ' ¥' + hbMoney(b.balance) + '</button>';
+    });
+    box.innerHTML = html;
+    var chips = box.querySelectorAll('[data-hbsrc]');
+    for (var i = 0; i < chips.length; i++) {
+      chips[i].addEventListener('click', function() { _hbSourceId = this.dataset.hbsrc; hbRenderSources(); });
+    }
+  }
+
+  function hbSetAmount(v) { var amt = document.getElementById('hbAmount'); if (amt) amt.value = v; }
+
+  function hbSend() {
+    var c = hbCurrentContact();
+    if (!c) { if (typeof showToast === 'function') showToast('请先进入一个聊天'); return; }
+    var amtEl = document.getElementById('hbAmount');
+    var amount = amtEl ? parseFloat(amtEl.value) : NaN;
+    if (isNaN(amount) || amount <= 0) { if (typeof showToast === 'function') showToast('请输入红包金额'); if (amtEl) amtEl.focus(); return; }
+    amount = Math.round(amount * 100) / 100;
+    var books = hbGetBooksLoose();
+    var src = null;
+    for (var i = 0; i < books.length; i++) { if (books[i].id === _hbSourceId) { src = books[i]; break; } }
+    if (!src) { if (typeof showToast === 'function') showToast('请选择扣款账本'); return; }
+    if ((Number(src.balance) || 0) < amount) { if (typeof showToast === 'function') showToast('「' + src.name + '」余额不足'); return; }
+    var cb = null;
+    for (var j = 0; j < books.length; j++) { if (books[j].isContact && books[j].contactName === c.name) { cb = books[j]; break; } }
+    if (!cb) {
+      cb = { id: 'bk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name: c.name + '的恋爱基金', contactName: c.name, balance: 0, includeTotal: false, isContact: true };
+      books.push(cb);
+    }
+    src.balance = Math.round(((Number(src.balance) || 0) - amount) * 100) / 100;
+    cb.balance = Math.round(((Number(cb.balance) || 0) + amount) * 100) / 100;
+    hbSaveBooks(books);
+    var noteEl = document.getElementById('hbNote');
+    var noteTxt = noteEl ? noteEl.value.trim() : '';
+    if (!noteTxt) noteTxt = '恭喜发财，大吉大利';
+    var ledger = hbGetLedger();
+    ledger.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'expense', cat: '红包', amount: amount, note: '给' + c.name + '发红包 · ' + noteTxt, bookId: src.id, date: hbToday(), ts: Date.now() });
+    hbSaveLedger(ledger);
+    if (typeof chatHistories !== 'undefined' && currentChatId !== null && chatHistories[currentChatId]) {
+      var suffix = (noteTxt && noteTxt !== '恭喜发财，大吉大利') ? '：' + noteTxt : '';
+      chatHistories[currentChatId].push({ text: '🧧 给你发了一个红包 ¥' + hbMoney(amount) + suffix, from: 'me', time: hbTime(), sentAt: Date.now(), hongbao: true });
+      if (typeof renderMessages === 'function') renderMessages(currentChatId);
+    }
+    hbClose();
+    if (typeof showToast === 'function') showToast('红包已发出 ¥' + hbMoney(amount));
+  }
+
+  function hbBind() {
+    var btn = document.querySelector('.toolbar-item[data-tool="hongbao"]');
+    if (btn) btn.addEventListener('click', function(e) { e.stopPropagation(); hbOpen(); });
+    var mask = document.getElementById('hbMask'); if (mask) mask.addEventListener('click', hbClose);
+    var close = document.getElementById('hbClose'); if (close) close.addEventListener('click', hbClose);
+    var send = document.getElementById('hbSend'); if (send) send.addEventListener('click', hbSend);
+    var quick = document.getElementById('hbQuick');
+    if (quick) {
+      var chips = quick.querySelectorAll('[data-amt]');
+      for (var i = 0; i < chips.length; i++) { chips[i].addEventListener('click', function() { hbSetAmount(this.dataset.amt); }); }
+    }
+  }
+
+  hbBind();
+})();
 
 
 // ===== Theme System =====
