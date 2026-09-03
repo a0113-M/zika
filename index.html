@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="240";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="241";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v240</title>
+  <title>字卡 · 小手机 v241</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16664,6 +16664,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       // ----- 渲染消息 -----
       function renderMessages(contactId) {
+        if (typeof window.__hbSweepExpired === 'function') window.__hbSweepExpired(contactId);
         const messages = chatHistories[contactId] || [];
         chatMessages.innerHTML = '';
         if (messages.length === 0) {
@@ -16713,6 +16714,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             chatMessages.appendChild(patDiv);
             return;
           }
+          if (msg.hbSys) {
+            const sysDiv = document.createElement('div');
+            sysDiv.style.cssText = 'text-align:center;color:#9a938f;font-size:11px;padding:3px 0;letter-spacing:0.5px;';
+            sysDiv.textContent = msg.text;
+            chatMessages.appendChild(sysDiv);
+            return;
+          }
           // 红包消息特殊处理
           if (msg.hongbao) {
             var hb = msg.hongbao;
@@ -16721,7 +16729,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var hbBg = isReturned ? '#c8c0c6' : (isReceived ? '#dccbaa' : '#ef5a4f');
             var hbGold = isReturned ? '#f3edf1' : (isReceived ? '#70552f' : '#ffe3a0');
             var hbMute = isReturned ? 'rgba(255,255,255,0.72)' : (isReceived ? 'rgba(112,85,47,0.8)' : 'rgba(255,241,216,0.9)');
-            var stText = isReturned ? '已退回' : (isReceived ? '已领取' : '等待领取');
+            var stText = isReturned ? '已退回' : (isReceived ? '已领取' : (hb.unclaimed ? '对方暂时没领' : '等待领取'));
             var hbRow = document.createElement('div');
             hbRow.className = msg.from === 'me' ? 'msg-right' : 'msg-left';
             hbRow.style.cssText = 'display:flex;align-items:flex-end;gap:8px;margin:4px 0;max-width:88%;' + (msg.from === 'me' ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
@@ -33229,6 +33237,38 @@ function addToCart(goodId) {
           setTimeout(function () { hbResolve(_hbCid, hbId); }, 2600);
         }
 
+        function pushHbSys(msgs, mi, text) {
+          msgs.splice(mi + 1, 0, { from: 'sys', hbSys: true, text: text, time: hbTime(), sentAt: Date.now() });
+          if (typeof _saveChatHistories === 'function') _saveChatHistories();
+        }
+
+        function hbClaim(contactId, mi, hb, cname) {
+          var books = hbGetBooksLoose();
+          var cb = null;
+          for (var j = 0; j < books.length; j++) { if (books[j].isContact && books[j].contactName === cname) { cb = books[j]; break; } }
+          if (!cb) {
+            cb = { id: 'bk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name: cname + '的恋爱基金', contactName: cname, balance: 0, includeTotal: false, isContact: true };
+            books.push(cb);
+          }
+          cb.balance = Math.round(((Number(cb.balance) || 0) + hb.amount) * 100) / 100;
+          hbSaveBooks(books);
+          hb.state = 'received';
+          pushHbSys(chatHistories[contactId], mi, cname + '领取了你的红包');
+        }
+
+        function hbReturnMoney(contactId, mi, hb) {
+          var books = hbGetBooksLoose();
+          var sb = null;
+          for (var m = 0; m < books.length; m++) { if (books[m].id === hb.srcBookId) { sb = books[m]; break; } }
+          if (sb) { sb.balance = Math.round(((Number(sb.balance) || 0) + hb.amount) * 100) / 100; }
+          hbSaveBooks(books);
+          var lg = hbGetLedger();
+          lg.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'income', cat: '红包', amount: hb.amount, note: '红包超过48小时未领取，已退回', bookId: hb.srcBookId, date: hbToday(), ts: Date.now() });
+          hbSaveLedger(lg);
+          hb.state = 'returned';
+          pushHbSys(chatHistories[contactId], mi, '红包超过48小时未领取，已退回');
+        }
+
         function hbResolve(contactId, hbId) {
           if (typeof chatHistories === 'undefined' || !chatHistories[contactId]) return;
           var msgs = chatHistories[contactId];
@@ -33237,32 +33277,47 @@ function addToCart(goodId) {
           if (mi < 0) return;
           var hb = msgs[mi].hongbao;
           if (hb.state !== 'pending') return;
-          var received = Math.random() < 0.5;
-          var books = hbGetBooksLoose();
+          var willClaim = Math.random() < 0.5;
           var c = null;
           if (typeof contacts !== 'undefined') { for (var k = 0; k < contacts.length; k++) { if (contacts[k] && contacts[k].id === contactId) { c = contacts[k]; break; } } }
-          if (received) {
-            var cb = null;
-            for (var j = 0; j < books.length; j++) { if (books[j].isContact && books[j].contactName === (c ? c.name : '')) { cb = books[j]; break; } }
-            if (!cb && c) {
-              cb = { id: 'bk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name: c.name + '的恋爱基金', contactName: c.name, balance: 0, includeTotal: false, isContact: true };
-              books.push(cb);
-            }
-            if (cb) { cb.balance = Math.round(((Number(cb.balance) || 0) + hb.amount) * 100) / 100; }
-            hbSaveBooks(books);
-            hb.state = 'received';
+          var cname = c ? c.name : '对方';
+          if (willClaim) {
+            hbClaim(contactId, mi, hb, cname);
           } else {
-            var sb = null;
-            for (var m = 0; m < books.length; m++) { if (books[m].id === hb.srcBookId) { sb = books[m]; break; } }
-            if (sb) { sb.balance = Math.round(((Number(sb.balance) || 0) + hb.amount) * 100) / 100; }
-            hbSaveBooks(books);
-            var lg = hbGetLedger();
-            lg.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'income', cat: '红包', amount: hb.amount, note: '红包未领取，已退回', bookId: hb.srcBookId, date: hbToday(), ts: Date.now() });
-            hbSaveLedger(lg);
-            hb.state = 'returned';
+            hb.unclaimed = true;
+            hb.willReturnAt = Date.now() + 48 * 3600 * 1000;
+            pushHbSys(msgs, mi, '对方暂时没有领取你的红包，48小时后将退回');
+            setTimeout(function () { hbExpire(contactId, hbId); }, 48 * 3600 * 1000);
           }
           if (typeof renderMessages === 'function' && currentChatId === contactId) renderMessages(contactId);
         }
+
+        function hbExpire(contactId, hbId) {
+          if (typeof chatHistories === 'undefined' || !chatHistories[contactId]) return;
+          var msgs = chatHistories[contactId];
+          var mi = -1;
+          for (var i = 0; i < msgs.length; i++) { if (msgs[i].hongbao && msgs[i].hongbao.id === hbId) { mi = i; break; } }
+          if (mi < 0) return;
+          var hb = msgs[mi].hongbao;
+          if (hb.state !== 'pending' || !hb.unclaimed) return;
+          hbReturnMoney(contactId, mi, hb);
+          if (typeof renderMessages === 'function' && currentChatId === contactId) renderMessages(contactId);
+        }
+
+        function hbSweepExpired(contactId) {
+          if (typeof chatHistories === 'undefined' || !chatHistories[contactId]) return;
+          var msgs = chatHistories[contactId];
+          var changed = false;
+          for (var i = 0; i < msgs.length; i++) {
+            var hb = msgs[i].hongbao;
+            if (hb && hb.state === 'pending' && hb.unclaimed && hb.willReturnAt && Date.now() > hb.willReturnAt) {
+              hbReturnMoney(contactId, i, hb);
+              changed = true;
+            }
+          }
+          if (changed && typeof _saveChatHistories === 'function') _saveChatHistories();
+        }
+        window.__hbSweepExpired = hbSweepExpired;
 
         function hbBind() {
           var btn = document.querySelector('.toolbar-item[data-tool="hongbao"]');
