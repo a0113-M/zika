@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="255";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="256";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v255</title>
+  <title>字卡 · 小手机 v256</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13712,7 +13712,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <!-- 隐藏文件输入 -->
     <input type="file" id="importFileInput" accept=".txt">
     <input type="file" id="emojiFileInput" accept="image/*,image/gif" multiple>
-    <input type="file" id="importChatFileInput" accept=".txt">
+    <input type="file" id="importChatFileInput" accept=".txt,.json">
     <input type="file" id="importAllFileInput" accept=".json,application/json">
 
     <!-- Toast -->
@@ -13731,7 +13731,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </button>
         <button class="export-chat-option" id="exportToFile">
           <span class="option-label">导出为文件</span>
-          <span class="option-desc">下载为 .txt 文本文件</span>
+          <span class="option-desc">下载为 .json 数据文件</span>
+        </button>
+        <button class="export-chat-option" id="exportToImage">
+          <span class="option-label">导出为图片</span>
+          <span class="option-desc">选择消息生成聊天长图</span>
         </button>
       </div>
       <button class="export-chat-cancel" id="exportChatCancel">取消</button>
@@ -16201,6 +16205,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         exportToFile();
       });
 
+      document.getElementById('exportToImage').addEventListener('click', function () {
+        exportToImage();
+      });
+
       document.getElementById('exportChatCancel').addEventListener('click', function () {
         document.getElementById('exportChatModal').classList.remove('show');
       });
@@ -16272,6 +16280,36 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         reader.onload = function (ev) {
           try {
             const content = ev.target.result;
+            // 优先尝试 JSON 格式（本应用导出的 .json 文件）
+            let jsonMsgs = null;
+            try {
+              const j = JSON.parse(content);
+              if (j && j.type === 'chat-export' && Array.isArray(j.messages)) jsonMsgs = j.messages;
+            } catch (eJson) {}
+            if (jsonMsgs) {
+              const importedMessages = jsonMsgs.map(m => {
+                const o = { time: m.time || '', from: m.from === 'me' ? 'me' : (m.from || 'other') };
+                if (m.text) o.text = m.text;
+                if (m.image) o.image = m.image;
+                if (m.sticker) o.sticker = true;
+                if (m.isPat) o.isPat = true;
+                return o;
+              });
+              if (!importedMessages.length) { showToast('文件中没有消息'); return; }
+              if (!confirm(`确定要导入 ${importedMessages.length} 条消息到当前聊天吗？`)) return;
+              if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
+              importedMessages.forEach(msg => chatHistories[currentChatId].push(msg));
+              const contact = contacts.find(c => c.id === currentChatId);
+              if (contact && importedMessages.length > 0) {
+                const lastMsg = importedMessages[importedMessages.length - 1];
+                contact.lastMsg = lastMsg.text || '导入的消息';
+                contact.time = lastMsg.time || '刚刚';
+                if (!cardView.classList.contains('hidden')) refreshList();
+              }
+              renderMessages(currentChatId);
+              showToast(`成功导入 ${importedMessages.length} 条消息`);
+              return;
+            }
             const lines = content.split('\n').filter(line => line.trim() !== '');
 
             if (lines.length === 0) {
@@ -16560,20 +16598,272 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           const contact = contacts.find(c => c.id === currentChatId);
           const name = contact ? contact.name : '未知';
-          const text = selectedMsgs.map(msg => {
-            return `[${msg.time}] ${msg.from === 'me' ? '我' : (msg.from === 'other' ? '对方' : msg.from)}：${msg.text}`;
-          }).join('\n');
-          const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+          const data = {
+            app: 'zika',
+            type: 'chat-export',
+            contact: name,
+            exportedAt: new Date().toISOString(),
+            messages: selectedMsgs.map(msg => {
+              const o = { time: msg.time || '', from: msg.from || 'other' };
+              if (msg.text) o.text = msg.text;
+              if (msg.image) o.image = msg.image;
+              if (msg.sticker) o.sticker = true;
+              if (msg.isPat) o.isPat = true;
+              if (msg.hbSys) o.hbSys = true;
+              if (msg.hongbao) o.hongbao = msg.hongbao;
+              return o;
+            })
+          };
+          const text = JSON.stringify(data, null, 2);
+          const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
-          a.download = `聊天记录_${name}_${new Date().toLocaleDateString()}.txt`;
+          a.download = `聊天记录_${name}_${new Date().toLocaleDateString()}.json`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
           showToast(`✅ 已导出 ${selectedMsgs.length} 条消息为文件`);
         });
+      }
+
+      // 导出为图片 - 选择消息后生成聊天长图
+      function exportToImage() {
+        if (currentChatId === null) {
+          showToast('请先进入一个聊天');
+          return;
+        }
+        const messages = chatHistories[currentChatId] || [];
+        if (messages.length === 0) {
+          showToast('暂无聊天记录');
+          return;
+        }
+        document.getElementById('exportChatModal').classList.remove('show');
+        enterSelectMode(async function (selectedMsgs) {
+          if (selectedMsgs.length === 0) {
+            showToast('没有选择任何消息');
+            return;
+          }
+          showToast('正在生成图片…');
+          try {
+            await _exportChatImageCanvas(selectedMsgs);
+          } catch (err) {
+            console.error(err);
+            showToast('图片生成失败');
+          }
+        });
+      }
+
+      function _loadImgForExport(src) {
+        return new Promise(function (resolve) {
+          if (!src) { resolve(null); return; }
+          const im = new Image();
+          im.onload = function () { resolve(im); };
+          im.onerror = function () { resolve(null); };
+          im.src = src;
+        });
+      }
+
+      function _rrPath(ctx, x, y, w, h, r) {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
+        ctx.arcTo(x, y + h, x, y, r);
+        ctx.arcTo(x, y, x + w, y, r);
+        ctx.closePath();
+      }
+
+      async function _exportChatImageCanvas(selectedMsgs) {
+        const contact = contacts.find(c => c.id === currentChatId);
+        const name = contact ? contact.name : '未知';
+        const W = 720, PAD = 28, AV = 64, GAP = 14, MAXBW = 440, FS = 26, LH = 38, BPX = 20, BPY = 14, RGAP = 14, TIMEH = 34;
+
+        const meAva = (typeof userProfile !== 'undefined' && userProfile.avatarImage) ? await _loadImgForExport(userProfile.avatarImage) : null;
+        const ctAva = (contact && contact.avatarImage) ? await _loadImgForExport(contact.avatarImage) : null;
+
+        const imgCache = {};
+        for (const m of selectedMsgs) {
+          if (m.image && !imgCache[m.image]) imgCache[m.image] = await _loadImgForExport(m.image);
+        }
+
+        const meas = document.createElement('canvas').getContext('2d');
+        meas.font = FS + 'px sans-serif';
+        function wrapText(t, maxW) {
+          const lines = []; let line = '';
+          for (const ch of String(t == null ? '' : t)) {
+            if (ch === '\n') { lines.push(line || ' '); line = ''; continue; }
+            if (line && meas.measureText(line + ch).width > maxW) { lines.push(line); line = ch; }
+            else line += ch;
+          }
+          lines.push(line || ' ');
+          return lines;
+        }
+
+        const items = [];
+        let y = 140;
+        for (const m of selectedMsgs) {
+          if (m.isPat || m.hbSys) {
+            const lines = wrapText(m.text || '', W - PAD * 2 - 60);
+            const h = lines.length * 30 + 18;
+            items.push({ m, type: 'sys', lines, h, y });
+            y += h + RGAP;
+            continue;
+          }
+          if (m.hongbao) {
+            const h = 122 + TIMEH;
+            items.push({ m, type: 'hb', h, y });
+            y += h + RGAP;
+            continue;
+          }
+          if (m.image) {
+            const im = imgCache[m.image];
+            let iw = 300, ih = 300;
+            if (im) { const sc = Math.min(1, 420 / im.width, 420 / im.height); iw = Math.max(80, im.width * sc); ih = Math.max(80, im.height * sc); }
+            const h = Math.max(ih, AV) + TIMEH;
+            items.push({ m, type: 'img', im, iw, ih, h, y });
+            y += h + RGAP;
+            continue;
+          }
+          const lines = wrapText(m.text == null ? '' : m.text, MAXBW);
+          const tw = Math.max.apply(null, lines.map(l => meas.measureText(l).width));
+          const bw = Math.min(MAXBW + BPX * 2, tw + BPX * 2);
+          const bh = lines.length * LH + BPY * 2;
+          const h = Math.max(bh, AV) + TIMEH;
+          items.push({ m, type: 'text', lines, bw, bh, h, y });
+          y += h + RGAP;
+        }
+        const H = Math.max(y + 40, 420);
+
+        const cv = document.createElement('canvas');
+        cv.width = W; cv.height = H;
+        const ctx = cv.getContext('2d');
+        ctx.fillStyle = '#f6f4f9';
+        ctx.fillRect(0, 0, W, H);
+
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, W, 120);
+        ctx.fillStyle = '#6b5b8e';
+        ctx.font = 'bold 34px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('与 ' + name + ' 的聊天记录', W / 2, 48);
+        ctx.fillStyle = '#b0aab8';
+        ctx.font = '22px sans-serif';
+        ctx.fillText('导出于 ' + new Date().toLocaleString('zh-CN'), W / 2, 92);
+        ctx.textAlign = 'left';
+
+        function drawAvatar(isMe, top) {
+          const ax = isMe ? W - PAD - AV : PAD;
+          const img = isMe ? meAva : ctAva;
+          ctx.save();
+          _rrPath(ctx, ax, top, AV, AV, 12);
+          ctx.clip();
+          if (img) {
+            const sc = Math.max(AV / img.width, AV / img.height);
+            const dw = img.width * sc, dh = img.height * sc;
+            ctx.drawImage(img, ax + (AV - dw) / 2, top + (AV - dh) / 2, dw, dh);
+          } else {
+            ctx.fillStyle = isMe ? '#8b7ab8' : '#a99bc9';
+            ctx.fillRect(ax, top, AV, AV);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 30px sans-serif';
+            ctx.textAlign = 'center';
+            const nm = isMe ? '我' : name;
+            ctx.fillText(nm.slice(0, 1), ax + AV / 2, top + AV / 2 + 2);
+            ctx.textAlign = 'left';
+          }
+          ctx.restore();
+          return ax;
+        }
+
+        function drawTime(mm, isMe, top, contentH) {
+          ctx.fillStyle = '#b8b2c0';
+          ctx.font = '20px sans-serif';
+          if (isMe) { ctx.textAlign = 'right'; ctx.fillText(mm.time || '', W - PAD, top + contentH + 16); ctx.textAlign = 'left'; }
+          else { ctx.fillText(mm.time || '', PAD, top + contentH + 16); }
+        }
+
+        for (const it of items) {
+          const m = it.m;
+          const top = it.y;
+          if (it.type === 'sys') {
+            ctx.fillStyle = '#9a938f';
+            ctx.font = '22px sans-serif';
+            ctx.textAlign = 'center';
+            it.lines.forEach((l, i) => ctx.fillText(l, W / 2, top + 14 + i * 30));
+            ctx.textAlign = 'left';
+            continue;
+          }
+          const isMe = m.from === 'me';
+          const ax = drawAvatar(isMe, top);
+          if (it.type === 'text') {
+            const bx = isMe ? ax - GAP - it.bw : ax + AV + GAP;
+            ctx.save();
+            _rrPath(ctx, bx, top, it.bw, it.bh, 16);
+            ctx.clip();
+            ctx.fillStyle = isMe ? '#8b7ab8' : '#ffffff';
+            ctx.fillRect(bx, top, it.bw, it.bh);
+            ctx.restore();
+            ctx.fillStyle = isMe ? '#ffffff' : '#3c3650';
+            ctx.font = FS + 'px sans-serif';
+            it.lines.forEach((l, i) => ctx.fillText(l, bx + BPX, top + BPY + LH / 2 + i * LH));
+            drawTime(m, isMe, top, Math.max(it.bh, AV));
+          } else if (it.type === 'img') {
+            const ix = isMe ? ax - GAP - it.iw : ax + AV + GAP;
+            if (it.im) {
+              ctx.save();
+              _rrPath(ctx, ix, top, it.iw, it.ih, 10);
+              ctx.clip();
+              ctx.drawImage(it.im, ix, top, it.iw, it.ih);
+              ctx.restore();
+            } else {
+              ctx.fillStyle = '#e3ddef';
+              _rrPath(ctx, ix, top, 200, 140, 10);
+              ctx.fill();
+              ctx.fillStyle = '#9a93a8';
+              ctx.font = '20px sans-serif';
+              ctx.fillText('[图片]', ix + 66, top + 70);
+            }
+            drawTime(m, isMe, top, Math.max(it.ih, AV));
+          } else if (it.type === 'hb') {
+            const cardW = 360, cardH = 122;
+            const cx = isMe ? ax - GAP - cardW : ax + AV + GAP;
+            const hb = m.hongbao;
+            const st = hb.state;
+            const bg = st === 'returned' ? '#c8c0c6' : (st === 'received' ? '#dccbaa' : '#ef5a4f');
+            ctx.fillStyle = bg;
+            _rrPath(ctx, cx, top, cardW, cardH, 14);
+            ctx.fill();
+            ctx.fillStyle = st === 'pending' ? '#ffe3a0' : '#70552f';
+            ctx.font = 'bold 28px sans-serif';
+            ctx.fillText(hb.note || '红包', cx + 24, top + 42);
+            ctx.font = '24px sans-serif';
+            ctx.fillStyle = st === 'pending' ? 'rgba(255,241,216,0.92)' : 'rgba(112,85,47,0.9)';
+            const amt = '¥' + (Number(hb.amount) % 1 === 0 ? Number(hb.amount).toFixed(0) : Number(hb.amount).toFixed(2));
+            ctx.fillText(amt, cx + 24, top + 86);
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillStyle = st === 'pending' ? 'rgba(255,255,255,0.85)' : 'rgba(112,85,47,0.8)';
+            ctx.fillText(st === 'returned' ? '已退回' : (st === 'received' ? '已领取' : (hb.fromContact ? '待领取' : '未领取')), cx + cardW - 20, top + cardH - 24);
+            ctx.textAlign = 'left';
+            drawTime(m, isMe, top, cardH);
+          }
+        }
+
+        cv.toBlob(function (blob) {
+          if (!blob) { showToast('图片生成失败'); return; }
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `聊天记录_${name}_${new Date().toLocaleDateString()}.png`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(url); }, 3000);
+          showToast('✅ 已生成聊天长图');
+        }, 'image/png');
       }
 
       function searchChatHistory() {
