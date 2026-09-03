@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v228')){sessionStorage.setItem('zk_v228','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==228){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v229')){sessionStorage.setItem('zk_v229','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==229){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v228</title>
+  <title>字卡 · 小手机 v229</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15878,7 +15878,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
         const now = new Date();
         const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-        chatHistories[currentChatId].push({ text: '[图片]', from: 'me', time: timeStr, image: imageSrc, sentAt: Date.now() });
+        chatHistories[currentChatId].push({ text: '[图片]', from: 'me', time: timeStr, image: imageSrc, sentAt: Date.now(), sticker: true });
         renderMessages(currentChatId);
         emojiModule.classList.remove('active');
         document.getElementById('toolbarGrid').classList.remove('hidden');
@@ -16708,7 +16708,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               if (contact) { _zkSetContactAvatar(avatar, contact); _zkBindAvatarClick(avatar, contactId); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
-            const _isSticker = (typeof emojiList !== 'undefined' && emojiList && emojiList.indexOf(msg.image) >= 0);
+            const _isSticker = (msg.sticker === true) || (typeof emojiList !== 'undefined' && emojiList && emojiList.indexOf(msg.image) >= 0);
             const _imgMax = _isSticker ? 120 : 200;
             const img = document.createElement('img');
             img.src = msg.image;
@@ -19760,6 +19760,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var live = document.getElementById('tgLive');
         var a = _tgActive;
         if (!live || !a) return;
+        if (_tgCardMode) {
+          _tgCardMode = false;
+          var _pg0 = document.getElementById('togetherPage');
+          if (_pg0) _pg0.classList.remove('tg-card');
+          var _bd0 = document.getElementById('tgCardBackdrop');
+          if (_bd0) _bd0.classList.remove('active');
+        }
         if (!a.logs) a.logs = [];
         var st = _tgGetSettings();
         var sceneBg = TG_BG[a.key] || (a.custom ? TG_BG['__custom__'] : '');
@@ -21941,7 +21948,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       renderCardLists();
       refreshList();
       loadCardData();
-      loadEmojiList(renderEmojis);
+      loadEmojiList(function () { renderEmojis(); if (currentChatId !== null) { try { renderMessages(currentChatId); } catch (e) {} } });
       // 启动聊天顶部信息自动更新（每天随机时间刷新）
       // ----- 多选工具栏按钮事件 -----
       document.getElementById('btnSelectAll').addEventListener('click', function () {
