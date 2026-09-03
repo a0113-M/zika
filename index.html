@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="236";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="237";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v236</title>
+  <title>字卡 · 小手机 v237</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16718,48 +16718,63 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var hb = msg.hongbao;
             var isReturned = hb.state === 'returned';
             var isReceived = hb.state === 'received';
-            var hbBg = isReturned ? 'linear-gradient(135deg,#c9c2c6,#b3aab2)' : (isReceived ? 'linear-gradient(135deg,#d9c9a9,#c1ad8b)' : 'linear-gradient(135deg,#f1635a,#de3a33)');
-            var hbGold = isReturned ? '#eae4e8' : (isReceived ? '#6f5533' : '#ffd76e');
-            var hbMute = isReturned ? 'rgba(255,255,255,0.72)' : (isReceived ? 'rgba(111,85,51,0.8)' : 'rgba(255,238,205,0.92)');
+            var hbBg = isReturned ? '#c8c0c6' : (isReceived ? '#dccbaa' : '#ef5a4f');
+            var hbGold = isReturned ? '#f3edf1' : (isReceived ? '#70552f' : '#ffe3a0');
+            var hbMute = isReturned ? 'rgba(255,255,255,0.72)' : (isReceived ? 'rgba(112,85,47,0.8)' : 'rgba(255,241,216,0.9)');
             var stText = isReturned ? '已退回' : (isReceived ? '已领取' : '等待领取');
-            var hbWrap = document.createElement('div');
-            hbWrap.style.cssText = 'text-align:center;padding:6px 0;';
+            var hbRow = document.createElement('div');
+            hbRow.className = msg.from === 'me' ? 'msg-right' : 'msg-left';
+            hbRow.style.cssText = 'display:flex;align-items:flex-end;gap:8px;margin:4px 0;' + (msg.from === 'me' ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
+            var hbAvatar = document.createElement('div');
+            hbAvatar.className = 'msg-avatar';
+            var hbContact = contacts.find(function (c) { return c.id === contactId; });
+            if (msg.from === 'me') {
+              if (userProfile.avatarImage) {
+                var hbImg = document.createElement('img');
+                hbImg.src = userProfile.avatarImage;
+                hbImg.style.cssText = 'width:100%;height:100%;border-radius:4px;object-fit:cover;';
+                hbAvatar.appendChild(hbImg);
+                hbAvatar.style.background = 'transparent';
+              } else { hbAvatar.textContent = userProfile.avatar || '我'; hbAvatar.style.background = 'var(--primary)'; }
+            } else if (hbContact) {
+              _zkSetContactAvatar(hbAvatar, hbContact);
+              _zkBindAvatarClick(hbAvatar, contactId);
+            } else { hbAvatar.textContent = '?'; hbAvatar.style.background = '#999'; }
             var hbCard = document.createElement('div');
-            hbCard.style.cssText = 'display:inline-flex;align-items:center;gap:12px;min-width:198px;max-width:88%;padding:12px 14px;border-radius:14px;background:' + hbBg + ';box-shadow:0 6px 16px rgba(0,0,0,0.14);text-align:left;';
-            var hbIcon = document.createElement('div');
-            hbIcon.textContent = '🧧';
-            hbIcon.style.cssText = 'font-size:32px;line-height:1;flex-shrink:0;' + (isReturned ? 'filter:grayscale(0.85);opacity:0.78;' : '');
-            var hbRight = document.createElement('div');
-            hbRight.style.cssText = 'display:flex;flex-direction:column;gap:3px;min-width:0;';
+            hbCard.style.cssText = 'padding:8px 12px;border-radius:10px;background:' + hbBg + ';text-align:left;max-width:76%;';
             var hbNote = document.createElement('div');
             hbNote.textContent = hb.note || '恭喜发财，大吉大利';
-            hbNote.style.cssText = 'font-size:12px;letter-spacing:1px;color:' + hbMute + ';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+            hbNote.style.cssText = 'font-size:11px;letter-spacing:1px;color:' + hbMute + ';';
+            hbCard.appendChild(hbNote);
             var hbAmt = document.createElement('div');
             var amtVal = Number(hb.amount) || 0;
             var amtParts = amtVal.toFixed(2).split('.');
-            hbAmt.style.cssText = 'display:flex;align-items:baseline;gap:1px;color:' + hbGold + ';';
+            hbAmt.style.cssText = 'display:flex;align-items:baseline;gap:2px;margin-top:2px;';
             var sYuan = document.createElement('span');
             sYuan.textContent = '¥';
-            sYuan.style.cssText = 'font-size:14px;font-weight:600;';
+            sYuan.style.cssText = 'font-size:13px;font-weight:600;color:' + hbGold + ';';
             var sInt = document.createElement('span');
             sInt.textContent = amtParts[0];
-            sInt.style.cssText = 'font-size:24px;font-weight:700;line-height:1.1;';
+            sInt.style.cssText = 'font-size:21px;font-weight:700;line-height:1.05;color:' + hbGold + ';';
             var sDec = document.createElement('span');
             sDec.textContent = '.' + amtParts[1];
-            sDec.style.cssText = 'font-size:13px;font-weight:600;';
+            sDec.style.cssText = 'font-size:12px;font-weight:600;color:' + hbGold + ';';
             hbAmt.appendChild(sYuan);
             hbAmt.appendChild(sInt);
             hbAmt.appendChild(sDec);
-            var hbSt = document.createElement('div');
+            var hbSt = document.createElement('span');
             hbSt.textContent = stText;
-            hbSt.style.cssText = 'font-size:10px;color:' + hbMute + ';opacity:0.85;letter-spacing:1px;';
-            hbRight.appendChild(hbNote);
-            hbRight.appendChild(hbAmt);
-            hbRight.appendChild(hbSt);
-            hbCard.appendChild(hbIcon);
-            hbCard.appendChild(hbRight);
-            hbWrap.appendChild(hbCard);
-            chatMessages.appendChild(hbWrap);
+            hbSt.style.cssText = 'font-size:10px;color:' + hbMute + ';opacity:0.85;margin-left:8px;letter-spacing:0.5px;';
+            hbAmt.appendChild(hbSt);
+            hbCard.appendChild(hbAmt);
+            if (msg.from === 'me') {
+              hbRow.appendChild(hbCard);
+              hbRow.appendChild(hbAvatar);
+            } else {
+              hbRow.appendChild(hbAvatar);
+              hbRow.appendChild(hbCard);
+            }
+            chatMessages.appendChild(hbRow);
             return;
           }
           if (msg.voice) {
