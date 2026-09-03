@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="245";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="246";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v245</title>
+  <title>字卡 · 小手机 v246</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -33360,10 +33360,16 @@ function addToCart(goodId) {
           if (!cb) return;
           var pool = [5.20, 13.14, 20.00, 52.00, 66.66, 88.88];
           var notes = ['小小心意', '给你买好吃的', '爱你哦', '拿去花', '请你喝奶茶', '想你啦'];
-          var ok = [];
-          for (var pp = 0; pp < pool.length; pp++) { if (pool[pp] <= (Number(cb.balance) || 0)) ok.push(pool[pp]); }
-          if (!ok.length) return;
-          var amount = ok[Math.floor(Math.random() * ok.length)];
+          var amount;
+          if (Math.random() < 0.5) {
+            var ok = [];
+            for (var pp = 0; pp < pool.length; pp++) { if (pool[pp] <= (Number(cb.balance) || 0)) ok.push(pool[pp]); }
+            if (!ok.length) return;
+            amount = ok[Math.floor(Math.random() * ok.length)];
+          } else {
+            amount = Math.round((1 + Math.random() * 87.88) * 100) / 100;
+            if (amount > (Number(cb.balance) || 0)) return;
+          }
           cb.balance = Math.round(((Number(cb.balance) || 0) - amount) * 100) / 100;
           hbSaveBooks(books);
           if (typeof chatHistories === 'undefined' || !chatHistories[contactId]) return;
