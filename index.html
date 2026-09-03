@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="237";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="238";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v237</title>
+  <title>字卡 · 小手机 v238</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16767,13 +16767,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             hbSt.style.cssText = 'font-size:10px;color:' + hbMute + ';opacity:0.85;margin-left:8px;letter-spacing:0.5px;';
             hbAmt.appendChild(hbSt);
             hbCard.appendChild(hbAmt);
-            if (msg.from === 'me') {
-              hbRow.appendChild(hbCard);
-              hbRow.appendChild(hbAvatar);
-            } else {
-              hbRow.appendChild(hbAvatar);
-              hbRow.appendChild(hbCard);
-            }
+            hbRow.appendChild(hbAvatar);
+            hbRow.appendChild(hbCard);
             chatMessages.appendChild(hbRow);
             return;
           }
