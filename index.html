@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="256";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="257";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v256</title>
+  <title>字卡 · 小手机 v257</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16408,9 +16408,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       let isSelectMode = false;
       let selectedMessages = new Set();
       let selectCallback = null; // 选择完成后的回调
+      let selectPurpose = 'diary'; // 当前导出目的：diary/file/image
 
-      // 进入多选模式
-      function enterSelectMode(callback) {
+      // 进入多选模式（purpose: diary/file/image）
+      function enterSelectMode(callback, purpose) {
         if (currentChatId === null) {
           showToast('请先进入一个聊天');
           return;
@@ -16424,6 +16425,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         isSelectMode = true;
         selectedMessages = new Set();
         selectCallback = callback;
+        selectPurpose = purpose || 'diary';
 
         // 添加选择模式样式
         document.getElementById('chatMessages').classList.add('select-mode');
@@ -16521,36 +16523,44 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return;
         }
 
-        // 格式化聊天记录
-        let text = `聊天记录 - ${name}\n`;
-        text += `${'╌'.repeat(20)}\n`;
-        selectedMsgs.forEach(msg => {
-          const sender = msg.from === 'me' ? '我' : name;
-          text += `[${msg.time}] ${sender}：${msg.text}\n`;
-        });
-        text += `${'╌'.repeat(20)}`;
+        // 仅「导出到日记」模式才写入日记；导出文件/图片模式不重复存日记
+        if (selectPurpose === 'diary') {
+          // 格式化聊天记录
+          let text = `聊天记录 - ${name}\n`;
+          text += `${'╌'.repeat(20)}\n`;
+          selectedMsgs.forEach(msg => {
+            const sender = msg.from === 'me' ? '我' : name;
+            text += `[${msg.time}] ${sender}：${msg.text}\n`;
+          });
+          text += `${'╌'.repeat(20)}`;
 
-        // 保存到日记（使用 localStorage）
-        let diaryEntries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
-        const entry = {
-          id: Date.now(),
-          title: `聊天记录 - ${name} (${selectedMsgs.length}条)`,
-          content: text,
-          date: new Date().toISOString(),
-          visibility: 'private',
-          type: 'chat'
-        };
-        diaryEntries.unshift(entry);
-        try { localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries)); } catch(e) {}
+          // 保存到日记（使用 localStorage）
+          let diaryEntries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
+          const entry = {
+            id: Date.now(),
+            title: `聊天记录 - ${name} (${selectedMsgs.length}条)`,
+            content: text,
+            date: new Date().toISOString(),
+            visibility: 'private',
+            type: 'chat'
+          };
+          diaryEntries.unshift(entry);
+          try { localStorage.setItem('diaryEntries', JSON.stringify(diaryEntries)); } catch(e) {}
+        }
+
+        // 先取出回调再清空（exitSelectMode 会把 selectCallback 置空）
+        const cb = selectCallback;
+        selectCallback = null;
 
         // 关闭选择模式
         exitSelectMode();
-        showToast(`✅ 已导出 ${selectedMsgs.length} 条消息到日记`);
+        if (selectPurpose === 'diary') {
+          showToast(`✅ 已导出 ${selectedMsgs.length} 条消息到日记`);
+        }
 
-        // 如果有回调，执行回调
-        if (selectCallback) {
-          selectCallback(selectedMsgs);
-          selectCallback = null;
+        // 执行回调（文件下载 / 图片生成）
+        if (cb) {
+          cb(selectedMsgs);
         }
       }
       // 导出到日记 - 进入选择模式
@@ -16625,7 +16635,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           document.body.removeChild(a);
           URL.revokeObjectURL(url);
           showToast(`✅ 已导出 ${selectedMsgs.length} 条消息为文件`);
-        });
+        }, 'file');
       }
 
       // 导出为图片 - 选择消息后生成聊天长图
@@ -16652,7 +16662,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             console.error(err);
             showToast('图片生成失败');
           }
-        });
+        }, 'image');
       }
 
       function _loadImgForExport(src) {
