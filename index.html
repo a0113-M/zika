@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="260";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="261";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v260</title>
+  <title>字卡 · 小手机 v261</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16542,7 +16542,19 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           text += `${'╌'.repeat(20)}\n`;
           selectedMsgs.forEach(msg => {
             const sender = msg.from === 'me' ? '我' : name;
-            text += `[${msg.time}] ${sender}：${msg.text}\n`;
+            let content = msg.text;
+            if (msg.hongbao) {
+              const hb = msg.hongbao || {};
+              const st = hb.state === 'received' ? '已领取' : (hb.state === 'returned' ? '已退回' : '待领取');
+              content = `[红包] ${hb.note || ''} ¥${hb.amount}（${st}）`;
+            } else if (msg.image) {
+              content = msg.sticker ? '[表情包]' : '[图片]';
+            } else if (msg.video) {
+              content = '[视频]';
+            } else if (msg.voice) {
+              content = '[语音]' + (msg.voiceDuration > 0 ? ' ' + Math.round(msg.voiceDuration) + '″' : '');
+            }
+            text += `[${msg.time}] ${sender}：${content}\n`;
           });
           text += `${'╌'.repeat(20)}`;
 
