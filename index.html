@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="258";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="259";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v258</title>
+  <title>字卡 · 小手机 v259</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -17015,6 +17015,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             } else {
               bubble.textContent = msg.text;
             }
+            decDiv.className = 'selectable-sys';
+            decDiv.dataset.index = index;
+            decDiv.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             decDiv.appendChild(bubble);
             chatMessages.appendChild(decDiv);
             return;
@@ -17100,8 +17105,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             hbCard.appendChild(hbAmt);
             if (hb.fromContact && !isReceived && !isReturned) {
               hbCard.style.cursor = 'pointer';
-              hbCard.addEventListener('click', function () { if (typeof window.__hbClaimFromContact === 'function') window.__hbClaimFromContact(contactId, hb.id); });
+              hbCard.addEventListener('click', function () { if (isSelectMode) return; if (typeof window.__hbClaimFromContact === 'function') window.__hbClaimFromContact(contactId, hb.id); });
             }
+            hbRow.dataset.index = index;
+            hbRow.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             hbRow.appendChild(hbAvatar);
             hbRow.appendChild(hbCard);
             chatMessages.appendChild(hbRow);
@@ -17131,7 +17140,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const vBubble = document.createElement('div');
             vBubble.className = 'msg-bubble';
             vBubble.style.cssText = 'display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;min-width:88px;';
-            vBubble.addEventListener('click', function () { playAudioUrl(msg.voice); });
+            vBubble.addEventListener('click', function () { if (isSelectMode) return; playAudioUrl(msg.voice); });
             const vPlay = document.createElement('span');
             vPlay.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><polygon points="8,5 19,12 8,19"/></svg>';
             vPlay.style.cssText = 'display:inline-flex;color:var(--primary);flex-shrink:0;';
@@ -17159,6 +17168,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               vRow.appendChild(vWrapper);
               vRow.appendChild(vTime);
             }
+            vRow.dataset.index = index;
+            vRow.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             chatMessages.appendChild(vRow);
             return;
           }
@@ -17185,13 +17198,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const img = document.createElement('img');
             img.src = msg.image;
             img.style.cssText = `max-width:${_imgMax}px;max-height:${_imgMax}px;border-radius:8px;object-fit:cover;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);${msg.from === 'me' ? 'order:1;' : 'order:2;'}`;
-            img.addEventListener('click', function (e) { e.stopPropagation(); showImagePreview(msg.image); });
+            img.addEventListener('click', function (e) { if (isSelectMode) return; e.stopPropagation(); showImagePreview(msg.image); });
 
             // 消息时间显示在气泡下方
             const timeLabel = document.createElement('span');
             timeLabel.style.cssText = `font-size:10px;color:#b0b0b0;${msg.from === 'me' ? 'order:0;margin-right:4px;' : 'order:3;margin-left:4px;'}`;
             timeLabel.textContent = currentTime;
 
+            row.className = 'selectable-sys';
+            row.dataset.index = index;
+            row.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             row.appendChild(avatar);
             row.appendChild(img);
             row.appendChild(timeLabel);
@@ -17235,6 +17253,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             timeLabel.style.cssText = `font-size:10px;color:#b0b0b0;${msg.from === 'me' ? 'order:0;margin-right:4px;' : 'order:3;margin-left:4px;'}`;
             timeLabel.textContent = currentTime;
 
+            row.className = 'selectable-sys';
+            row.dataset.index = index;
+            row.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             row.appendChild(avatar);
             row.appendChild(videoWrap);
             row.appendChild(timeLabel);
