@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v225')){sessionStorage.setItem('zk_v225','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==225){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v226')){sessionStorage.setItem('zk_v226','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==226){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v225</title>
+  <title>字卡 · 小手机 v226</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16657,9 +16657,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               if (contact) { _zkSetContactAvatar(avatar, contact); _zkBindAvatarClick(avatar, contactId); }
               else { avatar.textContent = '?'; avatar.style.background = '#999'; }
             }
+            const _isSticker = (typeof emojiList !== 'undefined' && emojiList && emojiList.indexOf(msg.image) >= 0);
+            const _imgMax = _isSticker ? 120 : 200;
             const img = document.createElement('img');
             img.src = msg.image;
-            img.style.cssText = `max-width:200px;max-height:200px;border-radius:8px;object-fit:cover;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);${msg.from === 'me' ? 'order:1;' : 'order:2;'}`;
+            img.style.cssText = `max-width:${_imgMax}px;max-height:${_imgMax}px;border-radius:8px;object-fit:cover;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.1);${msg.from === 'me' ? 'order:1;' : 'order:2;'}`;
             img.addEventListener('click', function (e) { e.stopPropagation(); showImagePreview(msg.image); });
 
             // 消息时间显示在气泡下方
@@ -25314,6 +25316,7 @@ patText2 = patText2.replace(/你/g, '我');
         // 工具栏入口
         document.querySelector('.toolbar-item[data-tool="together"]').addEventListener('click', function (e) {
           e.stopPropagation();
+          var was = panel.classList.contains('active');
           closePanel();
           document.getElementById('chatDivinePanel').classList.remove('active');
           document.getElementById('cdvBackdrop').classList.remove('active');
@@ -25324,8 +25327,7 @@ patText2 = patText2.replace(/你/g, '我');
           document.getElementById('emojiModule').classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
           if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
-          if (currentChatId) { _tgCurrentId = currentChatId; }
-          openTogetherPage();
+          if (!was) openPanel();
         });
       })();
 
