@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="233";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="234";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v233</title>
+  <title>字卡 · 小手机 v234</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16713,6 +16713,35 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             chatMessages.appendChild(patDiv);
             return;
           }
+          // 红包消息特殊处理
+          if (msg.hongbao) {
+            var hb = msg.hongbao;
+            var hbWrap = document.createElement('div');
+            hbWrap.style.cssText = 'text-align:center;padding:6px 0;';
+            var hbCard = document.createElement('div');
+            var hbStateColor = { pending: 'linear-gradient(135deg,#f76d6d,#e05555)', received: 'linear-gradient(135deg,#eba3a3,#d37f7f)', returned: 'linear-gradient(135deg,#c9c4d4,#aaa3b7)' };
+            var hbStateText = { pending: '待对方领取', received: '已领取', returned: '已退回' };
+            hbCard.style.cssText = 'display:inline-block;width:190px;max-width:76%;padding:14px 16px;border-radius:12px;background:' + (hbStateColor[hb.state] || hbStateColor.pending) + ';color:#fff;box-shadow:0 4px 14px rgba(224,85,85,0.22);text-align:center;';
+            var hbIcon = document.createElement('div');
+            hbIcon.textContent = '🧧';
+            hbIcon.style.cssText = 'font-size:26px;';
+            var hbNote = document.createElement('div');
+            hbNote.textContent = hb.note || '恭喜发财，大吉大利';
+            hbNote.style.cssText = 'font-size:12px;opacity:0.95;margin-top:4px;';
+            var hbAmt = document.createElement('div');
+            hbAmt.textContent = '¥' + (Number(hb.amount) || 0).toFixed(2);
+            hbAmt.style.cssText = 'font-size:20px;font-weight:700;margin-top:6px;';
+            var hbSt = document.createElement('div');
+            hbSt.textContent = hbStateText[hb.state] || '';
+            hbSt.style.cssText = 'font-size:11px;opacity:0.85;margin-top:7px;border-top:1px solid rgba(255,255,255,0.3);padding-top:6px;';
+            hbCard.appendChild(hbIcon);
+            hbCard.appendChild(hbNote);
+            hbCard.appendChild(hbAmt);
+            hbCard.appendChild(hbSt);
+            hbWrap.appendChild(hbCard);
+            chatMessages.appendChild(hbWrap);
+            return;
+          }
           if (msg.voice) {
             const vRow = document.createElement('div');
             vRow.className = msg.from === 'me' ? 'msg-right' : 'msg-left';
@@ -33151,28 +33180,58 @@ function addToCart(goodId) {
           for (var i = 0; i < books.length; i++) { if (books[i].id === _hbSourceId) { src = books[i]; break; } }
           if (!src) { if (typeof showToast === 'function') showToast('请选择扣款账本'); return; }
           if ((Number(src.balance) || 0) < amount) { if (typeof showToast === 'function') showToast('「' + src.name + '」余额不足'); return; }
-          var cb = null;
-          for (var j = 0; j < books.length; j++) { if (books[j].isContact && books[j].contactName === c.name) { cb = books[j]; break; } }
-          if (!cb) {
-            cb = { id: 'bk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name: c.name + '的恋爱基金', contactName: c.name, balance: 0, includeTotal: false, isContact: true };
-            books.push(cb);
-          }
           src.balance = Math.round(((Number(src.balance) || 0) - amount) * 100) / 100;
-          cb.balance = Math.round(((Number(cb.balance) || 0) + amount) * 100) / 100;
           hbSaveBooks(books);
           var noteEl = document.getElementById('hbNote');
           var noteTxt = noteEl ? noteEl.value.trim() : '';
           if (!noteTxt) noteTxt = '恭喜发财，大吉大利';
+          var hbId = 'hb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
           var ledger = hbGetLedger();
           ledger.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'expense', cat: '红包', amount: amount, note: '给' + c.name + '发红包 · ' + noteTxt, bookId: src.id, date: hbToday(), ts: Date.now() });
           hbSaveLedger(ledger);
           if (typeof chatHistories !== 'undefined' && currentChatId !== null && chatHistories[currentChatId]) {
-            var suffix = (noteTxt && noteTxt !== '恭喜发财，大吉大利') ? '：' + noteTxt : '';
-            chatHistories[currentChatId].push({ text: '🧧 给你发了一个红包 ¥' + hbMoney(amount) + suffix, from: 'me', time: hbTime(), sentAt: Date.now(), hongbao: true });
+            chatHistories[currentChatId].push({ from: 'me', hongbao: { id: hbId, amount: amount, note: noteTxt, state: 'pending', srcBookId: src.id }, time: hbTime(), sentAt: Date.now() });
             if (typeof renderMessages === 'function') renderMessages(currentChatId);
           }
           hbClose();
-          if (typeof showToast === 'function') showToast('红包已发出 ¥' + hbMoney(amount));
+          if (typeof showToast === 'function') showToast('红包已发出，等对方领取');
+          var _hbCid = c.id;
+          setTimeout(function () { hbResolve(_hbCid, hbId); }, 2600);
+        }
+
+        function hbResolve(contactId, hbId) {
+          if (typeof chatHistories === 'undefined' || !chatHistories[contactId]) return;
+          var msgs = chatHistories[contactId];
+          var mi = -1;
+          for (var i = 0; i < msgs.length; i++) { if (msgs[i].hongbao && msgs[i].hongbao.id === hbId) { mi = i; break; } }
+          if (mi < 0) return;
+          var hb = msgs[mi].hongbao;
+          if (hb.state !== 'pending') return;
+          var received = Math.random() < 0.5;
+          var books = hbGetBooksLoose();
+          var c = null;
+          if (typeof contacts !== 'undefined') { for (var k = 0; k < contacts.length; k++) { if (contacts[k] && contacts[k].id === contactId) { c = contacts[k]; break; } } }
+          if (received) {
+            var cb = null;
+            for (var j = 0; j < books.length; j++) { if (books[j].isContact && books[j].contactName === (c ? c.name : '')) { cb = books[j]; break; } }
+            if (!cb && c) {
+              cb = { id: 'bk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name: c.name + '的恋爱基金', contactName: c.name, balance: 0, includeTotal: false, isContact: true };
+              books.push(cb);
+            }
+            if (cb) { cb.balance = Math.round(((Number(cb.balance) || 0) + hb.amount) * 100) / 100; }
+            hbSaveBooks(books);
+            hb.state = 'received';
+          } else {
+            var sb = null;
+            for (var m = 0; m < books.length; m++) { if (books[m].id === hb.srcBookId) { sb = books[m]; break; } }
+            if (sb) { sb.balance = Math.round(((Number(sb.balance) || 0) + hb.amount) * 100) / 100; }
+            hbSaveBooks(books);
+            var lg = hbGetLedger();
+            lg.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'income', cat: '红包', amount: hb.amount, note: '红包未领取，已退回', bookId: hb.srcBookId, date: hbToday(), ts: Date.now() });
+            hbSaveLedger(lg);
+            hb.state = 'returned';
+          }
+          if (typeof renderMessages === 'function' && currentChatId === contactId) renderMessages(contactId);
         }
 
         function hbBind() {
