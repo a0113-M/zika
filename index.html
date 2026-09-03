@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="239";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="240";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v239</title>
+  <title>字卡 · 小手机 v240</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16724,7 +16724,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var stText = isReturned ? '已退回' : (isReceived ? '已领取' : '等待领取');
             var hbRow = document.createElement('div');
             hbRow.className = msg.from === 'me' ? 'msg-right' : 'msg-left';
-            hbRow.style.cssText = 'display:flex;align-items:flex-end;gap:8px;margin:4px 0;' + (msg.from === 'me' ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
+            hbRow.style.cssText = 'display:flex;align-items:flex-end;gap:8px;margin:4px 0;max-width:88%;' + (msg.from === 'me' ? 'justify-content:flex-end;' : 'justify-content:flex-start;');
             var hbAvatar = document.createElement('div');
             hbAvatar.className = 'msg-avatar';
             var hbContact = contacts.find(function (c) { return c.id === contactId; });
@@ -16741,7 +16741,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               _zkBindAvatarClick(hbAvatar, contactId);
             } else { hbAvatar.textContent = '?'; hbAvatar.style.background = '#999'; }
             var hbCard = document.createElement('div');
-            hbCard.style.cssText = 'min-width:232px;max-width:82%;padding:11px 14px 10px;border-radius:10px;background:' + hbBg + ';border:1px solid rgba(255,255,255,0.26);text-align:left;';
+            hbCard.style.cssText = 'min-width:218px;max-width:82%;padding:11px 14px 10px;border-radius:10px;background:' + hbBg + ';border:1px solid rgba(255,255,255,0.26);text-align:left;';
             var hbNote = document.createElement('div');
             hbNote.textContent = hb.note || '恭喜发财，大吉大利';
             hbNote.style.cssText = 'font-size:11px;letter-spacing:1px;color:' + hbMute + ';padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,0.26);';
