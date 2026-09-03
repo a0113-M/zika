@@ -15778,13 +15778,52 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const el = document.getElementById('typingIndicator');
         if (!el) return;
         const t = document.getElementById('typingText');
-        if (t) t.textContent = text || '对方正在输入中';
+        if (t) {
+          let base = '对方正在输入中';
+          try { base = localStorage.getItem('zk_typing_text') || base; } catch (e) {}
+          t.textContent = (text !== undefined && text !== null && text !== '') ? text : base;
+        }
         el.style.display = 'flex';
       }
       function _zkHideTyping() {
         const el = document.getElementById('typingIndicator');
         if (el) el.style.display = 'none';
       }
+
+      // 点击"对方正在输入中"文字即可自定义修改
+      (function () {
+        const typingTextEl = document.getElementById('typingText');
+        if (!typingTextEl) return;
+        typingTextEl.addEventListener('click', function () {
+          const self = this;
+          let finished = false;
+          const finish = function () {
+            if (finished) return;
+            finished = true;
+            self.contentEditable = 'false';
+            self.removeEventListener('blur', finish);
+            self.removeEventListener('keydown', onKey);
+            let v = (self.textContent || '').replace(/\s+/g, ' ').trim();
+            if (v === '') { v = '对方正在输入中'; }
+            self.textContent = v;
+            try { localStorage.setItem('zk_typing_text', v); } catch (e) {}
+          };
+          const onKey = function (ev) {
+            if (ev.key === 'Enter' || ev.key === 'Escape') { ev.preventDefault(); self.blur(); }
+          };
+          self.contentEditable = 'true';
+          self.addEventListener('blur', finish);
+          self.addEventListener('keydown', onKey);
+          self.focus();
+          try {
+            const r = document.createRange();
+            r.selectNodeContents(self);
+            const sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(r);
+          } catch (e) {}
+        });
+      })();
 
       function sendEmojiMessage(imageSrc) {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
