@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="241";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="242";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v241</title>
+  <title>字卡 · 小手机 v242</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -33256,17 +33256,17 @@ function addToCart(goodId) {
           pushHbSys(chatHistories[contactId], mi, cname + '领取了你的红包');
         }
 
-        function hbReturnMoney(contactId, mi, hb) {
+        function hbReturnMoney(contactId, mi, hb, sysText, lgNote) {
           var books = hbGetBooksLoose();
           var sb = null;
           for (var m = 0; m < books.length; m++) { if (books[m].id === hb.srcBookId) { sb = books[m]; break; } }
           if (sb) { sb.balance = Math.round(((Number(sb.balance) || 0) + hb.amount) * 100) / 100; }
           hbSaveBooks(books);
           var lg = hbGetLedger();
-          lg.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'income', cat: '红包', amount: hb.amount, note: '红包超过48小时未领取，已退回', bookId: hb.srcBookId, date: hbToday(), ts: Date.now() });
+          lg.unshift({ id: 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6), type: 'income', cat: '红包', amount: hb.amount, note: lgNote || '红包超过48小时未领取，已退回', bookId: hb.srcBookId, date: hbToday(), ts: Date.now() });
           hbSaveLedger(lg);
           hb.state = 'returned';
-          pushHbSys(chatHistories[contactId], mi, '红包超过48小时未领取，已退回');
+          pushHbSys(chatHistories[contactId], mi, sysText || '红包超过48小时未领取，已退回');
         }
 
         function hbResolve(contactId, hbId) {
@@ -33277,12 +33277,14 @@ function addToCart(goodId) {
           if (mi < 0) return;
           var hb = msgs[mi].hongbao;
           if (hb.state !== 'pending') return;
-          var willClaim = Math.random() < 0.5;
+          var roll = Math.random();
           var c = null;
           if (typeof contacts !== 'undefined') { for (var k = 0; k < contacts.length; k++) { if (contacts[k] && contacts[k].id === contactId) { c = contacts[k]; break; } } }
           var cname = c ? c.name : '对方';
-          if (willClaim) {
+          if (roll < 0.4) {
             hbClaim(contactId, mi, hb, cname);
+          } else if (roll < 0.8) {
+            hbReturnMoney(contactId, mi, hb, cname + '退回了你的红包', '红包被对方退回');
           } else {
             hb.unclaimed = true;
             hb.willReturnAt = Date.now() + 48 * 3600 * 1000;
