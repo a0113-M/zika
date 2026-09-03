@@ -20778,8 +20778,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const toast = document.getElementById('toast');
         toast.textContent = text;
         toast.classList.add('show');
+        toast.style.opacity = '1';
+        toast.style.visibility = 'visible';
         if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () { toast.classList.remove('show'); toastTimer = null; }, 2000);
+        toastTimer = setTimeout(function () {
+          toast.classList.remove('show');
+          toast.style.opacity = '0';
+          toast.style.visibility = 'hidden';
+          toastTimer = null;
+        }, 2000);
       }
 
       // ----- 字卡功能 -----
