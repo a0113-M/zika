@@ -5585,15 +5585,23 @@
       font-size: 15px;
       z-index: 500;
       opacity: 0;
+      visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.3s ease;
       text-align: center;
       max-width: 260px;
       backdrop-filter: blur(4px);
     }
 
     .toast.show {
-      opacity: 1;
+      visibility: visible;
+      animation: zkToastAutoHide 2s ease forwards;
+    }
+
+    @keyframes zkToastAutoHide {
+      0% { opacity: 0; visibility: visible; }
+      10% { opacity: 1; visibility: visible; }
+      78% { opacity: 1; visibility: visible; }
+      100% { opacity: 0; visibility: hidden; }
     }
 
     /* --- 字卡功能页面 --- */
@@ -20773,20 +20781,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       document.getElementById('featureClearCacheBtn').addEventListener('click', function () { if (confirm('清除所有缓存数据？联系人和聊天记录将丢失。')) { localStorage.clear(); location.reload(); } });
 
       // ----- Toast -----
-      let toastTimer = null;
       function showToast(text) {
         const toast = document.getElementById('toast');
         toast.textContent = text;
+        toast.classList.remove('show');
+        void toast.offsetWidth;
         toast.classList.add('show');
-        toast.style.opacity = '1';
-        toast.style.visibility = 'visible';
-        if (toastTimer) clearTimeout(toastTimer);
-        toastTimer = setTimeout(function () {
-          toast.classList.remove('show');
-          toast.style.opacity = '0';
-          toast.style.visibility = 'hidden';
-          toastTimer = null;
-        }, 2000);
       }
 
       // ----- 字卡功能 -----
