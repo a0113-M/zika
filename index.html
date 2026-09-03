@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v224')){sessionStorage.setItem('zk_v224','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==224){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v225')){sessionStorage.setItem('zk_v225','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==225){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v224</title>
+  <title>字卡 · 小手机 v225</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7626,6 +7626,14 @@
     }
     .dvd-primary:active { opacity: 0.9; }
     .dvd-primary:disabled { opacity: 0.55; cursor: default; }
+    .dvd-mode-sub { text-align: center; font-size: 10.5px; color: var(--primary); margin: 0 0 10px; letter-spacing: 1px; }
+    .dvd-quick {
+      width: 100%; margin-top: 9px; padding: 10px 0;
+      border: 1px solid rgba(var(--primary-rgba),0.35); border-radius: 12px;
+      background: var(--bg-card); color: var(--text-main);
+      font-size: 13px; font-weight: 600; letter-spacing: 1px; cursor: pointer;
+    }
+    .dvd-quick:active { background: var(--bg-soft); }
     .dvd-result { margin-top: 16px; }
     .dvd-cards-row {
       display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 12px;
@@ -12356,11 +12364,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <button class="cdp-opt active" data-c="1">抽1张</button>
               <button class="cdp-opt" data-c="3">抽3张</button>
             </div>
-            <div class="cdp-sec-label">
+            <div class="cdp-sec-label" style="display:none;">
               <svg class="cdp-star" width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2 6.5L20.5 10 14 12l-2 6.5L10 12 3.5 10 10 8.5z"/></svg>
               占卜对象
             </div>
-            <div class="cdp-row cdp-targets" id="cdvTargetRow"></div>
+            <div class="cdp-row cdp-targets" id="cdvTargetRow" style="display:none;"></div>
             <div class="cdp-sec-label">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8db3e2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 4v7l2-2 2 2V4"/></svg>
               想问TA什么？输入你的问题
@@ -14042,6 +14050,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <button class="dvd-seg-item" data-m="leno">雷诺曼牌</button>
             <button class="dvd-seg-item" data-m="mix">混合模式</button>
           </div>
+          <div class="dvd-mode-sub" id="dvdModeSub">78张塔罗 · 带正逆位</div>
           <div class="dvd-seg-label" id="dvdCountLabel">抽牌数量</div>
           <div class="dvd-seg" id="dvdCountSeg">
             <button class="dvd-seg-item active" data-c="1">抽 1 张</button>
@@ -14052,6 +14061,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="dvd-seg-label" id="dvdQLabel">想了解什么？</div>
           <input class="dvd-input" id="dvdQInput" placeholder="例如：最近有什么值得注意的事？" maxlength="50">
           <button class="dvd-primary" id="dvdStartBtn">开始抽牌</button>
+          <button class="dvd-quick" id="dvdQuickBtn">速占 · 免选牌直接出结果</button>
+          <button class="dvd-quick" id="dvdHistoryBtn">历史记录</button>
           <div class="dvd-result" id="dvdResult" style="display:none;"></div>
           <div class="dvd-result-actions" id="dvdResultActions" style="display:none;">
             <button class="dvd-ghost" id="dvdCopyBtn">复制结果</button>
@@ -25303,15 +25314,18 @@ patText2 = patText2.replace(/你/g, '我');
         // 工具栏入口
         document.querySelector('.toolbar-item[data-tool="together"]').addEventListener('click', function (e) {
           e.stopPropagation();
-          var was = panel.classList.contains('active');
           closePanel();
           document.getElementById('chatDivinePanel').classList.remove('active');
           document.getElementById('cdvBackdrop').classList.remove('active');
           document.getElementById('chatLetterPanel').classList.remove('active');
           document.getElementById('clpBackdrop').classList.remove('active');
+          document.getElementById('chatStatsPanel').classList.remove('active');
+          document.getElementById('cstBackdrop').classList.remove('active');
           document.getElementById('emojiModule').classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
-          if (!was) openPanel();
+          if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
+          if (currentChatId) { _tgCurrentId = currentChatId; }
+          openTogetherPage();
         });
       })();
 
@@ -25424,25 +25438,14 @@ patText2 = patText2.replace(/你/g, '我');
         }
 
         function renderTargets() {
-          var names = ['不选对象'];
+          var cur = '';
           try {
-            if (typeof contacts !== 'undefined' && contacts && contacts.length) {
-              contacts.forEach(function (c) { if (c && c.name && !c.isGroup) names.push(c.name); });
+            if (typeof contacts !== 'undefined' && contacts && contacts.length && typeof currentChatId !== 'undefined' && currentChatId) {
+              var c = contacts.filter(function (x) { return x && x.id === currentChatId && !x.isGroup; })[0];
+              if (c && c.name) cur = c.name;
             }
           } catch (e) {}
-          if (st.target && names.indexOf(st.target) < 0) st.target = '';
-          var row = document.getElementById('cdvTargetRow');
-          row.innerHTML = names.map(function (n, i) {
-            var val = i === 0 ? '' : n;
-            return '<button class="cdp-opt' + (st.target === val ? ' active' : (i === 0 && !st.target ? ' active' : '')) + '" data-v="' + val + '">' + n + '</button>';
-          }).join('');
-          row.querySelectorAll('.cdp-opt').forEach(function (b) {
-            b.addEventListener('click', function () {
-              st.target = b.dataset.v;
-              row.querySelectorAll('.cdp-opt').forEach(function (x) { x.classList.remove('active'); });
-              b.classList.add('active');
-            });
-          });
+          st.target = cur;
         }
 
         function renderSetup() {
@@ -26063,6 +26066,7 @@ patText2 = patText2.replace(/你/g, '我');
             });
           });
           updateQuestionHint();
+          syncModeSub();
         }
 
         // 标签/占位符跟随占卜对象切换
@@ -26078,6 +26082,13 @@ patText2 = patText2.replace(/你/g, '我');
           }
         }
 
+        // 牌型说明文案跟随模式
+        function syncModeSub() {
+          var el = document.getElementById('dvdModeSub');
+          if (!el) return;
+          el.textContent = st.mode === 'tarot' ? '78张塔罗 · 带正逆位' : (st.mode === 'leno' ? '36张雷诺曼 · 经典体系' : '塔罗 + 雷诺曼 · 混合模式');
+        }
+
         // 模式/数量切换
         document.getElementById('dvdModeSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
           b.addEventListener('click', function () {
@@ -26089,6 +26100,7 @@ patText2 = patText2.replace(/你/g, '我');
             var cntLabel = document.getElementById('dvdCountLabel');
             if (cntSeg) cntSeg.style.display = mix ? 'none' : '';
             if (cntLabel) cntLabel.style.display = mix ? 'none' : '';
+            syncModeSub();
           });
         });
         document.getElementById('dvdCountSeg').querySelectorAll('.dvd-seg-item').forEach(function (b) {
@@ -26220,6 +26232,17 @@ patText2 = patText2.replace(/你/g, '我');
           renderResult();
           saveHistory();
           _dvdLast = { mode: st.mode, question: st.question, target: st.target, text: resultText(), summary: document.getElementById('dvdResult').textContent };
+        });
+        document.getElementById('dvdQuickBtn').addEventListener('click', function () {
+          st.question = '';
+          pick();
+          renderResult();
+          saveHistory();
+          _dvdLast = { mode: st.mode, question: st.question, target: st.target, text: resultText(), summary: document.getElementById('dvdResult').textContent };
+        });
+        document.getElementById('dvdHistoryBtn').addEventListener('click', function () {
+          renderHistory();
+          showView('hist');
         });
 
         // 复制
