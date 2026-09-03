@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="242";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="243";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v242</title>
+  <title>字卡 · 小手机 v243</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -33288,9 +33288,22 @@ function addToCart(goodId) {
           } else {
             hb.unclaimed = true;
             hb.willReturnAt = Date.now() + 48 * 3600 * 1000;
-            pushHbSys(msgs, mi, '对方暂时没有领取你的红包，48小时后将退回');
+            setTimeout(function () { hbNotifyNear(contactId, hbId); }, 48 * 3600 * 1000 - 60 * 60 * 1000);
             setTimeout(function () { hbExpire(contactId, hbId); }, 48 * 3600 * 1000);
           }
+          if (typeof renderMessages === 'function' && currentChatId === contactId) renderMessages(contactId);
+        }
+
+        function hbNotifyNear(contactId, hbId) {
+          if (typeof chatHistories === 'undefined' || !chatHistories[contactId]) return;
+          var msgs = chatHistories[contactId];
+          var mi = -1;
+          for (var i = 0; i < msgs.length; i++) { if (msgs[i].hongbao && msgs[i].hongbao.id === hbId) { mi = i; break; } }
+          if (mi < 0) return;
+          var hb = msgs[mi].hongbao;
+          if (hb.state !== 'pending' || !hb.unclaimed || hb.nearRemind) return;
+          hb.nearRemind = true;
+          pushHbSys(msgs, mi, '红包即将退回，对方还没有领取');
           if (typeof renderMessages === 'function' && currentChatId === contactId) renderMessages(contactId);
         }
 
@@ -33312,9 +33325,15 @@ function addToCart(goodId) {
           var changed = false;
           for (var i = 0; i < msgs.length; i++) {
             var hb = msgs[i].hongbao;
-            if (hb && hb.state === 'pending' && hb.unclaimed && hb.willReturnAt && Date.now() > hb.willReturnAt) {
-              hbReturnMoney(contactId, i, hb);
-              changed = true;
+            if (hb && hb.state === 'pending' && hb.unclaimed && hb.willReturnAt) {
+              if (Date.now() > hb.willReturnAt) {
+                hbReturnMoney(contactId, i, hb);
+                changed = true;
+              } else if (!hb.nearRemind && Date.now() > hb.willReturnAt - 60 * 60 * 1000) {
+                hb.nearRemind = true;
+                pushHbSys(msgs, i, '红包即将退回，对方还没有领取');
+                changed = true;
+              }
             }
           }
           if (changed && typeof _saveChatHistories === 'function') _saveChatHistories();
