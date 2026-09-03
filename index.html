@@ -17249,7 +17249,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
-        _zkHideTyping();
         if (!chatHistories[currentChatId]) chatHistories[currentChatId] = [];
         const contact = contacts.find(c => c.id === currentChatId);
         let senderName = 'other';
@@ -17258,44 +17257,53 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           const member = contacts.find(c => c.id === memberId);
           if (member) senderName = member.name;
         } else if (contact) { senderName = contact.name; }
-        const _voiceRoll2 = rollVoiceCard();
-        if (_voiceRoll2) {
-          const _nowV2 = new Date();
-          const _timeV2 = _nowV2.getHours().toString().padStart(2, '0') + ':' + _nowV2.getMinutes().toString().padStart(2, '0');
-          chatHistories[currentChatId].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
-          renderMessages(currentChatId);
-          if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV2; if (!cardView.classList.contains('hidden')) refreshList(); }
-          return;
-        }
-        let card = getRandomCard();
-        // 如果是对方发送（不是自己），替换「你」为「我」
-        if (senderName !== 'me') {
-          card = card.replace(/你/g, '我');
-        }
-        const now = new Date();
-        const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
 
-        // 随机决定是否引用（30% 概率引用）
-        const shouldReply = Math.random() < 0.3;
-        let msgData = { text: card, from: senderName, time: timeStr };
+        // 对方正在输入提示
+        if (contact && !contact.readOnly) { _zkShowTyping(); }
 
-        if (shouldReply) {
-          const messages = chatHistories[currentChatId];
-          let lastOtherIndex = -1;
-          for (let i = messages.length - 1; i >= 0; i--) {
-            if (messages[i].from !== 'me' && !messages[i].withdrawn) {
-              lastOtherIndex = i;
-              break;
+        setTimeout(() => {
+          if (currentChatId === null) { _zkHideTyping(); return; }
+          const _voiceRoll2 = rollVoiceCard();
+          if (_voiceRoll2) {
+            const _nowV2 = new Date();
+            const _timeV2 = _nowV2.getHours().toString().padStart(2, '0') + ':' + _nowV2.getMinutes().toString().padStart(2, '0');
+            chatHistories[currentChatId].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
+            renderMessages(currentChatId);
+            _zkHideTyping();
+            if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV2; if (!cardView.classList.contains('hidden')) refreshList(); }
+            return;
+          }
+          let card = getRandomCard();
+          // 如果是对方发送（不是自己），替换「你」为「我」
+          if (senderName !== 'me') {
+            card = card.replace(/你/g, '我');
+          }
+          const now = new Date();
+          const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+          // 随机决定是否引用（30% 概率引用）
+          const shouldReply = Math.random() < 0.3;
+          let msgData = { text: card, from: senderName, time: timeStr };
+
+          if (shouldReply) {
+            const messages = chatHistories[currentChatId];
+            let lastOtherIndex = -1;
+            for (let i = messages.length - 1; i >= 0; i--) {
+              if (messages[i].from !== 'me' && !messages[i].withdrawn) {
+                lastOtherIndex = i;
+                break;
+              }
+            }
+            if (lastOtherIndex >= 0 && messages[lastOtherIndex]) {
+              msgData.replyTo = lastOtherIndex;
             }
           }
-          if (lastOtherIndex >= 0 && messages[lastOtherIndex]) {
-            msgData.replyTo = lastOtherIndex;
-          }
-        }
 
-        chatHistories[currentChatId].push(msgData);
-        renderMessages(currentChatId);
-        if (contact) { contact.lastMsg = card; contact.time = timeStr; if (!cardView.classList.contains('hidden')) refreshList(); }
+          chatHistories[currentChatId].push(msgData);
+          renderMessages(currentChatId);
+          _zkHideTyping();
+          if (contact) { contact.lastMsg = card; contact.time = timeStr; if (!cardView.classList.contains('hidden')) refreshList(); }
+        }, _zkGetReplyDelay(contact));
       });
 
       // ----- 字卡数据与抽卡 -----
