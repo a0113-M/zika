@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="259";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="260";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v259</title>
+  <title>字卡 · 小手机 v260</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16877,15 +16877,52 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         cv.toBlob(function (blob) {
           if (!blob) { showToast('图片生成失败'); return; }
           const url = URL.createObjectURL(blob);
+          _showExportImagePreview(url, `聊天记录_${name}_${new Date().toLocaleDateString()}.png`);
+        }, 'image/png');
+      }
+
+      function _showExportImagePreview(url, fileName) {
+        const mask = document.createElement('div');
+        mask.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:99999;display:flex;align-items:center;justify-content:center;';
+        const panel = document.createElement('div');
+        panel.style.cssText = 'background:#fff;border-radius:14px;width:min(88vw,420px);max-height:82vh;display:flex;flex-direction:column;overflow:hidden;';
+        const head = document.createElement('div');
+        head.style.cssText = 'padding:14px 16px 8px;font-size:15px;font-weight:600;color:#3c3650;text-align:center;';
+        head.textContent = '长图预览';
+        const body = document.createElement('div');
+        body.style.cssText = 'flex:1;overflow-y:auto;padding:0 12px;background:#f6f4f9;';
+        const img = document.createElement('img');
+        img.src = url;
+        img.style.cssText = 'display:block;width:100%;height:auto;';
+        body.appendChild(img);
+        const btns = document.createElement('div');
+        btns.style.cssText = 'display:flex;gap:10px;padding:12px 16px 14px;';
+        const btnCancel = document.createElement('button');
+        btnCancel.textContent = '取消';
+        btnCancel.style.cssText = 'flex:1;padding:11px 0;border:none;border-radius:10px;background:#efeaf5;color:#6b6480;font-size:14px;';
+        const btnOk = document.createElement('button');
+        btnOk.textContent = '下载保存';
+        btnOk.style.cssText = 'flex:2;padding:11px 0;border:none;border-radius:10px;background:var(--primary);color:#fff;font-size:14px;font-weight:600;';
+        btns.appendChild(btnCancel);
+        btns.appendChild(btnOk);
+        panel.appendChild(head);
+        panel.appendChild(body);
+        panel.appendChild(btns);
+        mask.appendChild(panel);
+        document.body.appendChild(mask);
+        const close = function () { if (mask.parentNode) document.body.removeChild(mask); URL.revokeObjectURL(url); };
+        btnCancel.onclick = close;
+        mask.onclick = function (e) { if (e.target === mask) close(); };
+        btnOk.onclick = function () {
           const a = document.createElement('a');
           a.href = url;
-          a.download = `聊天记录_${name}_${new Date().toLocaleDateString()}.png`;
+          a.download = fileName;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          setTimeout(function () { URL.revokeObjectURL(url); }, 3000);
-          showToast('✅ 已生成聊天长图');
-        }, 'image/png');
+          close();
+          showToast('✅ 长图已保存');
+        };
       }
 
       function searchChatHistory() {
