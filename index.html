@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v223')){sessionStorage.setItem('zk_v223','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==223){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v224')){sessionStorage.setItem('zk_v224','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==224){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v223</title>
+  <title>字卡 · 小手机 v224</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5594,7 +5594,7 @@
 
     .toast.show {
       visibility: visible;
-      animation: zkToastAutoHide 2s ease forwards;
+      animation: zkToastAutoHide 1.2s ease forwards;
     }
 
     @keyframes zkToastAutoHide {
@@ -28381,8 +28381,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         }
       } catch(e) {}
 
-      // 每30秒保存聊天记录到localStorage
-      setInterval(function() {
+      // 保存聊天记录到localStorage
+      function _saveChatHistories() {
         try {
           var toSave = {};
           for (var k in chatHistories) {
@@ -28390,7 +28390,11 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           }
           localStorage.setItem('contactChatHistories', JSON.stringify(toSave));
         } catch(e) {}
-      }, 30000);
+      }
+      // 高频率兜底保存（3秒），离开页面时立即保存，避免最近消息丢失
+      setInterval(_saveChatHistories, 3000);
+      window.addEventListener('pagehide', _saveChatHistories);
+      window.addEventListener('beforeunload', _saveChatHistories);
 
       // （联系人自动发朋友圈已合并到上方统一自动事件 tick 中）
 
