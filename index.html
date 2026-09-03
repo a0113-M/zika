@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="257";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="258";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v257</title>
+  <title>字卡 · 小手机 v258</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6615,6 +6615,18 @@
     .chat-messages.select-mode .msg-left.selected .msg-avatar,
     .chat-messages.select-mode .msg-right.selected .msg-avatar {
       opacity: 1;
+    }
+
+    .chat-messages.select-mode .selectable-sys {
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s, background 0.2s;
+    }
+
+    .chat-messages.select-mode .selectable-sys.selected {
+      opacity: 1;
+      background: rgba(155, 142, 196, 0.08);
+      border-radius: 8px;
     }
 
     /* 多选底部工具栏 */
@@ -16465,7 +16477,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       // 更新消息选择UI
       function updateMessageSelectionUI() {
         const messages = chatHistories[currentChatId] || [];
-        const msgElements = document.querySelectorAll('.msg-left, .msg-right');
+        const msgElements = document.querySelectorAll('.msg-left, .msg-right, .selectable-sys');
         msgElements.forEach((el, idx) => {
           // 找到对应的消息索引
           const index = parseInt(el.dataset.index);
@@ -17010,15 +17022,25 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           // 拍一拍消息特殊处理
           if (msg.isPat) {
             const patDiv = document.createElement('div');
+            patDiv.className = 'selectable-sys';
             patDiv.style.cssText = 'text-align:center;color:#888;font-size:12px;padding:4px 0;'; // 去掉 font-style:italic
             patDiv.textContent = msg.text;
+            patDiv.dataset.index = index;
+            patDiv.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             chatMessages.appendChild(patDiv);
             return;
           }
           if (msg.hbSys) {
             const sysDiv = document.createElement('div');
+            sysDiv.className = 'selectable-sys';
             sysDiv.style.cssText = 'text-align:center;color:#9a938f;font-size:11px;padding:3px 0;letter-spacing:0.5px;';
             sysDiv.textContent = msg.text;
+            sysDiv.dataset.index = index;
+            sysDiv.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+            });
             chatMessages.appendChild(sysDiv);
             return;
           }
