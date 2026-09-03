@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v227')){sessionStorage.setItem('zk_v227','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==227){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){if(!sessionStorage.getItem('zk_v228')){sessionStorage.setItem('zk_v228','1');location.replace(location.pathname+'?_='+Date.now());}else{fetch('version.json?_='+Date.now()).then(function(r){return r.json()}).then(function(d){if(d&&d.v&&d.v!==228){location.replace(location.pathname+'?_='+Date.now());}}).catch(function(){});}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v227</title>
+  <title>字卡 · 小手机 v228</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7461,6 +7461,26 @@
       box-shadow: 0 18px 52px rgba(0, 0, 0, 0.28);
       z-index: 2001;
     }
+    #togetherPage.tg-card .feature-header { padding-top: 12px; min-height: 52px; }
+    #togetherPage.tg-card .feature-content.tg-body { padding: 12px 12px 24px; }
+    /* === 邀请卡片（邀请联系人一起） === */
+    .tg-invite-mask { position: fixed; inset: 0; z-index: 2500; background: rgba(18, 20, 30, 0.45); opacity: 0; pointer-events: none; transition: opacity .2s ease; }
+    .tg-invite-mask.active { opacity: 1; pointer-events: auto; }
+    .tg-invite-card { position: fixed; left: 0; right: 0; top: 0; bottom: 0; margin: auto; width: 86vw; max-width: 340px; height: auto; max-height: 80vh; overflow: hidden; display: none; flex-direction: column; align-items: center; text-align: center; background: var(--bg-card); border-radius: 22px; z-index: 2501; padding: 26px 20px 20px; box-sizing: border-box; box-shadow: 0 18px 52px rgba(0, 0, 0, 0.3); }
+    .tg-invite-card.active { display: flex; }
+    .tg-invite-x { position: absolute; top: 12px; right: 14px; width: 30px; height: 30px; border: none; background: rgba(0, 0, 0, 0.05); border-radius: 50%; color: var(--text-muted); font-size: 15px; cursor: pointer; }
+    .tg-invite-ava { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; margin-bottom: 12px; box-shadow: 0 6px 16px rgba(var(--primary-rgba), 0.35); }
+    .tg-invite-title { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.4; }
+    .tg-invite-title b { color: var(--primary); }
+    .tg-invite-sub { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+    .tg-invite-count { font-size: 44px; font-weight: 800; color: var(--primary); margin-top: 18px; font-variant-numeric: tabular-nums; line-height: 1; }
+    .tg-invite-count-label { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+    .tg-invite-win { width: 100%; margin-top: 18px; text-align: left; }
+    .tg-invite-win-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+    .tg-invite-win-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tg-invite-chip { flex: 1; min-width: 0; padding: 8px 0; border-radius: 10px; border: 1px solid rgba(var(--primary-rgba), 0.3); background: transparent; color: var(--text-main); font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .tg-invite-chip.sel { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .tg-invite-note { font-size: 11px; color: var(--text-muted); margin-top: 10px; line-height: 1.5; }
     .tg-cbar-wrap { margin-bottom: 12px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .tg-cbar { display: flex; gap: 10px; padding: 2px 2px 6px; width: max-content; min-width: 100%; }
     .tg-citem { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 52px; cursor: pointer; }
@@ -13962,6 +13982,20 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
     <!-- 一起陪伴页（侧边栏入口） -->
     <div class="tg-card-backdrop" id="tgCardBackdrop"></div>
+    <div class="tg-invite-mask" id="tgInviteMask"></div>
+    <div class="tg-invite-card" id="tgInviteCardBox">
+      <button class="tg-invite-x" id="tgInviteX">×</button>
+      <div class="tg-invite-ava" id="tgInviteAva">?</div>
+      <div class="tg-invite-title" id="tgInviteTitle"></div>
+      <div class="tg-invite-sub">等待 TA 回应…</div>
+      <div class="tg-invite-count" id="tgInviteCount">5</div>
+      <div class="tg-invite-count-label">秒后还未回应 · 你将自行开始</div>
+      <div class="tg-invite-win">
+        <div class="tg-invite-win-label">邀请时长 · 这段时间 TA 随时可进来陪伴你</div>
+        <div class="tg-invite-win-chips" id="tgInviteWinChips"></div>
+        <div class="tg-invite-note" id="tgInviteNote"></div>
+      </div>
+    </div>
     <div class="feature-page" id="togetherPage">
       <div class="feature-header">
         <button class="feature-back" id="tgBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
@@ -19264,6 +19298,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       var _tgCurrentId = null;
       var _tgCardMode = false;
+      var TG_INVITE_WIN = [5, 15, 30, 60];
+      var _tgInviteCard = null;
+      var _tgInviteIv = null;
+      var _tgInviteJoinTimer = null;
       var _tgSelKey = null;
       var _tgActive = null;   // {contactId, contactName, activity, key, custom, startTs, mode, acc, remain, paused, bpm, temp, logs}
       var _tgTimer = null;
@@ -19552,24 +19590,127 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!act) return;
         var c = contacts.filter(function (x) { return x.id === _tgCurrentId; })[0];
         if (!c) { showToast('先选一个联系人'); return; }
-        if (Math.random() < 0.3) {
-          var note = TG_REJECT[Math.floor(Math.random() * TG_REJECT.length)];
-          var log = _tgGetLog();
-          log.unshift({
-            id: Date.now(),
-            contactId: c.id, contactName: c.name, activity: act.name, key: act.key,
-            startTs: Date.now(), endTs: Date.now(), durMs: 0, rej: true, note: note
-          });
-          _tgSaveLog(log);
-          _tgSelKey = null;
-          renderTogether();
-          showToast(c.name + ' 拒绝了你的邀请');
-          return;
-        }
-        _tgStartTogether(true);
+        _tgOpenInviteCard(c, act);
       }
 
-      function _tgStartTogether(invited) {
+      function _tgInviteWinMin() {
+        try {
+          var v = parseInt(localStorage.getItem('zk_together_invitewin') || '15', 10);
+          if (TG_INVITE_WIN.indexOf(v) < 0) v = 15;
+          return v;
+        } catch (e) { return 15; }
+      }
+      function _tgSaveInviteWin(min) {
+        try { localStorage.setItem('zk_together_invitewin', String(min)); } catch (e) {}
+      }
+      function _tgOpenInviteCard(c, act) {
+        var box = document.getElementById('tgInviteCardBox');
+        var mask = document.getElementById('tgInviteMask');
+        if (!box || !mask) { _tgStartTogether(true); return; }
+        var ava = document.getElementById('tgInviteAva');
+        if (ava) ava.textContent = (c.name || '?').charAt(0).toUpperCase();
+        var title = document.getElementById('tgInviteTitle');
+        if (title) title.innerHTML = '邀请 <b>' + _tgEsc(c.name) + '</b> 一起' + _tgEsc(act.name);
+        var winMin = _tgInviteWinMin();
+        var winMs = winMin * 60000;
+        var chips = document.getElementById('tgInviteWinChips');
+        if (chips) {
+          chips.innerHTML = TG_INVITE_WIN.map(function (m) {
+            return '<button type="button" class="tg-invite-chip' + (m === winMin ? ' sel' : '') + '" data-min="' + m + '">' + (m >= 60 ? (m / 60) + '小时' : m + '分钟') + '</button>';
+          }).join('');
+          chips.querySelectorAll('.tg-invite-chip').forEach(function (b) {
+            b.addEventListener('click', function () { _tgSetInviteWin(parseInt(b.dataset.min, 10)); });
+          });
+        }
+        var joinAt = null;
+        if (Math.random() < 0.6) {
+          var fast = Math.random() < 0.4;
+          var delayMs;
+          if (fast) delayMs = 1800 + Math.floor(Math.random() * 2600);
+          else delayMs = 6000 + Math.floor(Math.random() * Math.max(1000, winMs - 6000));
+          joinAt = Date.now() + delayMs;
+        }
+        _tgInviteCard = {
+          contactId: c.id, contactName: c.name, activity: act.name, key: act.key, custom: !!act.custom,
+          startTs: Date.now(), windowMs: winMs, winMin: winMin, joinAt: joinAt
+        };
+        _tgRenderInviteNote();
+        box.classList.add('active');
+        mask.classList.add('active');
+        _tgInviteStartCountdown();
+        if (joinAt && joinAt <= _tgInviteCard.startTs + 5500) {
+          _tgInviteJoinTimer = setTimeout(_tgInviteJoinNow, Math.max(300, joinAt - Date.now()));
+        }
+      }
+      function _tgSetInviteWin(min) {
+        if (!_tgInviteCard) return;
+        _tgInviteCard.winMin = min;
+        _tgInviteCard.windowMs = min * 60000;
+        if (_tgInviteCard.joinAt && _tgInviteCard.joinAt > _tgInviteCard.startTs + _tgInviteCard.windowMs) {
+          _tgInviteCard.joinAt = null;
+          if (_tgInviteJoinTimer) { clearTimeout(_tgInviteJoinTimer); _tgInviteJoinTimer = null; }
+        }
+        _tgSaveInviteWin(min);
+        var chips = document.getElementById('tgInviteWinChips');
+        if (chips) chips.querySelectorAll('.tg-invite-chip').forEach(function (b) {
+          b.classList.toggle('sel', parseInt(b.dataset.min, 10) === min);
+        });
+        _tgRenderInviteNote();
+      }
+      function _tgRenderInviteNote() {
+        var note = document.getElementById('tgInviteNote');
+        if (!note || !_tgInviteCard) return;
+        var c = contacts.filter(function (x) { return x.id === _tgInviteCard.contactId; })[0];
+        var nm = c ? c.name : _tgInviteCard.contactName;
+        note.textContent = '在 ' + _tgInviteCard.winMin + ' 分钟内，' + nm + ' 随时可以进来陪你；TA 进来后，会和你一起' + _tgInviteCard.activity + '。';
+      }
+      function _tgInviteStartCountdown() {
+        _tgInviteStopCountdown();
+        var remain = 5;
+        var el = document.getElementById('tgInviteCount');
+        if (el) el.textContent = String(remain);
+        _tgInviteIv = setInterval(function () {
+          remain--;
+          if (remain <= 0) {
+            _tgInviteStopCountdown();
+            _tgInviteTimeoutStart();
+            return;
+          }
+          if (el) el.textContent = String(remain);
+        }, 1000);
+      }
+      function _tgInviteStopCountdown() {
+        if (_tgInviteIv) { clearInterval(_tgInviteIv); _tgInviteIv = null; }
+      }
+      function _tgInviteTimeoutStart() {
+        var card = _tgInviteCard;
+        if (!card) return;
+        _tgStartTogether(false, { inviteEndAt: card.startTs + card.windowMs, joinAt: card.joinAt });
+        var c = contacts.filter(function (x) { return x.id === card.contactId; })[0];
+        var nm = c ? c.name : card.contactName;
+        showToast(nm + ' 还没来，你先开始啦 · ' + card.winMin + ' 分钟内 TA 可中途进来');
+        _tgCloseInviteCard();
+      }
+      function _tgInviteJoinNow() {
+        _tgInviteStopCountdown();
+        if (_tgInviteJoinTimer) { _tgInviteJoinTimer = null; }
+        if (!_tgInviteCard) return;
+        _tgStartTogether(true);
+        _tgCloseInviteCard();
+      }
+      function _tgCancelInvite() {
+        _tgInviteStopCountdown();
+        if (_tgInviteJoinTimer) { clearTimeout(_tgInviteJoinTimer); _tgInviteJoinTimer = null; }
+        _tgCloseInviteCard();
+      }
+      function _tgCloseInviteCard() {
+        _tgInviteCard = null;
+        var box = document.getElementById('tgInviteCardBox');
+        var mask = document.getElementById('tgInviteMask');
+        if (box) box.classList.remove('active');
+        if (mask) mask.classList.remove('active');
+      }
+      function _tgStartTogether(invited, opt) {
         if (!_tgSelKey) return;
         var acts = TG_ACTS.concat(_tgGetCustom());
         var act = acts.filter(function (a) { return a.key === _tgSelKey; })[0];
@@ -19598,6 +19739,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           acc: 0, remain: (st.timer === 1 ? 25 * 60 : (st.timer === 2 ? 45 * 60 : 0)),
           bpm: 68 + Math.floor(Math.random() * 14), temp: 36.3 + Math.random() * 0.5, logs: []
         };
+        if (opt) {
+          if (opt.inviteEndAt) o.inviteEndAt = opt.inviteEndAt;
+          if (opt.joinAt) o.joinAt = opt.joinAt;
+        }
         _tgActive = o;
         _tgSaveActive(_tgActive);
         _tgSelKey = null;
@@ -19659,6 +19804,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _tgSaveActive(a);
         }
         _tgMaybeSwap();
+        _tgMaybeJoinMidway();
         _tgSpeak(false);
       }
 
@@ -19690,6 +19836,22 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgLogLive('TA ' + w + pick.name + '了');
       }
 
+      function _tgMaybeJoinMidway() {
+        var a = _tgActive;
+        if (!a || a.invite) return;
+        if (typeof a.joinAt !== 'number') return;
+        if (Date.now() < a.joinAt) return;
+        if (typeof a.inviteEndAt === 'number' && Date.now() > a.inviteEndAt) { a.joinAt = null; _tgSaveActive(a); return; }
+        a.invite = true;
+        a.contactAct = a.activity;
+        a.contactKey = a.key;
+        a.joinAt = null;
+        _tgSaveActive(a);
+        _tgLogLive(a.contactName + ' 中途进来了，陪你一起' + a.activity);
+        showToast(a.contactName + ' 来啦！一起' + a.activity);
+        var tag = document.getElementById('tgLiveTag'); if (tag) tag.textContent = a.contactAct;
+        _tgRenderLiveLogs();
+      }
       function _tgEndTogether(auto) {
         if (!_tgActive) return;
         var a = _tgActive;
@@ -19777,6 +19939,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (_bd) _bd.classList.remove('active');
       }
       document.getElementById('tgCardBackdrop').addEventListener('click', _tgClosePage);
+      document.getElementById('tgInviteX').addEventListener('click', _tgCancelInvite);
       document.getElementById('tgBackBtn').addEventListener('click', function () {
         // 返回时进行中的陪伴继续在后台计时（不清除），下次进来恢复
         _tgClosePage();
