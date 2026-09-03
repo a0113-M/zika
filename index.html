@@ -13389,6 +13389,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 </div>
         <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-line"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint"><span>1 秒</span><span>1 分钟</span></div></div>
         <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
+        <div class="profile-field"><label>输入中提示</label><input type="text" id="contactTypingText" placeholder="对方正在输入中" maxlength="30"></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactModalCancel">取消</button>
           <button class="btn-save" id="contactModalSave">保存</button>
@@ -15051,6 +15052,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactReplyMin = document.getElementById('contactReplyMin');
       const _zkContactReplyMax = document.getElementById('contactReplyMax');
       const _zkContactReadOnly = document.getElementById('contactReadOnly');
+      const _zkContactTypingText = document.getElementById('contactTypingText');
       const _zkContactReplyFill = document.getElementById('contactReplyFill');
       const _zkContactReplyHint = document.getElementById('contactReplyHint');
       const _zkContactLocationState = document.getElementById('contactLocationState');
@@ -15359,6 +15361,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _zkContactReplyMin.value = Math.min(300, Math.max(1, Math.round(contact.replyMin != null ? contact.replyMin : 1)));
         _zkContactReplyMax.value = Math.min(300, Math.max(1, Math.round(contact.replyMax != null ? contact.replyMax : 60)));
         _zkContactReadOnly.checked = !!contact.readOnly;
+        _zkContactTypingText.value = contact.typingText || '';
         _zkUpdateReplyRange();
         var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
@@ -15413,6 +15416,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var _rt = contact.replyMin; contact.replyMin = contact.replyMax; contact.replyMax = _rt;
         }
         contact.readOnly = _zkContactReadOnly.checked;
+        contact.typingText = _zkContactTypingText.value.trim();
         saveContacts();
         renderContacts();
         if (currentChatId === contact.id) {
@@ -15780,8 +15784,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const t = document.getElementById('typingText');
         if (t) {
           let base = '对方正在输入中';
-          try { base = localStorage.getItem('zk_typing_text') || base; } catch (e) {}
-          t.textContent = (text !== undefined && text !== null && text !== '') ? text : base;
+          if (text !== undefined && text !== null && text !== '') {
+            base = text;
+          } else {
+            try {
+              const c = contacts.find(function (cc) { return cc.id === currentChatId; });
+              if (c && c.typingText) base = c.typingText;
+            } catch (e) {}
+          }
+          t.textContent = base;
         }
         el.style.display = 'flex';
       }
@@ -15790,40 +15801,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (el) el.style.display = 'none';
       }
 
-      // 点击"对方正在输入中"文字即可自定义修改
-      (function () {
-        const typingTextEl = document.getElementById('typingText');
-        if (!typingTextEl) return;
-        typingTextEl.addEventListener('click', function () {
-          const self = this;
-          let finished = false;
-          const finish = function () {
-            if (finished) return;
-            finished = true;
-            self.contentEditable = 'false';
-            self.removeEventListener('blur', finish);
-            self.removeEventListener('keydown', onKey);
-            let v = (self.textContent || '').replace(/\s+/g, ' ').trim();
-            if (v === '') { v = '对方正在输入中'; }
-            self.textContent = v;
-            try { localStorage.setItem('zk_typing_text', v); } catch (e) {}
-          };
-          const onKey = function (ev) {
-            if (ev.key === 'Enter' || ev.key === 'Escape') { ev.preventDefault(); self.blur(); }
-          };
-          self.contentEditable = 'true';
-          self.addEventListener('blur', finish);
-          self.addEventListener('keydown', onKey);
-          self.focus();
-          try {
-            const r = document.createRange();
-            r.selectNodeContents(self);
-            const sel = window.getSelection();
-            sel.removeAllRanges();
-            sel.addRange(r);
-          } catch (e) {}
-        });
-      })();
+
 
       function sendEmojiMessage(imageSrc) {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
