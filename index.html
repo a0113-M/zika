@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="272";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="273";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v272</title>
+  <title>字卡 · 小手机 v273</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13544,6 +13544,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 </div>
         <div class="profile-field"><label>回复速度</label><div class="zk-range"><div class="zk-range-line"></div><div class="zk-range-fill" id="contactReplyFill"></div><input type="range" id="contactReplyMin" min="1" max="300" step="1" value="1"><input type="range" id="contactReplyMax" min="1" max="300" step="1" value="60"></div><div class="zk-range-hint" id="contactReplyHint"><span>1 秒</span><span>1 分钟</span></div></div>
         <div class="profile-field"><label>已读不回</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">对方已读消息但不回复</span><label class="toggle-switch"><input type="checkbox" id="contactReadOnly"><span class="toggle-slider"></span></label></div></div>
+        <div class="profile-field"><label>主动发消息</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">你没发消息时，TA 可能主动找你</span><label class="toggle-switch"><input type="checkbox" id="contactProactive"><span class="toggle-slider"></span></label></div></div>
         <div class="profile-field"><label>输入中提示</label><input type="text" id="contactTypingText" placeholder="对方正在输入中" maxlength="30"></div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactModalCancel">取消</button>
@@ -14640,6 +14641,22 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="feature-content settings-body">
           <div class="settings-section">
             <div class="settings-section-title">概率事件</div>
+            <div class="settings-item settings-item-multi">
+              <div class="settings-item-left">
+                <span class="settings-item-label">主动消息</span>
+                <span class="settings-item-hint">开启「主动发消息」的联系人，在你一段时间没发消息后按概率主动找你</span>
+              </div>
+              <div class="settings-prob-control">
+                <span style="font-size:11px;color:var(--text-muted);min-width:28px;">间隔</span>
+                <input type="range" id="proactiveMsgInterval" min="5" max="1440" step="5" value="60" class="settings-range">
+                <span class="settings-prob-value" id="proactiveMsgIntervalVal">1小时</span>
+              </div>
+              <div class="settings-prob-control">
+                <span style="font-size:11px;color:var(--text-muted);min-width:28px;">概率</span>
+                <input type="range" id="proactiveMsgProb" min="0" max="100" step="1" value="10" class="settings-range">
+                <span class="settings-prob-value" id="proactiveMsgProbVal">10%</span>
+              </div>
+            </div>
             <div class="settings-section-title" style="font-size:13px;color:var(--text-secondary);margin-bottom:8px;">选择联系人</div>
             <div id="contactProbSelector" style="display:flex;flex-wrap:wrap;gap:8px;padding:8px 0 12px;"></div>
             <div id="contactProbSlidersSection" style="display:none;">
@@ -15229,6 +15246,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactReplyMin = document.getElementById('contactReplyMin');
       const _zkContactReplyMax = document.getElementById('contactReplyMax');
       const _zkContactReadOnly = document.getElementById('contactReadOnly');
+      const _zkContactProactive = document.getElementById('contactProactive');
       const _zkContactTypingText = document.getElementById('contactTypingText');
       const _zkContactReplyFill = document.getElementById('contactReplyFill');
       const _zkContactReplyHint = document.getElementById('contactReplyHint');
@@ -15538,6 +15556,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _zkContactReplyMin.value = Math.min(300, Math.max(1, Math.round(contact.replyMin != null ? contact.replyMin : 1)));
         _zkContactReplyMax.value = Math.min(300, Math.max(1, Math.round(contact.replyMax != null ? contact.replyMax : 60)));
         _zkContactReadOnly.checked = !!contact.readOnly;
+        if (_zkContactProactive) _zkContactProactive.checked = !!contact.proactiveMsg;
         _zkContactTypingText.value = contact.typingText || '';
         _zkUpdateReplyRange();
         var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
@@ -15593,6 +15612,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var _rt = contact.replyMin; contact.replyMin = contact.replyMax; contact.replyMax = _rt;
         }
         contact.readOnly = _zkContactReadOnly.checked;
+        contact.proactiveMsg = _zkContactProactive.checked;
         contact.typingText = _zkContactTypingText.value.trim();
         saveContacts();
         renderContacts();
@@ -22685,6 +22705,58 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       });
       startHeaderAutoUpdate();
+
+      // ===== 联系人主动发消息 =====
+      var _zkProactiveLastLen = {}, _zkProactiveLastActive = {};
+      function _zkGetProactiveCfg() {
+        var cfg = { interval: 60, prob: 10 };
+        try { var raw = JSON.parse(localStorage.getItem('zkProactiveMsg') || '{}'); if (raw.interval > 0) cfg.interval = raw.interval; if (typeof raw.prob === 'number') cfg.prob = raw.prob; } catch (e) {}
+        return cfg;
+      }
+      function _zkProactiveSend(contact) {
+        var id = contact.id;
+        if (!chatHistories[id]) chatHistories[id] = [];
+        var reply = String(getRandomCard());
+        var senderName = contact.name;
+        if (contact.isGroup && contact.members) {
+          var memberId = contact.members[Math.floor(Math.random() * contact.members.length)];
+          var member = contacts.find(function (c) { return c.id === memberId; });
+          if (member) senderName = member.name;
+        }
+        reply = reply.replace(/你/g, '我');
+        var now2 = new Date();
+        var timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
+        chatHistories[id].push({ text: reply, from: senderName, time: timeStr2 });
+        contact.lastMsg = reply; contact.time = timeStr2;
+        if (currentChatId === id) renderMessages(id);
+        if (cardView && cardView.classList && !cardView.classList.contains('hidden')) refreshList();
+        saveContacts();
+        try { if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(id, senderName); } catch (e) {}
+      }
+      function _zkProactiveTick() {
+        try {
+          var cfg = _zkGetProactiveCfg();
+          if (!(cfg.prob > 0 && cfg.interval > 0)) return;
+          var now = Date.now();
+          contacts.forEach(function (contact) {
+            if (!contact || contact.readOnly || !contact.proactiveMsg) return;
+            var id = contact.id;
+            var len = (chatHistories[id] || []).length;
+            if (len !== _zkProactiveLastLen[id]) { _zkProactiveLastLen[id] = len; _zkProactiveLastActive[id] = now; return; }
+            if (now - (_zkProactiveLastActive[id] || now) < cfg.interval * 60000) return;
+            _zkProactiveLastActive[id] = now;
+            if (Math.random() * 100 < cfg.prob) _zkProactiveSend(contact);
+          });
+        } catch (e) {}
+      }
+      setInterval(_zkProactiveTick, 60000);
+      (function () {
+        var iv = document.getElementById('proactiveMsgInterval');
+        var pv = document.getElementById('proactiveMsgProb');
+        var cfg0 = _zkGetProactiveCfg();
+        if (iv) { iv.value = cfg0.interval; document.getElementById('proactiveMsgIntervalVal').textContent = formatIntervalLabel(cfg0.interval); iv.addEventListener('input', function () { var v = parseInt(this.value) || 60; document.getElementById('proactiveMsgIntervalVal').textContent = formatIntervalLabel(v); var c = _zkGetProactiveCfg(); c.interval = v; try { localStorage.setItem('zkProactiveMsg', JSON.stringify(c)); } catch (e) {} }); }
+        if (pv) { pv.value = cfg0.prob; document.getElementById('proactiveMsgProbVal').textContent = cfg0.prob + '%'; pv.addEventListener('input', function () { var v = parseInt(this.value) || 0; document.getElementById('proactiveMsgProbVal').textContent = v + '%'; var c = _zkGetProactiveCfg(); c.prob = v; try { localStorage.setItem('zkProactiveMsg', JSON.stringify(c)); } catch (e) {} }); }
+      })();
 
       // ===== 拍一拍选择弹窗（移到这里，在 IIFE 内部） =====
       const patModal = document.getElementById('patModal');
