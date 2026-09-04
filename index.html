@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="275";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="276";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v275</title>
+  <title>字卡 · 小手机 v276</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -18119,14 +18119,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           '马上回复','已回复','刚回完','等待回复','等你回我','在线等',
           '别已读不回','快回我','催你了哦','消息已送达','已送达','发送成功',
           '发送失败','网络不佳','信号不好','延迟送达','消息置顶','消息免打扰',
-          '消息折叠','静音提醒','响铃模式','振动模式','通话结束','语音通话请求',
-          '视频通话请求','挂断后','稍等哦','马上来','在忙','忙完了',
+          '消息折叠','静音提醒','响铃模式','振动模式',
+          '稍等哦','马上来','在忙','忙完了',
           '稍后聊','回聊','先忙','忙着呢','晚点回','有空聊',
           '不客气','收到','收到啦','了解','好的呢'
         ]
       };
       // v4迁移：从回复消息状态池移除的拟真状态文案
-      const _zkRemovedReplyStates = ["正在输入...", "正在输入…", "输入中…", "对方正在输入…", "正在打字…", "打字中…", "正在组织语言…", "想了很久…", "欲言又止…", "打字又删掉…", "写了又删…", "删了又写…", "正在编辑…", "编辑中…", "语音输入中…", "正在录音…", "录音中…", "正在找表情包", "挑表情中…", "表情包大战", "选图困难中…", "翻相册中…", "拍照中…", "截图后回你", "正在发语音", "转文字中…", "翻译中…", "复制粘贴中…", "转发中…", "秒回中", "正在搜资料", "查一下…", "搜表情中…", "准备中…", "蓄谋已久…", "酝酿情绪中…", "深呼吸中…", "正在装酷…", "假装没看见", "故意晚点回", "钓鱼执法中", "蹲回复中", "输入到一半…", "正在翻聊天记录…", "投递中…", "发送中…", "重新发送中…", "排队中…", "来电中", "通话中", "回拨中…", "占线中", "秒回不过来"];
+      const _zkRemovedReplyStates = ["正在输入...", "正在输入…", "输入中…", "对方正在输入…", "正在打字…", "打字中…", "正在组织语言…", "想了很久…", "欲言又止…", "打字又删掉…", "写了又删…", "删了又写…", "正在编辑…", "编辑中…", "语音输入中…", "正在录音…", "录音中…", "正在找表情包", "挑表情中…", "表情包大战", "选图困难中…", "翻相册中…", "拍照中…", "截图后回你", "正在发语音", "转文字中…", "翻译中…", "复制粘贴中…", "转发中…", "秒回中", "正在搜资料", "查一下…", "搜表情中…", "准备中…", "蓄谋已久…", "酝酿情绪中…", "深呼吸中…", "正在装酷…", "假装没看见", "故意晚点回", "钓鱼执法中", "蹲回复中", "输入到一半…", "正在翻聊天记录…", "投递中…", "发送中…", "重新发送中…", "排队中…", "来电中", "通话中", "回拨中…", "占线中", "秒回不过来", "通话结束", "语音通话请求", "视频通话请求", "挂断后"];
 
       const _zkRemovedWeatherCards = ["回南天","桑拿天","秋老虎","三伏天","三九天","梅雨季","干热风","倒春寒","秋高气爽"];
 
@@ -18134,7 +18134,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       function _zkMergeTopBarDefaults() {
         try {
-          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v7')) return;
+          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v8')) return;
           if (!cardData.topBar || typeof cardData.topBar !== 'object') cardData.topBar = {};
           var _rmPool = cardData.topBar['回复消息状态'];
           if (Array.isArray(_rmPool)) { cardData.topBar['回复消息状态'] = _rmPool.filter(function (x) { var n = String((x && x.name) || x); return _zkRemovedReplyStates.indexOf(n) < 0; }); }
@@ -18155,7 +18155,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             cardData.topBar[cat] = cur;
           });
           saveCardDataNow();
-          localStorage.setItem('zk_topbar_migrated_v7', '1');
+          localStorage.setItem('zk_topbar_migrated_v8', '1');
         } catch (e) {}
       }
 
