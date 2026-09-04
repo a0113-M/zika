@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="304";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="305";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v304</title>
+  <title>字卡 · 小手机 v305</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21053,7 +21053,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var pill0 = document.getElementById('tgMiniWindow');
         var ball0 = document.getElementById('tgMiniBall');
         var _blOn = _tgGetSettings().ballLine !== false;
-        if ((pill0 && pill0.classList.contains('active')) || (ball0 && ball0.classList.contains('active') && _blOn)) out.classList.add('active');
+        if (((pill0 && pill0.classList.contains('active')) || (ball0 && ball0.classList.contains('active'))) && _blOn) out.classList.add('active');
         else out.classList.remove('active');
         requestAnimationFrame(function () {
           var diff = inner.scrollWidth - out.clientWidth;
@@ -21090,8 +21090,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var el = _tgMiniCurEl();
         var line = document.getElementById('tgMiniLine');
         if (!el) return;
-        var isPill = el.id === 'tgMiniWindow';
-        var _lf = isPill || _tgGetSettings().ballLine !== false;
+        var _lf = _tgGetSettings().ballLine !== false;
         var w = el.offsetWidth || 46, h = el.offsetHeight || 46;
         var lh = (_lf && line && line.classList.contains('active')) ? (line.offsetHeight + 6) : 0;
         left = Math.max(4, Math.min(left, window.innerWidth - w - 4));
@@ -21134,7 +21133,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (_tgMiniShape() === 'pill') {
           ball.classList.remove('active');
           pill.classList.add('active');
-          if (line) line.classList.add('active');
+          if (line) line.classList.toggle('active', _tgGetSettings().ballLine !== false);
           _tgMiniRestorePos();
         } else {
           pill.classList.remove('active');
