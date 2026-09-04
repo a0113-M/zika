@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="291";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="292";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v291</title>
+  <title>字卡 · 小手机 v292</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12278,7 +12278,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <span class="header-info-item" id="headerWeather">晴</span>
             <span class="header-info-item" id="headerMood">开心</span>
             <span class="header-info-item" id="headerStatus">在线</span>
-            <span class="header-info-item" id="headerEmotion">情绪</span>
           </div>
           <div class="chat-header-info header-info-row2" id="chatHeaderInfoRow2">
             <span class="header-info-item" id="headerTime">12:00</span>
@@ -15867,8 +15866,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       // 把六值写到聊天顶部 DOM
       function _zkApplyHeaderToDom(vals) {
-        var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
-        var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
+        var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerReplyStatus'];
+        var cats = ['天气', '时间', '心情', '状态', '回复消息状态'];
         if (!vals) return;
         for (var i = 0; i < ids.length; i++) {
           var el = document.getElementById(ids[i]);
