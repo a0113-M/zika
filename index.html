@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="294";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="295";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v294</title>
+  <title>字卡 · 小手机 v295</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20459,6 +20459,22 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       var TG_REJECT = ['现在有点忙，晚点再来陪你～', '我刚出门啦，改天再一起呀', '这会儿腾不开手，先欠着哈', '今天有点累，想自己待会儿，下次陪你'];
 
+      function _tgChatSysTip(contactId, text) {
+        if (typeof chatHistories === 'undefined' || !chatHistories) return;
+        if (!chatHistories[contactId]) chatHistories[contactId] = [];
+        var now = new Date();
+        var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        chatHistories[contactId].push({ from: 'sys', hbSys: true, text: text, time: timeStr, sentAt: Date.now() });
+        var contact = contacts.find(function (c) { return c.id === contactId; });
+        if (contact) {
+          contact.lastMsg = text;
+          contact.time = timeStr;
+          if (typeof refreshList === 'function') refreshList();
+        }
+        if (currentChatId === contactId && typeof renderMessages === 'function') renderMessages(contactId);
+        if (typeof _saveChatHistories === 'function') _saveChatHistories();
+      }
+
       function _tgInviteTogether() {
         if (!_tgSelKey) return;
         var acts = TG_ACTS.concat(_tgGetCustom());
@@ -20511,6 +20527,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           startTs: Date.now(), windowMs: winMs, winMin: winMin, joinAt: joinAt
         };
         _tgRenderInviteNote();
+        _tgChatSysTip(c.id, '你邀请了 ' + c.name + ' 一起' + act.name);
         box.classList.add('active');
         mask.classList.add('active');
         _tgInviteStartCountdown();
@@ -20625,6 +20642,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgLastLineTs = 0;
         if (invited) {
           _tgLogLive(o.contactName + ' 答应了你的邀请，来陪你一起' + o.activity);
+          _tgChatSysTip(o.contactId, o.contactName + ' 应邀来陪你一起' + o.activity);
         } else {
           _tgLogLive(o.contactName + ' 正在' + o.contactAct + '，没有打扰 TA');
         }
