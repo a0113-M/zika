@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="276";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="277";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v276</title>
+  <title>字卡 · 小手机 v277</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -17073,6 +17073,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
 
       // ----- 渲染消息 -----
+      // ===== 对方气泡下方想法/情绪 =====
+      var _zkThoughtPool = ['在想你要不要主动找你说话','刚才那句话让我开心了好久','怎么还不回我，是不是在忙','看到消息提示就忍不住点开','今天有点想你了','在等你的回复，等到花都谢了','你上次说的那件事我还记着呢','想给你分享今天遇到的事','纠结这条消息发什么好','希望你也正想着我','刚刚刷到一个梗想发给你','偷偷看了一遍聊天记录','今天的天气好像很适合见面','想约你周末出去玩','如果现在能见到你就好了','在想要不要给你打个电话','刚才是不是说错话了','有点紧张，你回复了吗','给你留了一块小蛋糕','在挑一首歌想推荐给你','想象了一下你现在的表情','数了数我们好久没见面了','打算睡前跟你说晚安','在想要送你什么礼物','今天路上看到一只很像你的猫','想把自己变得更好一点','练习了一下见面要说的话','刚才梦到你了','等下要去做什么好呢','想把今天的日落拍给你','刚刚那首歌是你喜欢的类型','犹豫要不要先把想法说出口','希望你今天过得顺利','想多了解你一点','在期待下次的约会','给你点了一杯奶茶备注了少糖','想起我们第一次聊天','把你的消息置顶了','在心里偷偷排了下次见面的行程','觉得跟你聊天很舒服','刚才打好的字又删掉了','想听你说说今天的事','在考虑要不要主动一点','你发的每个表情我都存下来了','今天的月亮很好看，想给你看','想被你夸奖','有点小情绪，但看到你就好了','刚下班，路上买了你爱吃的','想跟你吐槽一下今天的事','在存钱准备我们的旅行','你今天有没有好好吃饭','刚把你说过的那家店收藏了','想问问你睡了没有','有点后悔没多聊几句','在想要不要先说晚安','刚才偷偷笑了被同事看到'];
+      function _zkGenMind() {
+        var _moodPool = (typeof TOPBAR100 !== 'undefined' && TOPBAR100['情绪'] && TOPBAR100['情绪'].length) ? TOPBAR100['情绪'] : ['开心'];
+        return {
+          thought: _zkThoughtPool[Math.floor(Math.random() * _zkThoughtPool.length)],
+          mood: _moodPool[Math.floor(Math.random() * _moodPool.length)]
+        };
+      }
       function renderMessages(contactId) {
         if (typeof window.__hbSweepExpired === 'function') window.__hbSweepExpired(contactId);
         const messages = chatHistories[contactId] || [];
@@ -17482,6 +17491,39 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             });
 
             chatMessages.appendChild(bubbleDiv);
+
+            // 对方消息：气泡下方显示想法/情绪
+            if (msg.from !== 'me' && !msg.isReminder && !msg.isCelebration) {
+              if (typeof msg.thought !== 'string' || typeof msg.mood !== 'string') {
+                var _mind = _zkGenMind();
+                msg.thought = _mind.thought;
+                msg.mood = _mind.mood;
+              }
+              var mindRow = document.createElement('div');
+              mindRow.className = 'selectable-sys';
+              mindRow.style.cssText = 'font-size:10.5px;color:#a89bb8;margin:1px 0 5px 44px;max-width:72%;word-break:break-word;display:flex;align-items:baseline;gap:3px;';
+              var _mindIcon = document.createElement('span');
+              _mindIcon.textContent = '💭';
+              _mindIcon.style.flexShrink = '0';
+              var _mindThought = document.createElement('span');
+              _mindThought.style.fontStyle = 'italic';
+              _mindThought.textContent = msg.thought;
+              var _mindSep = document.createElement('span');
+              _mindSep.textContent = '｜';
+              _mindSep.style.opacity = '0.5';
+              var _mindMood = document.createElement('span');
+              _mindMood.textContent = msg.mood;
+              _mindMood.style.cssText = 'color:var(--primary);flex-shrink:0;';
+              mindRow.appendChild(_mindIcon);
+              mindRow.appendChild(_mindThought);
+              mindRow.appendChild(_mindSep);
+              mindRow.appendChild(_mindMood);
+              mindRow.dataset.index = index;
+              mindRow.addEventListener('click', function (e) {
+                if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); }
+              });
+              chatMessages.appendChild(mindRow);
+            }
 
             // 添加长按事件（手机）和右键事件（电脑）
             const msgElement = bubbleDiv;
