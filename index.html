@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="261";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="262";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v261</title>
+  <title>字卡 · 小手机 v262</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -777,6 +777,11 @@
       align-items: center;
       gap: 2px;
       white-space: nowrap;
+    }
+
+    .header-info-row2 {
+      margin-top: 2px;
+      opacity: 0.85;
     }
 
     .chat-menu-btn {
@@ -12259,6 +12264,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <span class="header-info-item" id="headerMood">开心</span>
             <span class="header-info-item" id="headerStatus">在线</span>
             <span class="header-info-item" id="headerEmotion">情绪</span>
+          </div>
+          <div class="chat-header-info header-info-row2" id="chatHeaderInfoRow2">
             <span class="header-info-item" id="headerReplyStatus">回复消息状态</span>
           </div>
         </div>
@@ -17970,6 +17977,143 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           '回复消息状态': [{ name: '正在输入...', useCount: 0 }, { name: '已读', useCount: 0 }, { name: '未读', useCount: 0 }, { name: '已回复', useCount: 0 }, { name: '等待回复', useCount: 0 }, { name: '消息已送达', useCount: 0 }]
         }
       };
+      var TOPBAR100 = {
+        '天气': [
+          '晴','多云','阴','小雨','中雨','大雨',
+          '暴雨','雷阵雨','阵雨','雷暴','毛毛雨','太阳雨',
+          '连绵细雨','雨夹雪','小雪','中雪','大雪','暴雪',
+          '鹅毛大雪','冰雹','霜冻','结冰','雾','大雾',
+          '浓雾','薄雾','晨雾','霾','轻度雾霾','微风',
+          '和风','清风','大风','狂风','台风','龙卷风',
+          '沙尘暴','扬沙','浮尘','干热风','寒风','凛冽',
+          '暖风','热浪','闷热','湿热','干爽','干燥',
+          '湿润','潮湿','回南天','桑拿天','秋高气爽','春寒',
+          '倒春寒','秋老虎','三伏天','三九天','梅雨季','雨季',
+          '汛期','旱季','晴转多云','多云转晴','多云转阴','阴转小雨',
+          '小雨转晴','晴间多云','局部阵雨','分散性降雨','彩虹','双彩虹',
+          '朝霞','晚霞','火烧云','日出','日落','日晕',
+          '月晕','星空','满天星','银河','流星雨','极光',
+          '露水','凝霜','雾凇','冰挂','寒潮','冷空气',
+          '气温回升','降温','升温','高温预警','寒潮预警','台风过境',
+          '风和日丽','碧空如洗','万里无云','云卷云舒'
+        ],
+        '时间': [
+          '凌晨','拂晓','黎明','破晓','天蒙蒙亮','清晨',
+          '清早','一大早','早晨','早上','日出时分','晨光熹微',
+          '朝霞满天','早上七点','早饭时间','上班路上','通勤路上','上学路上',
+          '上午','日上三竿','上午十点','茶歇时间','临近中午','晌午',
+          '正午','中午','午间','日头正盛','午饭时间','午后',
+          '午后一点','下午','下午茶','午后三点','日头偏西','下午四点',
+          '放学路上','下班路上','傍晚','黄昏','日暮','夕阳西下',
+          '日落黄昏','薄暮','华灯初上','掌灯时分','晚饭时间','入夜',
+          '晚上','晚间','晚风习习','月上柳梢','月色正好','夜幕降临',
+          '万家灯火','晚饭后','晚间八点','追剧时间','夜跑时间','夜里',
+          '夜深','夜深人静','万籁俱寂','深夜','子夜','午夜',
+          '半夜','三更半夜','月挂中天','星光点点','繁星满天','夜色正浓',
+          '凌晨一点','凌晨两点','凌晨三点','凌晨四点','睡意正浓','辗转难眠',
+          '梦正酣','睡前时刻','深夜电台','清晨五点','闹钟响前','梦醒时分',
+          '睡回笼觉','早高峰','晚高峰','午休时间','午睡时分','课间',
+          '下课时间','自习时间','聚会前','约会前','等车时间','候机中',
+          '倒计时中','跨年前夜','岁末年初','生日零点'
+        ],
+        '心情': [
+          '开心','超开心','开心到飞起','乐开花','美滋滋','甜滋滋',
+          '心情超好','雀跃','欢喜','愉悦','快乐','舒畅',
+          '舒坦','放松','松弛','惬意','自在','满足',
+          '幸福','甜蜜','心动','小鹿乱撞','窃喜','偷着乐',
+          '暗爽','得意','小骄傲','自豪','感恩','治愈',
+          '被治愈','元气满满','活力满满','精神饱满','精力充沛','清醒',
+          '专注','投入','沉浸','心流','燃起来了','干劲十足',
+          '斗志昂扬','雄心勃勃','跃跃欲试','摩拳擦掌','期待','好期待',
+          '超期待','盼着','等不及','望眼欲穿','平静','安静',
+          '宁静','平和','淡定','从容','悠然','安然',
+          '坦然','释然','看开','佛系','躺平','摆烂',
+          '咸鱼','放空','发呆','走神','恍惚','迷糊',
+          '茫然','慵懒','懒洋洋','困倦','犯困','瞌睡',
+          '昏昏欲睡','哈欠连天','睡意来袭','疲惫','好累','累瘫',
+          '没电了','电量不足','倦怠','乏力','精疲力尽','身心俱疲',
+          '累并快乐着','emo','低落','沮丧','失落','郁闷',
+          '紧张','不安','忐忑','心慌'
+        ],
+        '状态': [
+          '在线','在线中','忙碌','忙碌中','离线','隐身',
+          '挂机中','勿扰','请勿打扰','免打扰','静音中','工作中',
+          '上班中','开会中','加班中','摸鱼中','划水中','出差中',
+          '外勤中','跑客户','赶飞机','高铁上','等车中','堵在路上',
+          '上课中','自习中','听课中','记笔记','赶作业','写论文',
+          '备考中','复习中','刷题中','背单词','赶due','交作业',
+          '晨跑中','夜跑中','健身中','撸铁中','瑜伽中','拉伸中',
+          '跳操中','散步中','遛弯中','爬山','徒步','骑行中',
+          '游泳中','打球中','午休中','午睡中','打盹中','小憩中',
+          '充电中','回血中','吃饭中','干饭中','炫饭中','点外卖中',
+          '等外卖','做饭中','煲汤中','洗碗中','吃夜宵','下午茶',
+          '洗澡中','泡脚中','洗头中','吹头发','敷面膜','护肤中',
+          '化妆中','卸妆中','换装中','洗衣服','晾衣服','收衣服',
+          '打扫中','大扫除','拖地中','泡茶中','逛超市','买菜中',
+          '拿快递','取外卖','浇花中','撸猫中','逗狗中','喂鱼中',
+          '追剧中','看电影','听歌中','唱歌中','打游戏','开黑中',
+          '刷视频中','看书','养多肉','手工中'
+        ],
+        '情绪': [
+          '温柔','超温柔','软软的','暖暖的','温声细语','轻声细语',
+          '害羞','脸红','脸红心跳','捂脸','羞涩','扭捏',
+          '不好意思','小脸通红','耳朵红了','低头偷笑','偷瞄你','眼神躲闪',
+          '撒娇','求抱抱','要亲亲','举高高','哼哼','气鼓鼓',
+          '嘟嘴','委屈','委屈巴巴','瘪嘴','眼眶红了','粘人',
+          '贴贴','蹭蹭','想你','超想你','想你想到失眠','满脑子都是你',
+          '吃醋','酸了','小心眼','闹别扭','赌气','生闷气',
+          '炸毛','超生气','气到跳脚','不理你了','冷战中','和好如初',
+          '心软','原谅你了','难过','想哭','眼泪汪汪','呜呜',
+          '心疼','心碎','失落','孤单','寂寞','空虚',
+          '无聊','烦闷','闷闷不乐','低气压','emo了','丧',
+          '没劲','提不起劲','被暖到','感动','超感动','热泪盈眶',
+          '心花怒放','激动','超激动','按捺不住','心痒痒','手舞足蹈',
+          '眉飞色舞','喜上眉梢','嘴角上扬','忍不住笑','笑出声','嘿嘿',
+          '哈哈','嘻嘻','甜甜的','怦然心动','小鹿乱撞','扑通扑通',
+          '心动不已','安心的','踏实','被爱包围','幸福感爆棚','岁月静好',
+          '风平浪静','云淡风轻','百感交集','五味杂陈'
+        ],
+        '回复消息状态': [
+          '正在输入...','正在输入…','输入中…','对方正在输入…','正在打字…','打字中…',
+          '正在组织语言…','想了很久…','欲言又止…','打字又删掉…','写了又删…','删了又写…',
+          '正在编辑…','编辑中…','语音输入中…','正在录音…','录音中…','正在找表情包',
+          '挑表情中…','表情包大战','选图困难中…','翻相册中…','拍照中…','截图后回你',
+          '正在发语音','转文字中…','翻译中…','复制粘贴中…','转发中…','已读',
+          '已读不回','读了但没回','看过','看过了','稍后回复','马上回复',
+          '秒回中','正在搜资料','查一下…','搜表情中…','准备中…','蓄谋已久…',
+          '酝酿情绪中…','深呼吸中…','正在装酷…','假装没看见','故意晚点回','钓鱼执法中',
+          '已回复','刚回完','等待回复','等你回我','蹲回复中','在线等',
+          '别已读不回','快回我','催你了哦','消息已送达','已送达','投递中…',
+          '发送中…','发送成功','重新发送中…','发送失败','网络不佳','信号不好',
+          '延迟送达','排队中…','消息置顶','消息免打扰','消息折叠','静音提醒',
+          '响铃模式','振动模式','来电中','通话中','通话结束','语音通话请求',
+          '视频通话请求','挂断后','回拨中…','占线中','稍等哦','马上来',
+          '在忙','忙完了','稍后聊','回聊','先忙','忙着呢',
+          '晚点回','有空聊','不客气','收到','收到啦','秒回不过来',
+          '了解','好的呢','输入到一半…','正在翻聊天记录…'
+        ]
+      };
+      function _zkMergeTopBarDefaults() {
+        try {
+          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v1')) return;
+          if (!cardData.topBar || typeof cardData.topBar !== 'object') cardData.topBar = {};
+          Object.keys(TOPBAR100).forEach(function (cat) {
+            var cur = cardData.topBar[cat];
+            if (!Array.isArray(cur)) cur = [];
+            var isLegacyTime = cat === '时间' && cur.length > 0 && cur.every(function (x) { return /^\d{1,2}:\d{2}$/.test(String((x && x.name) || x)); });
+            if (isLegacyTime) cur = [];
+            var have = {};
+            cur.forEach(function (x) { have[String((x && x.name) || x)] = true; });
+            TOPBAR100[cat].forEach(function (n) {
+              if (!have[n] && cur.length < 100) { cur.push({ name: n, useCount: 0 }); have[n] = true; }
+            });
+            cardData.topBar[cat] = cur;
+          });
+          localStorage.setItem('zk_topbar_migrated_v1', '1');
+          saveCardDataNow();
+        } catch (e) {}
+      }
+
       // ===== 字卡数据持久化（IndexedDB 存储，支持语音音频）=====
       function _zkCardOpenDb() {
         return new Promise(function (resolve, reject) {
@@ -18014,6 +18158,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                     if (d.role && typeof d.role === 'object') cardData.role = d.role;
                     if (d.topBar && typeof d.topBar === 'object') cardData.topBar = d.topBar;
                     if (d.voice && typeof d.voice === 'object') cardData.voice = d.voice;
+                    try { _zkMergeTopBarDefaults(); } catch (e3) {}
                     try { renderCardLists(); refreshList(); } catch (e2) {}
                   }
                 }
@@ -18021,7 +18166,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             };
             tx.oncomplete = finish;
           } catch (e2) { finish(); }
-        }).catch(function () {});
+        }).catch(function () { try { _zkMergeTopBarDefaults(); } catch (e3) {} });
       }
       function rollVoiceCard() {
         try {
