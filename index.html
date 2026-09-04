@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="293";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="294";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v293</title>
+  <title>字卡 · 小手机 v294</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21354,7 +21354,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             }
             ctx.textBaseline = 'alphabetic';
           }
-          return cv.toDataURL('image/png');
+          return cv.toDataURL('image/jpeg', 0.75);
         } catch (e2) { return null; }
       }
       function tryAutoMoment(contact) {
@@ -21494,8 +21494,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             Array.from(this.files).forEach(function(file) {
               var reader = new FileReader();
               reader.onload = function(e) {
-                momentsPendingImages.push({ src: e.target.result });
-                updateImagePicker();
+                _zkCompressMomentImage(e.target.result, function(src) {
+                  momentsPendingImages.push({ src: src });
+                  updateImagePicker();
+                });
               };
               reader.readAsDataURL(file);
             });
@@ -21536,8 +21538,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           Array.from(this.files).forEach(function(file) {
             var reader = new FileReader();
             reader.onload = function(e) {
-              momentsPendingImages.push({ src: e.target.result });
-              updateImagePicker();
+              _zkCompressMomentImage(e.target.result, function(src) {
+                momentsPendingImages.push({ src: src });
+                updateImagePicker();
+              });
             };
             reader.readAsDataURL(file);
           });
@@ -21563,6 +21567,32 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       momentsPostCancel.addEventListener('click', function() {
         momentsPostOverlay.classList.remove('show');
       });
+
+      function _zkCompressMomentImage(dataUrl, cb) {
+        try {
+          var img = new Image();
+          img.onload = function() {
+            try {
+              var MAX = 1080;
+              var w = img.naturalWidth || img.width || 0;
+              var h = img.naturalHeight || img.height || 0;
+              if (!w || !h) { cb(dataUrl); return; }
+              var scale = 1;
+              if (w > MAX || h > MAX) scale = Math.min(MAX / w, MAX / h);
+              var tw = Math.max(1, Math.round(w * scale));
+              var th = Math.max(1, Math.round(h * scale));
+              var cv = document.createElement('canvas');
+              cv.width = tw; cv.height = th;
+              var ctx = cv.getContext('2d');
+              ctx.drawImage(img, 0, 0, tw, th);
+              var out = cv.toDataURL('image/jpeg', 0.8);
+              cb(out);
+            } catch(e) { cb(dataUrl); }
+          };
+          img.onerror = function() { cb(dataUrl); };
+          img.src = dataUrl;
+        } catch(e) { cb(dataUrl); }
+      }
 
       function escapeHtmlForMoments(text) {
         var div = document.createElement('div');
@@ -21687,7 +21717,29 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
 
       function saveMoments() {
-        try { localStorage.setItem('moments', JSON.stringify(moments)); } catch(e) {}
+        try {
+          var _cps = moments.filter(function(m) { return m.isContactPost; });
+          if (_cps.length > 25) {
+            var _exc = _cps.length - 25;
+            var _sorted = _cps.slice().sort(function(a, b) { return a.time - b.time; });
+            var _rm = {};
+            for (var _ri = 0; _ri < _exc; _ri++) { _rm[_sorted[_ri].id] = true; }
+            moments = moments.filter(function(m) { return !_rm[m.id]; });
+          }
+          localStorage.setItem('moments', JSON.stringify(moments));
+        } catch(e) {
+          try {
+            var _cps2 = moments.filter(function(m) { return m.isContactPost; }).sort(function(a, b) { return a.time - b.time; });
+            var _drop = Math.min(10, _cps2.length);
+            var _dropIds = {};
+            for (var _di = 0; _di < _drop; _di++) { _dropIds[_cps2[_di].id] = true; }
+            var _kept = moments.filter(function(m) { return !_dropIds[m.id]; });
+            if (_kept.length < moments.length) {
+              moments = _kept;
+              try { localStorage.setItem('moments', JSON.stringify(moments)); } catch(e2) {}
+            }
+          } catch(e3) {}
+        }
       }
 
       // Publish
