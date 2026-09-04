@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="292";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="293";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v292</title>
+  <title>字卡 · 小手机 v293</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21595,8 +21595,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } catch(e) {}
       }
 
+      var _momentReplyTarget = {};
       function renderMoments() {
         if (!momentsFeed) return;
+        _momentReplyTarget = {};
         momentsFeed.innerHTML = '';
 
         if (moments.length === 0) {
@@ -21641,7 +21643,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (hasComments) {
               interactionsHtml += '<div class="moment-comments">';
               m.comments.forEach(function(c) {
-                interactionsHtml += '<div class="moment-comment"><span class="comment-author">' + c.author + '</span>：' + escapeHtmlForMoments(c.text) + '</div>';
+                var _mkLabel = c.replyTo ? (c.author + ' 回复 ' + c.replyTo) : c.author;
+                interactionsHtml += '<div class="moment-comment" data-id="' + m.id + '" data-reply-to="' + escapeHtmlForMoments(c.author) + '"><span class="comment-author">' + escapeHtmlForMoments(_mkLabel) + '</span>：' + escapeHtmlForMoments(c.text) + '</div>';
               });
               interactionsHtml += '</div>';
             }
@@ -21770,6 +21773,26 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
 
         momentsFeed.addEventListener('click', function(e) {
+          var _cmtEl = e.target.closest('.moment-comment');
+          if (_cmtEl) {
+            e.stopPropagation();
+            var _cmId = parseInt(_cmtEl.dataset.id);
+            var _repTo = _cmtEl.dataset.replyTo;
+            var _cmItem = _cmtEl.closest('.moment-item');
+            if (_cmItem) {
+              var _cmWrap = _cmItem.querySelector('.moment-comment-input-wrap');
+              if (_cmWrap) {
+                _cmWrap.classList.add('show');
+                var _cmInp = _cmWrap.querySelector('.moment-comment-input');
+                if (_cmInp) {
+                  _momentReplyTarget[_cmId] = _repTo;
+                  _cmInp.placeholder = '回复 ' + _repTo + '：';
+                  _cmInp.focus();
+                }
+              }
+            }
+            return;
+          }
           var _mvImg = e.target.closest('.moment-images img');
           if (_mvImg) {
             e.stopPropagation();
@@ -21939,7 +21962,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (!moment) return;
             if (!moment.comments) moment.comments = [];
             var userName = (typeof userProfile !== 'undefined' && userProfile.name) ? userProfile.name : '我';
-            moment.comments.push({ author: userName, text: text });
+            var _repToNow = _momentReplyTarget[id];
+            moment.comments.push({ author: userName, text: text, replyTo: _repToNow ? _repToNow : undefined });
+            delete _momentReplyTarget[id];
             saveMoments();
             renderMoments();
             return;
