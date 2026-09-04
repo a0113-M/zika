@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="297";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="298";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v297</title>
+  <title>字卡 · 小手机 v298</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11740,13 +11740,33 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   font-size: 11px; color: rgba(255,255,255,0.92); line-height: 1.1;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
-.tg-mini-window .tgm-line {
-  font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.1;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
-}
 .tg-mini-window .tgm-timer {
-  font-size: 11px; color: rgba(255,255,255,0.85); flex-shrink: 0;
+  font-size: 12px; color: #fff; line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
   font-variant-numeric: tabular-nums;
+}
+.tg-mini-line {
+  position: fixed; z-index: 11150; display: none;
+  right: 16px; bottom: 222px;
+  max-width: 240px; height: 24px;
+  padding: 0 10px; box-sizing: border-box;
+  background: rgba(30,20,50,0.78);
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.32), 0 0 0 1px rgba(155,142,196,0.14);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  overflow: hidden; white-space: nowrap;
+}
+.tg-mini-line.active { display: flex; align-items: center; }
+.tg-mini-line .tgml-inner {
+  display: inline-block; white-space: nowrap;
+  font-size: 11px; color: rgba(255,255,255,0.85); line-height: 1.1;
+}
+.tg-mini-line .tgml-inner.tgml-scroll {
+  animation: tgmlScroll var(--dur, 6s) linear infinite;
+}
+@keyframes tgmlScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(calc(-1 * var(--shift, 60px))); }
 }
 
 
@@ -13061,10 +13081,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div class="tgm-avatar" id="tgmAvatar">?</div>
       <div class="tgm-center">
         <div class="tgm-stats" id="tgmStats">❤72 · 36.5℃</div>
-        <div class="tgm-line" id="tgmLine">一起陪伴</div>
+        <div class="tgm-timer" id="tgmTimer">00:00:00</div>
       </div>
-      <div class="tgm-timer" id="tgmTimer">00:00:00</div>
     </div>
+    <div class="tg-mini-line" id="tgMiniLine"><div class="tgml-inner" id="tgmlInner">一起陪伴</div></div>
 
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
@@ -20747,6 +20767,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!live || !a) return;
         var _m = document.getElementById('tgMiniWindow');
         if (_m) _m.classList.remove('active');
+        var _ml = document.getElementById('tgMiniLine');
+        if (_ml) _ml.classList.remove('active');
         if (_tgCardMode) {
           _tgCardMode = false;
           var _pg0 = document.getElementById('togetherPage');
@@ -20873,6 +20895,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgStopHb();
         var _m3 = document.getElementById('tgMiniWindow');
         if (_m3) _m3.classList.remove('active');
+        var _ml3 = document.getElementById('tgMiniLine');
+        if (_ml3) _ml3.classList.remove('active');
         _tgAudioStop();
         var live = document.getElementById('tgLive');
         if (live) live.classList.remove('open');
@@ -20951,10 +20975,30 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (av) { if (c) _zkSetContactAvatar(av, c); else { av.textContent = (a.contactName || '?').charAt(0).toUpperCase(); av.style.background = 'var(--primary)'; } }
         var st = document.getElementById('tgmStats');
         if (st) st.textContent = '❤' + Math.round(a.bpm || 72) + ' · ' + (a.temp || 36.5).toFixed(1) + '℃';
-        var ln = document.getElementById('tgmLine');
-        if (ln) ln.textContent = (a.logs && a.logs.length) ? a.logs[0].x : ('一起' + (a.activity || '陪伴'));
         var tm = document.getElementById('tgmTimer');
         if (tm) tm.textContent = _tgFmtHMS(Math.max(0, Math.floor((Date.now() - (a.startTs || Date.now())) / 1000)));
+        _tgUpdateMiniLine(a);
+      }
+      function _tgUpdateMiniLine(a) {
+        var out = document.getElementById('tgMiniLine');
+        var inner = document.getElementById('tgmlInner');
+        if (!out || !inner) return;
+        var txt = (a && a.logs && a.logs.length) ? (a.logs[0].x || '') : ('一起' + ((a && a.activity) || '陪伴'));
+        inner.textContent = txt;
+        inner.classList.remove('tgml-scroll');
+        inner.style.removeProperty('--shift');
+        inner.style.removeProperty('--dur');
+        out.classList.add('active');
+        requestAnimationFrame(function () {
+          var diff = inner.scrollWidth - out.clientWidth;
+          if (diff > 0) {
+            var shift = diff + 18;
+            var dur = Math.max(2.5, shift / 28);
+            inner.style.setProperty('--shift', shift + 'px');
+            inner.style.setProperty('--dur', dur.toFixed(1) + 's');
+            inner.classList.add('tgml-scroll');
+          }
+        });
       }
       document.getElementById('tgCardBackdrop').addEventListener('click', _tgClosePage);
       document.getElementById('tgInviteX').addEventListener('click', _tgCancelInvite);
