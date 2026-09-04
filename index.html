@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="290";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="291";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v290</title>
+  <title>字卡 · 小手机 v291</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21717,22 +21717,40 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var _reactSettings = getContactProbSettings();
             setTimeout(function() {
               try {
+                var _likedAny = false;
                 _reactNonGroup.forEach(function(c) {
                   var _rcs = _reactSettings[c.id] || {};
                   var _rlp = (_rcs.likeMomentProb !== undefined ? _rcs.likeMomentProb : 10) / 100;
-                  if (_rlp > 0 && Math.random() <= _rlp) tryContactLikeMoment(c);
+                  if (_rlp > 0 && Math.random() <= _rlp) { tryContactLikeMoment(c); _likedAny = true; }
                 });
+                if (!_likedAny) {
+                  var _likeable = _reactNonGroup.filter(function(c) {
+                    var _rc = _reactSettings[c.id] || {};
+                    var _p = (_rc.likeMomentProb !== undefined ? _rc.likeMomentProb : 10);
+                    return _p > 0;
+                  });
+                  if (_likeable.length > 0) tryContactLikeMoment(_likeable[Math.floor(Math.random() * _likeable.length)]);
+                }
               } catch(e) {}
-            }, 12000 + Math.floor(Math.random() * 15000));
+            }, 2000 + Math.floor(Math.random() * 3000));
             setTimeout(function() {
               try {
+                var _cmtAny = false;
                 _reactNonGroup.forEach(function(c) {
                   var _rcs2 = _reactSettings[c.id] || {};
                   var _rrp = (_rcs2.replyMomentProb !== undefined ? _rcs2.replyMomentProb : 5) / 100;
-                  if (_rrp > 0 && Math.random() <= _rrp) tryContactCommentMoment(c);
+                  if (_rrp > 0 && Math.random() <= _rrp) { tryContactCommentMoment(c); _cmtAny = true; }
                 });
+                if (!_cmtAny) {
+                  var _replyable = _reactNonGroup.filter(function(c) {
+                    var _rc2 = _reactSettings[c.id] || {};
+                    var _p2 = (_rc2.replyMomentProb !== undefined ? _rc2.replyMomentProb : 5);
+                    return _p2 > 0;
+                  });
+                  if (_replyable.length > 0) tryContactCommentMoment(_replyable[Math.floor(Math.random() * _replyable.length)]);
+                }
               } catch(e) {}
-            }, 30000 + Math.floor(Math.random() * 25000));
+            }, 5000 + Math.floor(Math.random() * 5000));
           }
         } catch(e) {}
 
