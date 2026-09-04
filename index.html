@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="284";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="285";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v284</title>
+  <title>字卡 · 小手机 v285</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21180,6 +21180,26 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               lastFire[_aKey] = now; changed = true;
               if (Math.random() <= aProb) tryAutoAnon(contact);
             }
+
+            // 点赞我的朋友圈
+            var lkProb = (cs.likeMomentProb !== undefined ? cs.likeMomentProb : 10) / 100;
+            var _lkKey = contact.id + ':likemoment';
+            if ((lastFire[_lkKey] || 0) === 0) {
+              lastFire[_lkKey] = now; changed = true;
+            } else if (lkProb > 0 && (now - lastFire[_lkKey] >= 10 * 60 * 1000)) {
+              lastFire[_lkKey] = now; changed = true;
+              if (Math.random() <= lkProb) tryContactLikeMoment(contact);
+            }
+
+            // 评论我的朋友圈（回一句字卡）
+            var rpProb = (cs.replyMomentProb !== undefined ? cs.replyMomentProb : 5) / 100;
+            var _rpKey = contact.id + ':replymoment';
+            if ((lastFire[_rpKey] || 0) === 0) {
+              lastFire[_rpKey] = now; changed = true;
+            } else if (rpProb > 0 && (now - lastFire[_rpKey] >= 15 * 60 * 1000)) {
+              lastFire[_rpKey] = now; changed = true;
+              if (Math.random() <= rpProb) tryContactCommentMoment(contact);
+            }
           });
 
           if (changed) saveEventLastFire(lastFire);
@@ -21344,6 +21364,38 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           saveLetters();
           updateAnonymousBadge();
           renderAnonymousList();
+        } catch(e) {}
+      }
+
+      function tryContactLikeMoment(contact) {
+        try {
+          var mine = moments.filter(function(m) { return !m.isContactPost; });
+          if (!mine || mine.length === 0) return;
+          var cands = mine.filter(function(m) { return !(m.likes && m.likes.indexOf(contact.name) >= 0); });
+          var t = cands.length > 0 ? cands[Math.floor(Math.random() * cands.length)] : null;
+          if (!t) return;
+          if (!t.likes) t.likes = [];
+          t.likes.push(contact.name);
+          saveMoments();
+          renderMoments();
+        } catch(e) {}
+      }
+
+      function tryContactCommentMoment(contact) {
+        try {
+          var mine = moments.filter(function(m) { return !m.isContactPost; });
+          if (!mine || mine.length === 0) return;
+          var cands = mine.filter(function(m) {
+            return !(m.comments && m.comments.some(function(c) { return c.author === contact.name; }));
+          });
+          var t = cands.length > 0 ? cands[Math.floor(Math.random() * cands.length)] : null;
+          if (!t) return;
+          var card = getRandomCard();
+          if (!card) return;
+          if (!t.comments) t.comments = [];
+          t.comments.push({ author: contact.name, text: card });
+          saveMoments();
+          renderMoments();
         } catch(e) {}
       }
 
