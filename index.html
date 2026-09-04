@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="281";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="282";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v281</title>
+  <title>字卡 · 小手机 v282</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21221,17 +21221,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       function tryAutoMoment(contact) {
         try {
-          var msgs = chatHistories[contact.id];
-          if (!msgs || msgs.length === 0) return;
-          var count = Math.min(msgs.length, Math.floor(Math.random() * 20) + 1);
-          var shuffled = msgs.slice().sort(function() { return Math.random() - 0.5; });
-          var selected = shuffled.slice(0, count);
-          var textParts = selected.map(function(m) {
-            var prefix = (m.from === 'me') ? '我' : contact.name;
-            return prefix + '：' + (m.text || '[图片]');
-          });
+          var cardText = getRandomCard();
           moments.push({
-            id: Date.now(), author: contact.name, text: textParts.join('\n'),
+            id: Date.now(), author: contact.name, avatarImage: contact.avatarImage || null,
+            text: cardText,
             images: [], likes: [], comments: [], time: Date.now(), isContactPost: true
           });
           saveMoments();
@@ -21279,7 +21272,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         // Sync avatarImage for all existing moments
         if (userProfile.avatarImage) {
           for (var i = 0; i < moments.length; i++) {
-            if (!moments[i].avatarImage) {
+            if (moments[i].isContactPost) {
+              if (moments[i].avatarImage === userProfile.avatarImage) {
+                moments[i].avatarImage = null;
+              }
+            } else if (!moments[i].avatarImage) {
               moments[i].avatarImage = userProfile.avatarImage;
             }
           }
