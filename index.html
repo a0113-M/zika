@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="279";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="280";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v279</title>
+  <title>字卡 · 小手机 v280</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14711,6 +14711,38 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                   <span class="settings-prob-value" id="contactSettingProactiveProbVal">10%</span>
                 </div>
               </div>
+              <div class="settings-item settings-item-multi">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">想法</span>
+                  <span class="settings-item-hint">该联系人每隔一段时间、按概率在气泡下冒出想法</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">间隔</span>
+                  <input type="range" id="contactSettingThoughtInterval" min="5" max="1440" step="5" value="15" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingThoughtIntervalVal">15分钟</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">概率</span>
+                  <input type="range" id="contactSettingThoughtProb" min="0" max="100" step="1" value="75" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingThoughtProbVal">75%</span>
+                </div>
+              </div>
+              <div class="settings-item settings-item-multi">
+                <div class="settings-item-left">
+                  <span class="settings-item-label">情绪</span>
+                  <span class="settings-item-hint">该联系人每隔一段时间、按概率在气泡下冒出情绪</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">间隔</span>
+                  <input type="range" id="contactSettingMoodInterval" min="5" max="1440" step="5" value="15" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingMoodIntervalVal">15分钟</span>
+                </div>
+                <div class="settings-prob-control">
+                  <span style="font-size:11px;color:var(--text-muted);min-width:28px;">概率</span>
+                  <input type="range" id="contactSettingMoodProb" min="0" max="100" step="1" value="75" class="settings-range">
+                  <span class="settings-prob-value" id="contactSettingMoodProbVal">75%</span>
+                </div>
+              </div>
                             <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border);"></div>
               <div class="settings-section-title" style="font-size:13px;margin-top:12px;">互动概率</div>
               <div class="settings-item">
@@ -17083,11 +17115,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       // ----- 渲染消息 -----
       // ===== 对方气泡下方想法/情绪 =====
       var _zkThoughtPool = ['在想你要不要主动找你说话','刚才那句话让我开心了好久','怎么还不回我，是不是在忙','看到消息提示就忍不住点开','今天有点想你了','在等你的回复，等到花都谢了','你上次说的那件事我还记着呢','想给你分享今天遇到的事','纠结这条消息发什么好','希望你也正想着我','刚刚刷到一个梗想发给你','偷偷看了一遍聊天记录','今天的天气好像很适合见面','想约你周末出去玩','如果现在能见到你就好了','在想要不要给你打个电话','刚才是不是说错话了','有点紧张，你回复了吗','给你留了一块小蛋糕','在挑一首歌想推荐给你','想象了一下你现在的表情','数了数我们好久没见面了','打算睡前跟你说晚安','在想要送你什么礼物','今天路上看到一只很像你的猫','想把自己变得更好一点','练习了一下见面要说的话','刚才梦到你了','等下要去做什么好呢','想把今天的日落拍给你','刚刚那首歌是你喜欢的类型','犹豫要不要先把想法说出口','希望你今天过得顺利','想多了解你一点','在期待下次的约会','给你点了一杯奶茶备注了少糖','想起我们第一次聊天','把你的消息置顶了','在心里偷偷排了下次见面的行程','觉得跟你聊天很舒服','刚才打好的字又删掉了','想听你说说今天的事','在考虑要不要主动一点','你发的每个表情我都存下来了','今天的月亮很好看，想给你看','想被你夸奖','有点小情绪，但看到你就好了','刚下班，路上买了你爱吃的','想跟你吐槽一下今天的事','在存钱准备我们的旅行','你今天有没有好好吃饭','刚把你说过的那家店收藏了','想问问你睡了没有','有点后悔没多聊几句','在想要不要先说晚安','刚才偷偷笑了被同事看到'];
-      function _zkGenMind() {
+      function _zkGenMind(contact) {
         var _moodPool = (typeof TOPBAR100 !== 'undefined' && TOPBAR100['情绪'] && TOPBAR100['情绪'].length) ? TOPBAR100['情绪'] : ['开心'];
-        var _hasT = Math.random() < 0.75;
-        var _hasM = Math.random() < 0.75;
-        if (!_hasT && !_hasM) { if (Math.random() < 0.5) { _hasT = true; } else { _hasM = true; } }
+        var _cs = {};
+        if (contact && typeof getContactProbSettings === 'function') { _cs = getContactProbSettings()[contact.id] || {}; }
+        var _tInt = (typeof _cs.thoughtInterval === 'number') ? _cs.thoughtInterval : 15;
+        var _tProb = (typeof _cs.thoughtProb === 'number') ? _cs.thoughtProb : 75;
+        var _mInt = (typeof _cs.moodInterval === 'number') ? _cs.moodInterval : 15;
+        var _mProb = (typeof _cs.moodProb === 'number') ? _cs.moodProb : 75;
+        var _now = Date.now();
+        var _hasT = false, _hasM = false;
+        if (_tProb > 0) {
+          var _lastT = contact ? (contact._lastThoughtAt || 0) : 0;
+          if ((_now - _lastT) >= _tInt * 60000) {
+            _hasT = (Math.random() * 100) < _tProb;
+            if (_hasT && contact) { contact._lastThoughtAt = _now; }
+          }
+        }
+        if (_mProb > 0) {
+          var _lastM = contact ? (contact._lastMoodAt || 0) : 0;
+          if ((_now - _lastM) >= _mInt * 60000) {
+            _hasM = (Math.random() * 100) < _mProb;
+            if (_hasM && contact) { contact._lastMoodAt = _now; }
+          }
+        }
+        if (contact && (_hasT || _hasM) && typeof saveContacts === 'function') { try { saveContacts(); } catch(e) {} }
         return {
           thought: _hasT ? _zkThoughtPool[Math.floor(Math.random() * _zkThoughtPool.length)] : '',
           mood: _hasM ? _moodPool[Math.floor(Math.random() * _moodPool.length)] : ''
@@ -17506,7 +17558,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             // 对方消息：气泡下方显示想法/情绪（per-contact 开关，可不同时出现）
             if (msg.from !== 'me' && !msg.isReminder && !msg.isCelebration) {
               if (typeof msg.thought !== 'string' || typeof msg.mood !== 'string') {
-                var _mind = _zkGenMind();
+                var _mind = _zkGenMind(contact);
                 msg.thought = _mind.thought;
                 msg.mood = _mind.mood;
               }
@@ -20898,7 +20950,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       function loadContactProbSliders(contactId) {
         var settings = getContactProbSettings();
-        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0, letterInterval: 30, momentInterval: 30, anonInterval: 60, proactiveInterval: 60, proactiveProb: 10 };
+        var cs = settings[contactId] || { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0, letterInterval: 30, momentInterval: 30, anonInterval: 60, proactiveInterval: 60, proactiveProb: 10, thoughtInterval: 15, thoughtProb: 75, moodInterval: 15, moodProb: 75 };
         
         var contact = contacts.find(function(c) { return c.id === contactId; });
         if (contact) {
@@ -20931,6 +20983,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var pap = document.getElementById('contactSettingProactiveProb');
         if (pai) { pai.value = cs.proactiveInterval || 60; document.getElementById('contactSettingProactiveIntervalVal').textContent = formatIntervalLabel(cs.proactiveInterval || 60); }
         if (pap) { pap.value = (typeof cs.proactiveProb === 'number') ? cs.proactiveProb : 10; document.getElementById('contactSettingProactiveProbVal').textContent = ((typeof cs.proactiveProb === 'number') ? cs.proactiveProb : 10) + '%'; }
+        var tii = document.getElementById('contactSettingThoughtInterval');
+        var tip = document.getElementById('contactSettingThoughtProb');
+        if (tii) { tii.value = cs.thoughtInterval || 15; document.getElementById('contactSettingThoughtIntervalVal').textContent = formatIntervalLabel(cs.thoughtInterval || 15); }
+        if (tip) { tip.value = (typeof cs.thoughtProb === 'number') ? cs.thoughtProb : 75; document.getElementById('contactSettingThoughtProbVal').textContent = ((typeof cs.thoughtProb === 'number') ? cs.thoughtProb : 75) + '%'; }
+        var moi = document.getElementById('contactSettingMoodInterval');
+        var mop = document.getElementById('contactSettingMoodProb');
+        if (moi) { moi.value = cs.moodInterval || 15; document.getElementById('contactSettingMoodIntervalVal').textContent = formatIntervalLabel(cs.moodInterval || 15); }
+        if (mop) { mop.value = (typeof cs.moodProb === 'number') ? cs.moodProb : 75; document.getElementById('contactSettingMoodProbVal').textContent = ((typeof cs.moodProb === 'number') ? cs.moodProb : 75) + '%'; }
         if (rmp) { rmp.value = cs.replyMomentProb || 5; document.getElementById('contactSettingReplyMomentProbVal').textContent = (cs.replyMomentProb || 5) + '%'; }
         if (lmp) { lmp.value = cs.likeMomentProb || 10; document.getElementById('contactSettingLikeMomentProbVal').textContent = (cs.likeMomentProb || 10) + '%'; }
         if (cp) { cp.value = cs.callProb || 3; document.getElementById('contactSettingCallProbVal').textContent = (cs.callProb || 3) + '%'; }
@@ -20948,7 +21008,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
 
       // 联系人概率滑块事件
-      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingLetterInterval','contactSettingMomentInterval','contactSettingAnonInterval','contactSettingProactiveInterval','contactSettingProactiveProb','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb','contactExclusiveCardProb'].forEach(function(id) {
+      ['contactSettingLetterProb','contactSettingMomentProb','contactSettingAnonProb','contactSettingLetterInterval','contactSettingMomentInterval','contactSettingAnonInterval','contactSettingProactiveInterval','contactSettingProactiveProb','contactSettingThoughtInterval','contactSettingThoughtProb','contactSettingMoodInterval','contactSettingMoodProb','contactSettingReplyMomentProb','contactSettingLikeMomentProb','contactSettingCallProb','contactSettingVideoCallProb','contactSettingStickerProb','contactSettingPokeProb','contactTextCardProb','contactEmojiCardProb','contactImageCardProb','contactVoiceCardProb','contactExclusiveCardProb'].forEach(function(id) {
         var slider = document.getElementById(id);
         var display = document.getElementById(id + 'Val');
         if (slider && display) {
@@ -20958,8 +21018,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             display.textContent = isInterval ? formatIntervalLabel(val) : (val + '%');
             if (!currentContactProbId) return;
             var settings = getContactProbSettings();
-            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0, letterInterval: 30, momentInterval: 30, anonInterval: 60, proactiveInterval: 60, proactiveProb: 10 };
-            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingLetterInterval: 'letterInterval', contactSettingMomentInterval: 'momentInterval', contactSettingAnonInterval: 'anonInterval', contactSettingProactiveInterval: 'proactiveInterval', contactSettingProactiveProb: 'proactiveProb', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb', contactExclusiveCardProb: 'exclusiveCardProb' };
+            if (!settings[currentContactProbId]) settings[currentContactProbId] = { letterProb: 5, momentProb: 5, anonProb: 3, replyMomentProb: 5, likeMomentProb: 10, callProb: 3, videoCallProb: 2, stickerProb: 10, pokeProb: 5, textCardProb: 40, emojiCardProb: 30, imageCardProb: 20, voiceCardProb: 10, exclusiveCardProb: 0, letterInterval: 30, momentInterval: 30, anonInterval: 60, proactiveInterval: 60, proactiveProb: 10, thoughtInterval: 15, thoughtProb: 75, moodInterval: 15, moodProb: 75 };
+            var keyMap = { contactSettingLetterProb: 'letterProb', contactSettingMomentProb: 'momentProb', contactSettingAnonProb: 'anonProb', contactSettingLetterInterval: 'letterInterval', contactSettingMomentInterval: 'momentInterval', contactSettingAnonInterval: 'anonInterval', contactSettingProactiveInterval: 'proactiveInterval', contactSettingProactiveProb: 'proactiveProb', contactSettingThoughtInterval: 'thoughtInterval', contactSettingThoughtProb: 'thoughtProb', contactSettingMoodInterval: 'moodInterval', contactSettingMoodProb: 'moodProb', contactSettingReplyMomentProb: 'replyMomentProb', contactSettingLikeMomentProb: 'likeMomentProb', contactSettingCallProb: 'callProb', contactSettingVideoCallProb: 'videoCallProb', contactSettingStickerProb: 'stickerProb', contactSettingPokeProb: 'pokeProb', contactTextCardProb: 'textCardProb', contactEmojiCardProb: 'emojiCardProb', contactImageCardProb: 'imageCardProb', contactVoiceCardProb: 'voiceCardProb', contactExclusiveCardProb: 'exclusiveCardProb' };
             settings[currentContactProbId][keyMap[id]] = val;
             saveContactProbSettings(settings);
           });
