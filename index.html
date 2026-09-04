@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="264";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="265";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v264</title>
+  <title>字卡 · 小手机 v265</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15815,6 +15815,19 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
 
+      function _zkRefreshHeaderIfStale() {
+        try {
+          var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
+          var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
+          for (var i = 0; i < ids.length; i++) {
+            var el = document.getElementById(ids[i]);
+            if (!el) continue;
+            var pool = (cardData.topBar[cats[i]] || []).map(function (x) { return String((x && x.name) || x); });
+            if (pool.length > 0 && pool.indexOf(String(el.textContent)) < 0) { updateChatHeaderInfo(); return; }
+          }
+        } catch (e) {}
+      }
+
       // 计算到下一个随机时间点的间隔（0点~24点之间随机）
       function getNextRandomTime() {
         const now = new Date();
@@ -16169,6 +16182,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         chatView.classList.add('show');
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
+        try { _zkRefreshHeaderIfStale(); } catch (e) {}
         renderMessages(contactId);
       }
       function closeChat() {
@@ -18167,7 +18181,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                   }
                 }
                 try { _zkMergeTopBarDefaults(); } catch (e3) {}
-                try { renderCardLists(); refreshList(); } catch (e2) {}
+                try { renderCardLists(); refreshList(); _zkRefreshHeaderIfStale(); } catch (e2) {}
               } catch (e2) {}
             };
             tx.oncomplete = finish;
