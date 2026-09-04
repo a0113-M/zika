@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="301";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="302";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v301</title>
+  <title>字卡 · 小手机 v302</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11799,9 +11799,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   background: rgba(30,20,50,0.92);
   border: 1px solid rgba(155,142,196,0.3);
   display: flex; align-items: center; justify-content: center;
-  font-size: 10px; line-height: 1;
+  font-size: 10px; line-height: 1; color: #fff; overflow: hidden;
   box-shadow: 0 2px 8px rgba(0,0,0,0.35);
 }
+.tg-mini-ball .tgmb-badge .tg-ico { width: 11px; height: 11px; }
 
 
 .settings-item-multi {
@@ -21116,7 +21117,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var c = contacts.filter(function (x) { return x.id === a.contactId; })[0];
         if (ballAv) { if (c) _zkSetContactAvatar(ballAv, c); else { ballAv.textContent = (a.contactName || '?').charAt(0).toUpperCase(); ballAv.style.background = 'var(--primary)'; } }
         var bd = document.getElementById('tgmbBadge');
-        if (bd) bd.textContent = _tgIcon(a.contactKey || a.key, a.contactAct || a.activity) || '💬';
+        if (bd) { var _bic = _tgIcon(a.contactKey || a.key, a.contactAct || a.activity) || '💬'; if (_bic.indexOf('<svg') === 0) { bd.innerHTML = _bic; } else { bd.textContent = _bic; } }
         if (_tgMiniShape() === 'pill') {
           ball.classList.remove('active');
           pill.classList.add('active');
