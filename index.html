@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="303";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="304";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v303</title>
+  <title>字卡 · 小手机 v304</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21101,9 +21101,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         el.style.right = 'auto';
         el.style.bottom = 'auto';
         if (_lf && line) {
-          line.style.left = left + 'px';
+          if (left + w / 2 > window.innerWidth / 2) {
+            line.style.left = 'auto';
+            line.style.right = Math.max(4, window.innerWidth - left - w) + 'px';
+          } else {
+            line.style.right = 'auto';
+            line.style.left = Math.max(4, Math.min(left, window.innerWidth - 244)) + 'px';
+          }
           line.style.top = (top + h + 6) + 'px';
-          line.style.right = 'auto';
           line.style.bottom = 'auto';
         }
         try { localStorage.setItem('zk_tg_mini_pos', JSON.stringify({ l: Math.round(left), t: Math.round(top) })); } catch (e) {}
