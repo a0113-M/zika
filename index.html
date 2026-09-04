@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="288";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="289";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v288</title>
+  <title>字卡 · 小手机 v289</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16039,7 +16039,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderMessages(contactId);
       }
 
-      function _zkShowTyping(text) {
+      var _zkTypingPending = {};
+      function _zkShowTyping(text, contactId) {
+        var cid = (contactId !== undefined && contactId !== null) ? contactId : currentChatId;
+        if (cid !== null && cid !== undefined) { _zkTypingPending[cid] = true; }
+        if (cid !== currentChatId) return;
         const el = document.getElementById('typingIndicator');
         if (!el) return;
         const t = document.getElementById('typingText');
@@ -16049,7 +16053,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             base = text;
           } else {
             try {
-              const c = contacts.find(function (cc) { return cc.id === currentChatId; });
+              const c = contacts.find(function (cc) { return cc.id === cid; });
               if (c && c.typingText) base = c.typingText;
             } catch (e) {}
           }
@@ -16057,7 +16061,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         el.style.display = 'flex';
       }
-      function _zkHideTyping() {
+      function _zkHideTyping(contactId) {
+        var cid = (contactId !== undefined && contactId !== null) ? contactId : currentChatId;
+        if (cid !== null && cid !== undefined) { delete _zkTypingPending[cid]; }
+        if (cid !== currentChatId) return;
         const el = document.getElementById('typingIndicator');
         if (el) el.style.display = 'none';
       }
@@ -16074,12 +16081,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         emojiModule.classList.remove('active');
         document.getElementById('toolbarGrid').classList.remove('hidden');
         if (isToolbarOpen) { chatToolbar.classList.remove('open'); isToolbarOpen = false; }
-        const _tkEmojiContact = contacts.find(c => c.id === currentChatId);
+        const _cid = currentChatId;
+        const _tkEmojiContact = contacts.find(c => c.id === _cid);
         if (_tkEmojiContact && !_tkEmojiContact.readOnly) { _zkShowTyping(); }
         setTimeout(() => {
-          if (currentChatId !== null && chatHistories[currentChatId]) {
-            const contact = contacts.find(c => c.id === currentChatId);
-            if (contact && contact.readOnly) { _zkHideTyping(); _zkMarkMyLastRead(currentChatId); return; }
+          if (_cid !== null && chatHistories[_cid]) {
+            const contact = contacts.find(c => c.id === _cid);
+            if (contact && contact.readOnly) { _zkHideTyping(_cid); _zkMarkMyLastRead(_cid); return; }
             let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
@@ -16095,7 +16103,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             let msgData = { text: reply, from: senderName, time: timeStr2 };
 
             if (shouldReply) {
-              const messages = chatHistories[currentChatId];
+              const messages = chatHistories[_cid];
               let lastOtherIndex = -1;
               for (let i = messages.length - 2; i >= 0; i--) {
                 if (messages[i].from !== 'me' && !messages[i].withdrawn) {
@@ -16108,13 +16116,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               }
             }
 
-            chatHistories[currentChatId].push(msgData);
-            renderMessages(currentChatId);
-            _zkHideTyping();
+            chatHistories[_cid].push(msgData);
+            renderMessages(_cid);
+            _zkHideTyping(_cid);
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
-            if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(currentChatId, senderName);
+            if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(_cid, senderName);
           }
-        }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
+        }, _zkGetReplyDelay(contacts.find(c => c.id === _cid)));
       }
 
       function addEmojis(files) {
@@ -16246,7 +16254,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function openChat(contactId) {
         const contact = contacts.find(c => c.id === contactId);
         if (!contact) return;
-        _zkHideTyping();
         currentChatId = contactId;
         chatTitle.textContent = contact.name;
         if (!chatHistories[contactId]) {
@@ -16256,11 +16263,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
         showHeaderForContact(contact);
         renderMessages(contactId);
+        if (_zkTypingPending[contactId]) { _zkShowTyping(undefined, contactId); } else { _zkHideTyping(contactId); }
       }
       function closeChat() {
         chatView.classList.remove('show');
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='';
-        _zkHideTyping();
+        var _tkEl = document.getElementById('typingIndicator');
+        if (_tkEl) _tkEl.style.display = 'none';
         currentChatId = null;
         refreshList();
       }
@@ -17946,14 +17955,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         renderMessages(currentChatId);
 
         // 对方正在输入提示
-        const _tkContact = contacts.find(c => c.id === currentChatId);
+        const _cid = currentChatId;
+        const _tkContact = contacts.find(c => c.id === _cid);
         if (_tkContact && !_tkContact.readOnly) { _zkShowTyping(); }
 
         // ... 后续自动回复逻辑保持不变
         setTimeout(() => {
-          if (currentChatId !== null && chatHistories[currentChatId]) {
-            const contact = contacts.find(c => c.id === currentChatId);
-            if (contact && contact.readOnly) { _zkHideTyping(); _zkMarkMyLastRead(currentChatId); return; }
+          if (_cid !== null && chatHistories[_cid]) {
+            const contact = contacts.find(c => c.id === _cid);
+            if (contact && contact.readOnly) { _zkHideTyping(_cid); _zkMarkMyLastRead(_cid); return; }
             let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
@@ -17963,13 +17973,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             } else if (contact) { senderName = contact.name; }
             const now2 = new Date();
             const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
-            chatHistories[currentChatId].push({ text: reply, from: senderName, time: timeStr2 });
-            renderMessages(currentChatId);
-            _zkHideTyping();
+            chatHistories[_cid].push({ text: reply, from: senderName, time: timeStr2 });
+            renderMessages(_cid);
+            _zkHideTyping(_cid);
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
-            if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(currentChatId, senderName);
+            if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(_cid, senderName);
           }
-        }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
+        }, _zkGetReplyDelay(contacts.find(c => c.id === _cid)));
       };
 
       function showImagePreview(src) {
@@ -18065,17 +18075,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } else if (contact) { senderName = contact.name; }
 
         // 对方正在输入提示
+        const _cid = currentChatId;
         if (contact && !contact.readOnly) { _zkShowTyping(); }
 
         setTimeout(() => {
-          if (currentChatId === null) { _zkHideTyping(); return; }
+          if (_cid === null) { _zkHideTyping(_cid); return; }
           const _voiceRoll2 = rollVoiceCard();
           if (_voiceRoll2) {
             const _nowV2 = new Date();
             const _timeV2 = _nowV2.getHours().toString().padStart(2, '0') + ':' + _nowV2.getMinutes().toString().padStart(2, '0');
-            chatHistories[currentChatId].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
-            renderMessages(currentChatId);
-            _zkHideTyping();
+            chatHistories[_cid].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
+            renderMessages(_cid);
+            _zkHideTyping(_cid);
             if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV2; if (!cardView.classList.contains('hidden')) refreshList(); }
             return;
           }
@@ -18092,7 +18103,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           let msgData = { text: card, from: senderName, time: timeStr };
 
           if (shouldReply) {
-            const messages = chatHistories[currentChatId];
+            const messages = chatHistories[_cid];
             let lastOtherIndex = -1;
             for (let i = messages.length - 1; i >= 0; i--) {
               if (messages[i].from !== 'me' && !messages[i].withdrawn) {
@@ -18105,11 +18116,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             }
           }
 
-          chatHistories[currentChatId].push(msgData);
-          renderMessages(currentChatId);
-          _zkHideTyping();
+          chatHistories[_cid].push(msgData);
+          renderMessages(_cid);
+          _zkHideTyping(_cid);
           if (contact) { contact.lastMsg = card; contact.time = timeStr; if (!cardView.classList.contains('hidden')) refreshList(); }
-          if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(currentChatId, senderName);
+          if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(_cid, senderName);
         }, _zkGetReplyDelay(contact));
       });
 
@@ -23165,10 +23176,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           isPatMessage: true  // 标记为拍一拍消息
         });
         renderMessages(currentChatId);
+        const _cid = currentChatId;
         _zkShowTyping();
 
         // 更新联系人最后一条消息
-        const contact = contacts.find(c => c.id === currentChatId);
+        const contact = contacts.find(c => c.id === _cid);
         if (contact) {
           contact.lastMsg = `拍了拍`;
           contact.time = timeStr;
@@ -23177,8 +23189,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         // 自动回复（对方也可能拍一拍）
         setTimeout(() => {
-          if (currentChatId !== null && chatHistories[currentChatId]) {
-            const contact = contacts.find(c => c.id === currentChatId);
+          if (_cid !== null && chatHistories[_cid]) {
+            const contact = contacts.find(c => c.id === _cid);
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
               const memberId = contact.members[Math.floor(Math.random() * contact.members.length)];
@@ -23195,15 +23207,15 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
 
               const now2 = new Date();
               const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
-              chatHistories[currentChatId].push({
+              chatHistories[_cid].push({
                 text: senderName + patText2,  // 加昵称主语：「昵称」+ 内容
                 from: senderName,
                 time: timeStr2,
                 isPat: true,
                 isPatMessage: true
               });
-              renderMessages(currentChatId);
-              _zkHideTyping();
+              renderMessages(_cid);
+              _zkHideTyping(_cid);
               if (contact) {
                 contact.lastMsg = `拍了拍`;
                 contact.time = timeStr2;
@@ -23214,9 +23226,9 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               let reply = getRandomCard();
               const now2 = new Date();
               const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
-              chatHistories[currentChatId].push({ text: reply, from: senderName, time: timeStr2 });
-              renderMessages(currentChatId);
-              _zkHideTyping();
+              chatHistories[_cid].push({ text: reply, from: senderName, time: timeStr2 });
+              renderMessages(_cid);
+              _zkHideTyping(_cid);
               if (contact) {
                 contact.lastMsg = reply;
                 contact.time = timeStr2;
