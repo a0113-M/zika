@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="300";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="301";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v300</title>
+  <title>字卡 · 小手机 v301</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11776,6 +11776,32 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   0% { transform: translateX(0); }
   100% { transform: translateX(calc(-1 * var(--shift, 60px))); }
 }
+.tg-mini-ball {
+  position: fixed; z-index: 11150; display: none;
+  right: 16px; bottom: 252px;
+  width: 46px; height: 46px;
+  cursor: pointer; touch-action: none;
+  transition: transform 0.15s;
+}
+.tg-mini-ball.active { display: block; }
+.tg-mini-ball:active { transform: scale(0.92); }
+.tg-mini-ball .tgmb-avatar {
+  width: 46px; height: 46px; border-radius: 50%; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary); font-size: 18px; font-weight: 600; color: #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.42), 0 0 0 1px rgba(155,142,196,0.18);
+}
+.tg-mini-ball .tgmb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.tg-mini-ball .tgmb-badge {
+  position: absolute; right: -4px; bottom: -4px;
+  min-width: 19px; height: 19px; padding: 0 3px; box-sizing: border-box;
+  border-radius: 10px;
+  background: rgba(30,20,50,0.92);
+  border: 1px solid rgba(155,142,196,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; line-height: 1;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+}
 
 
 .settings-item-multi {
@@ -13096,6 +13122,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       </div>
     </div>
     <div class="tg-mini-line" id="tgMiniLine"><div class="tgml-inner" id="tgmlInner">一起陪伴</div></div>
+    <div class="tg-mini-ball" id="tgMiniBall">
+      <div class="tgmb-avatar" id="tgmbAvatar">?</div>
+      <div class="tgmb-badge" id="tgmbBadge">💬</div>
+    </div>
 
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
@@ -14208,6 +14238,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <button class="tg-set" data-k="bg"><span class="tg-set-label">背景图</span><span class="tg-set-val" id="tgSetBg"></span></button>
           <button class="tg-set" data-k="sound"><span class="tg-set-label">背景音</span><span class="tg-set-val" id="tgSetSound"></span></button>
           <button class="tg-set" data-k="timer"><span class="tg-set-label">计时</span><span class="tg-set-val" id="tgSetTimer"></span></button>
+          <button class="tg-set" data-k="mini"><span class="tg-set-label">药丸</span><span class="tg-set-val" id="tgSetMini"></span></button>
         </div>
         <div class="tg-select" id="tgSelect"></div>
         <div class="tg-active" id="tgActive" style="display:none;"></div>
@@ -20165,8 +20196,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (typeof v.sound === 'boolean') v.sound = v.sound ? 1 : 0;
           if (typeof v.sound !== 'number' || v.sound < 0 || v.sound > 3) v.sound = 0;
           if (typeof v.bg !== 'boolean') v.bg = true;
+          if (v.miniShape !== 'pill') v.miniShape = 'ball';
           return v;
-        } catch (e) { return { bg: true, sound: 0, timer: 0 }; }
+        } catch (e) { return { bg: true, sound: 0, timer: 0, miniShape: 'ball' }; }
       }
       function _tgSaveSettings(v) {
         try { localStorage.setItem('zk_together_settings', JSON.stringify(v)); } catch (e) {}
@@ -20183,9 +20215,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var bg = document.getElementById('tgSetBg');
         var so = document.getElementById('tgSetSound');
         var tm = document.getElementById('tgSetTimer');
+        var ms = document.getElementById('tgSetMini');
         if (bg) bg.textContent = st.bg ? '跟随场景' : '主题纯色';
         if (so) so.textContent = TG_BGM[st.sound] || '静音';
         if (tm) tm.textContent = TG_TIMER[st.timer] || '正计时';
+        if (ms) ms.textContent = st.miniShape === 'pill' ? '药丸' : '圆球';
       }
       var _tgSettingsBound = false;
       function _tgInitSettings() {
@@ -20198,9 +20232,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (k === 'bg') st.bg = !st.bg;
             else if (k === 'sound') st.sound = (st.sound + 1) % 4;
             else if (k === 'timer') st.timer = (st.timer + 1) % 3;
+            else if (k === 'mini') { st.miniShape = st.miniShape === 'pill' ? 'ball' : 'pill'; _tgMiniCur = null; }
             _tgSaveSettings(st);
             _tgRenderSettings();
             if (!_tgActive) _tgRenderSelect();
+            else _tgRenderMiniShape();
           });
         });
       }
@@ -20779,6 +20815,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!live || !a) return;
         var _m = document.getElementById('tgMiniWindow');
         if (_m) _m.classList.remove('active');
+        var _mb = document.getElementById('tgMiniBall');
+        if (_mb) _mb.classList.remove('active');
         var _ml = document.getElementById('tgMiniLine');
         if (_ml) _ml.classList.remove('active');
         if (_tgCardMode) {
@@ -20907,6 +20945,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgStopHb();
         var _m3 = document.getElementById('tgMiniWindow');
         if (_m3) _m3.classList.remove('active');
+        var _mb3 = document.getElementById('tgMiniBall');
+        if (_mb3) _mb3.classList.remove('active');
         var _ml3 = document.getElementById('tgMiniLine');
         if (_ml3) _ml3.classList.remove('active');
         _tgAudioStop();
@@ -20972,17 +21012,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var _bd = document.getElementById('tgCardBackdrop');
         if (_bd) _bd.classList.remove('active');
         if (_tgActive) {
-          var _m = document.getElementById('tgMiniWindow');
-          if (_m) _m.classList.add('active');
+          _tgRenderMiniShape();
           _tgUpdateMini();
           _tgMiniRestorePos();
         }
       }
       function _tgUpdateMini() {
         var mini = document.getElementById('tgMiniWindow');
-        if (!mini || !mini.classList.contains('active')) return;
+        var ball = document.getElementById('tgMiniBall');
+        if (!mini || !ball) return;
+        if (!mini.classList.contains('active') && !ball.classList.contains('active')) return;
         var a = _tgActive;
-        if (!a) { mini.classList.remove('active'); return; }
+        if (!a) { mini.classList.remove('active'); ball.classList.remove('active'); var _ln0 = document.getElementById('tgMiniLine'); if (_ln0) _ln0.classList.remove('active'); return; }
         var av = document.getElementById('tgmAvatar');
         var c = contacts.filter(function (x) { return x.id === a.contactId; })[0];
         if (av) { if (c) _zkSetContactAvatar(av, c); else { av.textContent = (a.contactName || '?').charAt(0).toUpperCase(); av.style.background = 'var(--primary)'; } }
@@ -21003,7 +21044,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         inner.classList.remove('tgml-scroll');
         inner.style.removeProperty('--shift');
         inner.style.removeProperty('--dur');
-        out.classList.add('active');
+        var pill0 = document.getElementById('tgMiniWindow');
+        if (pill0 && pill0.classList.contains('active')) out.classList.add('active');
+        else out.classList.remove('active');
         requestAnimationFrame(function () {
           var diff = inner.scrollWidth - out.clientWidth;
           if (diff > 0) {
@@ -21022,19 +21065,33 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgClosePage();
       });
       var _tgMiniDrag = { on: false, moved: false, sx: 0, sy: 0, sl: 0, st: 0 };
+      var _tgMiniCur = null;
+      function _tgMiniShape() {
+        if (_tgMiniCur) return _tgMiniCur;
+        return _tgGetSettings().miniShape === 'pill' ? 'pill' : 'ball';
+      }
+      function _tgMiniSetCur(shape) {
+        _tgMiniCur = shape === 'pill' ? 'pill' : 'ball';
+        _tgRenderMiniShape();
+        _tgMiniRestorePos();
+      }
+      function _tgMiniCurEl() {
+        return _tgMiniShape() === 'pill' ? document.getElementById('tgMiniWindow') : document.getElementById('tgMiniBall');
+      }
       function _tgMiniApplyPos(left, top) {
-        var mini = document.getElementById('tgMiniWindow');
+        var el = _tgMiniCurEl();
         var line = document.getElementById('tgMiniLine');
-        if (!mini) return;
-        var w = mini.offsetWidth || 160, h = mini.offsetHeight || 52;
-        var lh = (line && line.classList.contains('active')) ? (line.offsetHeight + 6) : 0;
+        if (!el) return;
+        var isPill = el.id === 'tgMiniWindow';
+        var w = el.offsetWidth || 46, h = el.offsetHeight || 46;
+        var lh = (isPill && line && line.classList.contains('active')) ? (line.offsetHeight + 6) : 0;
         left = Math.max(4, Math.min(left, window.innerWidth - w - 4));
         top = Math.max(4, Math.min(top, window.innerHeight - h - lh - 4));
-        mini.style.left = left + 'px';
-        mini.style.top = top + 'px';
-        mini.style.right = 'auto';
-        mini.style.bottom = 'auto';
-        if (line) {
+        el.style.left = left + 'px';
+        el.style.top = top + 'px';
+        el.style.right = 'auto';
+        el.style.bottom = 'auto';
+        if (isPill && line) {
           line.style.left = left + 'px';
           line.style.top = (top + h + 6) + 'px';
           line.style.right = 'auto';
@@ -21048,18 +21105,39 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (p && typeof p.l === 'number' && typeof p.t === 'number') _tgMiniApplyPos(p.l, p.t);
         } catch (e) {}
       }
-      (function () {
-        var mini = document.getElementById('tgMiniWindow');
-        if (!mini) return;
-        mini.addEventListener('pointerdown', function (e) {
+      function _tgRenderMiniShape() {
+        var pill = document.getElementById('tgMiniWindow');
+        var ball = document.getElementById('tgMiniBall');
+        var line = document.getElementById('tgMiniLine');
+        if (!pill || !ball) return;
+        var a = _tgActive;
+        if (!a) { pill.classList.remove('active'); ball.classList.remove('active'); if (line) line.classList.remove('active'); return; }
+        var ballAv = document.getElementById('tgmbAvatar');
+        var c = contacts.filter(function (x) { return x.id === a.contactId; })[0];
+        if (ballAv) { if (c) _zkSetContactAvatar(ballAv, c); else { ballAv.textContent = (a.contactName || '?').charAt(0).toUpperCase(); ballAv.style.background = 'var(--primary)'; } }
+        var bd = document.getElementById('tgmbBadge');
+        if (bd) bd.textContent = _tgIcon(a.contactKey || a.key, a.contactAct || a.activity) || '💬';
+        if (_tgMiniShape() === 'pill') {
+          ball.classList.remove('active');
+          pill.classList.add('active');
+          if (line) line.classList.add('active');
+        } else {
+          pill.classList.remove('active');
+          if (line) line.classList.remove('active');
+          ball.classList.add('active');
+        }
+      }
+      function _tgBindMiniDrag(el) {
+        if (!el) return;
+        el.addEventListener('pointerdown', function (e) {
           if (!_tgActive) return;
           _tgMiniDrag.on = true; _tgMiniDrag.moved = false;
           _tgMiniDrag.sx = e.clientX; _tgMiniDrag.sy = e.clientY;
-          var r = mini.getBoundingClientRect();
+          var r = el.getBoundingClientRect();
           _tgMiniDrag.sl = r.left; _tgMiniDrag.st = r.top;
-          try { mini.setPointerCapture(e.pointerId); } catch (err) {}
+          try { el.setPointerCapture(e.pointerId); } catch (err) {}
         });
-        mini.addEventListener('pointermove', function (e) {
+        el.addEventListener('pointermove', function (e) {
           if (!_tgMiniDrag.on) return;
           var dx = e.clientX - _tgMiniDrag.sx, dy = e.clientY - _tgMiniDrag.sy;
           if (!_tgMiniDrag.moved && Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
@@ -21067,16 +21145,30 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _tgMiniApplyPos(_tgMiniDrag.sl + dx, _tgMiniDrag.st + dy);
           if (e.cancelable) e.preventDefault();
         });
-        function _tgMiniUp() { _tgMiniDrag.on = false; }
-        mini.addEventListener('pointerup', _tgMiniUp);
-        mini.addEventListener('pointercancel', _tgMiniUp);
-      })();
+        function _up() { _tgMiniDrag.on = false; }
+        el.addEventListener('pointerup', _up);
+        el.addEventListener('pointercancel', _up);
+      }
+      _tgBindMiniDrag(document.getElementById('tgMiniWindow'));
+      _tgBindMiniDrag(document.getElementById('tgMiniBall'));
       document.getElementById('tgMiniWindow').addEventListener('click', function () {
         if (_tgMiniDrag.moved) { _tgMiniDrag.moved = false; return; }
         if (!_tgActive) return;
         openTogetherPage(false);
       });
+      document.getElementById('tgMiniBall').addEventListener('click', function () {
+        if (_tgMiniDrag.moved) { _tgMiniDrag.moved = false; return; }
+        if (!_tgActive) return;
+        _tgMiniSetCur('pill');
+      });
+      document.getElementById('tgmAvatar').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (!_tgActive) return;
+        _tgMiniCur = null;
+        _tgMiniSetCur(_tgMiniShape());
+      });
       document.getElementById('tgMiniBtn').addEventListener('click', function () {
+        _tgMiniCur = null;
         _tgClosePage();
       });
 
