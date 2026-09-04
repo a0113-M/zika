@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="266";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="267";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v266</title>
+  <title>字卡 · 小手机 v267</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15769,83 +15769,62 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       });
 
       // ----- 聊天顶部信息更新（每天随机更换）-----
-      function updateChatHeaderInfo() {
-        // 从 topBar 中抽取天气
-        const weatherCards = cardData.topBar['天气'] || [];
-        if (weatherCards.length > 0) {
-          const randomWeather = weatherCards[Math.floor(Math.random() * weatherCards.length)];
-          document.getElementById('headerWeather').textContent = randomWeather.name || randomWeather;
-        }
-
-        // 从 topBar 中抽取时间
-        const timeCards = cardData.topBar['时间'] || [];
-        if (timeCards.length > 0) {
-          const randomTime = timeCards[Math.floor(Math.random() * timeCards.length)];
-          document.getElementById('headerTime').textContent = randomTime.name || randomTime;
-        }
-
-        // 从 topBar 中抽取心情
-        const moodCards = cardData.topBar['心情'] || [];
-        if (moodCards.length > 0) {
-          const randomMood = moodCards[Math.floor(Math.random() * moodCards.length)];
-          document.getElementById('headerMood').textContent = randomMood.name || randomMood;
-        }
-
-        // 从 topBar 中抽取状态
-        const statusCards = cardData.topBar['状态'] || [];
-        if (statusCards.length > 0) {
-          const randomStatus = statusCards[Math.floor(Math.random() * statusCards.length)];
-          document.getElementById('headerStatus').textContent = randomStatus.name || randomStatus;
-        }
-
-        // 从 topBar 中抽取情绪
-        const emotionCards = cardData.topBar['情绪'] || [];
-        if (emotionCards.length > 0) {
-          const randomEmotion = emotionCards[Math.floor(Math.random() * emotionCards.length)];
-          document.getElementById('headerEmotion').textContent = randomEmotion.name || randomEmotion;
-        }
-
-        // 从 topBar 中抽取回复消息状态
-        const replyStatusCards = cardData.topBar['回复消息状态'] || [];
-        if (replyStatusCards.length > 0) {
-          const randomReplyStatus = replyStatusCards[Math.floor(Math.random() * replyStatusCards.length)];
-          document.getElementById('headerReplyStatus').textContent = randomReplyStatus.name || randomReplyStatus;
-        } else {
-          document.getElementById('headerReplyStatus').textContent = '回复消息状态';
-        }
-        // 持久化本次抽取结果，供刷新后恢复（避免刷新即重抽）
-        try {
-          var _zkIds = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
-          var _zkCats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
-          var _zkSaved = {};
-          for (var _i = 0; _i < _zkIds.length; _i++) {
-            var _zel = document.getElementById(_zkIds[_i]);
-            if (_zel && _zel.textContent) _zkSaved[_zkCats[_i]] = _zel.textContent;
+      // 顶部字卡六值抽取（纯数据，不写 DOM）
+      function _zkRollHeaderCards() {
+        var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
+        var out = {};
+        for (var i = 0; i < cats.length; i++) {
+          var pool = cardData.topBar[cats[i]] || [];
+          if (pool.length > 0) {
+            var pick = pool[Math.floor(Math.random() * pool.length)];
+            out[cats[i]] = String((pick && pick.name) || pick);
+          } else if (cats[i] === '回复消息状态') {
+            out[cats[i]] = '回复消息状态';
           }
-          localStorage.setItem('zk_header_current', JSON.stringify(_zkSaved));
-        } catch (e) {}
+        }
+        return out;
       }
 
-      function _zkRefreshHeaderIfStale() {
+      // 把六值写到聊天顶部 DOM
+      function _zkApplyHeaderToDom(vals) {
+        var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
+        var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
+        if (!vals) return;
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          if (el && vals[cats[i]]) el.textContent = vals[cats[i]];
+        }
+      }
+
+      // 每个联系人独立的顶部状态：没有则抽取，有则校验（值不在当前字卡池→重抽），然后写 DOM
+      function showHeaderForContact(contact) {
         try {
-          var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
+          if (!contact) return;
           var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
-          for (var i = 0; i < ids.length; i++) {
-            var el = document.getElementById(ids[i]);
-            if (!el) continue;
-            var pool = (cardData.topBar[cats[i]] || []).map(function (x) { return String((x && x.name) || x); });
-            if (pool.length > 0 && pool.indexOf(String(el.textContent)) < 0) { updateChatHeaderInfo(); return; }
+          var vals = contact.headerCards;
+          var need = false;
+          if (!vals || typeof vals !== 'object') {
+            need = true;
+          } else {
+            for (var i = 0; i < cats.length; i++) {
+              var v = vals[cats[i]];
+              if (typeof v !== 'string' || !v) { need = true; break; }
+              var pool = (cardData.topBar[cats[i]] || []).map(function (x) { return String((x && x.name) || x); });
+              if (pool.length > 0 && pool.indexOf(v) < 0) { need = true; break; }
+            }
           }
+          if (need) {
+            contact.headerCards = _zkRollHeaderCards();
+            saveContacts();
+            vals = contact.headerCards;
+          }
+          _zkApplyHeaderToDom(vals);
         } catch (e) {}
       }
 
-      // 顶部字卡机制：每半小时检查一次，5%概率重抽；启动时恢复上次状态
+      // 顶部字卡机制：每半小时检查一次，5%概率重抽（每个联系人独立变化）
       const HEADER_CHECK_INTERVAL = 30 * 60 * 1000; // 半小时
       const HEADER_CHANGE_CHANCE = 0.05; // 每次检查5%概率更改状态
-
-      function getNextRandomTime() {
-        return HEADER_CHECK_INTERVAL;
-      }
 
       let updateTimer = null;
 
@@ -15857,48 +15836,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         updateTimer = setTimeout(() => {
-          // 每半小时有5%的概率更改顶部字卡状态
+          // 每半小时有5%的概率更改顶部字卡状态：已生成过状态的联系人各自独立重抽
           if (Math.random() < HEADER_CHANGE_CHANCE) {
-            updateChatHeaderInfo();
+            try {
+              var touched = false;
+              for (var i = 0; i < contacts.length; i++) {
+                if (contacts[i].headerCards) {
+                  contacts[i].headerCards = _zkRollHeaderCards();
+                  touched = true;
+                }
+              }
+              if (touched) saveContacts();
+              if (currentChatId) {
+                var cc = null;
+                for (var j = 0; j < contacts.length; j++) { if (contacts[j].id === currentChatId) { cc = contacts[j]; break; } }
+                if (cc && cc.headerCards) _zkApplyHeaderToDom(cc.headerCards);
+              }
+            } catch (e) {}
           }
           scheduleHeaderUpdate(); // 递归调用，再次计划
-        }, getNextRandomTime());
+        }, HEADER_CHECK_INTERVAL);
       }
 
       // 启动定时更新
       function startHeaderAutoUpdate() {
-        // 启动时先尝试恢复上次的顶部字卡状态，恢复不了或已失效再重抽
-        var restored = false;
-        try { restored = _zkRestoreHeaderIfValid(); } catch (e) {}
-        if (!restored) {
-          updateChatHeaderInfo();
-        }
-        // 调度每半小时一次的概率检查
         scheduleHeaderUpdate();
-      }
-
-      // 启动时尝试恢复上次顶部字卡状态（六个值全部仍在字卡池中才恢复）
-      function _zkRestoreHeaderIfValid() {
-        var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
-        var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
-        var raw = null;
-        try { raw = localStorage.getItem('zk_header_current'); } catch (e) { return false; }
-        if (!raw) return false;
-        var saved = null;
-        try { saved = JSON.parse(raw); } catch (e) { return false; }
-        if (!saved || typeof saved !== 'object') return false;
-        for (var i = 0; i < ids.length; i++) {
-          var el = document.getElementById(ids[i]);
-          if (!el) return false;
-          var v = saved[cats[i]];
-          if (typeof v !== 'string' || !v) return false;
-          var pool = (cardData.topBar[cats[i]] || []).map(function (x) { return String((x && x.name) || x); });
-          if (pool.length === 0 || pool.indexOf(v) < 0) return false;
-        }
-        for (var j = 0; j < ids.length; j++) {
-          document.getElementById(ids[j]).textContent = saved[cats[j]];
-        }
-        return true;
       }
 
       // 进入聊天时更新一次
@@ -16211,7 +16173,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         chatView.classList.add('show');
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
-        try { _zkRefreshHeaderIfStale(); } catch (e) {}
+        showHeaderForContact(contact);
         renderMessages(contactId);
       }
       function closeChat() {
@@ -18210,7 +18172,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                   }
                 }
                 try { _zkMergeTopBarDefaults(); } catch (e3) {}
-                try { renderCardLists(); refreshList(); _zkRefreshHeaderIfStale(); } catch (e2) {}
+                try { renderCardLists(); refreshList(); } catch (e2) {}
               } catch (e2) {}
             };
             tx.oncomplete = finish;
