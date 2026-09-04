@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="282";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="283";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v282</title>
+  <title>字卡 · 小手机 v283</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21219,14 +21219,111 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } catch(e) {}
       }
 
+      // 联系人朋友圈：从聊天记录生成「聊天截图」卡片图
+      function _genMomentChatCard(contact) {
+        try {
+          var hist = (typeof chatHistories !== 'undefined' && chatHistories && chatHistories[contact.id]) || [];
+          var pool = [];
+          for (var i = 0; i < hist.length; i++) {
+            var m = hist[i];
+            if (!m || m.isPat || m.hbSys || m.hongbao || m.image) continue;
+            var t = String(m.text == null ? '' : m.text).trim();
+            if (!t) continue;
+            if (t.charAt(0) === '[') continue;
+            pool.push({ from: m.from, text: t });
+          }
+          if (pool.length < 2) return null;
+          if (pool.length > 4) pool = pool.slice(-4);
+          var W = 560, PAD = 20, AV = 48, GAP = 10, MAXBW = 320, FS = 24, LH = 34, BPX = 16, BPY = 12, RGAP = 10;
+          var meas = document.createElement('canvas').getContext('2d');
+          meas.font = FS + 'px sans-serif';
+          function wrap(t, maxW) {
+            var lines = [], line = '';
+            for (var k = 0; k < t.length; k++) {
+              var ch = t[k];
+              if (ch.charCodeAt(0) === 10) { lines.push(line || ' '); line = ''; continue; }
+              if (line && meas.measureText(line + ch).width > maxW) { lines.push(line); line = ch; }
+              else line += ch;
+            }
+            lines.push(line || ' ');
+            return lines;
+          }
+          var items = [], y = 16;
+          for (var j = 0; j < pool.length; j++) {
+            var mm = pool[j];
+            var isMe = mm.from === 'me';
+            var lines = wrap(mm.text, MAXBW - BPX * 2);
+            var tw = 0;
+            for (var q = 0; q < lines.length; q++) tw = Math.max(tw, meas.measureText(lines[q]).width);
+            var bw = Math.min(MAXBW, tw + BPX * 2);
+            var bh = lines.length * LH + BPY * 2;
+            var h = Math.max(bh, AV);
+            items.push({ isMe: isMe, lines: lines, bw: bw, bh: bh, y: y });
+            y += h + RGAP;
+          }
+          var H = y + 18;
+          var cv = document.createElement('canvas');
+          cv.width = W; cv.height = H;
+          var ctx = cv.getContext('2d');
+          ctx.fillStyle = '#f6f3fb';
+          ctx.fillRect(0, 0, W, H);
+          var name = contact.name || 'Ta';
+          function drawAv(isMe, top) {
+            var ax = isMe ? W - PAD - AV : PAD;
+            ctx.save();
+            _rrPath(ctx, ax, top, AV, AV, 12);
+            ctx.clip();
+            ctx.fillStyle = isMe ? '#8b7ab8' : '#a99bc9';
+            ctx.fillRect(ax, top, AV, AV);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 26px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(isMe ? '我' : name.slice(0, 1), ax + AV / 2, top + AV / 2 + 1);
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'alphabetic';
+            ctx.restore();
+            return ax;
+          }
+          for (var z = 0; z < items.length; z++) {
+            var it = items[z];
+            var top = it.y;
+            var ax = drawAv(it.isMe, top);
+            var bx = it.isMe ? ax - GAP - it.bw : ax + AV + GAP;
+            ctx.save();
+            _rrPath(ctx, bx, top, it.bw, it.bh, 14);
+            ctx.clip();
+            ctx.fillStyle = it.isMe ? '#8b7ab8' : '#ffffff';
+            ctx.fillRect(bx, top, it.bw, it.bh);
+            ctx.restore();
+            ctx.fillStyle = it.isMe ? '#ffffff' : '#3c3650';
+            ctx.font = FS + 'px sans-serif';
+            ctx.textBaseline = 'middle';
+            for (var l = 0; l < it.lines.length; l++) {
+              ctx.fillText(it.lines[l], bx + BPX, top + BPY + LH / 2 + l * LH);
+            }
+            ctx.textBaseline = 'alphabetic';
+          }
+          return cv.toDataURL('image/png');
+        } catch (e2) { return null; }
+      }
       function tryAutoMoment(contact) {
         try {
-          var cardText = getRandomCard();
-          moments.push({
-            id: Date.now(), author: contact.name, avatarImage: contact.avatarImage || null,
-            text: cardText,
-            images: [], likes: [], comments: [], time: Date.now(), isContactPost: true
-          });
+          var chatImg = _genMomentChatCard(contact);
+          if (chatImg) {
+            moments.push({
+              id: Date.now(), author: contact.name, avatarImage: contact.avatarImage || null,
+              text: '',
+              images: [chatImg], likes: [], comments: [], time: Date.now(), isContactPost: true
+            });
+          } else {
+            var cardText = getRandomCard();
+            moments.push({
+              id: Date.now(), author: contact.name, avatarImage: contact.avatarImage || null,
+              text: cardText,
+              images: [], likes: [], comments: [], time: Date.now(), isContactPost: true
+            });
+          }
           saveMoments();
           renderMoments();
         } catch(e) {}
