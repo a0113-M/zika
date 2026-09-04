@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="269";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="270";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v269</title>
+  <title>字卡 · 小手机 v270</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -18261,12 +18261,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
       function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } return array; }
+      var _zkCardSaveTimer = null;
+      function _zkScheduleCardSave() {
+        if (_zkCardSaveTimer) return;
+        _zkCardSaveTimer = setTimeout(function () { _zkCardSaveTimer = null; try { saveCardDataNow(); } catch (e) {} }, 600);
+      }
       function _bumpCardUseCount(isRole, category, name) {
         var u = {};
         try { u = JSON.parse(localStorage.getItem('cardUseCounts') || '{}'); } catch (e) {}
         var key = (isRole ? 'role|' : 'gen|') + category + '|' + name;
         u[key] = (u[key] || 0) + 1;
         try { localStorage.setItem('cardUseCounts', JSON.stringify(u)); } catch (e) {}
+        _zkScheduleCardSave();
       }
       function updateCardUseCount(category, name) {
         const items = cardData.general[category];
