@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="273";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="274";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v273</title>
+  <title>字卡 · 小手机 v274</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15073,6 +15073,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
       document.addEventListener('focusin', function(e) {
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+          if (e.target.closest && e.target.closest('.profile-modal')) return;
+          if (e.target.tagName === 'INPUT' && ['checkbox','radio','range','button','submit','file'].indexOf(e.target.type) !== -1) return;
           if (['cardAddInput','cardAddCategory','batchAddCategory','batchAddTextarea','editCategoryInput','detailSearch'].indexOf(e.target.id) !== -1) return;
           divineInput = (e.target.id === 'cdvQInput' || e.target.id === 'cdvGotoInput' || e.target.id === 'acdCustomInput' || e.target.id === 'cldAnnInput' || e.target.id === 'cldReplyInput' || e.target.id === 'dvMetDateInput' || e.target.id === 'dvAnnNameInput' || e.target.id === 'dvAnnDateInput' || e.target.id === 'cstMetDateInput' || e.target.id === 'actNameInput' || e.target.id === 'actSubInput' || e.target.id === 'ledgerAmountInput' || e.target.id === 'ledgerNoteInput' || e.target.id === 'ledgerBookNameInput' || e.target.id === 'ledgerBookBalanceInput' || e.target.id === 'ledgerDateInput' || e.target.id === 'ledgerContactNameInput' || e.target.id === 'ledgerContactBalanceInput' || e.target.id === 'ledgerGoodsNameInput' || e.target.id === 'ledgerGoodsPriceInput' || e.target.id === 'ledgerGiftNoteInput' || e.target.id === 'ledgerReceiveContentInput' || e.target.id === 'ledgerReceivePriceInput' || e.target.id === 'ledgerReceiveNoteInput' || e.target.id === 'ledgerGoodsEmojiInput' || e.target.id === 'ledgerGoodsDescInput' || e.target.id === 'dvdWorldbookInput' || e.target.id === 'peNameInput' || e.target.id === 'peSettingInput' || e.target.id === 'peWorldbookInput' || e.target.id === 'modalName');
           inputFocused = true;
@@ -15087,7 +15089,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         setTimeout(function() {
           var el = document.activeElement;
           divineInput = !!(el && el.id && (el.id === 'cdvQInput' || el.id === 'cdvGotoInput' || el.id === 'acdCustomInput' || el.id === 'cldAnnInput' || el.id === 'cldReplyInput' || el.id === 'dvMetDateInput' || el.id === 'dvAnnNameInput' || el.id === 'dvAnnDateInput' || el.id === 'cstMetDateInput' || el.id === 'actNameInput' || el.id === 'actSubInput' || el.id === 'ledgerAmountInput' || el.id === 'ledgerNoteInput' || el.id === 'ledgerBookNameInput' || el.id === 'ledgerBookBalanceInput' || el.id === 'ledgerDateInput' || el.id === 'ledgerContactNameInput' || el.id === 'ledgerContactBalanceInput' || el.id === 'ledgerGoodsNameInput' || el.id === 'ledgerGoodsPriceInput' || el.id === 'ledgerGiftNoteInput' || el.id === 'ledgerReceiveContentInput' || el.id === 'ledgerReceivePriceInput' || el.id === 'ledgerReceiveNoteInput' || el.id === 'ledgerGoodsEmojiInput' || el.id === 'ledgerGoodsDescInput' || el.id === 'dvdWorldbookInput' || el.id === 'peNameInput' || el.id === 'peSettingInput' || el.id === 'peWorldbookInput' || el.id === 'modalName'));
-          if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+          var _isTextInput = el && (el.tagName === 'TEXTAREA' || (el.tagName === 'INPUT' && ['checkbox','radio','range','button','submit','file'].indexOf(el.type || 'text') === -1));
+          if (!_isTextInput) {
             inputFocused = false;
             kbHeight = 0;
             divineInput = false;
