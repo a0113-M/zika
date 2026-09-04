@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="265";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="266";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v265</title>
+  <title>字卡 · 小手机 v266</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15813,6 +15813,17 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } else {
           document.getElementById('headerReplyStatus').textContent = '回复消息状态';
         }
+        // 持久化本次抽取结果，供刷新后恢复（避免刷新即重抽）
+        try {
+          var _zkIds = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
+          var _zkCats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
+          var _zkSaved = {};
+          for (var _i = 0; _i < _zkIds.length; _i++) {
+            var _zel = document.getElementById(_zkIds[_i]);
+            if (_zel && _zel.textContent) _zkSaved[_zkCats[_i]] = _zel.textContent;
+          }
+          localStorage.setItem('zk_header_current', JSON.stringify(_zkSaved));
+        } catch (e) {}
       }
 
       function _zkRefreshHeaderIfStale() {
@@ -15828,21 +15839,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } catch (e) {}
       }
 
-      // 计算到下一个随机时间点的间隔（0点~24点之间随机）
+      // 顶部字卡机制：每半小时检查一次，5%概率重抽；启动时恢复上次状态
+      const HEADER_CHECK_INTERVAL = 30 * 60 * 1000; // 半小时
+      const HEADER_CHANGE_CHANCE = 0.05; // 每次检查5%概率更改状态
+
       function getNextRandomTime() {
-        const now = new Date();
-        // 生成 0~24 之间的随机小时和分钟
-        const randomHour = Math.floor(Math.random() * 24);
-        const randomMinute = Math.floor(Math.random() * 60);
-        const next = new Date(now.getFullYear(), now.getMonth(), now.getDate(), randomHour, randomMinute, 0);
-        // 如果生成的时间已经过了，则推到明天
-        if (next <= now) {
-          next.setDate(next.getDate() + 1);
-        }
-        return next.getTime() - now.getTime();
+        return HEADER_CHECK_INTERVAL;
       }
 
-      // 首次进入时立即更新一次
       let updateTimer = null;
 
       function scheduleHeaderUpdate() {
@@ -15852,24 +15856,49 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           updateTimer = null;
         }
 
-        // 每次更新时重新抽取所有内容
-        updateChatHeaderInfo();
-
-        // 计算下一次更新的延迟时间（当天内随机一个时间点）
-        const delay = getNextRandomTime();
-        console.log(`下次刷新时间：${new Date(Date.now() + delay).toLocaleString()}`);
-
         updateTimer = setTimeout(() => {
+          // 每半小时有5%的概率更改顶部字卡状态
+          if (Math.random() < HEADER_CHANGE_CHANCE) {
+            updateChatHeaderInfo();
+          }
           scheduleHeaderUpdate(); // 递归调用，再次计划
-        }, delay);
+        }, getNextRandomTime());
       }
 
-      // 启动定时更新（代替原来的 setInterval）
+      // 启动定时更新
       function startHeaderAutoUpdate() {
-        // 先立即更新一次
-        updateChatHeaderInfo();
-        // 然后调度下一次
+        // 启动时先尝试恢复上次的顶部字卡状态，恢复不了或已失效再重抽
+        var restored = false;
+        try { restored = _zkRestoreHeaderIfValid(); } catch (e) {}
+        if (!restored) {
+          updateChatHeaderInfo();
+        }
+        // 调度每半小时一次的概率检查
         scheduleHeaderUpdate();
+      }
+
+      // 启动时尝试恢复上次顶部字卡状态（六个值全部仍在字卡池中才恢复）
+      function _zkRestoreHeaderIfValid() {
+        var ids = ['headerWeather', 'headerTime', 'headerMood', 'headerStatus', 'headerEmotion', 'headerReplyStatus'];
+        var cats = ['天气', '时间', '心情', '状态', '情绪', '回复消息状态'];
+        var raw = null;
+        try { raw = localStorage.getItem('zk_header_current'); } catch (e) { return false; }
+        if (!raw) return false;
+        var saved = null;
+        try { saved = JSON.parse(raw); } catch (e) { return false; }
+        if (!saved || typeof saved !== 'object') return false;
+        for (var i = 0; i < ids.length; i++) {
+          var el = document.getElementById(ids[i]);
+          if (!el) return false;
+          var v = saved[cats[i]];
+          if (typeof v !== 'string' || !v) return false;
+          var pool = (cardData.topBar[cats[i]] || []).map(function (x) { return String((x && x.name) || x); });
+          if (pool.length === 0 || pool.indexOf(v) < 0) return false;
+        }
+        for (var j = 0; j < ids.length; j++) {
+          document.getElementById(ids[j]).textContent = saved[cats[j]];
+        }
+        return true;
       }
 
       // 进入聊天时更新一次
