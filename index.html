@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="302";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="303";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v302</title>
+  <title>字卡 · 小手机 v303</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14240,6 +14240,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <button class="tg-set" data-k="sound"><span class="tg-set-label">背景音</span><span class="tg-set-val" id="tgSetSound"></span></button>
           <button class="tg-set" data-k="timer"><span class="tg-set-label">计时</span><span class="tg-set-val" id="tgSetTimer"></span></button>
           <button class="tg-set" data-k="mini"><span class="tg-set-label">药丸</span><span class="tg-set-val" id="tgSetMini"></span></button>
+          <button class="tg-set" data-k="ballLine"><span class="tg-set-label">陪伴时光</span><span class="tg-set-val" id="tgSetBallLine"></span></button>
         </div>
         <div class="tg-select" id="tgSelect"></div>
         <div class="tg-active" id="tgActive" style="display:none;"></div>
@@ -20198,8 +20199,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (typeof v.sound !== 'number' || v.sound < 0 || v.sound > 3) v.sound = 0;
           if (typeof v.bg !== 'boolean') v.bg = true;
           if (v.miniShape !== 'pill') v.miniShape = 'ball';
+          if (typeof v.ballLine !== 'boolean') v.ballLine = true;
           return v;
-        } catch (e) { return { bg: true, sound: 0, timer: 0, miniShape: 'ball' }; }
+        } catch (e) { return { bg: true, sound: 0, timer: 0, miniShape: 'ball', ballLine: true }; }
       }
       function _tgSaveSettings(v) {
         try { localStorage.setItem('zk_together_settings', JSON.stringify(v)); } catch (e) {}
@@ -20221,6 +20223,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (so) so.textContent = TG_BGM[st.sound] || '静音';
         if (tm) tm.textContent = TG_TIMER[st.timer] || '正计时';
         if (ms) ms.textContent = st.miniShape === 'pill' ? '药丸' : '圆球';
+        var bl = document.getElementById('tgSetBallLine');
+        if (bl) bl.textContent = st.ballLine === false ? '隐藏' : '显示';
       }
       var _tgSettingsBound = false;
       function _tgInitSettings() {
@@ -20234,6 +20238,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             else if (k === 'sound') st.sound = (st.sound + 1) % 4;
             else if (k === 'timer') st.timer = (st.timer + 1) % 3;
             else if (k === 'mini') { st.miniShape = st.miniShape === 'pill' ? 'ball' : 'pill'; _tgMiniCur = null; }
+            else if (k === 'ballLine') st.ballLine = st.ballLine === false;
             _tgSaveSettings(st);
             _tgRenderSettings();
             if (!_tgActive) _tgRenderSelect();
@@ -21046,7 +21051,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         inner.style.removeProperty('--shift');
         inner.style.removeProperty('--dur');
         var pill0 = document.getElementById('tgMiniWindow');
-        if (pill0 && pill0.classList.contains('active')) out.classList.add('active');
+        var ball0 = document.getElementById('tgMiniBall');
+        var _blOn = _tgGetSettings().ballLine !== false;
+        if ((pill0 && pill0.classList.contains('active')) || (ball0 && ball0.classList.contains('active') && _blOn)) out.classList.add('active');
         else out.classList.remove('active');
         requestAnimationFrame(function () {
           var diff = inner.scrollWidth - out.clientWidth;
@@ -21084,15 +21091,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var line = document.getElementById('tgMiniLine');
         if (!el) return;
         var isPill = el.id === 'tgMiniWindow';
+        var _lf = isPill || _tgGetSettings().ballLine !== false;
         var w = el.offsetWidth || 46, h = el.offsetHeight || 46;
-        var lh = (isPill && line && line.classList.contains('active')) ? (line.offsetHeight + 6) : 0;
+        var lh = (_lf && line && line.classList.contains('active')) ? (line.offsetHeight + 6) : 0;
         left = Math.max(4, Math.min(left, window.innerWidth - w - 4));
         top = Math.max(4, Math.min(top, window.innerHeight - h - lh - 4));
         el.style.left = left + 'px';
         el.style.top = top + 'px';
         el.style.right = 'auto';
         el.style.bottom = 'auto';
-        if (isPill && line) {
+        if (_lf && line) {
           line.style.left = left + 'px';
           line.style.top = (top + h + 6) + 'px';
           line.style.right = 'auto';
@@ -21122,10 +21130,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           ball.classList.remove('active');
           pill.classList.add('active');
           if (line) line.classList.add('active');
+          _tgMiniRestorePos();
         } else {
           pill.classList.remove('active');
-          if (line) line.classList.remove('active');
+          if (line) line.classList.toggle('active', _tgGetSettings().ballLine !== false);
           ball.classList.add('active');
+          _tgMiniRestorePos();
         }
       }
       function _tgBindMiniDrag(el) {
