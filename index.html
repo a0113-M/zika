@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="299";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="300";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v299</title>
+  <title>字卡 · 小手机 v300</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11740,10 +11740,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   font-size: 11px; color: rgba(255,255,255,0.92); line-height: 1.1;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
+.tg-mini-window .tgm-row2 {
+  display: flex; align-items: center; gap: 5px; max-width: 100%;
+  white-space: nowrap; overflow: hidden;
+}
 .tg-mini-window .tgm-timer {
-  font-size: 12px; color: #fff; line-height: 1.1;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  font-size: 12px; color: #fff; line-height: 1.1; flex-shrink: 0;
+  white-space: nowrap;
   font-variant-numeric: tabular-nums;
+}
+.tg-mini-window .tgm-act {
+  font-size: 11px; color: rgba(255,255,255,0.68); line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;
 }
 .tg-mini-line {
   position: fixed; z-index: 11150; display: none;
@@ -13081,7 +13089,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div class="tgm-avatar" id="tgmAvatar">?</div>
       <div class="tgm-center">
         <div class="tgm-stats" id="tgmStats">❤72 · 36.5℃</div>
-        <div class="tgm-timer" id="tgmTimer">00:00:00</div>
+        <div class="tgm-row2">
+          <span class="tgm-timer" id="tgmTimer">00:00:00</span>
+          <span class="tgm-act" id="tgmAct"></span>
+        </div>
       </div>
     </div>
     <div class="tg-mini-line" id="tgMiniLine"><div class="tgml-inner" id="tgmlInner">一起陪伴</div></div>
@@ -20902,7 +20913,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var live = document.getElementById('tgLive');
         if (live) live.classList.remove('open');
         _tgActive = null;
-        renderTogether();
+        _tgClosePage();
         showToast((auto ? '时间到 · 这次共 ' : '已结束陪伴 · 共 ') + _tgFmtDurCn(durMs));
       }
 
@@ -20979,6 +20990,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (st) st.textContent = '❤' + Math.round(a.bpm || 72) + ' · ' + (a.temp || 36.5).toFixed(1) + '℃';
         var tm = document.getElementById('tgmTimer');
         if (tm) tm.textContent = _tgFmtHMS(Math.max(0, Math.floor((Date.now() - (a.startTs || Date.now())) / 1000)));
+        var ac = document.getElementById('tgmAct');
+        if (ac) ac.textContent = a.contactAct ? ('TA在' + a.contactAct) : '';
         _tgUpdateMiniLine(a);
       }
       function _tgUpdateMiniLine(a) {
