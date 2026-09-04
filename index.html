@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="296";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="297";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v296</title>
+  <title>字卡 · 小手机 v297</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -4480,6 +4480,7 @@
       background: rgba(0,0,0,0.28); border: none; color: #fff;
       display: flex; align-items: center; justify-content: center; padding: 0;
     }
+    .tg-mini-top { position: absolute; top: 10px; right: 10px; z-index: 6; }
     .acd-live-mid { position: relative; padding: 2px 16px 0; text-align: center; color: #fff; flex: 0 0 auto; }
     .acd-halo { position: relative; width: 70px; height: 70px; margin: 0 auto; }
     .acd-ring {
@@ -14185,6 +14186,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div class="acd-live" id="tgLive">
         <div class="acd-live-bg" id="tgLiveBg"><div class="acd-glow"></div></div>
         <div class="acd-live-scroll">
+          <div class="tg-mini-top">
+            <button class="acd-live-x" id="tgMiniBtn" title="缩小"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+          </div>
           <div class="acd-live-mid">
             <div class="acd-halo">
               <div class="acd-ring"></div>
@@ -17302,7 +17306,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             tgT1.textContent = '一起' + msg.activity;
             tgT1.style.cssText = 'font-size:14px;font-weight:600;color:var(--text-main);';
             const tgT2 = document.createElement('div');
-            tgT2.textContent = msg.kind === 'invite' ? ('你邀请了 ' + msg.contactName + ' · 等 TA 进来…') : (msg.contactName + ' 应邀来陪你啦');
+            tgT2.textContent = msg.kind === 'invite' ? ('你邀请了 ' + msg.contactName + ' · 等 TA 进来…') : (msg.kind === 'end' ? ('已结束陪伴' + (msg.dur ? ' · 共' + msg.dur : '')) : (msg.contactName + ' 应邀来陪你啦'));
             tgT2.style.cssText = 'font-size:12px;color:#9a938f;margin-top:1px;';
             tgTx.appendChild(tgT1); tgTx.appendChild(tgT2);
             tgInner.appendChild(tgIc); tgInner.appendChild(tgTx);
@@ -20536,18 +20540,21 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       var TG_REJECT = ['现在有点忙，晚点再来陪你～', '我刚出门啦，改天再一起呀', '这会儿腾不开手，先欠着哈', '今天有点累，想自己待会儿，下次陪你'];
 
-      function _tgChatTogetherCard(contactId, kind, act, contactName) {
+      function _tgChatTogetherCard(contactId, kind, act, contactName, opt) {
         if (typeof chatHistories === 'undefined' || !chatHistories) return;
         if (!chatHistories[contactId]) chatHistories[contactId] = [];
         var now = new Date();
         var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-        var lastMsg = kind === 'invite'
-          ? '你邀请了 ' + contactName + ' 一起' + act.name
-          : (contactName + ' 应邀来陪你一起' + act.name);
+        var dur = opt && opt.dur ? opt.dur : '';
+        var lastMsg;
+        if (kind === 'invite') lastMsg = '你邀请了 ' + contactName + ' 一起' + act.name;
+        else if (kind === 'end') lastMsg = '已结束陪伴' + (dur ? ' · 共' + dur : '');
+        else lastMsg = contactName + ' 应邀来陪你一起' + act.name;
         chatHistories[contactId].push({
           from: 'sys', together: true, kind: kind,
           activity: act.name, icon: _tgIcon(act.key, act.name),
-          contactName: contactName, time: timeStr, sentAt: Date.now()
+          contactName: contactName, time: timeStr, sentAt: Date.now(),
+          dur: dur
         });
         var contact = contacts.find(function (c) { return c.id === contactId; });
         if (contact) {
@@ -20860,6 +20867,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           durMs: durMs
         });
         _tgSaveLog(log);
+        _tgChatTogetherCard(a.contactId, 'end', { key: a.key, name: a.activity }, a.contactName, { dur: _tgFmtDurCn(durMs) });
         _tgSaveActive(null);
         _tgStopTimer();
         _tgStopHb();
@@ -20957,6 +20965,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       document.getElementById('tgMiniWindow').addEventListener('click', function () {
         if (!_tgActive) return;
         openTogetherPage(false);
+      });
+      document.getElementById('tgMiniBtn').addEventListener('click', function () {
+        _tgClosePage();
       });
 
       // 陪伴 live 控制：暂停 / 结束 / 关闭
