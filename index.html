@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="289";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="290";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v289</title>
+  <title>字卡 · 小手机 v290</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7070,10 +7070,10 @@
 }
 
 .moments-post-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.4);
-  z-index: 200;
+  z-index: 500;
   display: none;
   align-items: flex-end;
   justify-content: center;
@@ -21554,7 +21554,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         momentsTextarea.value = '';
         momentsPendingImages = [];
         updateImagePicker();
-        momentsTextarea.focus();
+        momentsTextarea.focus({ preventScroll: true });
       });
 
       // Cancel
