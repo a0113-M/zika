@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="274";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="275";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v274</title>
+  <title>字卡 · 小手机 v275</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -18089,7 +18089,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           '充电中','回血中','吃饭中','干饭中','炫饭中','点外卖中',
           '等外卖','做饭中','煲汤中','洗碗中','吃夜宵','下午茶',
           '洗澡中','泡脚中','洗头中','吹头发','敷面膜','护肤中',
-          '化妆中','卸妆中','换装中','洗衣服','晾衣服','收衣服',
+          '洗衣服','晾衣服','收衣服',
           '打扫中','大扫除','拖地中','泡茶中','逛超市','买菜中',
           '拿快递','取外卖','浇花中','撸猫中','逗狗中','喂鱼中',
           '追剧中','看电影','听歌中','唱歌中','打游戏','开黑中',
@@ -18130,14 +18130,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       const _zkRemovedWeatherCards = ["回南天","桑拿天","秋老虎","三伏天","三九天","梅雨季","干热风","倒春寒","秋高气爽"];
 
+      const _zkRemovedStatusCards = ["化妆中","卸妆中","换装中"];
+
       function _zkMergeTopBarDefaults() {
         try {
-          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v6')) return;
+          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v7')) return;
           if (!cardData.topBar || typeof cardData.topBar !== 'object') cardData.topBar = {};
           var _rmPool = cardData.topBar['回复消息状态'];
           if (Array.isArray(_rmPool)) { cardData.topBar['回复消息状态'] = _rmPool.filter(function (x) { var n = String((x && x.name) || x); return _zkRemovedReplyStates.indexOf(n) < 0; }); }
           var _wxPool = cardData.topBar['天气'];
           if (Array.isArray(_wxPool)) { cardData.topBar['天气'] = _wxPool.filter(function (x) { var n = String((x && x.name) || x); return _zkRemovedWeatherCards.indexOf(n) < 0; }); }
+          var _stPool = cardData.topBar['状态'];
+          if (Array.isArray(_stPool)) { cardData.topBar['状态'] = _stPool.filter(function (x) { var n = String((x && x.name) || x); return _zkRemovedStatusCards.indexOf(n) < 0; }); }
           Object.keys(TOPBAR100).forEach(function (cat) {
             var cur = cardData.topBar[cat];
             if (!Array.isArray(cur)) cur = [];
@@ -18151,7 +18155,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             cardData.topBar[cat] = cur;
           });
           saveCardDataNow();
-          localStorage.setItem('zk_topbar_migrated_v6', '1');
+          localStorage.setItem('zk_topbar_migrated_v7', '1');
         } catch (e) {}
       }
 
