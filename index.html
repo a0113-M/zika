@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="295";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="296";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v295</title>
+  <title>字卡 · 小手机 v296</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11709,6 +11709,45 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.7);
 }
 
+/* 陪伴悬浮药丸 */
+.tg-mini-window {
+  position: fixed; z-index: 11150; display: none;
+  width: auto; min-width: 120px; max-width: 240px; height: 52px;
+  padding: 0 10px; box-sizing: border-box;
+  background: rgba(30,20,50,0.78);
+  border-radius: 24px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(155,142,196,0.14);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  touch-action: none; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  overflow: hidden; align-items: center;
+}
+.tg-mini-window.active { display: flex; }
+.tg-mini-window:active { transform: scale(0.96); }
+.tg-mini-window .tgm-avatar {
+  width: 32px; height: 32px; border-radius: 50%; overflow: hidden;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  background: var(--primary); font-size: 14px; font-weight: 600; color: #fff;
+  box-shadow: 0 0 10px rgba(155,142,196,0.4);
+}
+.tg-mini-window .tgm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.tg-mini-window .tgm-center {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: 2px; margin: 0 8px; flex: 1; min-width: 0;
+}
+.tg-mini-window .tgm-stats {
+  font-size: 11px; color: rgba(255,255,255,0.92); line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.tg-mini-window .tgm-line {
+  font-size: 11px; color: rgba(255,255,255,0.6); line-height: 1.1;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+}
+.tg-mini-window .tgm-timer {
+  font-size: 11px; color: rgba(255,255,255,0.85); flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
 
 .settings-item-multi {
       flex-direction: column;
@@ -13014,6 +13053,16 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div class="cmw-timer" id="cmwTimer">00:00</div>
       </div>
+    </div>
+
+    <!-- 陪伴悬浮药丸 -->
+    <div class="tg-mini-window" id="tgMiniWindow" style="bottom: 252px; right: 16px;">
+      <div class="tgm-avatar" id="tgmAvatar">?</div>
+      <div class="tgm-center">
+        <div class="tgm-stats" id="tgmStats">❤72 · 36.5℃</div>
+        <div class="tgm-line" id="tgmLine">一起陪伴</div>
+      </div>
+      <div class="tgm-timer" id="tgmTimer">00:00:00</div>
     </div>
 
     <!-- 信件模块 -->
@@ -17238,6 +17287,34 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             chatMessages.appendChild(sysDiv);
             return;
           }
+          if (msg.together) {
+            const tgCard = document.createElement('div');
+            tgCard.className = 'selectable-sys';
+            tgCard.style.cssText = 'display:flex;justify-content:center;margin:6px 0;';
+            const tgInner = document.createElement('div');
+            tgInner.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;max-width:84%;box-shadow:0 2px 8px rgba(155,142,196,0.08);';
+            const tgIc = document.createElement('div');
+            tgIc.style.cssText = 'width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--primary);flex-shrink:0;';
+            tgIc.innerHTML = (msg.icon || '').replace('<svg ', '<svg style="width:22px;height:22px;" ');
+            const tgTx = document.createElement('div');
+            tgTx.style.cssText = 'display:flex;flex-direction:column;gap:2px;min-width:0;';
+            const tgT1 = document.createElement('div');
+            tgT1.textContent = '一起' + msg.activity;
+            tgT1.style.cssText = 'font-size:14px;font-weight:600;color:var(--text-main);';
+            const tgT2 = document.createElement('div');
+            tgT2.textContent = msg.kind === 'invite' ? ('你邀请了 ' + msg.contactName + ' · 等 TA 进来…') : (msg.contactName + ' 应邀来陪你啦');
+            tgT2.style.cssText = 'font-size:12px;color:#9a938f;margin-top:1px;';
+            tgTx.appendChild(tgT1); tgTx.appendChild(tgT2);
+            tgInner.appendChild(tgIc); tgInner.appendChild(tgTx);
+            tgCard.appendChild(tgInner);
+            tgCard.dataset.index = index;
+            tgCard.addEventListener('click', function (e) {
+              if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); return; }
+              if (typeof openTogetherPage === 'function') openTogetherPage(false);
+            });
+            chatMessages.appendChild(tgCard);
+            return;
+          }
           // 红包消息特殊处理
           if (msg.hongbao) {
             var hb = msg.hongbao;
@@ -20459,15 +20536,22 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       var TG_REJECT = ['现在有点忙，晚点再来陪你～', '我刚出门啦，改天再一起呀', '这会儿腾不开手，先欠着哈', '今天有点累，想自己待会儿，下次陪你'];
 
-      function _tgChatSysTip(contactId, text) {
+      function _tgChatTogetherCard(contactId, kind, act, contactName) {
         if (typeof chatHistories === 'undefined' || !chatHistories) return;
         if (!chatHistories[contactId]) chatHistories[contactId] = [];
         var now = new Date();
         var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
-        chatHistories[contactId].push({ from: 'sys', hbSys: true, text: text, time: timeStr, sentAt: Date.now() });
+        var lastMsg = kind === 'invite'
+          ? '你邀请了 ' + contactName + ' 一起' + act.name
+          : (contactName + ' 应邀来陪你一起' + act.name);
+        chatHistories[contactId].push({
+          from: 'sys', together: true, kind: kind,
+          activity: act.name, icon: _tgIcon(act.key, act.name),
+          contactName: contactName, time: timeStr, sentAt: Date.now()
+        });
         var contact = contacts.find(function (c) { return c.id === contactId; });
         if (contact) {
-          contact.lastMsg = text;
+          contact.lastMsg = lastMsg;
           contact.time = timeStr;
           if (typeof refreshList === 'function') refreshList();
         }
@@ -20527,7 +20611,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           startTs: Date.now(), windowMs: winMs, winMin: winMin, joinAt: joinAt
         };
         _tgRenderInviteNote();
-        _tgChatSysTip(c.id, '你邀请了 ' + c.name + ' 一起' + act.name);
+        _tgChatTogetherCard(c.id, 'invite', act, c.name);
         box.classList.add('active');
         mask.classList.add('active');
         _tgInviteStartCountdown();
@@ -20642,7 +20726,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgLastLineTs = 0;
         if (invited) {
           _tgLogLive(o.contactName + ' 答应了你的邀请，来陪你一起' + o.activity);
-          _tgChatSysTip(o.contactId, o.contactName + ' 应邀来陪你一起' + o.activity);
+          _tgChatTogetherCard(o.contactId, 'join', { key: o.key, name: o.activity }, o.contactName);
         } else {
           _tgLogLive(o.contactName + ' 正在' + o.contactAct + '，没有打扰 TA');
         }
@@ -20654,6 +20738,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var live = document.getElementById('tgLive');
         var a = _tgActive;
         if (!live || !a) return;
+        var _m = document.getElementById('tgMiniWindow');
+        if (_m) _m.classList.remove('active');
         if (_tgCardMode) {
           _tgCardMode = false;
           var _pg0 = document.getElementById('togetherPage');
@@ -20707,6 +20793,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgMaybeSwap();
         _tgMaybeJoinMidway();
         _tgSpeak(false);
+        _tgUpdateMini();
       }
 
       function _tgSpeak(force) {
@@ -20776,6 +20863,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgSaveActive(null);
         _tgStopTimer();
         _tgStopHb();
+        var _m3 = document.getElementById('tgMiniWindow');
+        if (_m3) _m3.classList.remove('active');
         _tgAudioStop();
         var live = document.getElementById('tgLive');
         if (live) live.classList.remove('open');
@@ -20838,12 +20927,36 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         document.getElementById('togetherPage').classList.remove('show');
         var _bd = document.getElementById('tgCardBackdrop');
         if (_bd) _bd.classList.remove('active');
+        if (_tgActive) {
+          _tgUpdateMini();
+          var _m = document.getElementById('tgMiniWindow');
+          if (_m) _m.classList.add('active');
+        }
+      }
+      function _tgUpdateMini() {
+        var mini = document.getElementById('tgMiniWindow');
+        if (!mini || !mini.classList.contains('active')) return;
+        var a = _tgActive;
+        if (!a) { mini.classList.remove('active'); return; }
+        var av = document.getElementById('tgmAvatar');
+        var c = contacts.filter(function (x) { return x.id === a.contactId; })[0];
+        if (av) { if (c) _zkSetContactAvatar(av, c); else { av.textContent = (a.contactName || '?').charAt(0).toUpperCase(); av.style.background = 'var(--primary)'; } }
+        var st = document.getElementById('tgmStats');
+        if (st) st.textContent = '❤' + Math.round(a.bpm || 72) + ' · ' + (a.temp || 36.5).toFixed(1) + '℃';
+        var ln = document.getElementById('tgmLine');
+        if (ln) ln.textContent = (a.logs && a.logs.length) ? a.logs[0].x : ('一起' + (a.activity || '陪伴'));
+        var tm = document.getElementById('tgmTimer');
+        if (tm) tm.textContent = _tgFmtHMS(Math.max(0, Math.floor((Date.now() - (a.startTs || Date.now())) / 1000)));
       }
       document.getElementById('tgCardBackdrop').addEventListener('click', _tgClosePage);
       document.getElementById('tgInviteX').addEventListener('click', _tgCancelInvite);
       document.getElementById('tgBackBtn').addEventListener('click', function () {
         // 返回时进行中的陪伴继续在后台计时（不清除），下次进来恢复
         _tgClosePage();
+      });
+      document.getElementById('tgMiniWindow').addEventListener('click', function () {
+        if (!_tgActive) return;
+        openTogetherPage(false);
       });
 
       // 陪伴 live 控制：暂停 / 结束 / 关闭
