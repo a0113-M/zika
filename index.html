@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="285";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="286";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v285</title>
+  <title>字卡 · 小手机 v286</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -6887,6 +6887,16 @@
   border-radius: 6px;
   background: var(--bg-soft2);
   cursor: pointer;
+}
+
+.moment-images img.moment-chatimg {
+  width: 190px;
+  height: auto;
+  aspect-ratio: auto;
+  object-fit: fill;
+  border-radius: 10px;
+  border: 1px solid rgba(139, 122, 184, 0.25);
+  box-shadow: 0 2px 8px rgba(139, 122, 184, 0.12);
 }
 
 .moment-footer {
@@ -21334,7 +21344,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             moments.push({
               id: Date.now(), author: contact.name, avatarImage: contact.avatarImage || null,
               text: '',
-              images: [chatImg], likes: [], comments: [], time: Date.now(), isContactPost: true
+              images: [chatImg], likes: [], comments: [], time: Date.now(), isContactPost: true, chatCard: true
             });
           } else {
             var cardText = getRandomCard();
@@ -21551,6 +21561,20 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         return (d.getMonth() + 1) + '月' + d.getDate() + '日';
       }
 
+      function _openMomentImageViewer(src) {
+        try {
+          var ov = document.createElement('div');
+          ov.className = 'moment-img-viewer';
+          ov.style.cssText = 'position:fixed;inset:0;background:rgba(20,14,32,0.88);display:flex;align-items:center;justify-content:center;z-index:99999;padding:20px;cursor:zoom-out;';
+          var im = document.createElement('img');
+          im.src = src;
+          im.style.cssText = 'max-width:100%;max-height:100%;border-radius:10px;object-fit:contain;background:#fff;box-shadow:0 8px 40px rgba(0,0,0,0.4);';
+          ov.appendChild(im);
+          ov.addEventListener('click', function() { ov.remove(); });
+          document.body.appendChild(ov);
+        } catch(e) {}
+      }
+
       function renderMoments() {
         if (!momentsFeed) return;
         momentsFeed.innerHTML = '';
@@ -21575,8 +21599,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (m.images && m.images.length > 0) {
             var gridClass = 'grid-' + Math.min(m.images.length, 9);
             imagesHtml = '<div class="moment-images ' + gridClass + '">';
+            var isChatCard = !!(m.chatCard || (m.isContactPost && m.images.length === 1 && !m.text));
             m.images.slice(0, 9).forEach(function(img) {
-              imagesHtml += '<img src="' + img + '">';
+              imagesHtml += '<img src="' + img + '"' + (isChatCard ? ' class="moment-chatimg"' : '') + '>';
             });
             imagesHtml += '</div>';
           }
@@ -21680,6 +21705,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
 
         momentsFeed.addEventListener('click', function(e) {
+          var _mvImg = e.target.closest('.moment-images img');
+          if (_mvImg) {
+            e.stopPropagation();
+            _openMomentImageViewer(_mvImg.src);
+            return;
+          }
           // Toggle menu popup
           var menuBtn = e.target.closest('.moment-action-btn');
           if (menuBtn && !e.target.closest('.moment-menu-item')) {
