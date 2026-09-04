@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="298";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="299";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v298</title>
+  <title>字卡 · 小手机 v299</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20300,14 +20300,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (a.paused === undefined) a.paused = false;
         if (typeof a.bpm !== 'number') a.bpm = 68 + Math.floor(Math.random() * 14);
         if (typeof a.temp !== 'number') a.temp = 36.3 + Math.random() * 0.5;
-        a.logs = [];
+        if (!Array.isArray(a.logs)) a.logs = [];
         return a;
       }
       function _tgSaveActive(a) {
         try {
           if (!a) { localStorage.removeItem('zk_together_active'); return; }
           var copy = {};
-          for (var k in a) if (k !== 'logs') copy[k] = a[k];
+          for (var k in a) copy[k] = a[k];
           localStorage.setItem('zk_together_active', JSON.stringify(copy));
         } catch (e) {}
       }
@@ -20358,6 +20358,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!_tgActive.logs) _tgActive.logs = [];
         _tgActive.logs.unshift({ t: Date.now(), x: txt });
         if (_tgActive.logs.length > 30) _tgActive.logs.pop();
+        _tgSaveActive(_tgActive);
         _tgRenderLiveLogs();
       }
       var _tgHbAnim = null, _tgHbBase = 74, _tgTempBase = 36.5, _tgHbT0 = 0, _tgAccelUntil = 0, _tgAccelPeak = 0;
@@ -20960,9 +20961,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var _bd = document.getElementById('tgCardBackdrop');
         if (_bd) _bd.classList.remove('active');
         if (_tgActive) {
-          _tgUpdateMini();
           var _m = document.getElementById('tgMiniWindow');
           if (_m) _m.classList.add('active');
+          _tgUpdateMini();
+          _tgMiniRestorePos();
         }
       }
       function _tgUpdateMini() {
@@ -21006,7 +21008,58 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         // 返回时进行中的陪伴继续在后台计时（不清除），下次进来恢复
         _tgClosePage();
       });
+      var _tgMiniDrag = { on: false, moved: false, sx: 0, sy: 0, sl: 0, st: 0 };
+      function _tgMiniApplyPos(left, top) {
+        var mini = document.getElementById('tgMiniWindow');
+        var line = document.getElementById('tgMiniLine');
+        if (!mini) return;
+        var w = mini.offsetWidth || 160, h = mini.offsetHeight || 52;
+        var lh = (line && line.classList.contains('active')) ? (line.offsetHeight + 6) : 0;
+        left = Math.max(4, Math.min(left, window.innerWidth - w - 4));
+        top = Math.max(4, Math.min(top, window.innerHeight - h - lh - 4));
+        mini.style.left = left + 'px';
+        mini.style.top = top + 'px';
+        mini.style.right = 'auto';
+        mini.style.bottom = 'auto';
+        if (line) {
+          line.style.left = left + 'px';
+          line.style.top = (top + h + 6) + 'px';
+          line.style.right = 'auto';
+          line.style.bottom = 'auto';
+        }
+        try { localStorage.setItem('zk_tg_mini_pos', JSON.stringify({ l: Math.round(left), t: Math.round(top) })); } catch (e) {}
+      }
+      function _tgMiniRestorePos() {
+        try {
+          var p = JSON.parse(localStorage.getItem('zk_tg_mini_pos') || 'null');
+          if (p && typeof p.l === 'number' && typeof p.t === 'number') _tgMiniApplyPos(p.l, p.t);
+        } catch (e) {}
+      }
+      (function () {
+        var mini = document.getElementById('tgMiniWindow');
+        if (!mini) return;
+        mini.addEventListener('pointerdown', function (e) {
+          if (!_tgActive) return;
+          _tgMiniDrag.on = true; _tgMiniDrag.moved = false;
+          _tgMiniDrag.sx = e.clientX; _tgMiniDrag.sy = e.clientY;
+          var r = mini.getBoundingClientRect();
+          _tgMiniDrag.sl = r.left; _tgMiniDrag.st = r.top;
+          try { mini.setPointerCapture(e.pointerId); } catch (err) {}
+        });
+        mini.addEventListener('pointermove', function (e) {
+          if (!_tgMiniDrag.on) return;
+          var dx = e.clientX - _tgMiniDrag.sx, dy = e.clientY - _tgMiniDrag.sy;
+          if (!_tgMiniDrag.moved && Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+          _tgMiniDrag.moved = true;
+          _tgMiniApplyPos(_tgMiniDrag.sl + dx, _tgMiniDrag.st + dy);
+          if (e.cancelable) e.preventDefault();
+        });
+        function _tgMiniUp() { _tgMiniDrag.on = false; }
+        mini.addEventListener('pointerup', _tgMiniUp);
+        mini.addEventListener('pointercancel', _tgMiniUp);
+      })();
       document.getElementById('tgMiniWindow').addEventListener('click', function () {
+        if (_tgMiniDrag.moved) { _tgMiniDrag.moved = false; return; }
         if (!_tgActive) return;
         openTogetherPage(false);
       });
