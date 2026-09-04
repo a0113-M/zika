@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="263";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="264";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v263</title>
+  <title>字卡 · 小手机 v264</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5809,7 +5809,11 @@
       color: var(--primary);
       background: none;
       border: none;
-      flex-shrink: 0;
+      flex-shrink: 1;
+      min-width: 0;
+      max-width: 46%;
+      overflow: hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
 
@@ -5826,6 +5830,7 @@
     /* 分类筛选下拉框 - 集成在搜索框内 */
     .search-category-wrapper {
       flex: 1;
+      min-width: 0;
       display: flex;
       align-items: center;
       background: #f0f0f0;
@@ -5936,6 +5941,7 @@
       cursor: pointer;
       color: #333;
       padding: 4px 6px;
+      flex-shrink: 0;
     }
 
     .card-detail-list {
@@ -17998,23 +18004,23 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           '风和日丽','碧空如洗','万里无云','云卷云舒'
         ],
         '时间': [
-          '凌晨','拂晓','黎明','破晓','天蒙蒙亮','清晨',
-          '清早','一大早','早晨','早上','日出时分','晨光熹微',
-          '朝霞满天','早上七点','早饭时间','上班路上','通勤路上','上学路上',
-          '上午','日上三竿','上午十点','茶歇时间','临近中午','晌午',
-          '正午','中午','午间','日头正盛','午饭时间','午后',
-          '午后一点','下午','下午茶','午后三点','日头偏西','下午四点',
-          '放学路上','下班路上','傍晚','黄昏','日暮','夕阳西下',
-          '日落黄昏','薄暮','华灯初上','掌灯时分','晚饭时间','入夜',
-          '晚上','晚间','晚风习习','月上柳梢','月色正好','夜幕降临',
-          '万家灯火','晚饭后','晚间八点','追剧时间','夜跑时间','夜里',
-          '夜深','夜深人静','万籁俱寂','深夜','子夜','午夜',
-          '半夜','三更半夜','月挂中天','星光点点','繁星满天','夜色正浓',
-          '凌晨一点','凌晨两点','凌晨三点','凌晨四点','睡意正浓','辗转难眠',
-          '梦正酣','睡前时刻','深夜电台','清晨五点','闹钟响前','梦醒时分',
-          '睡回笼觉','早高峰','晚高峰','午休时间','午睡时分','课间',
-          '下课时间','自习时间','聚会前','约会前','等车时间','候机中',
-          '倒计时中','跨年前夜','岁末年初','生日零点'
+          '0:00-1:00','6:00-7:00','12:00-13:00','18:00-19:00','0:00-0:15','0:15-0:30',
+          '0:30-0:45','0:45-1:00','1:00-1:15','1:15-1:30','1:30-1:45','1:45-2:00',
+          '2:00-2:15','2:15-2:30','2:30-2:45','2:45-3:00','3:00-3:15','3:15-3:30',
+          '3:30-3:45','3:45-4:00','4:00-4:15','4:15-4:30','4:30-4:45','4:45-5:00',
+          '5:00-5:15','5:15-5:30','5:30-5:45','5:45-6:00','6:00-6:15','6:15-6:30',
+          '6:30-6:45','6:45-7:00','7:00-7:15','7:15-7:30','7:30-7:45','7:45-8:00',
+          '8:00-8:15','8:15-8:30','8:30-8:45','8:45-9:00','9:00-9:15','9:15-9:30',
+          '9:30-9:45','9:45-10:00','10:00-10:15','10:15-10:30','10:30-10:45','10:45-11:00',
+          '11:00-11:15','11:15-11:30','11:30-11:45','11:45-12:00','12:00-12:15','12:15-12:30',
+          '12:30-12:45','12:45-13:00','13:00-13:15','13:15-13:30','13:30-13:45','13:45-14:00',
+          '14:00-14:15','14:15-14:30','14:30-14:45','14:45-15:00','15:00-15:15','15:15-15:30',
+          '15:30-15:45','15:45-16:00','16:00-16:15','16:15-16:30','16:30-16:45','16:45-17:00',
+          '17:00-17:15','17:15-17:30','17:30-17:45','17:45-18:00','18:00-18:15','18:15-18:30',
+          '18:30-18:45','18:45-19:00','19:00-19:15','19:15-19:30','19:30-19:45','19:45-20:00',
+          '20:00-20:15','20:15-20:30','20:30-20:45','20:45-21:00','21:00-21:15','21:15-21:30',
+          '21:30-21:45','21:45-22:00','22:00-22:15','22:15-22:30','22:30-22:45','22:45-23:00',
+          '23:00-23:15','23:15-23:30','23:30-23:45','23:45-24:00',
         ],
         '心情': [
           '开心','超开心','开心到飞起','乐开花','美滋滋','甜滋滋',
@@ -18095,12 +18101,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       };
       function _zkMergeTopBarDefaults() {
         try {
-          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v2')) return;
+          if (typeof localStorage === 'undefined' || localStorage.getItem('zk_topbar_migrated_v3')) return;
           if (!cardData.topBar || typeof cardData.topBar !== 'object') cardData.topBar = {};
           Object.keys(TOPBAR100).forEach(function (cat) {
             var cur = cardData.topBar[cat];
             if (!Array.isArray(cur)) cur = [];
-            var isLegacyTime = cat === '时间' && cur.length > 0 && cur.every(function (x) { return /^\d{1,2}:\d{2}$/.test(String((x && x.name) || x)); });
+            var isLegacyTime = cat === '时间' && cur.length > 0 && cur.every(function (x) { var n = String((x && x.name) || x); return /^\d{1,2}:\d{2}$/.test(n) || /^[\u4e00-\u9fa5]{1,6}$/.test(n); });
             if (isLegacyTime) cur = [];
             var have = {};
             cur.forEach(function (x) { have[String((x && x.name) || x)] = true; });
@@ -18110,7 +18116,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             cardData.topBar[cat] = cur;
           });
           saveCardDataNow();
-          localStorage.setItem('zk_topbar_migrated_v2', '1');
+          localStorage.setItem('zk_topbar_migrated_v3', '1');
         } catch (e) {}
       }
 
