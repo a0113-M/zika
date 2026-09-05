@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="318";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="319";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v318</title>
+  <title>字卡 · 小手机 v319</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7617,6 +7617,7 @@
     .tg-media-input:focus { outline: none; border-color: var(--primary); }
     textarea.tg-media-input { min-height: 130px; resize: vertical; line-height: 1.7; }
     .tg-media-tip { font-size: 11px; color: var(--text-muted); line-height: 1.6; margin: -2px 2px 10px; }
+    .tg-file-link { color: var(--primary-strong); font-weight: 700; cursor: pointer; text-decoration: underline; }
     /* 一起：导入工作台面板 & 导入记录 */
     .tg-panel-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .tg-panel-title { flex: 1 1 auto; font-size: 15px; font-weight: 700; color: var(--text-main); }
@@ -21610,7 +21611,44 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var bd = document.getElementById('tgPanelInput');
         if (_tgPanelKey === 'book') {
           bd.innerHTML = '<input class="tg-media-input" id="tgPanelInTitle" placeholder="标题（选填）">' +
-            '<textarea class="tg-media-input" id="tgPanelInText" placeholder="粘贴小说 / 文章文本…"></textarea>';
+            '<textarea class="tg-media-input" id="tgPanelInText" placeholder="粘贴小说 / 文章文本…"></textarea>' +
+            '<div class="tg-media-tip">粘贴，或 <span class="tg-file-link" id="tgPanelFileLink">导入 .txt 文件</span>（超 1MB 请拆分后分篇导入）</div>' +
+            '<input type="file" id="tgPanelFileInp" accept=".txt,.md,text/plain" style="display:none">';
+          var _flink = document.getElementById('tgPanelFileLink');
+          var _finp = document.getElementById('tgPanelFileInp');
+          if (_flink && _finp) {
+            _flink.addEventListener('click', function () { _finp.click(); });
+            _finp.addEventListener('change', function () {
+              var f = _finp.files && _finp.files[0];
+              if (!f) return;
+              if (f.size > 1024 * 1024) { showToast('文件太大（超1MB），请拆分后分篇导入'); _finp.value = ''; return; }
+              var rd = new FileReader();
+              rd.onload = function () {
+                var buf = rd.result, txt = '';
+                try { txt = new TextDecoder('utf-8').decode(buf); } catch (e) { txt = ''; }
+                if (txt) {
+                  var bad = 0;
+                  for (var i = 0; i < txt.length; i++) { if (txt.charCodeAt(i) === 0xFFFD) bad++; }
+                  if (bad > txt.length * 0.01) {
+                    try { txt = new TextDecoder('gbk').decode(buf); } catch (e) {}
+                  }
+                }
+                txt = txt.replace(/^\uFEFF/, '');
+                var ta = document.getElementById('tgPanelInText');
+                if (ta && txt) {
+                  ta.value = txt;
+                  var ti = document.getElementById('tgPanelInTitle');
+                  if (ti && !ti.value.trim()) ti.value = f.name.replace(/\.(txt|md|text)$/i, '');
+                  showToast('已导入：' + f.name);
+                } else {
+                  showToast('读取失败，换一个文件试试');
+                }
+                _finp.value = '';
+              };
+              rd.onerror = function () { showToast('读取失败，换一个文件试试'); _finp.value = ''; };
+              rd.readAsArrayBuffer(f);
+            });
+          }
         } else {
           bd.innerHTML = '<input class="tg-media-input" id="tgPanelInUrl" placeholder="粘贴链接…">' +
             '<input class="tg-media-input" id="tgPanelInTitle" placeholder="标题（选填）">' +
