@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="333";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="334";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v333</title>
+  <title>字卡 · 小手机 v334</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21173,6 +21173,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (opt) {
           if (opt.inviteEndAt) o.inviteEndAt = opt.inviteEndAt;
           if (opt.joinAt) o.joinAt = opt.joinAt;
+          if (opt.media) o.media = opt.media;
         }
         _tgActive = o;
         _tgSaveActive(_tgActive);
@@ -21760,13 +21761,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           row.addEventListener('click', function () {
             var rec = hist[parseInt(row.dataset.i, 10)];
             if (!rec) return;
-            var pp = null;
-            try { pp = _tgParseMediaUrl(_tgSoloKey, rec.url || ''); } catch (eP) {}
-            var media = { type: (rec.type === 'movie' ? 'video' : 'music'), url: rec.url, kind: pp ? pp.kind : (rec.kind || 'iframe'), title: rec.title };
-            _tgSoloClose();
-            var _c0 = contacts.filter(function (x) { return x.id === _tgCurrentId && !x.isGroup; })[0] || contacts.filter(function (x) { return !x.isGroup; })[0];
-            if (!_c0) { _tgSoloPlay(media); return; }
-            _tgHeroStartMedia(_tgSoloKey, _c0, media);
+            var urlIn = document.getElementById('tgSoloInUrl');
+            var titleIn = document.getElementById('tgSoloInTitle');
+            if (urlIn) urlIn.value = rec.url || '';
+            if (titleIn) titleIn.value = rec.title || '';
+            showToast('已选中，点下面按钮开始');
           });
         });
       }
@@ -21832,7 +21831,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var media = { type: (_tgSoloKey === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
         _tgAddImportHist({ type: _tgSoloKey, url: pp.url, kind: pp.kind, title: media.title, contactId: '', contactName: '', ts: Date.now() });
         _tgSoloClose();
-        _tgSoloPlay(media);
+        var _c0w = contacts.filter(function (x) { return x.id === _tgCurrentId && !x.isGroup; })[0] || contacts.filter(function (x) { return !x.isGroup; })[0];
+        if (!_c0w) { _tgSoloPlay(media); return; }
+        _tgHeroStartMedia(_tgSoloKey, _c0w, media, true, true);
       }
       function _tgSoloPlay(m) {
         var lay = document.getElementById('tgSoloMedia');
@@ -22771,13 +22772,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         };
       }
 
-      function _tgHeroStartMedia(key, c, media, invited) {
+      function _tgHeroStartMedia(key, c, media, invited, early) {
         _tgSelKey = key; _tgCurrentId = c.id;
         _tgReadNext = (media.type === 'read');
-        _tgStartTogether(invited === false ? false : true);
+        _tgStartTogether(invited === false ? false : true, early ? { media: media } : null);
         if (!_tgActive) { _tgReadNext = false; return; }
-        _tgActive.media = media;
-        _tgSaveActive(_tgActive);
+        if (!early) {
+          _tgActive.media = media;
+          _tgSaveActive(_tgActive);
+        }
         if (_tgReadNext) { _tgReadNext = false; setTimeout(function () { try { _tgRFOpen(media.tkey, media.title); } catch (e9) {} }, 650); }
         var verb = media.type === 'video' ? '看' : (media.type === 'read' ? '读' : '听');
         _tgLogLive('你挑了「' + (media.title || TG_HERO_META[key].name) + '」，和 ' + _tgActive.contactName + ' 一起' + verb);
