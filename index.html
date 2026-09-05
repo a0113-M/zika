@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="311";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="312";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v311</title>
+  <title>字卡 · 小手机 v312</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7687,6 +7687,19 @@
     .tmf-appdesc { font-size: 11.5px; color: #999; }
     .tmf-appbtn { margin-top: 4px; padding: 8px 20px; border: none; border-radius: 16px; background: var(--primary, #7c5ef2); color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer; }
     .tg-lv-switch { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 7; padding: 7px 14px; border-radius: 99px; background: rgba(0,0,0,.45); color: rgba(255,255,255,.88); font-size: 11px; cursor: pointer; white-space: nowrap; }
+
+    /* === v312 陪同模式布局（图二样式+收起日志+聊天区） === */
+    .tg-live-app .acd-logbox { flex: 0 0 auto; max-height: 80px; overflow: hidden; justify-content: flex-end; cursor: pointer; transition: max-height .25s; }
+    .tg-live-app .acd-logbox.tg-logopen { flex: 1 1 0; max-height: none; justify-content: flex-start; overflow-y: auto; }
+    .tg-log-arrow { font-weight: 400; font-style: normal; color: rgba(255,255,255,.55); margin-left: 6px; display: inline-block; transition: transform .25s; }
+    .tg-live-app .acd-logbox.tg-logopen .tg-log-arrow { transform: rotate(180deg); }
+    .tg-app-chat { display: none; flex: 0 0 auto; align-items: center; gap: 8px; margin: 8px 12px 0; padding: 9px 12px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.16); border-radius: 20px; }
+    .tg-live-app .tg-app-chat { display: flex; }
+    .tg-app-chat input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: #fff; font-size: 13px; }
+    .tg-app-chat input::placeholder { color: rgba(255,255,255,.45); }
+    .tg-app-chat button { flex: 0 0 auto; border: none; border-radius: 99px; padding: 6px 14px; background: linear-gradient(135deg, #7a6bc4, #9a8ad8); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; }
+    .tg-app-gobtn { display: none; padding: 3px 10px; border: none; border-radius: 99px; background: rgba(255,255,255,.16); color: #fff; font-size: 10.5px; cursor: pointer; }
+    .tg-live-app .tg-app-gobtn { display: inline-block; }
     .tmf-switch { position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); z-index: 3; padding: 5px 12px; border-radius: 99px; background: rgba(0,0,0,.42); color: rgba(255,255,255,.88); font-size: 10.5px; cursor: pointer; white-space: nowrap; }
 
     /* === 数据统计页面 === */
@@ -14418,6 +14431,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div class="acd-meta">
               <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l4 4L8 20l-5 1 1-5z"/></svg><i id="tgLiveTag" style="font-style:normal;"></i></span>
               <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg><i id="tgStartTime" style="font-style:normal;"></i></span>
+              <button type="button" class="tg-app-gobtn" id="tgAppGoBtn">跳到 App</button>
             </div>
           </div>
           <div class="tg-lv-box" id="tgLiveVideoBox" data-media-key="">
@@ -14437,9 +14451,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               </div>
             </div>
           </div>
-          <div class="acd-logbox">
-            <div class="acd-log-title">陪伴时光</div>
+          <div class="acd-logbox" id="tgLogBox">
+            <div class="acd-log-title" id="tgLogTitle">陪伴时光<b class="tg-log-arrow" id="tgLogArrow">&#9662;</b></div>
             <div class="acd-log-list" id="tgLogList"></div>
+          </div>
+          <div class="tg-app-chat" id="tgAppChat">
+            <input id="tgAppChatIn" placeholder="和 TA 聊聊…" maxlength="60">
+            <button type="button" id="tgAppChatSend">发送</button>
           </div>
           <button class="acd-end" id="tgEndBtn2">结束陪伴</button>
         </div>
@@ -21035,8 +21053,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (a.paused) { if (ip) ip.style.display = 'none'; if (iy) iy.style.display = 'block'; }
         else { if (ip) ip.style.display = 'block'; if (iy) iy.style.display = 'none'; }
         _tgRenderLiveLogs();
-        var isVid = !!(a.media && a.media.type === 'video');
+        var isApp = !!(a.media && a.media.type === 'video' && a.media.kind === 'app');
+        var isVid = !!(a.media && a.media.type === 'video' && a.media.kind !== 'app');
         live.classList.toggle('tg-live-video', isVid);
+        live.classList.toggle('tg-live-app', isApp);
         var lvBox = document.getElementById('tgLiveVideoBox');
         if (lvBox) lvBox.classList.remove('full');
         if (isVid) _tgLiveVideoRender(a.media);
@@ -21260,6 +21280,21 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgLiveVideoRender(_tgActive.media);
         _tgMediaEnsure();
         showToast('已切到陪同模式，可以跳到 App 看正片');
+      }
+      var TG_CHAT_REPLY = ['嗯嗯我在看', '哈哈哈这段太搞了', '你看到第几集了？', '别急马上到高能了', '这段配乐绝了', '等等我先截个图', '主角这波操作太帅了', '进度和我一样诶', '最后十分钟别快进', '看完一起聊聊结局'];
+      function _tgAppChatSend() {
+        var inp = document.getElementById('tgAppChatIn');
+        if (!inp || !_tgActive) return;
+        var t = (inp.value || '').trim();
+        if (!t) return;
+        inp.value = '';
+        _tgLogLive('你：' + t, true);
+        if (Math.random() < 0.8) {
+          setTimeout(function () {
+            if (!_tgActive) return;
+            _tgLogLive(_tgActive.contactName + '：' + TG_CHAT_REPLY[Math.floor(Math.random() * TG_CHAT_REPLY.length)]);
+          }, 1500 + Math.floor(Math.random() * 2800));
+        }
       }
       function _tgUserDmSend() {
         var inp = document.getElementById('tgDmInput');
@@ -21640,6 +21675,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var verb = media.type === 'video' ? '看' : (media.type === 'read' ? '读' : '听');
         _tgLogLive('你挑了「' + (media.title || TG_HERO_META[key].name) + '」，和 ' + _tgActive.contactName + ' 一起' + verb);
         _tgMediaEnsure();
+        if (media.type === 'video' && media.kind === 'app') {
+          showToast('马上跳到 App 一起看…');
+          setTimeout(function () { try { window.location.href = media.url; } catch (e) {} }, 700);
+        }
       }
       function _tgMediaEnsure() {
         var fl = document.getElementById('tgMediaFloat');
@@ -21753,6 +21792,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgTick();
       });
       document.getElementById('tgEndBtn2').addEventListener('click', function () { _tgEndTogether(false); });
+      var _tgLogBoxEl = document.getElementById('tgLogBox');
+      var _tgLogTitleEl = document.getElementById('tgLogTitle');
+      if (_tgLogBoxEl) _tgLogBoxEl.addEventListener('click', function () { if (!_tgLogBoxEl.classList.contains('tg-logopen')) _tgLogBoxEl.classList.add('tg-logopen'); });
+      if (_tgLogTitleEl) _tgLogTitleEl.addEventListener('click', function (e) { e.stopPropagation(); if (_tgLogBoxEl) _tgLogBoxEl.classList.remove('tg-logopen'); });
+      var _tgAppChatSendBtn = document.getElementById('tgAppChatSend');
+      if (_tgAppChatSendBtn) _tgAppChatSendBtn.addEventListener('click', _tgAppChatSend);
+      var _tgAppChatInp = document.getElementById('tgAppChatIn');
+      if (_tgAppChatInp) _tgAppChatInp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); _tgAppChatSend(); } });
+      var _tgAppGoBtn = document.getElementById('tgAppGoBtn');
+      if (_tgAppGoBtn) _tgAppGoBtn.addEventListener('click', function () { if (_tgActive && _tgActive.media && _tgActive.media.kind === 'app') { try { window.location.href = _tgActive.media.url; } catch (e) {} } });
 
       // ----- 个人信息 -----
 
