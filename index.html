@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="329";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="330";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v329</title>
+  <title>字卡 · 小手机 v330</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21754,8 +21754,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           row.addEventListener('click', function () {
             var rec = hist[parseInt(row.dataset.i, 10)];
             if (!rec) return;
+            var pp = null;
+            try { pp = _tgParseMediaUrl(_tgSoloKey, rec.url || ''); } catch (eP) {}
+            var media = { type: (rec.type === 'movie' ? 'video' : 'music'), url: rec.url, kind: pp ? pp.kind : (rec.kind || 'iframe'), title: rec.title };
             _tgSoloClose();
-            _tgSoloPlay({ type: rec.type === 'movie' ? 'video' : 'music', url: rec.url, kind: rec.kind || 'iframe', title: rec.title });
+            var _c0 = contacts.filter(function (x) { return x.id === _tgCurrentId && !x.isGroup; })[0] || contacts.filter(function (x) { return !x.isGroup; })[0];
+            if (!_c0) { _tgSoloPlay(media); return; }
+            _tgHeroStartMedia(_tgSoloKey, _c0, media);
           });
         });
       }
