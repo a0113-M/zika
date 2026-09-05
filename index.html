@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="319";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="320";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v319</title>
+  <title>字卡 · 小手机 v320</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21606,14 +21606,144 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           });
         });
       }
+      var _tgPanelFilePend = null;
+      function _tgBookDB() {
+        return new Promise(function (res) {
+          if (!window.indexedDB) { res(null); return; }
+          try {
+            var rq = indexedDB.open('zk_tg_books', 1);
+            rq.onupgradeneeded = function () { try { rq.result.createObjectStore('books'); } catch (e) {} };
+            rq.onsuccess = function () { res(rq.result); };
+            rq.onerror = function () { res(null); };
+            rq.onblocked = function () { res(null); };
+          } catch (e) { res(null); }
+        });
+      }
+      function _tgBookPut(key, txt) {
+        return _tgBookDB().then(function (db) {
+          if (!db) return false;
+          return new Promise(function (res) {
+            try {
+              var tx = db.transaction('books', 'readwrite');
+              tx.objectStore('books').put(txt, key);
+              tx.oncomplete = function () { res(true); };
+              tx.onerror = function () { res(false); };
+              tx.onabort = function () { res(false); };
+            } catch (e) { res(false); }
+          });
+        });
+      }
+      function _tgBookGet(key) {
+        return _tgBookDB().then(function (db) {
+          if (!db) return '';
+          return new Promise(function (res) {
+            try {
+              var rq = db.transaction('books').objectStore('books').get(key);
+              rq.onsuccess = function () { res(rq.result || ''); };
+              rq.onerror = function () { res(''); };
+            } catch (e) { res(''); }
+          });
+        });
+      }
+      function _tgBookLoad(tkey) {
+        var loc = '';
+        try { loc = localStorage.getItem(tkey) || ''; } catch (e) {}
+        if (loc) return Promise.resolve(loc);
+        return _tgBookGet(tkey);
+      }
+      function _tgBookStore(txt) {
+        var tk = 'zk_tg_book_' + Date.now();
+        return _tgBookPut(tk, txt).then(function (ok) {
+          if (ok) return tk;
+          try { localStorage.setItem(tk, txt); return tk; } catch (e) { return null; }
+        });
+      }
+      function _tgDecodeTxt(buf) {
+        try {
+          var u8 = new Uint8Array(buf);
+          if (u8.length > 1 && u8[0] === 0xFF && u8[1] === 0xFE) {
+            try { return new TextDecoder('utf-16le').decode(u8.slice(2)); } catch (e) {}
+          }
+          if (u8.length > 1 && u8[0] === 0xFE && u8[1] === 0xFF) {
+            try { return new TextDecoder('utf-16be').decode(u8.slice(2)); } catch (e) {}
+          }
+          if (u8.length > 2 && u8[0] === 0xEF && u8[1] === 0xBB && u8[2] === 0xBF) {
+            return new TextDecoder('utf-8').decode(u8.slice(3));
+          }
+          var utf8 = new TextDecoder('utf-8').decode(u8);
+          var bad = 0, n = Math.min(utf8.length, 20000);
+          for (var i = 0; i < n; i++) { if (utf8.charCodeAt(i) === 0xFFFD) bad++; }
+          if (bad > n * 0.005) {
+            try {
+              var gbk = new TextDecoder('gbk').decode(u8);
+              var bad2 = 0, m2 = Math.min(gbk.length, 20000);
+              for (var j = 0; j < m2; j++) { if (gbk.charCodeAt(j) === 0xFFFD) bad2++; }
+              if (bad2 <= bad) return gbk;
+            } catch (e2) {}
+          }
+          return utf8;
+        } catch (e) { return ''; }
+      }
+      function _tgInflateRaw(u8) {
+        if (!window.DecompressionStream) return Promise.reject(new Error('no inflate'));
+        try {
+          var ds = new DecompressionStream('deflate-raw');
+          var st = new Blob([u8]).stream().pipeThrough(ds);
+          return new Response(st).arrayBuffer().then(function (ab) { return new TextDecoder('utf-8').decode(ab); });
+        } catch (e) { return Promise.reject(e); }
+      }
+      function _tgDocxText(buf) {
+        return new Promise(function (res, rej) {
+          try {
+            var u8 = new Uint8Array(buf), i, eocd = -1;
+            for (i = u8.length - 22; i >= 0 && i > u8.length - 66000; i--) {
+              if (u8[i] === 0x50 && u8[i + 1] === 0x4B && u8[i + 2] === 0x05 && u8[i + 3] === 0x06) { eocd = i; break; }
+            }
+            if (eocd < 0) { rej(new Error('no zip')); return; }
+            var cnt = u8[eocd + 10] | (u8[eocd + 11] << 8);
+            var cdoff = ((u8[eocd + 16]) | (u8[eocd + 17] << 8) | (u8[eocd + 18] << 16) | (u8[eocd + 19] << 24)) >>> 0;
+            var p2 = cdoff, found = null;
+            for (var k = 0; k < cnt && p2 + 46 <= u8.length; k++) {
+              if (!(u8[p2] === 0x50 && u8[p2 + 1] === 0x4B && u8[p2 + 2] === 0x01 && u8[p2 + 3] === 0x02)) break;
+              var method = u8[p2 + 10] | (u8[p2 + 11] << 8);
+              var csize = (u8[p2 + 20]) | (u8[p2 + 21] << 8) | (u8[p2 + 22] << 16) | (u8[p2 + 23] << 24);
+              var nameLen = u8[p2 + 28] | (u8[p2 + 29] << 8);
+              var extraLen = u8[p2 + 30] | (u8[p2 + 31] << 8);
+              var cmtLen = u8[p2 + 32] | (u8[p2 + 33] << 8);
+              var loff = ((u8[p2 + 42]) | (u8[p2 + 43] << 8) | (u8[p2 + 44] << 16) | (u8[p2 + 45] << 24)) >>> 0;
+              var name = '';
+              for (var q = 0; q < nameLen; q++) name += String.fromCharCode(u8[p2 + 46 + q]);
+              if (name === 'word/document.xml') { found = { method: method, csize: csize, loff: loff }; break; }
+              p2 += 46 + nameLen + extraLen + cmtLen;
+            }
+            if (!found) { rej(new Error('no xml')); return; }
+            var lp = found.loff;
+            var lNameLen = u8[lp + 26] | (u8[lp + 27] << 8);
+            var lExtraLen = u8[lp + 28] | (u8[lp + 29] << 8);
+            var dStart = lp + 30 + lNameLen + lExtraLen;
+            var data = u8.slice(dStart, dStart + found.csize);
+            var after = function (xml) {
+              xml = String(xml || '')
+                .replace(/<w:tab[^>]*>/g, ' ')
+                .replace(/<\/w:p>/g, '\n')
+                .replace(/<[^>]+>/g, '')
+                .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+              res(xml);
+            };
+            if (found.method === 0) { after(new TextDecoder('utf-8').decode(data)); }
+            else { _tgInflateRaw(data).then(after, function () { rej(new Error('inflate fail')); }); }
+          } catch (e) { rej(e); }
+        });
+      }
       function _tgPanelRenderInput() {
         var m = TG_HERO_META[_tgPanelKey];
         var bd = document.getElementById('tgPanelInput');
         if (_tgPanelKey === 'book') {
+          _tgPanelFilePend = null;
           bd.innerHTML = '<input class="tg-media-input" id="tgPanelInTitle" placeholder="标题（选填）">' +
-            '<textarea class="tg-media-input" id="tgPanelInText" placeholder="粘贴小说 / 文章文本…"></textarea>' +
-            '<div class="tg-media-tip">粘贴，或 <span class="tg-file-link" id="tgPanelFileLink">导入 .txt 文件</span>（超 1MB 请拆分后分篇导入）</div>' +
-            '<input type="file" id="tgPanelFileInp" accept=".txt,.md,text/plain" style="display:none">';
+            '<textarea class="tg-media-input" id="tgPanelInText" placeholder="粘贴小说 / 文章文本，或点下面导入文件…"></textarea>' +
+            '<div class="tg-media-tip">粘贴，或 <span class="tg-file-link" id="tgPanelFileLink">导入 txt / docx 文件</span>（整本书也行，最大 30MB）</div>' +
+            '<input type="file" id="tgPanelFileInp" accept=".txt,.md,.docx,text/plain" style="display:none">';
           var _flink = document.getElementById('tgPanelFileLink');
           var _finp = document.getElementById('tgPanelFileInp');
           if (_flink && _finp) {
@@ -21621,29 +21751,33 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             _finp.addEventListener('change', function () {
               var f = _finp.files && _finp.files[0];
               if (!f) return;
-              if (f.size > 1024 * 1024) { showToast('文件太大（超1MB），请拆分后分篇导入'); _finp.value = ''; return; }
+              var fname = f.name || '文件';
+              var lower = fname.toLowerCase();
+              if (f.size > 30 * 1024 * 1024) { showToast('文件超过 30MB 了，先拆分一下'); _finp.value = ''; return; }
+              if (/\.pdf$|\.epub$|\.doc$|\.xls/.test(lower)) { showToast('暂只支持 txt / md / docx，这个格式转换一下再导入'); _finp.value = ''; return; }
               var rd = new FileReader();
               rd.onload = function () {
-                var buf = rd.result, txt = '';
-                try { txt = new TextDecoder('utf-8').decode(buf); } catch (e) { txt = ''; }
-                if (txt) {
-                  var bad = 0;
-                  for (var i = 0; i < txt.length; i++) { if (txt.charCodeAt(i) === 0xFFFD) bad++; }
-                  if (bad > txt.length * 0.01) {
-                    try { txt = new TextDecoder('gbk').decode(buf); } catch (e) {}
-                  }
-                }
-                txt = txt.replace(/^\uFEFF/, '');
-                var ta = document.getElementById('tgPanelInText');
-                if (ta && txt) {
-                  ta.value = txt;
-                  var ti = document.getElementById('tgPanelInTitle');
-                  if (ti && !ti.value.trim()) ti.value = f.name.replace(/\.(txt|md|text)$/i, '');
-                  showToast('已导入：' + f.name);
+                var done = function (txt) {
+                  txt = (txt || '').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trim();
+                  if (!txt) { showToast('没读出内容，换个文件试试'); _finp.value = ''; return; }
+                  var tk = 'zk_tg_book_' + Date.now();
+                  _tgBookPut(tk, txt).then(function (ok) {
+                    if (!ok) { showToast('存储失败，文件太大或浏览器不允许'); _finp.value = ''; return; }
+                    var nice = fname.replace(/\.(txt|md|text|docx)$/i, '');
+                    _tgPanelFilePend = { tk: tk, title: nice, hint: '已导入《' + nice + '》共 ' + txt.length + ' 字，点下方按钮开始' };
+                    var ta = document.getElementById('tgPanelInText');
+                    if (ta) ta.value = _tgPanelFilePend.hint;
+                    var ti = document.getElementById('tgPanelInTitle');
+                    if (ti && !ti.value.trim()) ti.value = nice;
+                    showToast('已导入：' + fname);
+                    _finp.value = '';
+                  });
+                };
+                if (/\.docx$/.test(lower)) {
+                  _tgDocxText(rd.result).then(done, function () { showToast('这个 docx 解不开，另存为 txt 试试'); _finp.value = ''; });
                 } else {
-                  showToast('读取失败，换一个文件试试');
+                  done(_tgDecodeTxt(rd.result));
                 }
-                _finp.value = '';
               };
               rd.onerror = function () { showToast('读取失败，换一个文件试试'); _finp.value = ''; };
               rd.readAsArrayBuffer(f);
@@ -21675,10 +21809,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var c = contacts.filter(function (x) { return x.id === rec.contactId; })[0];
         if (!c) { showToast('这个联系人不在了，换一个吧'); return; }
         if (rec.type === 'book') {
-          if (!(rec.tkey && localStorage.getItem(rec.tkey))) { showToast('文本找不到了，重新粘贴一份吧'); _tgPanelRenderHist(); return; }
-          var media0 = { type: 'read', title: rec.title, tkey: rec.tkey };
-          _tgCloseHeroPanel();
-          _tgHeroStartMedia('book', c, media0);
+          _tgBookLoad(rec.tkey).then(function (t0) {
+            if (!t0) { showToast('文本找不到了，重新导入一份吧'); _tgPanelRenderHist(); return; }
+            var media0 = { type: 'read', title: rec.title, tkey: rec.tkey };
+            _tgCloseHeroPanel();
+            _tgHeroStartMedia('book', c, media0);
+          });
           return;
         }
         var media = { type: rec.type === 'movie' ? 'video' : 'music', url: rec.url, kind: rec.kind || 'iframe', title: rec.title };
@@ -21690,22 +21826,36 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var c = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
         if (!c) { showToast('先选一个联系人'); return; }
         var title = (document.getElementById('tgPanelInTitle').value || '').trim();
-        var media = null, rec = null;
         if (key === 'book') {
-          var txt = (document.getElementById('tgPanelInText').value || '').trim();
-          if (!txt) { showToast('先粘贴文本内容'); return; }
-          var tk = 'zk_tg_book_' + Date.now();
-          try { localStorage.setItem(tk, txt); } catch (e) { showToast('文本太长，存不下了'); return; }
-          media = { type: 'read', title: title || '一起读的文章', tkey: tk };
-          rec = { type: 'book', tkey: tk, title: media.title, contactId: c.id, contactName: c.name, ts: Date.now() };
-        } else {
-          var url = (document.getElementById('tgPanelInUrl').value || '').trim();
-          if (!url) { showToast('先粘贴链接，或点下面的过往记录'); return; }
-          var pp = _tgParseMediaUrl(key, url);
-          if (!pp) return;
-          media = { type: (key === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
-          rec = { type: key, url: pp.url, kind: pp.kind, title: media.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+          var pend = _tgPanelFilePend;
+          var taP = document.getElementById('tgPanelInText');
+          var txtP = taP ? (taP.value || '').trim() : '';
+          if (pend && txtP === pend.hint) {
+            var mediaP = { type: 'read', title: title || pend.title || '一起读的文章', tkey: pend.tk };
+            var recP = { type: 'book', tkey: pend.tk, title: mediaP.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+            _tgPanelFilePend = null;
+            _tgAddImportHist(recP);
+            _tgCloseHeroPanel();
+            _tgHeroStartMedia(key, c, mediaP);
+            return;
+          }
+          if (!txtP) { showToast('先粘贴文本，或导入 txt / docx 文件'); return; }
+          _tgBookStore(txtP).then(function (tk) {
+            if (!tk) { showToast('文本太长，存不下了'); return; }
+            var media2 = { type: 'read', title: title || '一起读的文章', tkey: tk };
+            var rec2 = { type: 'book', tkey: tk, title: media2.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+            _tgAddImportHist(rec2);
+            _tgCloseHeroPanel();
+            _tgHeroStartMedia(key, c, media2);
+          });
+          return;
         }
+        var url = (document.getElementById('tgPanelInUrl').value || '').trim();
+        if (!url) { showToast('先粘贴链接，或点下面的过往记录'); return; }
+        var pp = _tgParseMediaUrl(key, url);
+        if (!pp) return;
+        var media = { type: (key === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
+        var rec = { type: key, url: pp.url, kind: pp.kind, title: media.title, contactId: c.id, contactName: c.name, ts: Date.now() };
         _tgAddImportHist(rec);
         _tgCloseHeroPanel();
         _tgHeroStartMedia(key, c, media);
@@ -21719,12 +21869,23 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var titleEl = document.getElementById('tgPanelInTitle');
         var title = titleEl ? (titleEl.value || '').trim() : '';
         if (key === 'book') {
+          var pendI = _tgPanelFilePend;
           var txtEl = document.getElementById('tgPanelInText');
           var txt = txtEl ? (txtEl.value || '').trim() : '';
-          if (txt) {
-            var tk = 'zk_tg_book_' + Date.now();
-            try { localStorage.setItem(tk, txt); } catch (e) { showToast('文本太长，存不下了'); return; }
-            _tgInviteMedia = { type: 'read', title: title || '一起读的文章', tkey: tk };
+          if (pendI && txt === pendI.hint) {
+            _tgPanelFilePend = null;
+            _tgInviteMedia = { type: 'read', title: title || pendI.title || '一起读的文章', tkey: pendI.tk };
+          } else if (txt) {
+            _tgBookStore(txt).then(function (tk) {
+              if (!tk) { showToast('文本太长，存不下了'); return; }
+              _tgInviteMedia = { type: 'read', title: title || '一起读的文章', tkey: tk };
+              var rec2 = { type: 'book', tkey: tk, title: _tgInviteMedia.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+              _tgAddImportHist(rec2);
+              _tgCloseHeroPanel();
+              _tgCurrentId = c.id;
+              _tgOpenInviteCard(c, act);
+            });
+            return;
           }
         } else {
           var urlEl = document.getElementById('tgPanelInUrl');
@@ -21826,8 +21987,35 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe tmf-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
           else body.innerHTML = '<div class="tmf-music"><div class="tmf-mname">' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
         } else {
-          var txt = m.tkey ? (localStorage.getItem(m.tkey) || '') : (m.text || '');
-          body.innerHTML = '<div class="tmf-reader">' + (txt.split('\n').map(function (x) { return _tgEsc(x) || '<br>'; }).join('\n')) + '</div>';
+          var _readFill = function (t) {
+            var lines = String(t || '').split('\n');
+            body.innerHTML = '<div class="tmf-reader"></div>';
+            var rd = body.querySelector('.tmf-reader');
+            var idx = 0;
+            body._readInf = null;
+            var more = function () {
+              if (idx >= lines.length) return;
+              var end = Math.min(idx + 2000, lines.length);
+              var d = document.createElement('div');
+              d.textContent = lines.slice(idx, end).join('\n');
+              rd.appendChild(d);
+              idx = end;
+            };
+            more();
+            if (lines.length > 2500) {
+              body._readInf = more;
+              if (!body.dataset.readInf) {
+                body.dataset.readInf = '1';
+                body.addEventListener('scroll', function () {
+                  if (body._readInf && body.scrollTop + body.clientHeight > body.scrollHeight - 400) body._readInf();
+                });
+              }
+            }
+            body.scrollTop = 0;
+          };
+          if (m.tkey) { _tgBookLoad(m.tkey).then(function (t) { _readFill(t); }); }
+          else { _readFill(m.text || ''); }
+          return;
         }
         body.scrollTop = 0;
       }
