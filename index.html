@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="337";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="338";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v337</title>
+  <title>字卡 · 小手机 v338</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7566,6 +7566,16 @@
     .tg-actcard { position: relative; }
     .tg-act-del { position: absolute; top: 3px; right: 3px; width: 20px; height: 20px; border: none; border-radius: 50%; background: rgba(var(--primary-rgba), 0.10); color: var(--text-muted); font-size: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
     .tg-act-del:active { background: rgba(var(--primary-rgba), 0.26); color: var(--primary); }
+    .tg-act-del { opacity: 0; pointer-events: none; transition: opacity .15s; }
+    .tg-actcard.del-open .tg-act-del { opacity: 1; pointer-events: auto; }
+    .tg-del-confirm { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30,25,50,0.5); display: flex; align-items: center; justify-content: center; z-index: 400; }
+    .tg-del-confirm-box { width: 272px; background: #fff; border-radius: 18px; padding: 24px 18px 18px; text-align: center; box-shadow: 0 14px 36px rgba(30,25,50,0.32); animation: popUp .18s ease; }
+    .tg-del-confirm-box .t { font-size: 15px; color: #333; margin-bottom: 6px; line-height: 1.55; }
+    .tg-del-confirm-box .s { font-size: 12px; color: #aaa; margin-bottom: 18px; }
+    .tg-del-confirm-btns { display: flex; gap: 10px; }
+    .tg-del-confirm-btns button { flex: 1; padding: 10px 0; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .tg-del-confirm-btns .cancel { background: #f0f0f0; color: #666; }
+    .tg-del-confirm-btns .ok { background: #e53935; color: #fff; }
     .tg-active { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 16px; padding: 22px 18px; color: #fff; margin-bottom: 16px; box-shadow: 0 6px 18px rgba(var(--primary-rgba), 0.38); text-align: center; }
     .tg-big-emoji { color: #fff; margin-bottom: 10px; }
     .tg-big-emoji .tg-ico { width: 48px; height: 48px; margin: 0 auto; }
@@ -7651,6 +7661,8 @@
     .tg-hrec-arrow { flex: 0 0 auto; color: var(--text-muted); font-size: 18px; }
     .tg-hrec-del { flex: 0 0 auto; width: 24px; height: 24px; border: none; border-radius: 50%; background: rgba(var(--primary-rgba), 0.08); color: var(--text-muted); font-size: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; margin: 0 2px; }
     .tg-hrec-del:active { background: rgba(var(--primary-rgba), 0.22); color: var(--primary); }
+    .tg-hrec-del { opacity: 0; pointer-events: none; transition: opacity .15s; }
+    .tg-hrec.del-open .tg-hrec-del { opacity: 1; pointer-events: auto; }
     .tg-hempty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 18px 8px; line-height: 1.7; }
     .tg-hrec.sel { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.1); box-shadow: inset 0 0 0 1px var(--primary); }
     .tg-solo-import { display: block; width: 100%; border: 1.5px dashed rgba(var(--primary-rgba), 0.55); background: transparent; color: var(--primary); font-size: 14px; font-weight: 600; padding: 11px; border-radius: 14px; margin-top: 2px; cursor: pointer; letter-spacing: 1px; }
@@ -20598,14 +20610,61 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       function _tgSaveCustom(a) {
         try { localStorage.setItem('zk_together_custom', JSON.stringify(a)); } catch (e) {}
-
-      function _tgDelCustom(key) {
-        var cs = _tgGetCustom().filter(function (x) { return x.key !== key; });
-        _tgSaveCustom(cs);
+      }
+      function _tgGetDelActs() {
+        try { var a = JSON.parse(localStorage.getItem('zk_together_del_acts') || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; }
+      }
+      function _tgSaveDelActs(a) {
+        try { localStorage.setItem('zk_together_del_acts', JSON.stringify(a)); } catch (e) {}
+      }
+      function _tgDelAct(key, isCustom) {
+        if (isCustom) {
+          _tgSaveCustom(_tgGetCustom().filter(function (x) { return x.key !== key; }));
+        } else {
+          _tgSaveDelActs(_tgGetDelActs().concat([key]));
+        }
         if (_tgSelKey === key) _tgSelKey = null;
         _tgRenderSelect();
         showToast('已删除');
       }
+      function _tgConfirmDel(name, onOk) {
+        var ov = document.createElement('div');
+        ov.className = 'tg-del-confirm';
+        ov.innerHTML = '<div class="tg-del-confirm-box"><div class="t">确定删除「' + _tgEsc(name) + '」吗？</div><div class="s">删除后不再显示</div><div class="tg-del-confirm-btns"><button type="button" class="cancel">取消</button><button type="button" class="ok">删除</button></div></div>';
+        function close() { if (ov.parentNode) ov.parentNode.removeChild(ov); }
+        ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+        ov.querySelector('.cancel').addEventListener('click', close);
+        ov.querySelector('.ok').addEventListener('click', function () { close(); onOk(); });
+        document.body.appendChild(ov);
+      }
+      function _tgBindLongPress(el, onLong) {
+        var timer = null, fired = false, sx = 0, sy = 0;
+        function start(ev) {
+          fired = false;
+          if (ev && typeof ev.clientX === 'number') { sx = ev.clientX; sy = ev.clientY; }
+          if (timer) clearTimeout(timer);
+          timer = setTimeout(function () { fired = true; onLong(); }, 550);
+        }
+        function cancel() { if (timer) { clearTimeout(timer); timer = null; } }
+        function move(ev) {
+          if (ev && typeof ev.clientX === 'number') {
+            var dx = ev.clientX - sx, dy = ev.clientY - sy;
+            if (dx * dx + dy * dy > 64) cancel();
+          }
+        }
+        function end() { cancel(); if (fired) el._tgSuppressClick = Date.now() + 600; }
+        el.addEventListener('pointerdown', start);
+        el.addEventListener('pointermove', move);
+        el.addEventListener('pointerup', end);
+        el.addEventListener('pointercancel', cancel);
+        el._tgClickGuard = function (e) {
+          if (el._tgSuppressClick && Date.now() < el._tgSuppressClick) {
+            el._tgSuppressClick = 0;
+            if (e) { if (e.preventDefault) e.preventDefault(); if (e.stopPropagation) e.stopPropagation(); }
+            return true;
+          }
+          return false;
+        };
       }
 
       function _tgRenderSettings() {
@@ -21011,7 +21070,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return;
         }
         var c = persons.filter(function (x) { return x.id === _tgCurrentId; })[0] || persons[0];
-        var acts = TG_ACTS.concat(_tgGetCustom()).filter(function (a) { return TG_HERO_KEYS.indexOf(a.key) < 0; });
+        var acts = TG_ACTS.concat(_tgGetCustom()).filter(function (a) { return TG_HERO_KEYS.indexOf(a.key) < 0 && _tgGetDelActs().indexOf(a.key) < 0; });
         var h = '<div class="tg-select-hint">和 <b>' + _tgEsc(c.name) + '</b> 一起做点什么？</div>';
         h += '<div class="tg-hero-list">';
         TG_HERO_KEYS.forEach(function (hk) {
@@ -21026,7 +21085,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           h += '<div class="tg-actcard' + (_tgSelKey === a.key ? ' sel' : '') + '" data-key="' + a.key + '">' +
                '\u003cdiv class="tg-act-emoji"\u003e' + _tgIconHtml(a.icon) + '\u003c/div\u003e' +
                '<div class="tg-act-name">' + _tgEsc(a.name) + '</div>' +
-               (a.custom ? '<button type="button" class="tg-act-del" data-del="' + a.key + '" aria-label="删除">×</button>' : '') +
+               '<button type="button" class="tg-act-del" data-del="' + a.key + '" data-custom="' + (a.custom ? '1' : '0') + '" aria-label="删除">×</button>' +
                '</div>';
         });
         h += '<div class="tg-actcard tg-addcard" data-key="__add__">' +
@@ -21040,7 +21099,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
              '</div>';
         el.innerHTML = h;
         el.querySelectorAll('.tg-actcard').forEach(function (card) {
-          card.addEventListener('click', function () {
+          if (card.dataset.key !== '__add__') {
+            _tgBindLongPress(card, function () { card.classList.add('del-open'); });
+          }
+          card.addEventListener('click', function (e) {
+            if (card._tgClickGuard && card._tgClickGuard(e)) return;
             var k = card.dataset.key;
             if (k === '__add__') { _tgShowCustomInput(); return; }
             _tgSelKey = k;
@@ -21050,7 +21113,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         el.querySelectorAll('.tg-act-del').forEach(function (btn) {
           btn.addEventListener('click', function (e) {
             if (e && e.stopPropagation) e.stopPropagation();
-            _tgDelCustom(btn.dataset.del);
+            var key = btn.dataset.del, isCustom = btn.dataset.custom === '1';
+            var cardEl = btn.closest ? btn.closest('.tg-actcard') : null;
+            var nm = cardEl && cardEl.querySelector('.tg-act-name') ? cardEl.querySelector('.tg-act-name').textContent : '这个活动';
+            _tgConfirmDel(nm, function () { _tgDelAct(key, isCustom); });
           });
         });
         el.querySelectorAll('.tg-hero').forEach(function (card) {
@@ -21890,7 +21956,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
         el.innerHTML = h;
         el.querySelectorAll('.tg-hrec').forEach(function (row) {
-          row.addEventListener('click', function () {
+          _tgBindLongPress(row, function () { row.classList.add('del-open'); });
+          row.addEventListener('click', function (e) {
+            if (row._tgClickGuard && row._tgClickGuard(e)) return;
             var rec = hist[parseInt(row.dataset.i, 10)];
             if (!rec) return;
             var urlIn = document.getElementById('tgSoloInUrl');
@@ -21903,9 +21971,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         el.querySelectorAll('.tg-hrec-del').forEach(function (btn) {
           btn.addEventListener('click', function (e) {
             if (e && e.stopPropagation) e.stopPropagation();
-            _tgDelImportHist(btn.dataset.sig);
-            _tgSoloRenderHist();
-            showToast('已删除');
+            var sig = btn.dataset.sig;
+            _tgConfirmDel('这条记录', function () {
+              _tgDelImportHist(sig);
+              _tgSoloRenderHist();
+              showToast('已删除');
+            });
           });
         });
       }
