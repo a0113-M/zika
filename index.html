@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="321";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="322";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v321</title>
+  <title>字卡 · 小手机 v322</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21035,7 +21035,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _tgSaveActive(_tgActive);
           var _verb = _im.type === 'video' ? '看' : (_im.type === 'read' ? '读' : '听');
           _tgLogLive('你挑了「' + (_im.title || '内容') + '」，和 ' + _tgActive.contactName + ' 一起' + _verb);
-          _tgRFAuto = (_im.type === 'read');
+          if (_im.type === 'read') { setTimeout(function () { try { _tgRFOpen(_im.tkey, _im.title); } catch (e9) {} }, 650); }
           _tgMediaEnsure();
         }
         _tgCloseInviteCard();
@@ -21149,7 +21149,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgStopTimer();
         _tgTimer = setInterval(_tgTick, 1000);
         _tgStartHb();
-        if (a.media && a.media.type === 'read' && _tgRFAuto) { _tgRFAuto = false; setTimeout(function () { _tgRFOpen(a.media.tkey, a.media.title); }, 650); }
         if (a.paused) _tgAudioStop(); else _tgAudioStart();
       }
 
@@ -21795,7 +21794,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       var TG_READ_COMMENTS = ['这段我看了好几遍', '这句我划下来了', '读到这里，忽然想到你', '好虐，先标记一下', '哈哈哈哈这段好玩', '这段气氛写得真好', '啊，这里好甜', '替你把这句折了个角', '这段有点没看懂，等下问你', '我在这一页等你', '贴张便利贴：这里很重要', '这一章有点东西', '读慢一点，不着急', '先放张字卡在这里', '嘿嘿，等你读到这行', '这里我有点小想法', '看到这段想起我们了', '此处应有划线', '这句很适合发给你', '私藏段落 +1', '读到这里停一停，缓一缓', '这段节奏真好', '人物从这里开始变了', '马克！后面好像有伏笔', '这句想抄进日记里', '猜猜我为什么停在这段'];
       var TG_READ_REPLIES = ['嗯嗯，我也这么想', '你终于读到这儿啦', '等你这句好久了', '抱抱，继续往下读吧', '哈哈被你发现了', '对吧对吧，我也觉得', '先记下，读完这章聊', '继续继续，我在呢'];
       var _tgRF = null;
-      var _tgRFAuto = false;
       var _tgRFSheetPi = -1;
       function _tgRFHash(s0) { var h = 2166136261; for (var i = 0; i < s0.length; i++) { h ^= s0.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
       function _tgRFMeta(tk) { try { return JSON.parse(localStorage.getItem('zk_tg_read_meta_' + tk) || 'null'); } catch (e) { return null; } }
@@ -22387,7 +22385,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!_tgActive) return;
         _tgActive.media = media;
         _tgSaveActive(_tgActive);
-        _tgRFAuto = media.type === 'read';
+        if (media.type === 'read') { setTimeout(function () { try { _tgRFOpen(media.tkey, media.title); } catch (e9) {} }, 650); }
         var verb = media.type === 'video' ? '看' : (media.type === 'read' ? '读' : '听');
         _tgLogLive('你挑了「' + (media.title || TG_HERO_META[key].name) + '」，和 ' + _tgActive.contactName + ' 一起' + verb);
         _tgMediaEnsure();
