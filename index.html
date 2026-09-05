@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="339";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="340";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v339</title>
+  <title>字卡 · 小手机 v340</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8075,6 +8075,13 @@
       margin-top: 12px; padding-top: 10px; background: var(--bg-main);
     }
     .dvd-chat-input { flex: 1; }
+
+    /* v340: 占卜聊天改 flex 铺满，键盘弹出随容器压缩，避免最新消息被输入栏遮挡 */
+    #dvdChatView { display: flex; flex-direction: column; height: 100%; }
+    #dvdChatView .dvd-hist-top { flex: none; }
+    #dvdChatView .dvd-chat-head { flex: none; }
+    #dvdChatView .dvd-chat-list { flex: 1 1 auto; min-height: 0; max-height: none; }
+    #dvdChatView .dvd-chat-bar { position: static; flex: none; }
     .dvd-chat-send {
       width: 44px; height: 44px; border-radius: 50%; border: none; flex-shrink: 0;
       background: linear-gradient(135deg, var(--primary), var(--primary-strong));
