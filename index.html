@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="317";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="318";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v317</title>
+  <title>字卡 · 小手机 v318</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20654,6 +20654,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       function _tgEcgTick(ts) {
         if (!_tgEcgCtx) return;
+        if (_tgEcgLast && ts - _tgEcgLast < 30) { _tgHbAnim = requestAnimationFrame(_tgEcgTick); return; }
         if (!_tgEcgLast) _tgEcgLast = ts;
         var dt = (ts - _tgEcgLast) / 1000; if (dt > 0.1) dt = 0.1; _tgEcgLast = ts;
         var bpm = (_tgActive && _tgActive.bpm) ? _tgActive.bpm : 74;
@@ -21313,20 +21314,30 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!box) return;
         var msgs = (_tgActive && _tgActive.chat) || [];
         if (!msgs.length) { box.innerHTML = '<div class="tg-app-chat-empty">发条消息，和 TA 边看边聊</div>'; return; }
-        box.innerHTML = msgs.map(function (m) {
-          var tm = m.tm ? '<span class="tg-app-chat-time">' + _tgEsc(m.tm) + '</span>' : '';
-          return '<div class="tg-app-chat-item ' + (m.me ? 'me' : 'ta') + '">' + _tgEsc(m.x) + tm + '</div>';
-        }).join('');
+        box.innerHTML = msgs.map(_tgAppChatItemHTML).join('');
         box.scrollTop = box.scrollHeight;
+      }
+      function _tgAppChatItemHTML(m) {
+        var tm = m.tm ? '<span class="tg-app-chat-time">' + _tgEsc(m.tm) + '</span>' : '';
+        return '<div class="tg-app-chat-item ' + (m.me ? 'me' : 'ta') + '">' + _tgEsc(m.x) + tm + '</div>';
       }
       function _tgAppChatPush(x, me) {
         if (!_tgActive) return;
         if (!_tgActive.chat) _tgActive.chat = [];
         var now = new Date();
-        _tgActive.chat.push({ t: Date.now(), x: x, me: !!me, tm: now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') });
+        var msg = { t: Date.now(), x: x, me: !!me, tm: now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0') };
+        _tgActive.chat.push(msg);
         if (_tgActive.chat.length > 50) _tgActive.chat.shift();
         _tgSaveActive(_tgActive);
-        _tgAppChatRender();
+        var box = document.getElementById('tgAppChatList');
+        if (!box) return;
+        var empty = box.querySelector('.tg-app-chat-empty');
+        if (empty && empty.parentNode) empty.parentNode.removeChild(empty);
+        var wrap = document.createElement('div');
+        wrap.innerHTML = _tgAppChatItemHTML(msg);
+        box.appendChild(wrap.firstChild);
+        while (box.children.length > 50) box.removeChild(box.firstChild);
+        box.scrollTop = box.scrollHeight;
       }
       function _tgAppChatSend() {
         var inp = document.getElementById('tgAppChatIn');
@@ -21856,6 +21867,23 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgAppChatInp.addEventListener('focus', function () { var lv = document.getElementById('tgLive'); if (lv) lv.classList.add('tg-kb'); });
         _tgAppChatInp.addEventListener('blur', function () { var lv = document.getElementById('tgLive'); if (lv) lv.classList.remove('tg-kb'); });
       }
+      (function () {
+        var vv = window.visualViewport;
+        if (!vv) return;
+        var base = vv.height, tm = null;
+        vv.addEventListener('resize', function () {
+          if (tm) clearTimeout(tm);
+          tm = setTimeout(function () {
+            tm = null;
+            var d = vv.height - base;
+            base = vv.height;
+            if (d > -120 && d < 120) return;
+            var lv = document.getElementById('tgLive');
+            if (!lv) return;
+            if (d < 0) lv.classList.add('tg-kb'); else lv.classList.remove('tg-kb');
+          }, 180);
+        });
+      })();
       var _tgAppGoBtn = document.getElementById('tgAppGoBtn');
       if (_tgAppGoBtn) _tgAppGoBtn.addEventListener('click', function () { if (_tgActive && _tgActive.media && _tgActive.media.kind === 'app') { try { window.location.href = _tgActive.media.url; } catch (e) {} } });
 
