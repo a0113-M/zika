@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="309";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="310";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v309</title>
+  <title>字卡 · 小手机 v310</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7673,6 +7673,19 @@
     .tg-dm-input::placeholder { color: rgba(255,255,255,0.5); }
     .tg-dm-input:focus { outline: none; border-color: rgba(230,220,255,0.7); }
     .tg-dm-send { flex: 0 0 auto; border: none; border-radius: 99px; padding: 0 16px; background: linear-gradient(135deg, #7a6bc4, #9a8ad8); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+    /* === v310 陪同模式陪伴卡 === */
+    .tg-lv-appcard { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 24px; text-align: center; background: linear-gradient(160deg, rgba(124,94,242,.18), rgba(56,38,116,.34)); }
+    .tg-lv-appico { width: 52px; height: 52px; border-radius: 16px; background: rgba(255,255,255,.14); display: flex; align-items: center; justify-content: center; color: #fff; }
+    .tg-lv-appico svg { width: 26px; height: 26px; }
+    .tg-lv-apptitle { font-size: 17px; font-weight: 600; color: #fff; max-width: 280px; }
+    .tg-lv-appdesc { font-size: 12.5px; color: rgba(255,255,255,.74); line-height: 1.65; max-width: 270px; }
+    .tg-lv-appbtn { margin-top: 6px; padding: 11px 26px; border: none; border-radius: 22px; background: #fff; color: #5b3fd4; font-size: 14px; font-weight: 600; box-shadow: 0 4px 14px rgba(0,0,0,.28); cursor: pointer; }
+    .tg-lv-apptip { font-size: 11px; color: rgba(255,255,255,.55); line-height: 1.6; max-width: 250px; }
+    .tmf-appcard { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; height: 100%; padding: 14px; text-align: center; }
+    .tmf-appname { font-size: 14px; font-weight: 600; color: var(--text-main, #333); }
+    .tmf-appdesc { font-size: 11.5px; color: #999; }
+    .tmf-appbtn { margin-top: 4px; padding: 8px 20px; border: none; border-radius: 16px; background: var(--primary, #7c5ef2); color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer; }
 
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
@@ -21203,8 +21216,17 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var mkey = m.type + '|' + (m.url || '') + '|' + (m.title || '');
         if (box.dataset.mediaKey === mkey) return;
         box.dataset.mediaKey = mkey;
-        if (m.kind === 'iframe') body.innerHTML = '<iframe src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
-        else body.innerHTML = '<video src="' + m.url + '" controls playsinline preload="metadata"></video>';
+        var fb = document.getElementById('tgLvFullBtn');
+        if (m.kind === 'app') {
+          if (fb) fb.style.display = 'none';
+          body.innerHTML = '<div class="tg-lv-appcard"><div class="tg-lv-appico">' + _tgHeroSvg('movie') + '</div><div class="tg-lv-apptitle">' + _tgEsc(m.title || '一起看电影') + '</div><div class="tg-lv-appdesc">这类正片只在它自家 App 里播。跳过去看，回来 TA 还陪着你。</div><button class="tg-lv-appbtn" id="tgLvAppGo">跳到 App 一起看</button><div class="tg-lv-apptip">跳走后可以用手机「分屏 / 小窗」把本页面挂在旁边，TA 的话照常飘</div></div>';
+          var go = document.getElementById('tgLvAppGo');
+          if (go) go.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
+        } else {
+          if (fb) fb.style.display = '';
+          if (m.kind === 'iframe') body.innerHTML = '<iframe src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
+          else body.innerHTML = '<video src="' + m.url + '" controls playsinline preload="metadata"></video>';
+        }
         var nm = document.getElementById('tgFsName'); if (nm) nm.textContent = m.title || '一起看电影';
       }
       function _tgUserDmSend() {
@@ -21401,7 +21423,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgHeroIcoSmall(type, size) { return _tgHeroSvg(type).replace('width="22" height="22"', 'width="' + size + '" height="' + size + '"'); }
       var TG_HERO_KEYS = ['movie', 'book', 'music'];
       var TG_HERO_META = {
-        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视（含限免）和红果等短剧平台有版权防护，嵌不进来' },
+        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；贴番剧/影视、红果等正片链接会进入陪同模式，可跳转 App 看' },
         book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
         music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
       };
@@ -21543,7 +21565,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var yt = url.match(/youtube\.com\/(?:watch\?v=|embed\/|shorts\/)([0-9A-Za-z_-]{6,})/) || url.match(/youtu\.be\/([0-9A-Za-z_-]{6,})/);
           if (bv) return { kind: 'iframe', url: 'https://player.bilibili.com/player.html?bvid=' + bv[1] + '&autoplay=0&danmaku=0&high_quality=1', title: 'B站视频' };
           if (yt) return { kind: 'iframe', url: 'https://www.youtube.com/embed/' + yt[1], title: 'YouTube' };
-          if (/changdunovel\.com|hongguo|douyin\.com|iesdouyin\.com|v\.qq\.com|iqiyi\.com|youku\.com|mgtv\.com|bilibili\.com\/bangumi|b23\.tv/.test(url)) { showToast('这类正片有版权防护嵌不进来；试试B站UP主投稿版或 mp4 直链'); return null; }
+          if (/changdunovel\.com|hongguo|douyin\.com|iesdouyin\.com|v\.qq\.com|iqiyi\.com|youku\.com|mgtv\.com|bilibili\.com\/bangumi|b23\.tv/.test(url)) return { kind: 'app', url: url, title: '正片链接' };
           if (/^https?:\/\//.test(url)) return { kind: 'video', url: url, title: '视频' };
           showToast('识别不了这个链接，试试B站链接或mp4直链'); return null;
         }
@@ -21595,7 +21617,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (tiEl) tiEl.textContent = m.title || ('一起' + meta.name);
         if (!body) return;
         if (m.type === 'video') {
-          if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe" src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
+          if (m.kind === 'app') {
+            body.innerHTML = '<div class="tmf-appcard"><div class="tmf-appname">' + _tgEsc(m.title || '一起看电影') + '</div><div class="tmf-appdesc">正片在它自家 App 里播</div><button class="tmf-appbtn" id="tmfAppGo">跳到 App 看</button></div>';
+            var ag = document.getElementById('tmfAppGo');
+            if (ag) ag.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
+          } else if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe" src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
           else body.innerHTML = '<video class="tmf-video" src="' + m.url + '" controls playsinline preload="metadata"></video>';
         } else if (m.type === 'music') {
           if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe tmf-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
