@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="327";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="328";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v327</title>
+  <title>字卡 · 小手机 v328</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13296,6 +13296,23 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
     </div>
+    <!-- v328 看电影/听歌·独立面板与播放层（不进陪伴） -->
+    <div class="tg-pick-mask" id="tgSoloPick">
+      <div class="tg-pick">
+        <div class="tg-panel-head">
+          <div class="tg-panel-title" id="tgSoloTitle">看电影</div>
+          <button type="button" class="tmf-btn" id="tgSoloClose">×</button>
+        </div>
+        <div id="tgSoloInput"></div>
+        <div class="tg-panel-histhead">导入记录<span class="tg-panel-histtip">点一条，接着看</span></div>
+        <div class="tg-panel-hist" id="tgSoloHist"></div>
+        <div class="tg-btnrow"><button type="button" class="tg-btn tg-btn-invite" id="tgSoloStart">开始观看</button></div>
+      </div>
+    </div>
+    <div id="tgSoloMedia">
+      <div class="tsm-top"><div class="tsm-title" id="tgSoloMTitle">正在播放</div><button type="button" class="tsm-x" id="tgSoloMClose">×</button></div>
+      <div class="tsm-body" id="tgSoloMBody"></div>
+    </div>
     <!-- v325 看书·书架 -->
     <div class="tg-shelf" id="tgBookShelf">
       <div class="tg-shelf-top">
@@ -14859,7 +14876,20 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     .tg-shelf-cancelbtn { border: none; background: transparent; color: #a3957f; font-size: 13px; padding: 6px; cursor: pointer; text-align: center; }
 
     /* ===== v321 全屏阅读器 ===== */
-    #tgReadFs { position: fixed; inset: 0; z-index: 300; background: #f6f1e6; display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; }
+    /* ===== v328 独立媒体（看电影/听歌，与陪伴分离） ===== */
+    #tgSoloMedia { position: fixed; inset: 0; z-index: 11700; background: #17141f; display: none; flex-direction: column; }
+    #tgSoloMedia.on { display: flex; }
+    .tsm-top { display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 10px; }
+    .tsm-title { flex: 1; font-size: 15px; font-weight: 600; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tsm-x { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(255,255,255,.12); color: #fff; font-size: 18px; line-height: 1; padding: 0; }
+    .tsm-body { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; padding: 0 12px calc(env(safe-area-inset-bottom, 0px) + 20px); }
+    .tsm-iframe { width: 100%; height: 56vw; max-height: 320px; border: 0; border-radius: 12px; background: #000; display: block; }
+    .tsm-iframe.tsm-short { height: 88px; }
+    .tsm-video { width: 100%; max-height: 70vh; border-radius: 12px; background: #000; display: block; }
+    .tsm-tip { color: rgba(255,255,255,.55); font-size: 12px; margin-top: 10px; line-height: 1.8; }
+    .tsm-golink { color: #b9a8ff; text-decoration: underline; }
+    #tgReadFs.solo .trf-mid, #tgReadFs.solo .trf-right { display: none; }
+    #tgReadFs { position: fixed; inset: 0; z-index: 11800; background: #f6f1e6; display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; }
     #tgReadFs.on { display: flex; }
     .trf-top { display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 6px; color: #8a8272; font-size: 13px; }
     .trf-left { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 1 1 0; }
@@ -20937,6 +20967,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               try { localStorage.removeItem('zk_together_active'); } catch (fe) {}
             }
             if (hero === 'book') { _tgOpenBookShelf(); return; }
+            if (hero === 'movie' || hero === 'music') { _tgSoloOpen(hero); return; }
             _tgOpenHeroPanel(hero);
           });
         });
@@ -21668,9 +21699,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgHeroIcoSmall(type, size) { return _tgHeroSvg(type).replace('width="22" height="22"', 'width="' + size + '" height="' + size + '"'); }
       var TG_HERO_KEYS = ['movie', 'book', 'music'];
       var TG_HERO_META = {
-        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视（含限免）、红果等正片播不了时，可一键切陪同模式跳 App 看' },
-        book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
-        music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
+        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，开始观看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视（含限免）、红果等正片不支持网页播放，可跳 App 看' },
+        book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，开始阅读', tip: '' },
+        music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，开始播放', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
       };
       function _tgHeroAct(key) { return TG_ACTS.filter(function (a) { return a.key === key; })[0]; }
       var _tgPanelKey = null, _tgPanelCid = null;
@@ -21690,6 +21721,94 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgSaveImportHist(out.slice(0, 40));
       }
       function _tgPanelPersons() { return contacts.filter(function (c) { return !c.isGroup; }); }
+      // ===== v328 看电影/听歌·独立模式（与陪伴系统完全分离）=====
+      var _tgSoloKey = null;
+      function _tgSoloOpen(key) {
+        _tgSoloKey = key;
+        var meta = TG_HERO_META[key];
+        document.getElementById('tgSoloTitle').textContent = meta.name;
+        document.getElementById('tgSoloStart').textContent = key === 'movie' ? '开始观看' : '开始播放';
+        _tgSoloRenderInput();
+        _tgSoloRenderHist();
+        document.getElementById('tgSoloPick').classList.add('show');
+      }
+      function _tgSoloClose() { document.getElementById('tgSoloPick').classList.remove('show'); }
+      function _tgSoloRenderInput() {
+        var m = TG_HERO_META[_tgSoloKey];
+        document.getElementById('tgSoloInput').innerHTML = '<input class="tg-media-input" id="tgSoloInUrl" placeholder="粘贴链接…">' +
+          '<input class="tg-media-input" id="tgSoloInTitle" placeholder="标题（选填）">' +
+          '<div class="tg-media-tip">' + m.tip + '</div>';
+      }
+      function _tgSoloRenderHist() {
+        var t = _tgSoloKey;
+        var hist = _tgGetImportHist().filter(function (r) { return r.type === t; });
+        var el = document.getElementById('tgSoloHist');
+        if (!hist.length) { el.innerHTML = '<div class="tg-hempty">还没有导入记录<br>粘贴链接开始一次，下次就能在这里接着看</div>'; return; }
+        var h = '';
+        hist.forEach(function (r, i) {
+          var rt = r.title || (t === 'movie' ? '视频' : '音乐');
+          h += '<div class="tg-hrec" data-i="' + i + '"><span class="tg-hrec-ico">' + _tgHeroIcoSmall(t, 16) + '</span><span class="tg-hrec-main"><span class="tg-hrec-t">' + _tgEsc(rt) + '</span><span class="tg-hrec-s">' + _tgFmtTs(r.ts || Date.now()) + '</span></span><span class="tg-hrec-arrow">›</span></div>';
+        });
+        el.innerHTML = h;
+        el.querySelectorAll('.tg-hrec').forEach(function (row) {
+          row.addEventListener('click', function () {
+            var rec = hist[parseInt(row.dataset.i, 10)];
+            if (!rec) return;
+            _tgSoloClose();
+            _tgSoloPlay({ type: rec.type === 'movie' ? 'video' : 'music', url: rec.url, kind: rec.kind || 'iframe', title: rec.title });
+          });
+        });
+      }
+      function _tgSoloStartAction() {
+        if (!_tgSoloKey) return;
+        var url = (document.getElementById('tgSoloInUrl').value || '').trim();
+        if (!url) { showToast('先粘贴链接，或点下面的过往记录'); return; }
+        var pp = _tgParseMediaUrl(_tgSoloKey, url);
+        if (!pp) return;
+        var title = (document.getElementById('tgSoloInTitle').value || '').trim();
+        var media = { type: (_tgSoloKey === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
+        _tgAddImportHist({ type: _tgSoloKey, url: pp.url, kind: pp.kind, title: media.title, contactId: '', contactName: '', ts: Date.now() });
+        _tgSoloClose();
+        _tgSoloPlay(media);
+      }
+      function _tgSoloPlay(m) {
+        var lay = document.getElementById('tgSoloMedia');
+        var bd = document.getElementById('tgSoloMBody');
+        if (!lay || !bd) return;
+        document.getElementById('tgSoloMTitle').textContent = m.title || (m.type === 'video' ? '看电影' : '听歌');
+        bd.scrollTop = 0;
+        if (m.type === 'video') {
+          if (m.kind === 'app') {
+            bd.innerHTML = '<div class="tmf-appcard"><div class="tmf-appname">' + _tgEsc(m.title || '正片') + '</div><div class="tmf-appdesc">这个平台不开放网页播放</div><button class="tmf-appbtn" id="tsmGoApp">跳到 App 看</button></div>';
+            var ga = document.getElementById('tsmGoApp');
+            if (ga) ga.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
+          } else if (m.kind === 'iframe') {
+            bd.innerHTML = '<iframe class="tsm-iframe" src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe><div class="tsm-tip">画面出不来？<span class="tsm-golink" id="tsmGoLink">跳 App 打开</span></div>';
+            var gl = document.getElementById('tsmGoLink');
+            if (gl) gl.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
+          } else {
+            bd.innerHTML = '<video class="tsm-video" src="' + m.url + '" controls playsinline preload="metadata"></video>';
+          }
+        } else {
+          if (m.kind === 'iframe') bd.innerHTML = '<iframe class="tsm-iframe tsm-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
+          else bd.innerHTML = '<div class="tmf-music"><div class="tmf-mname">' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
+        }
+        lay.classList.add('on');
+      }
+      function _tgSoloCloseMedia() {
+        var lay = document.getElementById('tgSoloMedia');
+        var bd = document.getElementById('tgSoloMBody');
+        if (bd) bd.innerHTML = '';
+        if (lay) lay.classList.remove('on');
+      }
+      (function () {
+        var sp = document.getElementById('tgSoloPick');
+        if (!sp) return;
+        sp.addEventListener('click', function (e) { if (e.target === sp) _tgSoloClose(); });
+        document.getElementById('tgSoloClose').addEventListener('click', _tgSoloClose);
+        document.getElementById('tgSoloStart').addEventListener('click', _tgSoloStartAction);
+        document.getElementById('tgSoloMClose').addEventListener('click', _tgSoloCloseMedia);
+      })();
       function _tgOpenHeroPanel(key) {
         var persons = _tgPanelPersons();
         if (!persons.length) { showToast('先去添加一个联系人吧'); return; }
@@ -21854,6 +21973,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       var TG_READ_REPLIES = ['嗯嗯，我也这么想', '你终于读到这儿啦', '等你这句好久了', '抱抱，继续往下读吧', '哈哈被你发现了', '对吧对吧，我也觉得', '先记下，读完这章聊', '继续继续，我在呢'];
       var _tgRF = null;
       var _tgReadNext = false;
+      function _tgRFExit() { if (_tgActive) { _tgEndTogether(); } else { _tgRFClose(); } }
       var _tgRFSheetPi = -1;
       function _tgRFHash(s0) { var h = 2166136261; for (var i = 0; i < s0.length; i++) { h ^= s0.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
       function _tgRFMeta(tk) { try { return JSON.parse(localStorage.getItem('zk_tg_read_meta_' + tk) || 'null'); } catch (e) { return null; } }
@@ -21868,10 +21988,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           + '<div class="trf-drawer" id="trfDrawer"><div class="trf-drawer-h">目录 <b id="trfDCount"></b></div><div class="trf-drawer-list" id="trfDList"></div><div class="trf-drawer-f"><button type="button" id="trfDExit">结束阅读</button></div></div>'
           + '<div class="trf-sheet" id="trfSheet"><div class="trf-sheet-t">给这段写个标注</div><div class="trf-sheet-p" id="trfShPrev"></div><textarea id="trfShText" maxlength="200" placeholder="记下此刻的想法…"></textarea><div class="trf-sheet-btns"><button type="button" class="trf-del" id="trfShDel">删除</button><button type="button" class="trf-cancel" id="trfShCancel">取消</button><button type="button" class="trf-ok" id="trfShOk">保存</button></div></div>';
         document.body.appendChild(fs);
-        document.getElementById('trfBack').addEventListener('click', function () { _tgEndTogether(); });
+        document.getElementById('trfBack').addEventListener('click', function () { _tgRFExit(); });
         document.getElementById('trfChap').addEventListener('click', function () { _tgRFDrawer(true); });
         document.getElementById('trfMask').addEventListener('click', function () { _tgRFDrawer(false); });
-        document.getElementById('trfDExit').addEventListener('click', function () { _tgEndTogether(); });
+        document.getElementById('trfDExit').addEventListener('click', function () { _tgRFExit(); });
         document.getElementById('trfDList').addEventListener('click', function (ev) {
           var b = ev.target.closest('[data-jump]'); if (!b) return;
           _tgRFDrawer(false);
@@ -21891,6 +22011,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!tkey) { showToast('这本书没带上文本，重新导入一份吧'); return; }
         _tgRFBuild();
         var fs = document.getElementById('tgReadFs');
+        if (!_tgActive) fs.classList.add('solo'); else fs.classList.remove('solo');
         if (_tgRF && _tgRF.tkey === tkey) { fs.classList.add('on'); return; }
         if (_tgRF) _tgRFClose();
         _tgBookLoad(tkey).then(function (txt) {
@@ -22488,7 +22609,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (imp) imp.style.display = 'none';
         var books = _tgShelfGetBooks();
         if (!books.length) {
-          list.innerHTML = '<div class="tg-shelf-empty"><div class="tg-shelf-emptylogo">&#128214;</div>书架还是空的<br>点右上角 &#xFF0B; 导入一本书，和 TA 一起读</div>';
+          list.innerHTML = '<div class="tg-shelf-empty"><div class="tg-shelf-emptylogo">&#128214;</div>书架还是空的<br>点右上角 &#xFF0B; 导入一本书，开始阅读</div>';
           return;
         }
         var h = '';
@@ -22511,11 +22632,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (!r) return;
             _tgBookLoad(r.tkey).then(function (txt) {
               if (!txt) { showToast('这本书的文本找不到了，重新导入一本吧'); return; }
-              var persons = _tgPanelPersons();
-              var c = persons.filter(function (x) { return x.id === _tgCurrentId; })[0] || persons[0];
-              if (!c) { showToast('先去添加一个联系人吧'); return; }
               _tgCloseBookShelf();
-              _tgHeroStartMedia('book', c, { type: 'read', title: r.title || '一起读的书', tkey: r.tkey });
+              _tgRFOpen(r.tkey, r.title || '未命名');
             });
           });
         });
