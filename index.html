@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="307";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="308";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v307</title>
+  <title>字卡 · 小手机 v308</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7641,6 +7641,38 @@
     .tg-panel-alt { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
     .tg-panel-alt button { border: none; background: none; color: var(--primary); font-size: 12px; padding: 4px 2px; cursor: pointer; }
     .tg-panel-altsep { color: var(--text-muted); }
+    /* 一起：视频 live 布局 & 弹幕 */
+    .tg-lv-box { display: none; position: relative; flex: 0 0 auto; margin: 4px 12px 8px; border-radius: 14px; overflow: hidden; background: #000; aspect-ratio: 16 / 9; }
+    .tg-live-video .tg-lv-box { display: block; order: 1; }
+    .tg-live-video .tg-mini-top { order: 0; }
+    .tg-live-video .acd-live-mid { order: 2; padding: 0 16px 2px; flex: 0 0 auto; }
+    .tg-live-video .acd-halo, .tg-live-video .acd-meta { display: none; }
+    .tg-live-video .acd-live-name { margin-top: 0; }
+    .tg-live-video .acd-stat-row { margin-top: 6px; }
+    .tg-live-video .acd-logbox { order: 3; }
+    .tg-live-video .acd-end { order: 4; }
+    .tg-lv-body { position: absolute; inset: 0; }
+    .tg-lv-body iframe, .tg-lv-body video { width: 100%; height: 100%; display: block; border: none; background: #000; }
+    .tg-lv-fullbtn { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border-radius: 10px; border: none; background: rgba(20,14,40,0.45); color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 5; }
+    .tg-dm-layer { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 6; }
+    .tg-dm { position: absolute; left: 100%; white-space: nowrap; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.75); font-weight: 600; animation: tgDmFly linear forwards; will-change: transform; }
+    .tg-dm.mine { color: #e6dcff; }
+    @keyframes tgDmFly { to { transform: translateX(calc(-100vw - 100%)); } }
+    .tg-lv-box.full { position: absolute; inset: 0; margin: 0; border-radius: 0; aspect-ratio: auto; z-index: 40; }
+    .tg-lv-box.full .tg-lv-body { inset: 0 0 96px 0; }
+    .tg-lv-box.full .tg-lv-fullbtn { display: none; }
+    .tg-lv-fsbar { display: none; position: absolute; left: 0; right: 0; bottom: 0; height: 96px; box-sizing: border-box; padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: linear-gradient(180deg, rgba(24,16,48,0.55), rgba(24,16,48,0.92)); backdrop-filter: blur(6px); z-index: 7; flex-direction: column; gap: 8px; }
+    .tg-lv-box.full .tg-lv-fsbar { display: flex; }
+    .tg-lv-fsrow { display: flex; align-items: center; gap: 8px; }
+    .tg-lv-fsstat { flex: 0 0 auto; display: flex; align-items: baseline; gap: 4px; padding: 4px 10px; border-radius: 99px; background: rgba(255,255,255,0.12); color: #fff; font-size: 12px; font-weight: 700; }
+    .tg-lv-fsstat b { font-weight: 400; opacity: 0.7; font-size: 10px; }
+    .tg-lv-fsname { flex: 1 1 auto; font-size: 11px; color: rgba(255,255,255,0.85); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-lv-exit { flex: 0 0 auto; border: none; background: rgba(255,255,255,0.14); color: #fff; border-radius: 99px; padding: 5px 11px; font-size: 11px; cursor: pointer; }
+    .tg-dm-row { display: flex; gap: 8px; }
+    .tg-dm-input { flex: 1 1 auto; min-width: 0; height: 34px; border-radius: 99px; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.12); color: #fff; font-size: 13px; padding: 0 14px; }
+    .tg-dm-input::placeholder { color: rgba(255,255,255,0.5); }
+    .tg-dm-input:focus { outline: none; border-color: rgba(230,220,255,0.7); }
+    .tg-dm-send { flex: 0 0 auto; border: none; border-radius: 99px; padding: 0 16px; background: linear-gradient(135deg, #7a6bc4, #9a8ad8); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
 
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
@@ -14373,6 +14405,23 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg><i id="tgStartTime" style="font-style:normal;"></i></span>
             </div>
           </div>
+          <div class="tg-lv-box" id="tgLiveVideoBox" data-media-key="">
+            <div class="tg-lv-body" id="tgLiveVideoBody"></div>
+            <button type="button" class="tg-lv-fullbtn" id="tgLvFullBtn"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+            <div class="tg-dm-layer" id="tgDmLayer"></div>
+            <div class="tg-lv-fsbar" id="tgLvFsBar">
+              <div class="tg-lv-fsrow">
+                <span class="tg-lv-fsstat"><span id="tgFsHb">72</span><b>心跳</b></span>
+                <span class="tg-lv-fsstat"><span id="tgFsTp">36.5</span><b>体温</b></span>
+                <span class="tg-lv-fsname" id="tgFsName"></span>
+                <button type="button" class="tg-lv-exit" id="tgLvExit">退出全屏</button>
+              </div>
+              <div class="tg-dm-row">
+                <input class="tg-dm-input" id="tgDmInput" placeholder="发条弹幕和 TA 聊…" maxlength="40">
+                <button type="button" class="tg-dm-send" id="tgDmSend">发送</button>
+              </div>
+            </div>
+          </div>
           <div class="acd-logbox">
             <div class="acd-log-title">陪伴时光</div>
             <div class="acd-log-list" id="tgLogList"></div>
@@ -20504,13 +20553,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return '<div class="acd-log-item"><span class="acd-log-t">' + _tgRelTime(g.t) + '</span><span>' + _tgEsc(g.x) + '</span></div>';
         }).join('');
       }
-      function _tgLogLive(txt) {
+      function _tgLogLive(txt, isDm) {
         if (!_tgActive) return;
         if (!_tgActive.logs) _tgActive.logs = [];
         _tgActive.logs.unshift({ t: Date.now(), x: txt });
         if (_tgActive.logs.length > 30) _tgActive.logs.pop();
         _tgSaveActive(_tgActive);
         _tgRenderLiveLogs();
+        if (isDm && _tgActive.media && _tgActive.media.type === 'video') _tgDmFire(txt, false);
       }
       var _tgHbAnim = null, _tgHbBase = 74, _tgTempBase = 36.5, _tgHbT0 = 0, _tgAccelUntil = 0, _tgAccelPeak = 0;
       var _tgEcgCtx = null, _tgEcgOffset = 0, _tgEcgLast = 0, _tgEcgW = 0, _tgEcgH = 50;
@@ -20602,6 +20652,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _tgActive.bpm = bpm; _tgActive.temp = temp;
           var hb = document.getElementById('tgHbNum'); if (hb) hb.textContent = Math.round(bpm) + '次/min';
           var tp = document.getElementById('tgTpNum'); if (tp) tp.textContent = temp.toFixed(1) + '℃';
+          var hb2 = document.getElementById('tgFsHb'); if (hb2) hb2.textContent = Math.round(bpm);
+          var tp2 = document.getElementById('tgFsTp'); if (tp2) tp2.textContent = temp.toFixed(1);
           _tgTempBars(temp);
         }, 1000);
         _tgTempBars(_tgTempBase);
@@ -20959,6 +21011,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (a.paused) { if (ip) ip.style.display = 'none'; if (iy) iy.style.display = 'block'; }
         else { if (ip) ip.style.display = 'block'; if (iy) iy.style.display = 'none'; }
         _tgRenderLiveLogs();
+        var isVid = !!(a.media && a.media.type === 'video');
+        live.classList.toggle('tg-live-video', isVid);
+        var lvBox = document.getElementById('tgLiveVideoBox');
+        if (lvBox) lvBox.classList.remove('full');
+        if (isVid) _tgLiveVideoRender(a.media);
         document.getElementById('tgSelect').style.display = 'none';
         document.getElementById('tgActive').style.display = 'none';
         live.classList.add('open');
@@ -20998,7 +21055,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var pool = _tgActive.invite ? TG_LINES : TG_SOLO;
         var k = _tgActive.invite ? _tgActive.key : (_tgActive.contactKey || _tgActive.key);
         var lines = pool[k] || pool.movie;
-        _tgLogLive(lines[Math.floor(Math.random() * lines.length)]);
+        if (_tgActive.media && _tgActive.media.type === 'video' && Math.random() < 0.6) lines = TG_DM_VIDEO;
+        _tgLogLive(lines[Math.floor(Math.random() * lines.length)], true);
       }
 
       function _tgMaybeSwap() {
@@ -21123,6 +21181,46 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         el.innerHTML = h;
       }
 
+      var TG_DM_VIDEO = ['这段配乐好绝', '哈哈哈名场面', '这里画面太好看了', '主角好勇敢啊', '这段有点感人', '等一下我去倒杯水，你先看', '这个角色好像你', '看到这段想起上次一起看的', '别快进，后面有反转', '这段我看了好几遍'];
+      var TG_DM_REPLY = ['哈哈被你发现了', '这段我也想发弹幕', '嗯嗯，一起看', '别剧透别剧透', '好耶，你也在看这段', '你是看弹幕还是看我呀', '嘿嘿，凑过来一起靠', '懂了，你是懂电影的'];
+      function _tgDmFire(text, mine) {
+        var layer = document.getElementById('tgDmLayer');
+        if (!layer || !text) return;
+        var d = document.createElement('div');
+        d.className = 'tg-dm' + (mine ? ' mine' : '');
+        d.textContent = text;
+        d.style.top = (5 + Math.random() * 52) + '%';
+        d.style.fontSize = (12 + Math.random() * 3).toFixed(1) + 'px';
+        d.style.animationDuration = (7 + Math.random() * 4).toFixed(1) + 's';
+        layer.appendChild(d);
+        while (layer.children.length > 14) layer.removeChild(layer.firstChild);
+        setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 12500);
+      }
+      function _tgLiveVideoRender(m) {
+        var body = document.getElementById('tgLiveVideoBody');
+        var box = document.getElementById('tgLiveVideoBox');
+        if (!body || !box) return;
+        var mkey = m.type + '|' + (m.url || '') + '|' + (m.title || '');
+        if (box.dataset.mediaKey === mkey) return;
+        box.dataset.mediaKey = mkey;
+        if (m.kind === 'iframe') body.innerHTML = '<iframe src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
+        else body.innerHTML = '<video src="' + m.url + '" controls playsinline preload="metadata"></video>';
+        var nm = document.getElementById('tgFsName'); if (nm) nm.textContent = m.title || '一起看电影';
+      }
+      function _tgUserDmSend() {
+        var inp = document.getElementById('tgDmInput');
+        if (!inp || !_tgActive) return;
+        var t = (inp.value || '').trim();
+        if (!t) return;
+        inp.value = '';
+        _tgLogLive('你：' + t, true);
+        if (Math.random() < 0.75) {
+          setTimeout(function () {
+            if (!_tgActive) return;
+            _tgLogLive(_tgActive.contactName + '：' + TG_DM_REPLY[Math.floor(Math.random() * TG_DM_REPLY.length)], true);
+          }, 1500 + Math.floor(Math.random() * 2600));
+        }
+      }
       function _tgClosePage() {
         _tgAudioStop();
         document.getElementById('togetherPage').classList.remove('show');
@@ -21303,7 +21401,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgHeroIcoSmall(type, size) { return _tgHeroSvg(type).replace('width="22" height="22"', 'width="' + size + '" height="' + size + '"'); }
       var TG_HERO_KEYS = ['movie', 'book', 'music'];
       var TG_HERO_META = {
-        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持 B站视频链接（bilibili.com/video/BV…）或 mp4 直链' },
+        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视类（含限免）B站不开放外链播放' },
         book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
         music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
       };
@@ -21481,6 +21579,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (mi) { mi.style.display = 'flex'; mi.innerHTML = _tgHeroIcoSmall(a.media.type === 'read' ? 'book' : (a.media.type === 'video' ? 'movie' : 'music'), 20); }
           return;
         }
+        var lv0 = document.getElementById('tgLive');
+        if (lv0 && lv0.classList.contains('open') && a.media.type === 'video') { fl.style.display = 'none'; if (mi) mi.style.display = 'none'; return; }
         if (mi) mi.style.display = 'none';
         fl.style.display = 'block';
         if (fl.dataset.mediaKey !== mkey) { fl.dataset.mediaKey = mkey; _tgMediaRender(a.media); }
@@ -21529,9 +21629,22 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var po = document.getElementById('tgPanelSolo');
         if (po) po.addEventListener('click', _tgPanelSoloAction);
       })();
+      document.getElementById('tgLvFullBtn').addEventListener('click', function () {
+        var b = document.getElementById('tgLiveVideoBox');
+        if (!b) return;
+        b.classList.add('full');
+        if (_tgActive && _tgActive.media && _tgActive.media.type === 'video') _tgSpeak(true);
+      });
+      document.getElementById('tgLvExit').addEventListener('click', function () {
+        var b = document.getElementById('tgLiveVideoBox');
+        if (b) b.classList.remove('full');
+      });
+      document.getElementById('tgDmSend').addEventListener('click', _tgUserDmSend);
+      document.getElementById('tgDmInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') _tgUserDmSend(); });
       document.getElementById('tgMiniBtn').addEventListener('click', function () {
         _tgMiniCur = null;
         _tgClosePage();
+        _tgMediaEnsure();
       });
 
       // 陪伴 live 控制：暂停 / 结束 / 关闭
