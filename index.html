@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="334";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="335";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v334</title>
+  <title>字卡 · 小手机 v335</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7639,6 +7639,9 @@
     .tg-hrec-s { font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tg-hrec-arrow { flex: 0 0 auto; color: var(--text-muted); font-size: 18px; }
     .tg-hempty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 18px 8px; line-height: 1.7; }
+    .tg-hrec.sel { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.1); box-shadow: inset 0 0 0 1px var(--primary); }
+    .tg-solo-import { display: block; width: 100%; border: 1.5px dashed rgba(var(--primary-rgba), 0.55); background: transparent; color: var(--primary); font-size: 14px; font-weight: 600; padding: 11px; border-radius: 14px; margin-top: 2px; cursor: pointer; letter-spacing: 1px; }
+    .tg-solo-import:active { background: rgba(var(--primary-rgba), 0.1); }
     .tg-panel-alt { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
     .tg-panel-alt button { border: none; background: none; color: var(--primary); font-size: 12px; padding: 4px 2px; cursor: pointer; }
     .tg-panel-altsep { color: var(--text-muted); }
@@ -14848,32 +14851,32 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .call-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:var(--primary); border:3px solid #fff; box-shadow:0 1px 6px rgba(var(--primary-rgba),0.4); }
 
     /* ===== v325 看书·书架 ===== */
-    #tgBookShelf { position: fixed; inset: 0; z-index: 11600; background: #f6f1e6; display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    #tgBookShelf { position: fixed; inset: 0; z-index: 11600; background: var(--bg-main); display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
     #tgBookShelf.on { display: flex; }
-    .tg-shelf-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 10px; border-bottom: 1px solid rgba(140,120,90,0.12); }
-    .tg-shelf-back { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px; border: none; background: transparent; color: #8a6d4a; font-size: 14px; font-weight: 600; padding: 7px 4px; cursor: pointer; }
+    .tg-shelf-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 10px; border-bottom: 1px solid rgba(var(--primary-rgba), 0.18); }
+    .tg-shelf-back { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px; border: none; background: transparent; color: var(--primary); font-size: 14px; font-weight: 600; padding: 7px 4px; cursor: pointer; }
     .tg-shelf-back svg { width: 18px; height: 18px; }
-    .tg-shelf-title { flex: 1 1 auto; text-align: center; font-size: 16px; font-weight: 700; color: #4a3f32; letter-spacing: 1px; }
-    .tg-shelf-add { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; border: none; background: #8a6d4a; color: #fff; font-size: 22px; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(138,109,74,0.28); transition: transform .1s; }
+    .tg-shelf-title { flex: 1 1 auto; text-align: center; font-size: 16px; font-weight: 700; color: var(--text-main); letter-spacing: 1px; }
+    .tg-shelf-add { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; border: none; background: var(--primary); color: #fff; font-size: 22px; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(var(--primary-rgba), 0.3); transition: transform .1s; }
     .tg-shelf-add:active { transform: scale(0.92); }
     .tg-shelf-scroll { flex: 1 1 auto; overflow-y: auto; padding: 14px 14px calc(14px + env(safe-area-inset-bottom)); }
-    .tg-shelf-item { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 16px; background: #fff; border: 1px solid rgba(140,120,90,0.14); margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 3px rgba(120,90,50,0.05); }
-    .tg-shelf-item:active { border-color: #8a6d4a; }
-    .tg-shelf-cover { flex: 0 0 auto; width: 42px; height: 54px; border-radius: 8px; background: linear-gradient(160deg, #eed4a9, #d9b98a); color: #8a6d4a; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: inset 0 0 0 1px rgba(138,109,74,0.25); }
+    .tg-shelf-item { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 16px; background: var(--bg-card); border: 1px solid rgba(var(--primary-rgba), 0.16); margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 3px rgba(var(--primary-rgba), 0.08); }
+    .tg-shelf-item:active { border-color: var(--primary); }
+    .tg-shelf-cover { flex: 0 0 auto; width: 42px; height: 54px; border-radius: 8px; background: linear-gradient(160deg, var(--primary-light), var(--primary)); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: inset 0 0 0 1px rgba(var(--primary-rgba), 0.3); }
     .tg-shelf-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-    .tg-shelf-name { font-size: 15px; font-weight: 600; color: #4a3f32; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tg-shelf-meta { font-size: 12px; color: #a3957f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .tg-shelf-arrow { flex: 0 0 auto; color: #c0b49d; font-size: 20px; }
-    .tg-shelf-empty { text-align: center; color: #a3957f; font-size: 13px; padding: 70px 24px; line-height: 2; }
+    .tg-shelf-name { font-size: 15px; font-weight: 600; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-shelf-meta { font-size: 12px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-shelf-arrow { flex: 0 0 auto; color: var(--text-muted); font-size: 20px; }
+    .tg-shelf-empty { text-align: center; color: var(--text-muted); font-size: 13px; padding: 70px 24px; line-height: 2; }
     .tg-shelf-emptylogo { font-size: 42px; margin-bottom: 6px; }
     .tg-shelf-import { flex: 1 1 auto; overflow-y: auto; padding: 16px 14px calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
-    .tg-shelf-import .tg-shelf-field { width: 100%; box-sizing: border-box; border: 1px solid rgba(140,120,90,0.22); border-radius: 12px; background: #fff; padding: 11px 12px; font-size: 14px; color: #4a3f32; outline: none; font-family: inherit; }
+    .tg-shelf-import .tg-shelf-field { width: 100%; box-sizing: border-box; border: 1px solid rgba(var(--primary-rgba), 0.25); border-radius: 12px; background: var(--bg-card); padding: 11px 12px; font-size: 14px; color: var(--text-main); outline: none; font-family: inherit; }
     .tg-shelf-import textarea.tg-shelf-field { min-height: 140px; resize: vertical; line-height: 1.7; }
-    .tg-shelf-import .tg-media-tip { font-size: 12px; color: #a3957f; line-height: 1.6; }
-    .tg-shelf-import .tg-file-link { color: #8a6d4a; font-weight: 600; text-decoration: underline; }
-    .tg-shelf-addbtn { border: none; border-radius: 14px; background: #8a6d4a; color: #fff; font-size: 15px; font-weight: 700; padding: 13px; cursor: pointer; letter-spacing: 2px; }
+    .tg-shelf-import .tg-media-tip { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .tg-shelf-import .tg-file-link { color: var(--primary); font-weight: 600; text-decoration: underline; }
+    .tg-shelf-addbtn { border: none; border-radius: 14px; background: var(--primary); color: #fff; font-size: 15px; font-weight: 700; padding: 13px; cursor: pointer; letter-spacing: 2px; }
     .tg-shelf-addbtn:active { opacity: 0.9; }
-    .tg-shelf-cancelbtn { border: none; background: transparent; color: #a3957f; font-size: 13px; padding: 6px; cursor: pointer; text-align: center; }
+    .tg-shelf-cancelbtn { border: none; background: transparent; color: var(--text-muted); font-size: 13px; padding: 6px; cursor: pointer; text-align: center; }
 
     /* ===== v321 全屏阅读器 ===== */
     /* ===== v328 独立媒体（看电影/听歌，与陪伴分离） ===== */
@@ -20966,7 +20969,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               _tgActive = null; _tgReadNext = false;
               try { localStorage.removeItem('zk_together_active'); } catch (fe) {}
             }
-            if (hero === 'book') { _tgOpenBookShelf(); return; }
+            if (hero === 'book') { _tgSoloOpen('book'); return; }
             if (hero === 'movie' || hero === 'music') { _tgSoloOpen(hero); return; }
             _tgOpenHeroPanel(hero);
           });
@@ -21735,9 +21738,41 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         document.getElementById('tgSoloPick').classList.add('show');
       }
       function _tgSoloRenderBook() {
-        var b = _tgSoloBook || {};
-        document.getElementById('tgSoloInput').innerHTML = '<div class="tg-media-tip" style="text-align:center;font-size:14px;padding:10px 0;">📖 ' + _tgEsc(b.title || '一起读的书') + '</div>';
-        document.getElementById('tgSoloHist').innerHTML = '';
+        var inputEl = document.getElementById('tgSoloInput');
+        var histEl = document.getElementById('tgSoloHist');
+        if (histEl) histEl.innerHTML = '';
+        var books = _tgShelfGetBooks();
+        var h = '';
+        if (!books.length) {
+          h = '\u003cdiv class="tg-hempty" style="padding:26px 8px;"\u003e\u0026#128218; 书架还是空的\u003cbr\u003e导入一本书，就能和 TA 一起读\u003c/div\u003e';
+        } else {
+          h = '\u003cdiv class="tg-hreclist" id="tgSoloBookList"\u003e';
+          books.forEach(function (r, i) {
+            var p = _tgShelfPos(r.tkey);
+            var meta = p.n > 0 ? ('已读 ' + (p.pos > 0 ? Math.round(p.pos / p.n * 100) + '% · ' : '') + '共 ' + _tgShelfWc(p.n)) : '还没开始读';
+            var sel = (typeof _tgSoloBook !== 'undefined' && _tgSoloBook && _tgSoloBook.tkey === r.tkey) ? ' sel' : '';
+            h += '\u003cdiv class="tg-hrec' + sel + '" data-i="' + i + '"\u003e\u003cspan class="tg-hrec-ico"\u003e\u0026#128218;\u003c/span\u003e\u003cspan class="tg-hrec-main"\u003e\u003cspan class="tg-hrec-t"\u003e' + _tgEsc(r.title || '未命名') + '\u003c/span\u003e\u003cspan class="tg-hrec-s"\u003e' + _tgEsc(meta) + '\u003c/span\u003e\u003c/span\u003e\u003cspan class="tg-hrec-arrow"\u003e\u0026#8250;\u003c/span\u003e\u003c/div\u003e';
+          });
+          h += '\u003c/div\u003e';
+        }
+        h += '\u003cbutton type="button" class="tg-solo-import" id="tgSoloImportBook"\u003e\u0026#xFF0B; 导入一本书\u003c/button\u003e';
+        inputEl.innerHTML = h;
+        inputEl.querySelectorAll('.tg-hrec').forEach(function (row) {
+          row.addEventListener('click', function () {
+            var r = books[parseInt(row.dataset.i, 10)];
+            if (!r) return;
+            _tgSoloBook = { tkey: r.tkey, title: r.title || '未命名' };
+            inputEl.querySelectorAll('.tg-hrec').forEach(function (x) { x.classList.remove('sel'); });
+            row.classList.add('sel');
+            showToast('已选中《' + _tgSoloBook.title + '》，点下面按钮开始');
+          });
+        });
+        var impBtn = document.getElementById('tgSoloImportBook');
+        if (impBtn) impBtn.addEventListener('click', function () {
+          _tgSoloClose();
+          _tgOpenBookShelf();
+          _tgShelfShowImport();
+        });
       }
       function _tgSoloClose() { document.getElementById('tgSoloPick').classList.remove('show'); }
       function _tgSoloRenderInput() {
