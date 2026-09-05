@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="326";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="327";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v326</title>
+  <title>字卡 · 小手机 v327</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20844,8 +20844,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             _tgCurrentId = cur ? cur.id : persons[0].id;
           }
         }
-        // 恢复进行中的陪伴
-        _tgActive = _tgGetActive();
+        // 工具栏「一起」入口（卡片模式）进选择页，不自动恢复 live；药丸/小窗等恢复入口才恢复
+        _tgActive = _tgCardMode ? null : _tgGetActive();
         if (_tgActive && !persons.some(function (c) { return c.id === _tgActive.contactId; })) _tgActive = null;
         if (!_tgSettingsBound) { _tgSettingsBound = true; _tgInitSettings(); }
         _tgRenderSettings();
@@ -20929,11 +20929,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           });
         });
         el.querySelectorAll('.tg-hero').forEach(function (card) {
-          card.addEventListener('click', function () {
-          var hero = card.dataset.hero;
-          if (hero === 'book') { _tgOpenBookShelf(); return; }
-          _tgOpenHeroPanel(hero);
-        });
+          card.addEventListener('click', function (e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            var hero = card.dataset.hero;
+            if (hero === 'movie' || hero === 'music' || hero === 'book') {
+              _tgActive = null; _tgReadNext = false;
+              try { localStorage.removeItem('zk_together_active'); } catch (fe) {}
+            }
+            if (hero === 'book') { _tgOpenBookShelf(); return; }
+            _tgOpenHeroPanel(hero);
+          });
         });
         _tgInitSlide();
       }
