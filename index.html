@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="308";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="309";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v308</title>
+  <title>字卡 · 小手机 v309</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21401,7 +21401,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgHeroIcoSmall(type, size) { return _tgHeroSvg(type).replace('width="22" height="22"', 'width="' + size + '" height="' + size + '"'); }
       var TG_HERO_KEYS = ['movie', 'book', 'music'];
       var TG_HERO_META = {
-        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视类（含限免）B站不开放外链播放' },
+        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视（含限免）和红果等短剧平台有版权防护，嵌不进来' },
         book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
         music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
       };
@@ -21543,6 +21543,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var yt = url.match(/youtube\.com\/(?:watch\?v=|embed\/|shorts\/)([0-9A-Za-z_-]{6,})/) || url.match(/youtu\.be\/([0-9A-Za-z_-]{6,})/);
           if (bv) return { kind: 'iframe', url: 'https://player.bilibili.com/player.html?bvid=' + bv[1] + '&autoplay=0&danmaku=0&high_quality=1', title: 'B站视频' };
           if (yt) return { kind: 'iframe', url: 'https://www.youtube.com/embed/' + yt[1], title: 'YouTube' };
+          if (/changdunovel\.com|hongguo|douyin\.com|iesdouyin\.com|v\.qq\.com|iqiyi\.com|youku\.com|mgtv\.com|bilibili\.com\/bangumi|b23\.tv/.test(url)) { showToast('这类正片有版权防护嵌不进来；试试B站UP主投稿版或 mp4 直链'); return null; }
           if (/^https?:\/\//.test(url)) return { kind: 'video', url: url, title: '视频' };
           showToast('识别不了这个链接，试试B站链接或mp4直链'); return null;
         }
