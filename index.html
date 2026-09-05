@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="306";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="307";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v306</title>
+  <title>字卡 · 小手机 v307</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7617,6 +7617,30 @@
     .tg-media-input:focus { outline: none; border-color: var(--primary); }
     textarea.tg-media-input { min-height: 130px; resize: vertical; line-height: 1.7; }
     .tg-media-tip { font-size: 11px; color: var(--text-muted); line-height: 1.6; margin: -2px 2px 10px; }
+    /* 一起：导入工作台面板 & 导入记录 */
+    .tg-panel-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .tg-panel-title { flex: 1 1 auto; font-size: 15px; font-weight: 700; color: var(--text-main); }
+    .tg-pick .tmf-btn { background: rgba(var(--primary-rgba), 0.1); }
+    .tg-pc-list { display: flex; gap: 12px; overflow-x: auto; padding: 2px 2px 4px; -webkit-overflow-scrolling: touch; }
+    .tg-pc { flex: 0 0 auto; display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; padding: 0; cursor: pointer; }
+    .tg-pc-ava { width: 40px; height: 40px; border-radius: 50%; background: rgba(var(--primary-rgba), 0.12); color: var(--primary); font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center; border: 2px solid transparent; box-sizing: border-box; }
+    .tg-pc.sel .tg-pc-ava { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.2); }
+    .tg-pc-name { font-size: 10.5px; color: var(--text-muted); max-width: 54px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-pc.sel .tg-pc-name { color: var(--primary); font-weight: 600; }
+    .tg-panel-histhead { display: flex; align-items: baseline; gap: 8px; font-size: 12px; font-weight: 600; color: var(--text-muted); margin: 12px 2px 8px; }
+    .tg-panel-histtip { font-size: 10.5px; font-weight: 400; opacity: 0.8; }
+    .tg-panel-hist { max-height: 208px; overflow-y: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
+    .tg-hrec { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 12px; border: 1.5px solid rgba(var(--primary-rgba), 0.15); background: var(--bg-card); margin-bottom: 8px; cursor: pointer; }
+    .tg-hrec:active { border-color: var(--primary); }
+    .tg-hrec-ico { flex: 0 0 auto; width: 34px; height: 34px; border-radius: 10px; background: rgba(var(--primary-rgba), 0.12); color: var(--primary); display: flex; align-items: center; justify-content: center; }
+    .tg-hrec-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+    .tg-hrec-t { font-size: 13px; font-weight: 600; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-hrec-s { font-size: 11px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-hrec-arrow { flex: 0 0 auto; color: var(--text-muted); font-size: 18px; }
+    .tg-hempty { font-size: 12px; color: var(--text-muted); text-align: center; padding: 18px 8px; line-height: 1.7; }
+    .tg-panel-alt { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
+    .tg-panel-alt button { border: none; background: none; color: var(--primary); font-size: 12px; padding: 4px 2px; cursor: pointer; }
+    .tg-panel-altsep { color: var(--text-muted); }
 
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
@@ -13169,31 +13193,32 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     <!-- 陪伴媒体悬浮窗（导入视频/小说/音乐） -->
     <div class="tg-media-float" id="tgMediaFloat" data-min="0" data-media-key="" style="display:none;">
       <div class="tmf-bar">
-        <span class="tmf-ico" id="tmfIco">🎬</span>
+        <span class="tmf-ico" id="tmfIco"></span>
         <span class="tmf-title" id="tmfTitle">一起看电影</span>
         <button type="button" class="tmf-btn" id="tmfMin">−</button>
         <button type="button" class="tmf-btn" id="tmfClose">×</button>
       </div>
       <div class="tmf-body" id="tmfBody"></div>
     </div>
-    <button type="button" class="tg-media-mini" id="tgMediaMini" style="display:none;">🎬</button>
+    <button type="button" class="tg-media-mini" id="tgMediaMini" style="display:none;"></button>
     <div class="tg-pick-mask" id="tgHeroPick">
       <div class="tg-pick">
-        <div class="tg-pick-title" id="tgHeroPickTitle">和 TA 一起</div>
-        <button type="button" class="tg-pick-btn" id="tgHeroImport"></button>
-        <button type="button" class="tg-pick-btn" id="tgHeroInvite"><span class="tp-ico">✉️</span><span>邀请 TA<em class="tp-sub">发邀请卡等 TA 来 · 原药丸/圆球陪伴</em></span></button>
-        <button type="button" class="tg-pick-btn" id="tgHeroDirect"><span class="tp-ico">▶️</span><span>直接开始<em class="tp-sub">各忙各的 · 原药丸/圆球陪伴</em></span></button>
-        <button type="button" class="tg-pick-btn tg-pick-cancel" id="tgHeroCancel">取消</button>
+        <div class="tg-panel-head">
+          <div class="tg-panel-title" id="tgPanelTitle">和 TA 一起</div>
+          <button type="button" class="tmf-btn" id="tgPanelClose">×</button>
+        </div>
+        <div class="tg-panel-contacts" id="tgPanelContacts"></div>
+        <div id="tgPanelInput"></div>
+        <div class="tg-panel-histhead">导入记录<span class="tg-panel-histtip">点一条，和当时的联系人接着看</span></div>
+        <div class="tg-panel-hist" id="tgPanelHist"></div>
+        <div class="tg-btnrow"><button type="button" class="tg-btn tg-btn-invite" id="tgPanelStart">和 TA 一起开始</button></div>
+        <div class="tg-panel-alt">
+          <button type="button" id="tgPanelInvite">不导入，发邀请卡等 TA</button>
+          <span class="tg-panel-altsep">·</span>
+          <button type="button" id="tgPanelSolo">各忙各的开始</button>
+        </div>
       </div>
     </div>
-    <div class="tg-pick-mask" id="tgMediaModal">
-      <div class="tg-pick">
-        <div class="tg-pick-title" id="tgMediaModalTitle">导入</div>
-        <div id="tgMediaModalBody"></div>
-        <div class="tg-btnrow"><button type="button" class="tg-btn tg-btn-invite" id="tgMediaModalOk">一起开始</button><button type="button" class="tg-btn tg-btn-direct" id="tgMediaModalCancel">取消</button></div>
-      </div>
-    </div>
-
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
       <!-- 信件列表视图 -->
@@ -17444,7 +17469,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             tgCard.dataset.index = index;
             tgCard.addEventListener('click', function (e) {
               if (isSelectMode) { e.stopPropagation(); toggleMessageSelect(index); return; }
-              if (msg.kind === 'end') return;
+              var _tgLastT = null, _tgLastJoin = null;
+              for (var _ti = 0; _ti < messages.length; _ti++) { var _tm0 = messages[_ti]; if (_tm0 && _tm0.together) { _tgLastT = _tm0; if (_tm0.kind === 'join') _tgLastJoin = _tm0; } }
+              var _tgLive0 = (typeof _tgActive !== 'undefined' && _tgActive);
+              var _tgOk = false;
+              if (msg.kind === 'join') _tgOk = (msg === _tgLastJoin) && _tgLive0;
+              else if (msg.kind === 'invite') _tgOk = (msg === _tgLastT) && !_tgLive0;
+              if (!_tgOk) return;
               if (typeof openTogetherPage === 'function') openTogetherPage(false);
             });
             chatMessages.appendChild(tgCard);
@@ -20685,7 +20716,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           });
         });
         el.querySelectorAll('.tg-hero').forEach(function (card) {
-          card.addEventListener('click', function () { _tgShowHeroPick(card.dataset.hero); });
+          card.addEventListener('click', function () { _tgOpenHeroPanel(card.dataset.hero); });
         });
         _tgInitSlide();
       }
@@ -21264,70 +21295,150 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgMiniSetCur(_tgMiniShape());
       });
       // ===== 陪伴媒体导入（一起看视频/读小说/听音乐） =====
+      function _tgHeroSvg(type) {
+        if (type === 'movie') return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2.5"/><line x1="7.5" y1="4" x2="7.5" y2="20"/><line x1="16.5" y1="4" x2="16.5" y2="20"/><line x1="2.5" y1="9.5" x2="7.5" y2="9.5"/><line x1="2.5" y1="14.5" x2="7.5" y2="14.5"/><line x1="16.5" y1="9.5" x2="21.5" y2="9.5"/><line x1="16.5" y1="14.5" x2="21.5" y2="14.5"/><polygon points="10.5,9.5 15,12 10.5,14.5" fill="currentColor" stroke="none"/></svg>';
+        if (type === 'book') return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5.8C10.1 4 7.2 3.4 3.8 3.7v15.1c3.4-.3 6.3.3 8.2 2.1 1.9-1.8 4.8-2.4 8.2-2.1V3.7c-3.4-.3-6.3.3-8.2 2.1z"/><line x1="12" y1="5.8" x2="12" y2="20.9"/></svg>';
+        return '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18.2V5.8l12-2.3v12.4"/><circle cx="6" cy="18.2" r="3"/><circle cx="18" cy="15.9" r="3"/></svg>';
+      }
+      function _tgHeroIcoSmall(type, size) { return _tgHeroSvg(type).replace('width="22" height="22"', 'width="' + size + '" height="' + size + '"'); }
       var TG_HERO_KEYS = ['movie', 'book', 'music'];
       var TG_HERO_META = {
-        movie: { ico: '🎬', name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持 B站视频链接（bilibili.com/video/BV…）或 mp4 直链' },
-        book: { ico: '📖', name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
-        music: { ico: '🎵', name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
+        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持 B站视频链接（bilibili.com/video/BV…）或 mp4 直链' },
+        book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
+        music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
       };
       function _tgHeroAct(key) { return TG_ACTS.filter(function (a) { return a.key === key; })[0]; }
-      function _tgShowHeroPick(key) {
-        var c = contacts.filter(function (x) { return x.id === _tgCurrentId; })[0];
-        var persons = contacts.filter(function (cc) { return !cc.isGroup; });
-        if (!c && persons.length) c = persons[0];
-        if (!c) { showToast('先去添加一个联系人吧'); return; }
-        var m = TG_HERO_META[key];
-        document.getElementById('tgHeroPickTitle').textContent = '和 ' + c.name + ' 一起' + m.name;
-        document.getElementById('tgHeroImport').innerHTML = '<span class="tp-ico">📥</span><span>' + m.sub + '<em class="tp-sub">导入内容 · 媒体小窗，边聊边' + (key === 'movie' ? '看' : (key === 'book' ? '读' : '听')) + '</em></span>';
-        document.getElementById('tgHeroImport').onclick = function () { _tgHideHeroPick(); _tgShowMediaImport(key, c); };
-        document.getElementById('tgHeroInvite').onclick = function () {
-          _tgHideHeroPick();
-          var act = _tgHeroAct(key); if (!act) return;
-          _tgCurrentId = c.id;
-          _tgOpenInviteCard(c, act);
-        };
-        document.getElementById('tgHeroDirect').onclick = function () {
-          _tgHideHeroPick();
-          _tgSelKey = key; _tgCurrentId = c.id;
-          _tgStartTogether(false);
-        };
+      var _tgPanelKey = null, _tgPanelCid = null;
+      function _tgFmtTs(ts) { var d = new Date(ts); return (d.getMonth() + 1) + '/' + d.getDate() + ' ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+      function _tgGetImportHist() { try { var h = JSON.parse(localStorage.getItem('zk_tg_import_hist') || '[]'); return Array.isArray(h) ? h : []; } catch (e) { return []; } }
+      function _tgSaveImportHist(h) { try { localStorage.setItem('zk_tg_import_hist', JSON.stringify(h)); } catch (e) {} }
+      function _tgAddImportHist(rec) {
+        var h = _tgGetImportHist();
+        var sig = rec.type + '|' + (rec.url || rec.tkey || '');
+        h = h.filter(function (r) { return (r.type + '|' + (r.url || r.tkey || '')) !== sig; });
+        h.unshift(rec);
+        var bookSeen = 0, out = [];
+        for (var i = 0; i < h.length; i++) {
+          if (h[i].type === 'book') { bookSeen++; if (bookSeen > 8) { try { if (h[i].tkey) localStorage.removeItem(h[i].tkey); } catch (e2) {} continue; } }
+          out.push(h[i]);
+        }
+        _tgSaveImportHist(out.slice(0, 40));
+      }
+      function _tgPanelPersons() { return contacts.filter(function (c) { return !c.isGroup; }); }
+      function _tgOpenHeroPanel(key) {
+        var persons = _tgPanelPersons();
+        if (!persons.length) { showToast('先去添加一个联系人吧'); return; }
+        var c = persons.filter(function (x) { return x.id === _tgCurrentId; })[0] || persons[0];
+        _tgPanelKey = key; _tgPanelCid = c.id;
+        document.getElementById('tgPanelTitle').textContent = '和 ' + c.name + ' 一起' + TG_HERO_META[key].name;
+        _tgPanelRenderContacts();
+        _tgPanelRenderInput();
+        _tgPanelRenderHist();
         document.getElementById('tgHeroPick').classList.add('show');
       }
-      function _tgHideHeroPick() { document.getElementById('tgHeroPick').classList.remove('show'); }
-      function _tgShowMediaImport(key, c) {
-        var m = TG_HERO_META[key];
-        var mask = document.getElementById('tgMediaModal');
-        document.getElementById('tgMediaModalTitle').textContent = '导入' + (key === 'movie' ? '视频' : (key === 'book' ? '小说' : '音乐')) + ' · 和 ' + c.name + ' 一起';
-        var bd = document.getElementById('tgMediaModalBody');
-        if (key === 'book') {
-          bd.innerHTML = '<input class="tg-media-input" id="tgMediaInTitle" placeholder="标题（选填）">' +
-            '<textarea class="tg-media-input" id="tgMediaInText" placeholder="粘贴小说 / 文章文本…"></textarea>';
+      function _tgCloseHeroPanel() { document.getElementById('tgHeroPick').classList.remove('show'); }
+      function _tgPanelRenderContacts() {
+        var persons = _tgPanelPersons();
+        var h = '<div class="tg-pc-list">';
+        persons.forEach(function (c) {
+          h += '<button type="button" class="tg-pc' + (c.id === _tgPanelCid ? ' sel' : '') + '" data-cid="' + c.id + '"><span class="tg-pc-ava">' + _tgEsc((c.name || '?').charAt(0).toUpperCase()) + '</span><span class="tg-pc-name">' + _tgEsc(c.name) + '</span></button>';
+        });
+        h += '</div>';
+        var el = document.getElementById('tgPanelContacts');
+        el.innerHTML = h;
+        el.querySelectorAll('.tg-pc').forEach(function (b) {
+          b.addEventListener('click', function () {
+            _tgPanelCid = b.dataset.cid;
+            var cc = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
+            document.getElementById('tgPanelTitle').textContent = '和 ' + (cc ? cc.name : 'TA') + ' 一起' + TG_HERO_META[_tgPanelKey].name;
+            _tgPanelRenderContacts();
+          });
+        });
+      }
+      function _tgPanelRenderInput() {
+        var m = TG_HERO_META[_tgPanelKey];
+        var bd = document.getElementById('tgPanelInput');
+        if (_tgPanelKey === 'book') {
+          bd.innerHTML = '<input class="tg-media-input" id="tgPanelInTitle" placeholder="标题（选填）">' +
+            '<textarea class="tg-media-input" id="tgPanelInText" placeholder="粘贴小说 / 文章文本…"></textarea>';
         } else {
-          bd.innerHTML = '<input class="tg-media-input" id="tgMediaInUrl" placeholder="粘贴链接…">' +
-            '<input class="tg-media-input" id="tgMediaInTitle" placeholder="标题（选填）">' +
+          bd.innerHTML = '<input class="tg-media-input" id="tgPanelInUrl" placeholder="粘贴链接…">' +
+            '<input class="tg-media-input" id="tgPanelInTitle" placeholder="标题（选填）">' +
             '<div class="tg-media-tip">' + m.tip + '</div>';
         }
-        document.getElementById('tgMediaModalOk').onclick = function () {
-          var title = (document.getElementById('tgMediaInTitle').value || '').trim();
-          var media = null;
-          if (key === 'book') {
-            var txt = (document.getElementById('tgMediaInText').value || '').trim();
-            if (!txt) { showToast('先粘贴文本内容'); return; }
-            try { localStorage.setItem('zk_together_media_text', txt); } catch (e) {}
-            media = { type: 'read', title: title || '一起读的文章', tkey: 'zk_together_media_text' };
-          } else {
-            var url = (document.getElementById('tgMediaInUrl').value || '').trim();
-            if (!url) { showToast('先粘贴链接'); return; }
-            var pp = _tgParseMediaUrl(key, url);
-            if (!pp) return;
-            media = { type: (key === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
-          }
-          _tgHideMediaModal();
-          _tgHeroStartMedia(key, c, media);
-        };
-        mask.classList.add('show');
       }
-      function _tgHideMediaModal() { document.getElementById('tgMediaModal').classList.remove('show'); }
+      function _tgPanelRenderHist() {
+        var t = _tgPanelKey === 'movie' ? 'movie' : (_tgPanelKey === 'music' ? 'music' : 'book');
+        var hist = _tgGetImportHist().filter(function (r) { return r.type === t; });
+        var el = document.getElementById('tgPanelHist');
+        if (!hist.length) { el.innerHTML = '<div class="tg-hempty">还没有导入记录<br>粘贴链接或文本开始一次，下次就能在这里接着看</div>'; return; }
+        var h = '';
+        hist.forEach(function (r, i) {
+          var rt = r.title || (t === 'book' ? '一起读的文章' : (t === 'movie' ? '视频' : '音乐'));
+          h += '<div class="tg-hrec" data-i="' + i + '"><span class="tg-hrec-ico">' + _tgHeroIcoSmall(t, 16) + '</span><span class="tg-hrec-main"><span class="tg-hrec-t">' + _tgEsc(rt) + '</span><span class="tg-hrec-s">' + _tgEsc(r.contactName || 'TA') + ' · ' + _tgFmtTs(r.ts || Date.now()) + '</span></span><span class="tg-hrec-arrow">›</span></div>';
+        });
+        el.innerHTML = h;
+        el.querySelectorAll('.tg-hrec').forEach(function (row) {
+          row.addEventListener('click', function () { _tgHeroStartFromRec(hist[parseInt(row.dataset.i, 10)]); });
+        });
+      }
+      function _tgHeroStartFromRec(rec) {
+        if (!rec) return;
+        var c = contacts.filter(function (x) { return x.id === rec.contactId; })[0];
+        if (!c) { showToast('这个联系人不在了，换一个吧'); return; }
+        if (rec.type === 'book') {
+          if (!(rec.tkey && localStorage.getItem(rec.tkey))) { showToast('文本找不到了，重新粘贴一份吧'); _tgPanelRenderHist(); return; }
+          var media0 = { type: 'read', title: rec.title, tkey: rec.tkey };
+          _tgCloseHeroPanel();
+          _tgHeroStartMedia('book', c, media0);
+          return;
+        }
+        var media = { type: rec.type === 'movie' ? 'video' : 'music', url: rec.url, kind: rec.kind || 'iframe', title: rec.title };
+        _tgCloseHeroPanel();
+        _tgHeroStartMedia(rec.type, c, media);
+      }
+      function _tgPanelStartAction() {
+        var key = _tgPanelKey; if (!key) return;
+        var c = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
+        if (!c) { showToast('先选一个联系人'); return; }
+        var title = (document.getElementById('tgPanelInTitle').value || '').trim();
+        var media = null, rec = null;
+        if (key === 'book') {
+          var txt = (document.getElementById('tgPanelInText').value || '').trim();
+          if (!txt) { showToast('先粘贴文本内容'); return; }
+          var tk = 'zk_tg_book_' + Date.now();
+          try { localStorage.setItem(tk, txt); } catch (e) { showToast('文本太长，存不下了'); return; }
+          media = { type: 'read', title: title || '一起读的文章', tkey: tk };
+          rec = { type: 'book', tkey: tk, title: media.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+        } else {
+          var url = (document.getElementById('tgPanelInUrl').value || '').trim();
+          if (!url) { showToast('先粘贴链接，或点下面的过往记录'); return; }
+          var pp = _tgParseMediaUrl(key, url);
+          if (!pp) return;
+          media = { type: (key === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
+          rec = { type: key, url: pp.url, kind: pp.kind, title: media.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+        }
+        _tgAddImportHist(rec);
+        _tgCloseHeroPanel();
+        _tgHeroStartMedia(key, c, media);
+      }
+      function _tgPanelInviteAction() {
+        var key = _tgPanelKey; if (!key) return;
+        var c = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
+        if (!c) { showToast('先选一个联系人'); return; }
+        var act = _tgHeroAct(key); if (!act) return;
+        _tgCloseHeroPanel();
+        _tgCurrentId = c.id;
+        _tgOpenInviteCard(c, act);
+      }
+      function _tgPanelSoloAction() {
+        var key = _tgPanelKey; if (!key) return;
+        var c = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
+        if (!c) { showToast('先选一个联系人'); return; }
+        _tgCloseHeroPanel();
+        _tgSelKey = key; _tgCurrentId = c.id;
+        _tgStartTogether(false);
+      }
       function _tgParseMediaUrl(key, url) {
         if (key === 'movie') {
           var bv = url.match(/bilibili\.com\/video\/(BV[0-9A-Za-z]+)/) || url.match(/b23\.tv\/video\/(BV[0-9A-Za-z]+)/);
@@ -21367,11 +21478,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var mkey = a.media.type + '|' + (a.media.url || '') + '|' + (a.media.title || '');
         if (fl.dataset.min === '1') {
           fl.style.display = 'none';
-          if (mi) { mi.style.display = ''; mi.textContent = TG_HERO_META[a.media.type === 'read' ? 'book' : (a.media.type === 'video' ? 'movie' : 'music')].ico; }
+          if (mi) { mi.style.display = 'flex'; mi.innerHTML = _tgHeroIcoSmall(a.media.type === 'read' ? 'book' : (a.media.type === 'video' ? 'movie' : 'music'), 20); }
           return;
         }
         if (mi) mi.style.display = 'none';
-        fl.style.display = '';
+        fl.style.display = 'block';
         if (fl.dataset.mediaKey !== mkey) { fl.dataset.mediaKey = mkey; _tgMediaRender(a.media); }
       }
       function _tgMediaRender(m) {
@@ -21379,7 +21490,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var icoEl = document.getElementById('tmfIco');
         var tiEl = document.getElementById('tmfTitle');
         var meta = TG_HERO_META[m.type === 'read' ? 'book' : (m.type === 'video' ? 'movie' : 'music')];
-        if (icoEl) icoEl.textContent = meta.ico;
+        if (icoEl) icoEl.innerHTML = _tgHeroIcoSmall(m.type === 'read' ? 'book' : (m.type === 'video' ? 'movie' : 'music'), 14);
         if (tiEl) tiEl.textContent = m.title || ('一起' + meta.name);
         if (!body) return;
         if (m.type === 'video') {
@@ -21387,7 +21498,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           else body.innerHTML = '<video class="tmf-video" src="' + m.url + '" controls playsinline preload="metadata"></video>';
         } else if (m.type === 'music') {
           if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe tmf-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
-          else body.innerHTML = '<div class="tmf-music"><div class="tmf-mname">🎵 ' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
+          else body.innerHTML = '<div class="tmf-music"><div class="tmf-mname">' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
         } else {
           var txt = m.tkey ? (localStorage.getItem(m.tkey) || '') : (m.text || '');
           body.innerHTML = '<div class="tmf-reader">' + (txt.split('\n').map(function (x) { return _tgEsc(x) || '<br>'; }).join('\n')) + '</div>';
@@ -21408,13 +21519,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
         document.getElementById('tgMediaMini').addEventListener('click', function () { fl.dataset.min = '0'; _tgMediaEnsure(); });
         var pk = document.getElementById('tgHeroPick');
-        if (pk) pk.addEventListener('click', function (e) { if (e.target === pk) _tgHideHeroPick(); });
-        var cb = document.getElementById('tgHeroCancel');
-        if (cb) cb.addEventListener('click', _tgHideHeroPick);
-        var md = document.getElementById('tgMediaModal');
-        if (md) md.addEventListener('click', function (e) { if (e.target === md) _tgHideMediaModal(); });
-        var mc = document.getElementById('tgMediaModalCancel');
-        if (mc) mc.addEventListener('click', _tgHideMediaModal);
+        if (pk) pk.addEventListener('click', function (e) { if (e.target === pk) _tgCloseHeroPanel(); });
+        var pb = document.getElementById('tgPanelClose');
+        if (pb) pb.addEventListener('click', _tgCloseHeroPanel);
+        var ps = document.getElementById('tgPanelStart');
+        if (ps) ps.addEventListener('click', _tgPanelStartAction);
+        var pi = document.getElementById('tgPanelInvite');
+        if (pi) pi.addEventListener('click', _tgPanelInviteAction);
+        var po = document.getElementById('tgPanelSolo');
+        if (po) po.addEventListener('click', _tgPanelSoloAction);
       })();
       document.getElementById('tgMiniBtn').addEventListener('click', function () {
         _tgMiniCur = null;
