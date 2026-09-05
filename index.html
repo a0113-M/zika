@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="320";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="321";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v320</title>
+  <title>字卡 · 小手机 v321</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14809,6 +14809,59 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .call-range:active::-webkit-slider-thumb { transform:scale(1.12); }
 .call-range::-moz-range-track { height:10px; background:transparent; border:none; border-radius:999px; }
 .call-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:var(--primary); border:3px solid #fff; box-shadow:0 1px 6px rgba(var(--primary-rgba),0.4); }
+
+    /* ===== v321 全屏阅读器 ===== */
+    #tgReadFs { position: fixed; inset: 0; z-index: 300; background: #f6f1e6; display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; }
+    #tgReadFs.on { display: flex; }
+    .trf-top { display: flex; align-items: center; gap: 10px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 6px; color: #8a8272; font-size: 13px; }
+    .trf-left { display: flex; align-items: center; gap: 4px; min-width: 0; flex: 1 1 0; }
+    .trf-back { width: 30px; height: 30px; margin-left: -6px; display: inline-flex; align-items: center; justify-content: center; color: #6b6455; flex: 0 0 auto; }
+    .trf-chap { display: inline-flex; align-items: center; gap: 5px; min-width: 0; max-width: 36vw; color: #57503f; }
+    .trf-chap-t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }
+    .trf-mid { flex: 0 0 auto; font-variant-numeric: tabular-nums; letter-spacing: 1px; color: #6b6455; }
+    .trf-right { flex: 1 1 0; text-align: right; font-variant-numeric: tabular-nums; color: #a06a5f; white-space: nowrap; }
+    .trf-body { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; position: relative; padding: 14px 22px 34px; }
+    .trf-chunk { min-height: 1px; }
+    .trf-para { font-size: 18px; line-height: 1.95; color: #33302a; margin: 0 0 16px; word-break: break-word; text-indent: 2em; }
+    .trf-para.has-mine { background: rgba(124, 92, 255, 0.07); border-radius: 8px; }
+    .trf-chaph { font-size: 17px; font-weight: 700; color: #3a352c; text-align: center; margin: 22px 0 18px; }
+    .trf-ta { margin: -8px 0 18px; background: #fffdf7; border: 1px solid #eadfc4; border-left: 3px solid #c9a86a; border-radius: 4px 12px 12px 4px; padding: 9px 12px; font-size: 13.5px; color: #6b6252; }
+    .trf-ta-head { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #b09a72; margin-bottom: 5px; }
+    .trf-ta-ava { width: 18px; height: 18px; border-radius: 50%; background: linear-gradient(135deg, #d8b97e, #b98f4e); color: #fff; font-size: 11px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+    .trf-ta-txt { color: #4a4237; line-height: 1.7; }
+    .trf-ta-replies { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+    .trf-ta-rep { font-size: 13px; color: #4a4237; background: rgba(201, 168, 106, 0.13); border-radius: 10px; padding: 6px 10px; line-height: 1.6; word-break: break-word; }
+    .trf-ta-rep.me { background: rgba(124, 92, 255, 0.1); }
+    .trf-ta-rep-input { display: none; margin-top: 8px; gap: 6px; }
+    .trf-ta.open .trf-ta-rep-input { display: flex; }
+    .trf-ta-rep-input input { flex: 1; min-width: 0; border: 1px solid #e5dcc4; border-radius: 10px; padding: 7px 10px; font-size: 13px; background: #fff; color: #333; outline: none; }
+    .trf-ta-rep-input button { border: none; background: #7c5cff; color: #fff; border-radius: 10px; padding: 0 14px; font-size: 13px; }
+    .trf-mine { margin: -8px 0 18px; background: rgba(124, 92, 255, 0.07); border: 1px dashed rgba(124, 92, 255, 0.4); border-radius: 12px; padding: 9px 12px; font-size: 13.5px; color: #4c4470; line-height: 1.7; word-break: break-word; }
+    .trf-mine b { display: inline-block; font-size: 11px; color: #7c5cff; margin-right: 6px; }
+    .trf-bottom { display: flex; align-items: center; justify-content: space-between; padding: 6px 16px calc(env(safe-area-inset-bottom, 0px) + 8px); color: #a39b8a; font-size: 12px; font-variant-numeric: tabular-nums; }
+    .trf-clockwrap { display: inline-flex; align-items: center; gap: 5px; }
+    .trf-mask { position: absolute; inset: 0; background: rgba(25, 20, 12, 0.42); opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 5; }
+    .trf-mask.on { opacity: 1; pointer-events: auto; }
+    .trf-drawer { position: absolute; top: 0; bottom: 0; left: 0; width: 80%; max-width: 330px; background: #fbf7ee; z-index: 6; transform: translateX(-103%); transition: transform 0.28s; display: flex; flex-direction: column; box-shadow: 6px 0 24px rgba(50, 38, 16, 0.16); }
+    .trf-drawer.on { transform: none; }
+    .trf-drawer-h { padding: calc(env(safe-area-inset-top, 0px) + 16px) 16px 10px; font-size: 15px; color: #3f3a30; border-bottom: 1px solid #eee4cf; }
+    .trf-drawer-h b { color: #b09a72; font-size: 12px; margin-left: 4px; }
+    .trf-drawer-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 6px 0 16px; }
+    .trf-drawer-tip { padding: 12px 16px; font-size: 12.5px; color: #a39b8a; }
+    .trf-drawer-item { display: block; width: 100%; text-align: left; border: none; background: none; padding: 11px 16px; font-size: 13.5px; color: #57503f; line-height: 1.5; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .trf-drawer-item.cur { color: #7c5cff; font-weight: 600; background: rgba(124, 92, 255, 0.07); }
+    .trf-drawer-f { padding: 10px 16px calc(env(safe-area-inset-bottom, 0px) + 12px); border-top: 1px solid #eee4cf; }
+    .trf-drawer-f button { width: 100%; border: none; border-radius: 12px; padding: 11px 0; font-size: 14px; background: #efe7d4; color: #5a5240; }
+    .trf-sheet { position: absolute; left: 0; right: 0; bottom: 0; background: #fbf7ee; border-radius: 18px 18px 0 0; padding: 16px 16px calc(env(safe-area-inset-bottom, 0px) + 16px); z-index: 7; transform: translateY(106%); transition: transform 0.28s; box-shadow: 0 -8px 30px rgba(50, 38, 16, 0.18); }
+    .trf-sheet.on { transform: none; }
+    .trf-sheet-t { font-size: 14px; font-weight: 600; color: #3f3a30; margin-bottom: 8px; }
+    .trf-sheet-p { font-size: 12.5px; color: #8a8272; line-height: 1.6; max-height: 66px; overflow: hidden; margin-bottom: 10px; background: rgba(124, 92, 255, 0.05); border-radius: 8px; padding: 8px 10px; }
+    .trf-sheet textarea { width: 100%; box-sizing: border-box; min-height: 84px; border: 1px solid #e5dcc4; border-radius: 10px; padding: 10px; font-size: 14px; background: #fff; color: #333; outline: none; resize: none; font-family: inherit; line-height: 1.6; }
+    .trf-sheet-btns { display: flex; gap: 10px; margin-top: 10px; }
+    .trf-sheet-btns button { flex: 1; border: none; border-radius: 12px; padding: 11px 0; font-size: 14px; }
+    .trf-sheet-btns .trf-ok { background: #7c5cff; color: #fff; }
+    .trf-sheet-btns .trf-del { background: #f3e2de; color: #a05548; }
+    .trf-sheet-btns .trf-cancel { background: #efe7d4; color: #5a5240; }
 </style>
     <div class="dvd-hist-modal" id="dvdCallCfgModal" style="display:none;">
       <div class="dvd-hist-modal-mask"></div>
@@ -20982,6 +21035,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _tgSaveActive(_tgActive);
           var _verb = _im.type === 'video' ? '看' : (_im.type === 'read' ? '读' : '听');
           _tgLogLive('你挑了「' + (_im.title || '内容') + '」，和 ' + _tgActive.contactName + ' 一起' + _verb);
+          _tgRFAuto = (_im.type === 'read');
           _tgMediaEnsure();
         }
         _tgCloseInviteCard();
@@ -21095,6 +21149,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgStopTimer();
         _tgTimer = setInterval(_tgTick, 1000);
         _tgStartHb();
+        if (a.media && a.media.type === 'read' && _tgRFAuto) { _tgRFAuto = false; setTimeout(function () { _tgRFOpen(a.media.tkey, a.media.title); }, 650); }
         if (a.paused) _tgAudioStop(); else _tgAudioStart();
       }
 
@@ -21166,6 +21221,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       function _tgEndTogether(auto) {
         if (!_tgActive) return;
+        if (_tgRF) { try { _tgRFClose(); } catch (e9) {} }
         var a = _tgActive;
         var durSec = a.mode ? ((a.mode === 1 ? 25 * 60 : 45 * 60) - (a.remain || 0)) : (a.acc || 0);
         var durMs = durSec * 1000;
@@ -21735,6 +21791,403 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           } catch (e) { rej(e); }
         });
       }
+      /* ===== v321 全屏阅读器（图二式） ===== */
+      var TG_READ_COMMENTS = ['这段我看了好几遍', '这句我划下来了', '读到这里，忽然想到你', '好虐，先标记一下', '哈哈哈哈这段好玩', '这段气氛写得真好', '啊，这里好甜', '替你把这句折了个角', '这段有点没看懂，等下问你', '我在这一页等你', '贴张便利贴：这里很重要', '这一章有点东西', '读慢一点，不着急', '先放张字卡在这里', '嘿嘿，等你读到这行', '这里我有点小想法', '看到这段想起我们了', '此处应有划线', '这句很适合发给你', '私藏段落 +1', '读到这里停一停，缓一缓', '这段节奏真好', '人物从这里开始变了', '马克！后面好像有伏笔', '这句想抄进日记里', '猜猜我为什么停在这段'];
+      var TG_READ_REPLIES = ['嗯嗯，我也这么想', '你终于读到这儿啦', '等你这句好久了', '抱抱，继续往下读吧', '哈哈被你发现了', '对吧对吧，我也觉得', '先记下，读完这章聊', '继续继续，我在呢'];
+      var _tgRF = null;
+      var _tgRFAuto = false;
+      var _tgRFSheetPi = -1;
+      function _tgRFHash(s0) { var h = 2166136261; for (var i = 0; i < s0.length; i++) { h ^= s0.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
+      function _tgRFMeta(tk) { try { return JSON.parse(localStorage.getItem('zk_tg_read_meta_' + tk) || 'null'); } catch (e) { return null; } }
+      function _tgRFBuild() {
+        if (document.getElementById('tgReadFs')) return;
+        var fs = document.createElement('div');
+        fs.id = 'tgReadFs';
+        fs.innerHTML = '<div class="trf-top"><div class="trf-left"><span class="trf-back" id="trfBack"><svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="trf-chap" id="trfChap"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="trf-chap-t" id="trfChapT">目录</span></span></div><span class="trf-mid" id="trfTimer">00:00:00</span><span class="trf-right" id="trfVitals">--</span></div>'
+          + '<div class="trf-body" id="trfBody"></div>'
+          + '<div class="trf-bottom"><span id="trfPage">1/1</span><span class="trf-clockwrap"><span id="trfClockT">--:--</span><svg viewBox="0 0 28 14" width="24" height="12"><rect x="1" y="2" width="22" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="24.2" y="5" width="2.6" height="4" rx="1" fill="currentColor"/><rect id="trfBatFill" x="3" y="4" width="10" height="6" rx="1.2" fill="currentColor" opacity="0.85"/></svg><span id="trfBat"></span></span></div>'
+          + '<div class="trf-mask" id="trfMask"></div>'
+          + '<div class="trf-drawer" id="trfDrawer"><div class="trf-drawer-h">目录 <b id="trfDCount"></b></div><div class="trf-drawer-list" id="trfDList"></div><div class="trf-drawer-f"><button type="button" id="trfDExit">返回陪伴页</button></div></div>'
+          + '<div class="trf-sheet" id="trfSheet"><div class="trf-sheet-t">给这段写个标注</div><div class="trf-sheet-p" id="trfShPrev"></div><textarea id="trfShText" maxlength="200" placeholder="记下此刻的想法…"></textarea><div class="trf-sheet-btns"><button type="button" class="trf-del" id="trfShDel">删除</button><button type="button" class="trf-cancel" id="trfShCancel">取消</button><button type="button" class="trf-ok" id="trfShOk">保存</button></div></div>';
+        document.body.appendChild(fs);
+        document.getElementById('trfBack').addEventListener('click', function () { _tgRFClose(); });
+        document.getElementById('trfChap').addEventListener('click', function () { _tgRFDrawer(true); });
+        document.getElementById('trfMask').addEventListener('click', function () { _tgRFDrawer(false); });
+        document.getElementById('trfDExit').addEventListener('click', function () { _tgRFDrawer(false); setTimeout(_tgRFClose, 120); });
+        document.getElementById('trfDList').addEventListener('click', function (ev) {
+          var b = ev.target.closest('[data-jump]'); if (!b) return;
+          _tgRFDrawer(false);
+          _tgRFJump(parseInt(b.getAttribute('data-jump'), 10) || 0);
+        });
+        var bd = document.getElementById('trfBody');
+        bd.addEventListener('click', _tgRFBodyClick);
+        bd.addEventListener('scroll', _tgRFOnScroll);
+        document.getElementById('trfShOk').addEventListener('click', _tgRFSheetSave);
+        document.getElementById('trfShCancel').addEventListener('click', _tgRFSheetHide);
+        document.getElementById('trfShDel').addEventListener('click', _tgRFSheetDel);
+        document.addEventListener('visibilitychange', function () {
+          if (document.visibilityState === 'hidden' && _tgRF) { try { localStorage.setItem('zk_tg_read_pos_' + _tgRF.tkey, String(_tgRF.topPi || 0)); } catch (e) {} }
+        });
+      }
+      function _tgRFOpen(tkey, title) {
+        if (!tkey) { showToast('这本书没带上文本，重新导入一份吧'); return; }
+        _tgRFBuild();
+        var fs = document.getElementById('tgReadFs');
+        if (_tgRF && _tgRF.tkey === tkey) { fs.classList.add('on'); return; }
+        if (_tgRF) _tgRFClose();
+        _tgBookLoad(tkey).then(function (txt) {
+          if (!txt) { showToast('文本找不到了，重新导入一份吧'); return; }
+          var lines = String(txt).split('\n');
+          var paras = [];
+          for (var i = 0; i < lines.length; i++) { var L = lines[i].replace(/\r/g, '').trim(); if (L) paras.push(L); }
+          if (!paras.length) { showToast('这本书是空的'); return; }
+          var N = paras.length;
+          var cum = new Array(N + 1); cum[0] = 0;
+          for (i = 0; i < N; i++) cum[i + 1] = cum[i] + paras[i].length + 1;
+          var chaps = []; var chapPi = {};
+          for (i = 0; i < N; i++) {
+            var P0 = paras[i]; var isCh = false;
+            var mCh = P0.match(/^第\s*([0-9零一二三四五六七八九十百千万两]+)\s*([章节回卷篇部话])([\s\S]{0,28})$/);
+            if (mCh) {
+              var rest = mCh[3] || '';
+              var arab = /^[0-9]+$/.test(mCh[1]);
+              if (rest === '' || /^[\s：:，,。.！!？?—…《「『【-]/.test(rest) || (arab && P0.length <= 30)) isCh = true;
+            }
+            if (!isCh && P0.length <= 20 && /^(序章|楔子|番外|终章)/.test(P0)) isCh = true;
+            if (!isCh && /^chapter\s*\d+/i.test(P0) && P0.length <= 40) isCh = true;
+            if (isCh) { chaps.push({ pi: i, t: P0 }); chapPi[i] = 1; }
+          }
+          var cardMap = {}; var last = -999;
+          for (i = 12; i < N; i++) {
+            if (chapPi[i] || i - last < 36) continue;
+            if (_tgRFHash(tkey + '|' + i) % 100 < 4) {
+              var arr = [TG_READ_COMMENTS[_tgRFHash(tkey + '#a' + i) % TG_READ_COMMENTS.length]];
+              if (_tgRFHash(tkey + '#b' + i) % 100 < 25) arr.push(TG_READ_COMMENTS[_tgRFHash(tkey + '#c' + i) % TG_READ_COMMENTS.length]);
+              cardMap[i] = arr; last = i;
+            }
+          }
+          var hasCard = false; for (var kk in cardMap) { hasCard = true; break; }
+          if (!hasCard && N > 40) cardMap[N >> 1] = [TG_READ_COMMENTS[0]];
+          var notes = {}; try { notes = JSON.parse(localStorage.getItem('zk_tg_read_notes_' + tkey) || '{}') || {}; } catch (e2) { notes = {}; }
+          var posPi = 0; try { posPi = parseInt(localStorage.getItem('zk_tg_read_pos_' + tkey) || '0', 10) || 0; } catch (e3) {}
+          if (posPi >= N) posPi = 0;
+          try { localStorage.setItem('zk_tg_read_meta_' + tkey, JSON.stringify({ n: N, chars: cum[N] })); } catch (e4) {}
+          _tgRF = { tkey: tkey, title: title || '一起读的书', paras: paras, N: N, cum: cum, chaps: chaps, chapPi: chapPi, cardMap: cardMap, notes: notes, CHUNK: 400, chunks: [], topPi: posPi, pageTotal: Math.max(1, Math.ceil(cum[N] / 650)), iv: null, iv2: null, _lastUi: 0, _lastSave: 0, _lastSc: 0, _lastChap: -1, name: (_tgActive && _tgActive.contactName) || 'TA' };
+          var R = _tgRF;
+          document.getElementById('trfChapT').textContent = chaps.length ? chaps[0].t : ('《' + R.title + '》');
+          document.getElementById('trfPage').textContent = '1/' + R.pageTotal;
+          _tgRFRenderDrawer();
+          _tgRFRenderChunk(Math.floor(posPi / R.CHUNK) * R.CHUNK);
+          fs.classList.add('on');
+          _tgRFUpdateClock();
+          R.iv = setInterval(_tgRFBeat, 1000);
+          R.iv2 = setInterval(_tgRFUpdateClock, 30000);
+          var body = document.getElementById('trfBody');
+          requestAnimationFrame(function () {
+            if (posPi > 0) {
+              var el = body.querySelector('[data-pi="' + posPi + '"]');
+              if (el) body.scrollTop = Math.max(0, el.offsetTop - 14);
+            }
+            _tgRFUpdatePage();
+            if (posPi > 0) showToast('回到上次读到的地方');
+          });
+        });
+      }
+      function _tgRFClose() {
+        var R = _tgRF; if (!R) return;
+        _tgRFUpdatePage();
+        try { localStorage.setItem('zk_tg_read_pos_' + R.tkey, String(R.topPi || 0)); } catch (e) {}
+        if (R.iv) clearInterval(R.iv);
+        if (R.iv2) clearInterval(R.iv2);
+        var fs = document.getElementById('tgReadFs');
+        if (fs) fs.classList.remove('on');
+        _tgRFDrawer(false);
+        _tgRFSheetHide();
+        var chars = R.cum[R.N] || 0;
+        var top = R.topPi || 0;
+        _tgRF = null;
+        var rp = document.getElementById('tmfReadProg');
+        if (rp && R.N) {
+          var pct = Math.max(0, Math.min(100, Math.round(top / R.N * 100)));
+          var wc = chars >= 10000 ? ((chars / 10000).toFixed(1) + ' 万字') : (chars + ' 字');
+          rp.textContent = (pct > 0 ? '已读 ' + pct + '% · 共' + wc : '还没开始 · 共' + wc);
+        }
+      }
+      function _tgRFBeat() {
+        var tEl = document.getElementById('tgTimer');
+        var rT = document.getElementById('trfTimer');
+        if (rT) {
+          var lv = document.getElementById('tgLive');
+          if (tEl && lv && lv.classList.contains('open')) rT.textContent = tEl.textContent;
+          else if (_tgActive) rT.textContent = _tgFmtHMS(_tgActive.mode ? Math.max(0, _tgActive.remain || 0) : (_tgActive.acc || 0));
+        }
+        var hb = document.getElementById('tgHbNum'); var tp = document.getElementById('tgTpNum');
+        var rV = document.getElementById('trfVitals');
+        if (rV) rV.textContent = (hb ? hb.textContent.replace('次/min', '次') : '--') + '  ' + (tp ? tp.textContent : '--');
+      }
+      function _tgRFUpdateClock() {
+        var d = new Date(); var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+        var el = document.getElementById('trfClockT');
+        if (el) el.textContent = p2(d.getHours()) + ':' + p2(d.getMinutes());
+        var bt = document.getElementById('trfBat'); var bf = document.getElementById('trfBatFill');
+        if (navigator.getBattery && bt && bf) {
+          navigator.getBattery().then(function (b) {
+            var lv = Math.max(0, Math.min(1, b.level || 0));
+            bt.textContent = Math.round(lv * 100) + '%';
+            bf.setAttribute('width', String(2 + 16 * lv));
+            bf.style.opacity = b.charging ? '0.45' : '1';
+          }).catch(function () { bt.textContent = ''; });
+        } else if (bt) { bt.textContent = ''; }
+      }
+      function _tgRFDrawer(on) {
+        var mk = document.getElementById('trfMask'); var dr = document.getElementById('trfDrawer');
+        if (mk) mk.classList.toggle('on', !!on);
+        if (dr) dr.classList.toggle('on', !!on);
+      }
+      function _tgRFRenderDrawer() {
+        var R = _tgRF; if (!R) return;
+        var list = document.getElementById('trfDList');
+        document.getElementById('trfDCount').textContent = R.chaps.length ? (R.chaps.length + ' 章') : (R.N + ' 段');
+        var h = '';
+        if (R.chaps.length) {
+          for (var i = 0; i < R.chaps.length; i++) h += '<button type="button" class="trf-drawer-item" data-jump="' + R.chaps[i].pi + '">' + _tgEsc(R.chaps[i].t) + '</button>';
+        } else {
+          h += '<div class="trf-drawer-tip">这本书没有章节标记，按进度跳</div>';
+          var fs2 = [0, 0.25, 0.5, 0.75];
+          for (i = 0; i < fs2.length; i++) h += '<button type="button" class="trf-drawer-item" data-jump="' + Math.floor(R.N * fs2[i]) + '">' + (fs2[i] === 0 ? '从头开始' : ('跳到 ' + Math.round(fs2[i] * 100) + '%')) + '</button>';
+        }
+        list.innerHTML = h;
+      }
+      function _tgRFChunkHTML(s0, e0) {
+        var h = [];
+        for (var i = s0; i < e0; i++) h.push(_tgRFParaBlock(i));
+        return h.join('');
+      }
+      function _tgRFParaBlock(i) {
+        var R = _tgRF; var p = R.paras[i]; var h = '';
+        if (R.chapPi[i]) h += '<div class="trf-chaph" data-pi="' + i + '">' + _tgEsc(p) + '</div>';
+        else h += '<div class="trf-para" data-pi="' + i + '">' + _tgEsc(p) + '</div>';
+        var nt = R.notes[i] || null;
+        var card = R.cardMap[i];
+        if (card) {
+          h += '<div class="trf-ta" data-pi="' + i + '"><div class="trf-ta-head"><span class="trf-ta-ava">' + _tgEsc((R.name || 'TA').charAt(0)) + '</span>' + _tgEsc(R.name) + ' 停在这段旁</div>';
+          for (var k = 0; k < card.length; k++) h += '<div class="trf-ta-txt">「' + _tgEsc(card[k]) + '」</div>';
+          h += _tgRFRepHTML(nt, R.name);
+          h += '<div class="trf-ta-rep-input"><input type="text" maxlength="60" placeholder="回 TA 一句…"><button type="button" class="trf-ta-send">发送</button></div></div>';
+        }
+        if (nt && nt.mine) h += '<div class="trf-mine" data-pi="' + i + '"><b>我的标注</b>' + _tgEsc(nt.mine) + '</div>';
+        return h;
+      }
+      function _tgRFRepHTML(nt, name) {
+        if (!nt || !nt.rep || !nt.rep.length) return '';
+        var h = '<div class="trf-ta-replies">';
+        for (var i = 0; i < nt.rep.length; i++) {
+          var r = nt.rep[i];
+          h += '<div class="trf-ta-rep' + (r[2] === 'me' ? ' me' : '') + '">' + (r[2] === 'me' ? '我' : _tgEsc(name || 'TA')) + '：' + _tgEsc(r[0]) + '</div>';
+        }
+        return h + '</div>';
+      }
+      function _tgRFRenderChunk(s0) {
+        var R = _tgRF; var body = document.getElementById('trfBody');
+        for (var i = 0; i < R.chunks.length; i++) R.chunks[i].el.remove();
+        R.chunks = [];
+        var e0 = Math.min(s0 + R.CHUNK, R.N);
+        var div = document.createElement('div'); div.className = 'trf-chunk';
+        div.innerHTML = _tgRFChunkHTML(s0, e0);
+        body.appendChild(div); body.scrollTop = 0;
+        R.chunks.push({ s: s0, e: e0, el: div });
+        R.topPi = s0;
+      }
+      function _tgRFJump(pi) {
+        var R = _tgRF; if (!R) return;
+        pi = Math.max(0, Math.min(R.N - 1, pi));
+        _tgRFRenderChunk(Math.floor(pi / R.CHUNK) * R.CHUNK);
+        var body = document.getElementById('trfBody');
+        requestAnimationFrame(function () {
+          var el = body.querySelector('[data-pi="' + pi + '"]');
+          if (el) body.scrollTop = Math.max(0, el.offsetTop - 14);
+          R.topPi = pi; _tgRFUpdatePage(); _tgRFSavePos();
+        });
+      }
+      function _tgRFAppendNext() {
+        var R = _tgRF; if (!R) return;
+        var lastC = R.chunks[R.chunks.length - 1];
+        if (!lastC || lastC.e >= R.N) return;
+        var s0 = lastC.e; var e0 = Math.min(s0 + R.CHUNK, R.N);
+        var div = document.createElement('div'); div.className = 'trf-chunk';
+        div.innerHTML = _tgRFChunkHTML(s0, e0);
+        document.getElementById('trfBody').appendChild(div);
+        R.chunks.push({ s: s0, e: e0, el: div });
+        _tgRFTrimChunks();
+      }
+      function _tgRFPrependPrev() {
+        var R = _tgRF; if (!R) return;
+        var firstC = R.chunks[0];
+        if (!firstC || firstC.s <= 0) return;
+        var s0 = Math.max(0, firstC.s - R.CHUNK); var e0 = firstC.s;
+        var div = document.createElement('div'); div.className = 'trf-chunk';
+        div.innerHTML = _tgRFChunkHTML(s0, e0);
+        var body = document.getElementById('trfBody');
+        body.insertBefore(div, body.firstChild);
+        body.scrollTop += div.offsetHeight;
+        R.chunks.unshift({ s: s0, e: e0, el: div });
+        _tgRFTrimChunks();
+      }
+      function _tgRFTrimChunks() {
+        var R = _tgRF; if (!R) return;
+        var body = document.getElementById('trfBody');
+        while (R.chunks.length > 4) {
+          var first = R.chunks[0]; var lastC = R.chunks[R.chunks.length - 1];
+          if (R.topPi >= first.e) {
+            var hgt = first.el.offsetHeight || 0;
+            first.el.remove(); R.chunks.shift();
+            body.scrollTop -= hgt;
+          } else {
+            lastC.el.remove(); R.chunks.pop();
+          }
+        }
+      }
+      function _tgRFOnScroll() {
+        var R = _tgRF; if (!R) return;
+        var now = Date.now(); if (now - R._lastSc < 180) return; R._lastSc = now;
+        var body = document.getElementById('trfBody');
+        if (body.scrollTop + body.clientHeight > body.scrollHeight - 320) _tgRFAppendNext();
+        if (body.scrollTop < 260 && R.chunks.length && R.chunks[0].s > 0) _tgRFPrependPrev();
+        if (now - R._lastUi > 600) { R._lastUi = now; _tgRFUpdatePage(); }
+        if (now - R._lastSave > 3000) { R._lastSave = now; _tgRFSavePos(); }
+      }
+      function _tgRFUpdatePage() {
+        var R = _tgRF; if (!R) return;
+        var body = document.getElementById('trfBody');
+        var pi = R.topPi || 0;
+        var nodes = body.querySelectorAll('[data-pi]');
+        for (var i = 0; i < nodes.length; i++) {
+          var r = nodes[i].getBoundingClientRect();
+          if (r.bottom > 110) { pi = parseInt(nodes[i].getAttribute('data-pi'), 10) || 0; break; }
+        }
+        R.topPi = pi;
+        var page = Math.max(1, Math.min(R.pageTotal, 1 + Math.floor((R.cum[pi] || 0) / 650)));
+        var pg = document.getElementById('trfPage'); if (pg) pg.textContent = page + '/' + R.pageTotal;
+        var ci = -1;
+        for (i = R.chaps.length - 1; i >= 0; i--) { if (R.chaps[i].pi <= pi) { ci = i; break; } }
+        var ct = document.getElementById('trfChapT');
+        if (ct) ct.textContent = ci >= 0 ? R.chaps[ci].t : ('《' + R.title + '》');
+        if (ci !== R._lastChap) {
+          R._lastChap = ci;
+          var list = document.getElementById('trfDList');
+          if (list && R.chaps.length) {
+            var items = list.querySelectorAll('.trf-drawer-item');
+            for (i = 0; i < items.length; i++) items[i].classList.remove('cur');
+            var cur = list.querySelector('[data-jump="' + R.chaps[ci].pi + '"]');
+            if (cur) cur.classList.add('cur');
+          }
+        }
+      }
+      function _tgRFSavePos() { var R = _tgRF; if (!R) return; try { localStorage.setItem('zk_tg_read_pos_' + R.tkey, String(R.topPi || 0)); } catch (e) {} }
+      function _tgRFSaveNotes() { var R = _tgRF; if (!R) return; try { localStorage.setItem('zk_tg_read_notes_' + R.tkey, JSON.stringify(R.notes)); } catch (e) {} }
+      function _tgRFBodyClick(ev) {
+        var R = _tgRF; if (!R) return;
+        var ta = ev.target.closest('.trf-ta');
+        if (ta) {
+          if (ev.target.closest('.trf-ta-send')) { _tgRFSendReply(ta); return; }
+          if (ev.target.closest('input')) { ta.classList.add('open'); return; }
+          ta.classList.toggle('open');
+          return;
+        }
+        var mn = ev.target.closest('.trf-mine');
+        if (mn) { _tgRFSheetShow(parseInt(mn.getAttribute('data-pi'), 10) || 0); return; }
+        var pa = ev.target.closest('.trf-para');
+        if (pa && !pa.classList.contains('trf-chaph')) _tgRFSheetShow(parseInt(pa.getAttribute('data-pi'), 10) || 0);
+      }
+      function _tgRFSendReply(cardEl) {
+        var R = _tgRF; if (!R) return;
+        var pi = parseInt(cardEl.getAttribute('data-pi'), 10) || 0;
+        var inp = cardEl.querySelector('input');
+        var v = inp ? inp.value.trim() : '';
+        if (!v) return;
+        var nt = R.notes[pi] = R.notes[pi] || {};
+        nt.rep = nt.rep || [];
+        nt.rep.push([v, Date.now(), 'me']);
+        _tgRFSaveNotes();
+        if (inp) inp.value = '';
+        _tgRFRenderRep(cardEl, pi);
+        if (Math.random() < 0.85) {
+          setTimeout(function () {
+            if (!_tgRF || _tgRF.tkey !== R.tkey) return;
+            var nt2 = _tgRF.notes[pi]; if (!nt2) return;
+            nt2.rep = nt2.rep || [];
+            nt2.rep.push([TG_READ_REPLIES[Math.floor(Math.random() * TG_READ_REPLIES.length)], Date.now(), 'ta']);
+            _tgRFSaveNotes();
+            var el2 = document.getElementById('trfBody').querySelector('.trf-ta[data-pi="' + pi + '"]');
+            if (el2) _tgRFRenderRep(el2, pi);
+          }, 1500 + Math.floor(Math.random() * 1200));
+        }
+      }
+      function _tgRFRenderRep(cardEl, pi) {
+        var R = _tgRF; if (!R) return;
+        var old = cardEl.querySelector('.trf-ta-replies');
+        var html = _tgRFRepHTML(R.notes[pi], R.name);
+        if (old) { if (html) old.outerHTML = html; else old.remove(); }
+        else if (html) { var ip = cardEl.querySelector('.trf-ta-rep-input'); if (ip) ip.insertAdjacentHTML('beforebegin', html); }
+        cardEl.classList.add('open');
+      }
+      function _tgRFApplyMine(pi) {
+        var R = _tgRF; if (!R) return;
+        var body = document.getElementById('trfBody');
+        var paraEl = body.querySelector('.trf-para[data-pi="' + pi + '"]');
+        var mineEl = body.querySelector('.trf-mine[data-pi="' + pi + '"]');
+        var nt = R.notes[pi];
+        if (nt && nt.mine) {
+          if (paraEl) paraEl.classList.add('has-mine');
+          var html = '<div class="trf-mine" data-pi="' + pi + '"><b>我的标注</b>' + _tgEsc(nt.mine) + '</div>';
+          if (mineEl) mineEl.outerHTML = html;
+          else {
+            var anc = body.querySelector('.trf-ta[data-pi="' + pi + '"]') || paraEl;
+            if (anc) anc.insertAdjacentHTML('afterend', html);
+          }
+        } else {
+          if (paraEl) paraEl.classList.remove('has-mine');
+          if (mineEl) mineEl.remove();
+        }
+      }
+      function _tgRFSheetShow(pi) {
+        var R = _tgRF; if (!R || pi < 0 || pi >= R.N) return;
+        _tgRFSheetPi = pi;
+        document.getElementById('trfShPrev').textContent = R.paras[pi].slice(0, 120);
+        var nt = R.notes[pi];
+        var has = !!(nt && nt.mine);
+        document.getElementById('trfShText').value = has ? nt.mine : '';
+        document.getElementById('trfShDel').style.display = has ? 'block' : 'none';
+        document.getElementById('trfSheet').classList.add('on');
+        setTimeout(function () { try { document.getElementById('trfShText').focus(); } catch (e) {} }, 260);
+      }
+      function _tgRFSheetHide() {
+        var sh = document.getElementById('trfSheet');
+        if (sh) sh.classList.remove('on');
+        _tgRFSheetPi = -1;
+      }
+      function _tgRFSheetSave() {
+        var R = _tgRF; if (!R || _tgRFSheetPi < 0) { _tgRFSheetHide(); return; }
+        var pi = _tgRFSheetPi;
+        var v = document.getElementById('trfShText').value.trim();
+        if (!v) { _tgRFSheetHide(); return; }
+        var nt = R.notes[pi] = R.notes[pi] || {};
+        nt.mine = v;
+        _tgRFSaveNotes();
+        _tgRFApplyMine(pi);
+        _tgRFSheetHide();
+        showToast('标注好了');
+      }
+      function _tgRFSheetDel() {
+        var R = _tgRF; if (!R || _tgRFSheetPi < 0) { _tgRFSheetHide(); return; }
+        var pi = _tgRFSheetPi;
+        var nt = R.notes[pi];
+        if (nt) { delete nt.mine; if (!nt.rep || !nt.rep.length) delete R.notes[pi]; }
+        _tgRFSaveNotes();
+        _tgRFApplyMine(pi);
+        _tgRFSheetHide();
+        showToast('这条标注删掉了');
+      }
       function _tgPanelRenderInput() {
         var m = TG_HERO_META[_tgPanelKey];
         var bd = document.getElementById('tgPanelInput');
@@ -21934,6 +22387,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!_tgActive) return;
         _tgActive.media = media;
         _tgSaveActive(_tgActive);
+        _tgRFAuto = media.type === 'read';
         var verb = media.type === 'video' ? '看' : (media.type === 'read' ? '读' : '听');
         _tgLogLive('你挑了「' + (media.title || TG_HERO_META[key].name) + '」，和 ' + _tgActive.contactName + ' 一起' + verb);
         _tgMediaEnsure();
@@ -21987,34 +22441,19 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe tmf-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
           else body.innerHTML = '<div class="tmf-music"><div class="tmf-mname">' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
         } else {
-          var _readFill = function (t) {
-            var lines = String(t || '').split('\n');
-            body.innerHTML = '<div class="tmf-reader"></div>';
-            var rd = body.querySelector('.tmf-reader');
-            var idx = 0;
-            body._readInf = null;
-            var more = function () {
-              if (idx >= lines.length) return;
-              var end = Math.min(idx + 2000, lines.length);
-              var d = document.createElement('div');
-              d.textContent = lines.slice(idx, end).join('\n');
-              rd.appendChild(d);
-              idx = end;
-            };
-            more();
-            if (lines.length > 2500) {
-              body._readInf = more;
-              if (!body.dataset.readInf) {
-                body.dataset.readInf = '1';
-                body.addEventListener('scroll', function () {
-                  if (body._readInf && body.scrollTop + body.clientHeight > body.scrollHeight - 400) body._readInf();
-                });
-              }
+          body.innerHTML = '<div class="tmf-appcard"><div class="tmf-appname">' + _tgEsc(m.title || '一起读书') + '</div><div class="tmf-appdesc" id="tmfReadProg">和 TA 一起读</div><button class="tmf-appbtn" id="tmfReadGo">进入阅读</button></div>';
+          var rg = document.getElementById('tmfReadGo');
+          if (rg) rg.addEventListener('click', function () { _tgRFOpen(m.tkey, m.title); });
+          var rp = document.getElementById('tmfReadProg');
+          if (rp) {
+            var mt0 = m.tkey ? _tgRFMeta(m.tkey) : null;
+            if (mt0 && mt0.n) {
+              var pp0 = 0; try { pp0 = parseInt(localStorage.getItem('zk_tg_read_pos_' + m.tkey) || '0', 10) || 0; } catch (e0) {}
+              var pct0 = Math.max(0, Math.min(100, Math.round(pp0 / mt0.n * 100)));
+              var wc0 = mt0.chars >= 10000 ? ((mt0.chars / 10000).toFixed(1) + ' 万字') : (mt0.chars + ' 字');
+              rp.textContent = (pct0 > 0 ? '已读 ' + pct0 + '% · 共' + wc0 : '还没开始 · 共' + wc0);
             }
-            body.scrollTop = 0;
-          };
-          if (m.tkey) { _tgBookLoad(m.tkey).then(function (t) { _readFill(t); }); }
-          else { _readFill(m.text || ''); }
+          }
           return;
         }
         body.scrollTop = 0;
