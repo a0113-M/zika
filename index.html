@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="310";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="311";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v310</title>
+  <title>字卡 · 小手机 v311</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7686,6 +7686,8 @@
     .tmf-appname { font-size: 14px; font-weight: 600; color: var(--text-main, #333); }
     .tmf-appdesc { font-size: 11.5px; color: #999; }
     .tmf-appbtn { margin-top: 4px; padding: 8px 20px; border: none; border-radius: 16px; background: var(--primary, #7c5ef2); color: #fff; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .tg-lv-switch { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 7; padding: 7px 14px; border-radius: 99px; background: rgba(0,0,0,.45); color: rgba(255,255,255,.88); font-size: 11px; cursor: pointer; white-space: nowrap; }
+    .tmf-switch { position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%); z-index: 3; padding: 5px 12px; border-radius: 99px; background: rgba(0,0,0,.42); color: rgba(255,255,255,.88); font-size: 10.5px; cursor: pointer; white-space: nowrap; }
 
     /* === 数据统计页面 === */
     #dataPage { background: var(--bg-main); }
@@ -20834,6 +20836,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgSaveInviteWin(min) {
         try { localStorage.setItem('zk_together_invitewin', String(min)); } catch (e) {}
       }
+      var _tgInviteMedia = null;
       function _tgOpenInviteCard(c, act) {
         var box = document.getElementById('tgInviteCardBox');
         var mask = document.getElementById('tgInviteMask');
@@ -20927,7 +20930,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgInviteStopCountdown();
         if (_tgInviteJoinTimer) { _tgInviteJoinTimer = null; }
         if (!_tgInviteCard) return;
+        var _im = _tgInviteMedia; _tgInviteMedia = null;
         _tgStartTogether(true);
+        if (_im && _tgActive) {
+          _tgActive.media = _im;
+          _tgSaveActive(_tgActive);
+          var _verb = _im.type === 'video' ? '看' : (_im.type === 'read' ? '读' : '听');
+          _tgLogLive('你挑了「' + (_im.title || '内容') + '」，和 ' + _tgActive.contactName + ' 一起' + _verb);
+          _tgMediaEnsure();
+        }
         _tgCloseInviteCard();
       }
       function _tgCancelInvite() {
@@ -21213,21 +21224,42 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var body = document.getElementById('tgLiveVideoBody');
         var box = document.getElementById('tgLiveVideoBox');
         if (!body || !box) return;
-        var mkey = m.type + '|' + (m.url || '') + '|' + (m.title || '');
+        var mkey = m.type + '|' + (m.kind || '') + '|' + (m.url || '') + '|' + (m.title || '');
         if (box.dataset.mediaKey === mkey) return;
         box.dataset.mediaKey = mkey;
         var fb = document.getElementById('tgLvFullBtn');
-        if (m.kind === 'app') {
+        try {
+          if (m.kind === 'app') {
+            if (fb) fb.style.display = 'none';
+            body.innerHTML = '<div class="tg-lv-appcard"><div class="tg-lv-appico">' + _tgHeroSvg('movie') + '</div><div class="tg-lv-apptitle">' + _tgEsc(m.title || '一起看电影') + '</div><div class="tg-lv-appdesc">这类正片只在它自家 App 里播。跳过去看，回来 TA 还陪着你。</div><button class="tg-lv-appbtn" id="tgLvAppGo">跳到 App 一起看</button><div class="tg-lv-apptip">跳走后可以用手机「分屏 / 小窗」把本页面挂在旁边，TA 的话照常飘</div></div>';
+            var go = document.getElementById('tgLvAppGo');
+            if (go) go.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
+          } else {
+            if (fb) fb.style.display = '';
+            if (m.kind === 'iframe') body.innerHTML = '<iframe src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe><div class="tg-lv-switch" id="tgLvSwitch">播不了？切到陪同模式（跳 App 看）</div>';
+            else body.innerHTML = '<video src="' + m.url + '" controls playsinline preload="metadata"></video><div class="tg-lv-switch" id="tgLvSwitch">播不了？切到陪同模式（跳 App 看）</div>';
+            var sw = document.getElementById('tgLvSwitch');
+            if (sw) sw.addEventListener('click', _tgSwitchToApp);
+          }
+        } catch (e) {
           if (fb) fb.style.display = 'none';
-          body.innerHTML = '<div class="tg-lv-appcard"><div class="tg-lv-appico">' + _tgHeroSvg('movie') + '</div><div class="tg-lv-apptitle">' + _tgEsc(m.title || '一起看电影') + '</div><div class="tg-lv-appdesc">这类正片只在它自家 App 里播。跳过去看，回来 TA 还陪着你。</div><button class="tg-lv-appbtn" id="tgLvAppGo">跳到 App 一起看</button><div class="tg-lv-apptip">跳走后可以用手机「分屏 / 小窗」把本页面挂在旁边，TA 的话照常飘</div></div>';
-          var go = document.getElementById('tgLvAppGo');
-          if (go) go.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
-        } else {
-          if (fb) fb.style.display = '';
-          if (m.kind === 'iframe') body.innerHTML = '<iframe src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
-          else body.innerHTML = '<video src="' + m.url + '" controls playsinline preload="metadata"></video>';
+          body.innerHTML = '<div class="tg-lv-appcard"><div class="tg-lv-apptitle">' + _tgEsc(m.title || '一起看电影') + '</div><div class="tg-lv-appdesc">内容渲染遇到点问题，点下面按钮跳到 App 看。</div><button class="tg-lv-appbtn" id="tgLvAppGo">跳到 App 看</button></div>';
+          var go2 = document.getElementById('tgLvAppGo');
+          if (go2) go2.addEventListener('click', function () { try { window.location.href = m.url; } catch (e2) {} });
         }
         var nm = document.getElementById('tgFsName'); if (nm) nm.textContent = m.title || '一起看电影';
+      }
+      function _tgSwitchToApp() {
+        if (!_tgActive || !_tgActive.media) return;
+        _tgActive.media.kind = 'app';
+        _tgSaveActive(_tgActive);
+        var _lb = document.getElementById('tgLiveVideoBox');
+        if (_lb && _lb.dataset) _lb.dataset.mediaKey = '';
+        var _fl = document.getElementById('tgMediaFloat');
+        if (_fl && _fl.dataset) _fl.dataset.mediaKey = '';
+        _tgLiveVideoRender(_tgActive.media);
+        _tgMediaEnsure();
+        showToast('已切到陪同模式，可以跳到 App 看正片');
       }
       function _tgUserDmSend() {
         var inp = document.getElementById('tgDmInput');
@@ -21423,7 +21455,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgHeroIcoSmall(type, size) { return _tgHeroSvg(type).replace('width="22" height="22"', 'width="' + size + '" height="' + size + '"'); }
       var TG_HERO_KEYS = ['movie', 'book', 'music'];
       var TG_HERO_META = {
-        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；贴番剧/影视、红果等正片链接会进入陪同模式，可跳转 App 看' },
+        movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，和 TA 一起看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视（含限免）、红果等正片播不了时，可一键切陪同模式跳 App 看' },
         book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，和 TA 一起读', tip: '' },
         music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，和 TA 一起听', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
       };
@@ -21547,6 +21579,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var c = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
         if (!c) { showToast('先选一个联系人'); return; }
         var act = _tgHeroAct(key); if (!act) return;
+        _tgInviteMedia = null;
+        var titleEl = document.getElementById('tgPanelInTitle');
+        var title = titleEl ? (titleEl.value || '').trim() : '';
+        if (key === 'book') {
+          var txtEl = document.getElementById('tgPanelInText');
+          var txt = txtEl ? (txtEl.value || '').trim() : '';
+          if (txt) {
+            var tk = 'zk_tg_book_' + Date.now();
+            try { localStorage.setItem(tk, txt); } catch (e) { showToast('文本太长，存不下了'); return; }
+            _tgInviteMedia = { type: 'read', title: title || '一起读的文章', tkey: tk };
+          }
+        } else {
+          var urlEl = document.getElementById('tgPanelInUrl');
+          var url = urlEl ? (urlEl.value || '').trim() : '';
+          if (url) {
+            var pp = _tgParseMediaUrl(key, url);
+            if (!pp) return;
+            _tgInviteMedia = { type: (key === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
+          }
+        }
+        if (_tgInviteMedia) {
+          var rec2 = { type: key, url: _tgInviteMedia.url || '', kind: _tgInviteMedia.kind || '', title: _tgInviteMedia.title, contactId: c.id, contactName: c.name, ts: Date.now() };
+          if (_tgInviteMedia.type === 'read') { rec2.type = 'book'; rec2.tkey = _tgInviteMedia.tkey; delete rec2.url; delete rec2.kind; }
+          _tgAddImportHist(rec2);
+        }
         _tgCloseHeroPanel();
         _tgCurrentId = c.id;
         _tgOpenInviteCard(c, act);
@@ -21596,7 +21653,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (mi) mi.style.display = 'none';
           return;
         }
-        var mkey = a.media.type + '|' + (a.media.url || '') + '|' + (a.media.title || '');
+        var mkey = a.media.type + '|' + (a.media.kind || '') + '|' + (a.media.url || '') + '|' + (a.media.title || '');
         if (fl.dataset.min === '1') {
           fl.style.display = 'none';
           if (mi) { mi.style.display = 'flex'; mi.innerHTML = _tgHeroIcoSmall(a.media.type === 'read' ? 'book' : (a.media.type === 'video' ? 'movie' : 'music'), 20); }
@@ -21621,8 +21678,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             body.innerHTML = '<div class="tmf-appcard"><div class="tmf-appname">' + _tgEsc(m.title || '一起看电影') + '</div><div class="tmf-appdesc">正片在它自家 App 里播</div><button class="tmf-appbtn" id="tmfAppGo">跳到 App 看</button></div>';
             var ag = document.getElementById('tmfAppGo');
             if (ag) ag.addEventListener('click', function () { try { window.location.href = m.url; } catch (e) {} });
-          } else if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe" src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe>';
-          else body.innerHTML = '<video class="tmf-video" src="' + m.url + '" controls playsinline preload="metadata"></video>';
+          } else if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe" src="' + m.url + '" allowfullscreen allow="autoplay; fullscreen; encrypted-media" referrerpolicy="no-referrer"></iframe><div class="tmf-switch" id="tmfSwitch">播不了？切陪同模式</div>';
+          else body.innerHTML = '<video class="tmf-video" src="' + m.url + '" controls playsinline preload="metadata"></video><div class="tmf-switch" id="tmfSwitch">播不了？切陪同模式</div>';
+          var _tsw = document.getElementById('tmfSwitch');
+          if (_tsw) _tsw.addEventListener('click', _tgSwitchToApp);
         } else if (m.type === 'music') {
           if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe tmf-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
           else body.innerHTML = '<div class="tmf-music"><div class="tmf-mname">' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
