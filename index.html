@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="316";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="317";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v316</title>
+  <title>字卡 · 小手机 v317</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7703,6 +7703,11 @@
     .tg-app-chat-row { display: flex; align-items: center; gap: 8px; }
     .tg-app-chat-time { display: block; font-size: 9px; opacity: .5; margin-top: 2px; }
     .tg-app-chat-item.me .tg-app-chat-time { text-align: right; }
+    .tg-live-app.tg-kb .acd-halo, .tg-live-app.tg-kb .acd-live-name, .tg-live-app.tg-kb .acd-timer-row, .tg-live-app.tg-kb .acd-stat-row { display: none; }
+    .tg-live-app.tg-kb .acd-meta { margin-top: 2px; }
+    .tg-live-app.tg-kb .tg-app-chat { min-height: 170px; }
+    .tg-live-app.tg-kb .acd-logbox { flex: 0 0 auto; }
+    .tg-live-app.tg-kb .acd-end { margin-top: 6px; }
     .tg-live-app .tg-app-chat { display: flex; flex: 1 1 auto; min-height: 0; }
     .tg-live-app .acd-logbox.tg-logopen + .tg-app-chat { flex: 0 1 auto; }
     .tg-live-app .acd-logbox.tg-logopen + .tg-app-chat .tg-app-chat-list { flex: 0 1 auto; max-height: 148px; }
@@ -21335,7 +21340,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (!_tgActive) return;
             var reply;
             if (Math.random() < 0.4 && typeof getRandomCard === 'function') {
-              reply = String(getRandomCard()).replace(/你/g, '我');
+              reply = String(getRandomCard());
             } else {
               reply = TG_CHAT_REPLY[Math.floor(Math.random() * TG_CHAT_REPLY.length)];
             }
@@ -21847,6 +21852,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       if (_tgAppChatSendBtn) _tgAppChatSendBtn.addEventListener('click', _tgAppChatSend);
       var _tgAppChatInp = document.getElementById('tgAppChatIn');
       if (_tgAppChatInp) _tgAppChatInp.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); _tgAppChatSend(); } });
+      if (_tgAppChatInp) {
+        _tgAppChatInp.addEventListener('focus', function () { var lv = document.getElementById('tgLive'); if (lv) lv.classList.add('tg-kb'); });
+        _tgAppChatInp.addEventListener('blur', function () { var lv = document.getElementById('tgLive'); if (lv) lv.classList.remove('tg-kb'); });
+      }
       var _tgAppGoBtn = document.getElementById('tgAppGoBtn');
       if (_tgAppGoBtn) _tgAppGoBtn.addEventListener('click', function () { if (_tgActive && _tgActive.media && _tgActive.media.kind === 'app') { try { window.location.href = _tgActive.media.url; } catch (e) {} } });
 
