@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="331";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="332";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v331</title>
+  <title>字卡 · 小手机 v332</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13306,7 +13306,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div id="tgSoloInput"></div>
         <div class="tg-panel-histhead">导入记录<span class="tg-panel-histtip">点一条，接着看</span></div>
         <div class="tg-panel-hist" id="tgSoloHist"></div>
-        <div class="tg-btnrow"><button type="button" class="tg-btn tg-btn-invite" id="tgSoloStart">开始观看</button></div>
+        <div class="tg-btnrow"><button type="button" class="tg-btn tg-btn-invite" id="tgSoloInvite">邀请TA</button><button type="button" class="tg-btn tg-btn-direct" id="tgSoloStart">直接开始</button></div>
       </div>
     </div>
     <div id="tgSoloMedia">
@@ -21723,14 +21723,20 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgPanelPersons() { return contacts.filter(function (c) { return !c.isGroup; }); }
       // ===== v328 看电影/听歌·独立模式（与陪伴系统完全分离）=====
       var _tgSoloKey = null;
-      function _tgSoloOpen(key) {
+      var _tgSoloBook = null;
+      function _tgSoloOpen(key, book) {
         _tgSoloKey = key;
+        _tgSoloBook = book || null;
         var meta = TG_HERO_META[key];
         document.getElementById('tgSoloTitle').textContent = meta.name;
-        document.getElementById('tgSoloStart').textContent = key === 'movie' ? '开始观看' : '开始播放';
-        _tgSoloRenderInput();
-        _tgSoloRenderHist();
+        if (key === 'book') { _tgSoloRenderBook(); }
+        else { _tgSoloRenderInput(); _tgSoloRenderHist(); }
         document.getElementById('tgSoloPick').classList.add('show');
+      }
+      function _tgSoloRenderBook() {
+        var b = _tgSoloBook || {};
+        document.getElementById('tgSoloInput').innerHTML = '<div class="tg-media-tip" style="text-align:center;font-size:14px;padding:10px 0;">📖 ' + _tgEsc(b.title || '一起读的书') + '</div>';
+        document.getElementById('tgSoloHist').innerHTML = '';
       }
       function _tgSoloClose() { document.getElementById('tgSoloPick').classList.remove('show'); }
       function _tgSoloRenderInput() {
@@ -21766,6 +21772,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       function _tgSoloStartAction() {
         if (!_tgSoloKey) return;
+        if (_tgSoloKey === 'book') {
+          if (!_tgSoloBook || !_tgSoloBook.tkey) { showToast('先在书架挑一本书'); return; }
+          var _c0b = contacts.filter(function (x) { return x.id === _tgCurrentId && !x.isGroup; })[0] || contacts.filter(function (x) { return !x.isGroup; })[0];
+          if (!_c0b) { showToast('先添加一个联系人'); return; }
+          _tgSoloClose();
+          _tgHeroStartMedia('book', _c0b, { type: 'read', title: _tgSoloBook.title, tkey: _tgSoloBook.tkey }, false);
+          return;
+        }
         var url = (document.getElementById('tgSoloInUrl').value || '').trim();
         if (!url) { showToast('先粘贴链接，或点下面的过往记录'); return; }
         var pp = _tgParseMediaUrl(_tgSoloKey, url);
@@ -21776,7 +21790,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _tgSoloClose();
         var _c0 = contacts.filter(function (x) { return x.id === _tgCurrentId && !x.isGroup; })[0] || contacts.filter(function (x) { return !x.isGroup; })[0];
         if (!_c0) { _tgSoloPlay(media); return; }
-        _tgHeroStartMedia(_tgSoloKey, _c0, media);
+        _tgHeroStartMedia(_tgSoloKey, _c0, media, false);
+      }
+      function _tgSoloInviteAction() {
+        if (!_tgSoloKey) return;
+        var _c0 = contacts.filter(function (x) { return x.id === _tgCurrentId && !x.isGroup; })[0] || contacts.filter(function (x) { return !x.isGroup; })[0];
+        if (!_c0) { showToast('先添加一个联系人'); return; }
+        var act = _tgHeroAct(_tgSoloKey); if (!act) return;
+        var media = null;
+        if (_tgSoloKey === 'book') {
+          if (!_tgSoloBook || !_tgSoloBook.tkey) { showToast('先在书架挑一本书'); return; }
+          media = { type: 'read', title: _tgSoloBook.title, tkey: _tgSoloBook.tkey };
+        } else {
+          var url = (document.getElementById('tgSoloInUrl').value || '').trim();
+          var title = (document.getElementById('tgSoloInTitle').value || '').trim();
+          if (url) {
+            var pp = _tgParseMediaUrl(_tgSoloKey, url);
+            if (!pp) return;
+            media = { type: (_tgSoloKey === 'movie' ? 'video' : 'music'), url: pp.url, kind: pp.kind, title: title || pp.title };
+            _tgAddImportHist({ type: _tgSoloKey, url: pp.url, kind: pp.kind, title: media.title, contactId: '', contactName: '', ts: Date.now() });
+          }
+        }
+        _tgInviteMedia = media;
+        _tgSoloClose();
+        _tgSelKey = _tgSoloKey; _tgCurrentId = _c0.id;
+        _tgOpenInviteCard(_c0, act);
       }
       function _tgSoloPlay(m) {
         var lay = document.getElementById('tgSoloMedia');
@@ -21813,6 +21851,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!sp) return;
         sp.addEventListener('click', function (e) { if (e.target === sp) _tgSoloClose(); });
         document.getElementById('tgSoloClose').addEventListener('click', _tgSoloClose);
+        document.getElementById('tgSoloInvite').addEventListener('click', _tgSoloInviteAction);
         document.getElementById('tgSoloStart').addEventListener('click', _tgSoloStartAction);
         document.getElementById('tgSoloMClose').addEventListener('click', _tgSoloCloseMedia);
       })();
@@ -22637,11 +22676,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           row.addEventListener('click', function () {
             var r = books[parseInt(row.dataset.i, 10)];
             if (!r) return;
-            _tgBookLoad(r.tkey).then(function (txt) {
-              if (!txt) { showToast('这本书的文本找不到了，重新导入一本吧'); return; }
-              _tgCloseBookShelf();
-              _tgRFOpen(r.tkey, r.title || '未命名');
-            });
+            _tgCloseBookShelf();
+            _tgSoloOpen('book', { tkey: r.tkey, title: r.title || '未命名' });
           });
         });
       }
@@ -22716,10 +22752,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         };
       }
 
-      function _tgHeroStartMedia(key, c, media) {
+      function _tgHeroStartMedia(key, c, media, invited) {
         _tgSelKey = key; _tgCurrentId = c.id;
         _tgReadNext = (media.type === 'read');
-        _tgStartTogether(true);
+        _tgStartTogether(invited === false ? false : true);
         if (!_tgActive) { _tgReadNext = false; return; }
         _tgActive.media = media;
         _tgSaveActive(_tgActive);
