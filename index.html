@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="324";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="325";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v324</title>
+  <title>字卡 · 小手机 v325</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13296,6 +13296,26 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
     </div>
+    <!-- v325 看书·书架 -->
+    <div class="tg-shelf" id="tgBookShelf">
+      <div class="tg-shelf-top">
+        <button type="button" class="tg-shelf-back" id="tgShelfBack"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>返回</button>
+        <span class="tg-shelf-title">看书</span>
+        <button type="button" class="tg-shelf-add" id="tgShelfAdd">＋</button>
+      </div>
+      <div class="tg-shelf-scroll" id="tgShelfScroll">
+        <div class="tg-shelf-list" id="tgShelfList"></div>
+      </div>
+      <div class="tg-shelf-import" id="tgShelfImport" style="display:none;">
+        <input type="text" class="tg-shelf-field" id="tgShelfInTitle" placeholder="书名（选填）">
+        <textarea class="tg-shelf-field" id="tgShelfInText" placeholder="粘贴小说 / 文章文本，或点下方导入文件…"></textarea>
+        <div class="tg-media-tip">粘贴，或 <span class="tg-file-link" id="tgShelfFileLink">导入 txt / docx 文件</span>（整本书也行，最大 30MB）</div>
+        <input type="file" id="tgShelfFileInp" accept=".txt,.md,.docx,text/plain" style="display:none">
+        <button type="button" class="tg-shelf-addbtn" id="tgShelfDoAdd">加入书架</button>
+        <button type="button" class="tg-shelf-cancelbtn" id="tgShelfCancelAdd">返回书架</button>
+      </div>
+    </div>
+
     <!-- 信件模块 -->
     <div class="letter-module" id="letterModule">
       <!-- 信件列表视图 -->
@@ -14809,6 +14829,34 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .call-range:active::-webkit-slider-thumb { transform:scale(1.12); }
 .call-range::-moz-range-track { height:10px; background:transparent; border:none; border-radius:999px; }
 .call-range::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:var(--primary); border:3px solid #fff; box-shadow:0 1px 6px rgba(var(--primary-rgba),0.4); }
+
+    /* ===== v325 看书·书架 ===== */
+    #tgBookShelf { position: fixed; inset: 0; z-index: 295; background: #f6f1e6; display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+    #tgBookShelf.on { display: flex; }
+    .tg-shelf-top { flex: 0 0 auto; display: flex; align-items: center; gap: 8px; padding: calc(env(safe-area-inset-top, 0px) + 10px) 14px 10px; border-bottom: 1px solid rgba(140,120,90,0.12); }
+    .tg-shelf-back { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 3px; border: none; background: transparent; color: #8a6d4a; font-size: 14px; font-weight: 600; padding: 7px 4px; cursor: pointer; }
+    .tg-shelf-back svg { width: 18px; height: 18px; }
+    .tg-shelf-title { flex: 1 1 auto; text-align: center; font-size: 16px; font-weight: 700; color: #4a3f32; letter-spacing: 1px; }
+    .tg-shelf-add { flex: 0 0 auto; width: 32px; height: 32px; border-radius: 50%; border: none; background: #8a6d4a; color: #fff; font-size: 22px; line-height: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(138,109,74,0.28); transition: transform .1s; }
+    .tg-shelf-add:active { transform: scale(0.92); }
+    .tg-shelf-scroll { flex: 1 1 auto; overflow-y: auto; padding: 14px 14px calc(14px + env(safe-area-inset-bottom)); }
+    .tg-shelf-item { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 16px; background: #fff; border: 1px solid rgba(140,120,90,0.14); margin-bottom: 10px; cursor: pointer; box-shadow: 0 1px 3px rgba(120,90,50,0.05); }
+    .tg-shelf-item:active { border-color: #8a6d4a; }
+    .tg-shelf-cover { flex: 0 0 auto; width: 42px; height: 54px; border-radius: 8px; background: linear-gradient(160deg, #eed4a9, #d9b98a); color: #8a6d4a; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: inset 0 0 0 1px rgba(138,109,74,0.25); }
+    .tg-shelf-main { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .tg-shelf-name { font-size: 15px; font-weight: 600; color: #4a3f32; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-shelf-meta { font-size: 12px; color: #a3957f; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tg-shelf-arrow { flex: 0 0 auto; color: #c0b49d; font-size: 20px; }
+    .tg-shelf-empty { text-align: center; color: #a3957f; font-size: 13px; padding: 70px 24px; line-height: 2; }
+    .tg-shelf-emptylogo { font-size: 42px; margin-bottom: 6px; }
+    .tg-shelf-import { flex: 1 1 auto; overflow-y: auto; padding: 16px 14px calc(16px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 10px; }
+    .tg-shelf-import .tg-shelf-field { width: 100%; box-sizing: border-box; border: 1px solid rgba(140,120,90,0.22); border-radius: 12px; background: #fff; padding: 11px 12px; font-size: 14px; color: #4a3f32; outline: none; font-family: inherit; }
+    .tg-shelf-import textarea.tg-shelf-field { min-height: 140px; resize: vertical; line-height: 1.7; }
+    .tg-shelf-import .tg-media-tip { font-size: 12px; color: #a3957f; line-height: 1.6; }
+    .tg-shelf-import .tg-file-link { color: #8a6d4a; font-weight: 600; text-decoration: underline; }
+    .tg-shelf-addbtn { border: none; border-radius: 14px; background: #8a6d4a; color: #fff; font-size: 15px; font-weight: 700; padding: 13px; cursor: pointer; letter-spacing: 2px; }
+    .tg-shelf-addbtn:active { opacity: 0.9; }
+    .tg-shelf-cancelbtn { border: none; background: transparent; color: #a3957f; font-size: 13px; padding: 6px; cursor: pointer; text-align: center; }
 
     /* ===== v321 全屏阅读器 ===== */
     #tgReadFs { position: fixed; inset: 0; z-index: 300; background: #f6f1e6; display: none; flex-direction: column; -webkit-tap-highlight-color: transparent; }
@@ -20881,7 +20929,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           });
         });
         el.querySelectorAll('.tg-hero').forEach(function (card) {
-          card.addEventListener('click', function () { _tgOpenHeroPanel(card.dataset.hero); });
+          card.addEventListener('click', function () {
+          var hero = card.dataset.hero;
+          if (hero === 'book') { _tgOpenBookShelf(); return; }
+          _tgOpenHeroPanel(hero);
+        });
         });
         _tgInitSlide();
       }
@@ -22382,6 +22434,158 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (/^https?:\/\//.test(url)) return { kind: 'audio', url: url, title: '音乐' };
         showToast('识别不了这个链接，试试网易云歌曲链接或mp3直链'); return null;
       }
+
+      // ===== v325 看书·书架 =====
+      var _tgShelfMode = 'list';
+      var _tgShelfFilePend = null;
+      var _tgShelfInited = false;
+      function _tgShelfGetBooks() { return _tgGetImportHist().filter(function (r) { return r.type === 'book'; }); }
+      function _tgShelfPos(tkey) {
+        var meta = {}; try { meta = JSON.parse(localStorage.getItem('zk_tg_read_meta_' + tkey) || '{}') || {}; } catch (e) { meta = {}; }
+        var pos = 0; try { pos = parseInt(localStorage.getItem('zk_tg_read_pos_' + tkey) || '0', 10) || 0; } catch (e) {}
+        return { n: meta.n || 0, pos: pos };
+      }
+      function _tgShelfWc(n) { return n >= 10000 ? ((n / 10000).toFixed(1) + ' 万字') : (n + ' 字'); }
+      function _tgShelfEnsureInit() {
+        if (_tgShelfInited) return;
+        _tgShelfInited = true;
+        var back = document.getElementById('tgShelfBack');
+        if (back) back.addEventListener('click', function () { if (_tgShelfMode === 'import') { _tgShelfShowList(); } else { _tgCloseBookShelf(); } });
+        var add = document.getElementById('tgShelfAdd');
+        if (add) add.addEventListener('click', _tgShelfShowImport);
+        var doadd = document.getElementById('tgShelfDoAdd');
+        if (doadd) doadd.addEventListener('click', _tgShelfAddBook);
+        var cancel = document.getElementById('tgShelfCancelAdd');
+        if (cancel) cancel.addEventListener('click', _tgShelfShowList);
+        _tgShelfBindImport();
+      }
+      function _tgOpenBookShelf() {
+        _tgShelfEnsureInit();
+        _tgShelfMode = 'list';
+        var el = document.getElementById('tgBookShelf');
+        if (el) el.classList.add('on');
+        _tgShelfRender();
+      }
+      function _tgCloseBookShelf() {
+        var el = document.getElementById('tgBookShelf');
+        if (el) el.classList.remove('on');
+      }
+      function _tgShelfRender() {
+        var list = document.getElementById('tgShelfList');
+        var scroll = document.getElementById('tgShelfScroll');
+        var imp = document.getElementById('tgShelfImport');
+        if (_tgShelfMode === 'import') {
+          if (scroll) scroll.style.display = 'none';
+          if (imp) imp.style.display = 'flex';
+          return;
+        }
+        if (scroll) scroll.style.display = '';
+        if (imp) imp.style.display = 'none';
+        var books = _tgShelfGetBooks();
+        if (!books.length) {
+          list.innerHTML = '<div class="tg-shelf-empty"><div class="tg-shelf-emptylogo">&#128214;</div>书架还是空的<br>点右上角 &#xFF0B; 导入一本书，和 TA 一起读</div>';
+          return;
+        }
+        var h = '';
+        books.forEach(function (r, i) {
+          var p = _tgShelfPos(r.tkey);
+          var meta;
+          if (p.n > 0) {
+            var pct = p.pos > 0 ? Math.min(100, Math.round(p.pos / p.n * 100)) : 0;
+            meta = pct > 0 ? ('已读 ' + pct + '% · 共 ' + _tgShelfWc(p.n)) : ('共 ' + _tgShelfWc(p.n));
+          } else { meta = '还没开始读'; }
+          h += '<div class="tg-shelf-item" data-i="' + i + '">' +
+               '<div class="tg-shelf-cover">&#128214;</div>' +
+               '<div class="tg-shelf-main"><div class="tg-shelf-name">' + _tgEsc(r.title || '未命名') + '</div><div class="tg-shelf-meta">' + _tgEsc(meta) + '</div></div>' +
+               '<span class="tg-shelf-arrow">&#8250;</span></div>';
+        });
+        list.innerHTML = h;
+        list.querySelectorAll('.tg-shelf-item').forEach(function (row) {
+          row.addEventListener('click', function () {
+            var r = books[parseInt(row.dataset.i, 10)];
+            if (!r) return;
+            _tgBookLoad(r.tkey).then(function (txt) {
+              if (!txt) { showToast('这本书的文本找不到了，重新导入一本吧'); return; }
+              var persons = _tgPanelPersons();
+              var c = persons.filter(function (x) { return x.id === _tgCurrentId; })[0] || persons[0];
+              if (!c) { showToast('先去添加一个联系人吧'); return; }
+              _tgCloseBookShelf();
+              _tgHeroStartMedia('book', c, { type: 'read', title: r.title || '一起读的书', tkey: r.tkey });
+            });
+          });
+        });
+      }
+      function _tgShelfShowImport() {
+        _tgShelfMode = 'import';
+        _tgShelfFilePend = null;
+        var ti = document.getElementById('tgShelfInTitle'); if (ti) ti.value = '';
+        var ta = document.getElementById('tgShelfInText'); if (ta) { ta.value = ''; ta.placeholder = '粘贴小说 / 文章文本，或点下方导入文件…'; }
+        _tgShelfRender();
+      }
+      function _tgShelfShowList() { _tgShelfMode = 'list'; _tgShelfRender(); }
+      function _tgShelfAddBook() {
+        var title = (document.getElementById('tgShelfInTitle').value || '').trim();
+        var txtEl = document.getElementById('tgShelfInText');
+        var txt = txtEl ? (txtEl.value || '').trim() : '';
+        var pend = _tgShelfFilePend;
+        if (pend) { _tgShelfFinalizeAdd(pend.tk, title || pend.title); return; }
+        if (!txt) { showToast('先粘贴文本，或导入 txt / docx 文件'); return; }
+        _tgBookStore(txt).then(function (tk) {
+          if (!tk) { showToast('文本太长，存不下了'); return; }
+          _tgShelfFinalizeAdd(tk, title);
+        });
+      }
+      function _tgShelfFinalizeAdd(tk, title) {
+        var persons = _tgPanelPersons();
+        var c = persons.filter(function (x) { return x.id === _tgCurrentId; })[0] || persons[0];
+        var rec = { type: 'book', tkey: tk, title: title || '未命名', contactId: c ? c.id : '', contactName: c ? c.name : 'TA', ts: Date.now() };
+        _tgAddImportHist(rec);
+        _tgShelfMode = 'list';
+        _tgShelfFilePend = null;
+        _tgShelfRender();
+        showToast('已加入书架');
+      }
+      function _tgShelfBindImport() {
+        var flink = document.getElementById('tgShelfFileLink');
+        var finp = document.getElementById('tgShelfFileInp');
+        if (!flink || !finp) return;
+        flink.onclick = function () { finp.click(); };
+        finp.onchange = function () {
+          var f = finp.files && finp.files[0];
+          if (!f) return;
+          var fname = f.name || '文件';
+          var lower = fname.toLowerCase();
+          if (f.size > 30 * 1024 * 1024) { showToast('文件超过 30MB 了，先拆分一下'); finp.value = ''; return; }
+          if (/\.pdf$|\.epub$|\.doc$|\.xls/.test(lower)) { showToast('暂只支持 txt / md / docx，这个格式转换一下再导入'); finp.value = ''; return; }
+          var rd = new FileReader();
+          rd.onload = function () {
+            var done = function (txt) {
+              txt = (txt || '').replace(/^\uFEFF/, '').replace(/\r\n/g, '\n').trim();
+              if (!txt) { showToast('没读出内容，换个文件试试'); finp.value = ''; return; }
+              var tk = 'zk_tg_book_' + Date.now();
+              _tgBookPut(tk, txt).then(function (ok) {
+                if (!ok) { showToast('存储失败，文件太大或浏览器不允许'); finp.value = ''; return; }
+                var nice = fname.replace(/\.(txt|md|text|docx)$/i, '');
+                _tgShelfFilePend = { tk: tk, title: nice };
+                var ta = document.getElementById('tgShelfInText');
+                if (ta) ta.value = '已导入《' + nice + '》共 ' + txt.length + ' 字，点「加入书架」';
+                var ti = document.getElementById('tgShelfInTitle');
+                if (ti && !ti.value.trim()) ti.value = nice;
+                showToast('已导入：' + fname);
+                finp.value = '';
+              });
+            };
+            if (/\.docx$/.test(lower)) {
+              _tgDocxText(rd.result).then(done, function () { showToast('这个 docx 解不开，另存为 txt 试试'); finp.value = ''; });
+            } else {
+              done(_tgDecodeTxt(rd.result));
+            }
+          };
+          rd.onerror = function () { showToast('读取失败，换一个文件试试'); finp.value = ''; };
+          rd.readAsArrayBuffer(f);
+        };
+      }
+
       function _tgHeroStartMedia(key, c, media) {
         _tgSelKey = key; _tgCurrentId = c.id;
         _tgReadNext = (media.type === 'read');
