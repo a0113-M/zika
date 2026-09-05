@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="335";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="336";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v335</title>
+  <title>字卡 · 小手机 v336</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7553,6 +7553,14 @@
     .tg-custom-row { display: flex; gap: 8px; margin: 0 0 12px; align-items: center; }
     .tg-custom-input { flex: 1; padding: 9px 12px; border: 1px solid rgba(var(--primary-rgba), 0.25); border-radius: 10px; font-size: 13px; background: var(--bg-card); color: var(--text-main); outline: none; }
     .tg-custom-ok { padding: 9px 14px; border: none; border-radius: 10px; background: var(--primary); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; }
+    .tg-custom-imgbtn { width: 38px; height: 38px; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; border: 1px dashed rgba(var(--primary-rgba), 0.5); border-radius: 10px; background: var(--bg-card); color: var(--primary); cursor: pointer; overflow: hidden; padding: 0; }
+    .tg-custom-imgbtn .tg-ico { width: 20px; height: 20px; }
+    .tg-custom-imgbtn.has-img { border-style: solid; border-color: var(--primary); }
+    .tg-custom-imgbtn img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .tg-act-img { display: block; object-fit: cover; border-radius: 7px; }
+    .tg-act-emoji .tg-act-img { width: 28px; height: 28px; }
+    .tg-log-item .tg-emoji .tg-act-img { width: 22px; height: 22px; border-radius: 6px; }
+    #tgmbBadge .tg-act-img { width: 18px; height: 18px; border-radius: 9px; }
     .tg-act-name { font-size: 12px; color: var(--text-main); }
     .tg-actcard.sel .tg-act-name { color: var(--primary); font-weight: 600; }
     .tg-active { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 16px; padding: 22px 18px; color: #fff; margin-bottom: 16px; box-shadow: 0 6px 18px rgba(var(--primary-rgba), 0.38); text-align: center; }
@@ -17690,7 +17698,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             tgInner.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;max-width:84%;box-shadow:0 2px 8px rgba(155,142,196,0.08);';
             const tgIc = document.createElement('div');
             tgIc.style.cssText = 'width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--primary);flex-shrink:0;';
-            tgIc.innerHTML = (msg.icon || '').replace('<svg ', '<svg style="width:22px;height:22px;" ');
+            var _mi2 = msg.icon || '';
+            if (_mi2.indexOf('data:image') === 0) { tgIc.innerHTML = '\u003cimg src="' + _mi2 + '" style="width:100%;height:100%;object-fit:cover;border-radius:10px;display:block;"\u003e'; tgIc.style.background = 'transparent'; }
+            else { tgIc.innerHTML = _mi2.replace('\u003csvg ', '\u003csvg style="width:22px;height:22px;" '); }
             const tgTx = document.createElement('div');
             tgTx.style.cssText = 'display:flex;flex-direction:column;gap:2px;min-width:0;';
             const tgT1 = document.createElement('div');
@@ -20502,6 +20512,44 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var a = TG_ACTS.concat(_tgGetCustom()).filter(function (x) { return x.key === key || x.name === name; })[0];
         return a ? a.icon : '';
       }
+      function _tgIconHtml(ic) {
+        if (ic && ic.indexOf('data:image') === 0) return '\u003cimg class="tg-act-img" src="' + ic + '" alt=""\u003e';
+        return ic || '';
+      }
+      var IMG_SVG = '\u003csvg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="tg-ico"\u003e\u003crect x="3" y="3" width="18" height="18" rx="2.5"\u003e\u003c/rect\u003e\u003ccircle cx="8.5" cy="8.5" r="1.6"\u003e\u003c/circle\u003e\u003cpath d="M21 15l-5-5L5 21"\u003e\u003c/path\u003e\u003c/svg\u003e';
+      function _tgFileToIcon(file) {
+        return new Promise(function (resolve) {
+          if (!file) { resolve(''); return; }
+          var fr = new FileReader();
+          fr.onload = function () {
+            var raw = fr.result;
+            if (!raw || typeof raw !== 'string') { resolve(''); return; }
+            if (raw.length <= 20000) { resolve(raw); return; }
+            var img = new Image();
+            var done = false;
+            var tm = setTimeout(function () { if (!done) { done = true; resolve(raw); } }, 4000);
+            img.onload = function () {
+              if (done) return;
+              try {
+                var S = 128;
+                var w = img.width, h = img.height;
+                if (w > S || h > S) { if (w > h) { h = Math.round(h * S / w); w = S; } else { w = Math.round(w * S / h); h = S; } }
+                var cv = document.createElement('canvas');
+                cv.width = w; cv.height = h;
+                cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                var out = cv.toDataURL('image/webp', 0.82);
+                if (!out || out.indexOf('data:image/webp') !== 0) out = cv.toDataURL('image/png');
+                done = true; clearTimeout(tm);
+                resolve(out && out.length > 0 ? out : raw);
+              } catch (e) { done = true; clearTimeout(tm); resolve(raw); }
+            };
+            img.onerror = function () { if (!done) { done = true; clearTimeout(tm); resolve(raw); } };
+            img.src = raw;
+          };
+          fr.onerror = function () { resolve(''); };
+          try { fr.readAsDataURL(file); } catch (e) { resolve(''); }
+        });
+      }
       var SPARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="tg-ico"><path d="M12 3l1.9 5.4L19.4 10l-5.5 1.6L12 17l-1.9-5.4L4.6 10l5.5-1.6z"></path></svg>';
       var TG_BG = {
         movie: 'linear-gradient(135deg, #3a3560, #5a4e8c)',
@@ -20641,13 +20689,34 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         div.className = 'tg-custom-row';
         div.id = 'tgCustomRow';
         div.innerHTML = '<input class="tg-custom-input" id="tgCustomInput" maxlength="8" placeholder="想一起做什么？">' +
-                        '<button class="tg-custom-ok" id="tgCustomOk">添加</button>';
+                        '\u003cbutton class="tg-custom-imgbtn" id="tgCustomImgBtn" title="导入图片当图标"\u003e' + IMG_SVG + '\u003c/button\u003e' +
+                        '\u003cbutton class="tg-custom-ok" id="tgCustomOk"\u003e添加\u003c/button\u003e' +
+                        '\u003cinput type="file" id="tgCustomIconFile" accept="image/*" style="display:none"\u003e';
         if (hint && hint.parentNode) hint.parentNode.insertBefore(div, hint.nextSibling);
         else el.insertBefore(div, el.firstChild);
         document.getElementById('tgCustomOk').addEventListener('click', _tgAddCustom);
         document.getElementById('tgCustomInput').addEventListener('keydown', function (e) { if (e.key === 'Enter') _tgAddCustom(); });
         var inp = document.getElementById('tgCustomInput');
         if (inp) inp.focus();
+        var ib = document.getElementById('tgCustomImgBtn');
+        var iff = document.getElementById('tgCustomIconFile');
+        function _tgSetIconPreview() {
+          if (_tgCustomIcon) { ib.innerHTML = '\u003cimg src="' + _tgCustomIcon + '" alt=""\u003e'; ib.classList.add('has-img'); }
+          else { ib.innerHTML = IMG_SVG; ib.classList.remove('has-img'); }
+        }
+        if (ib && iff) {
+          ib.addEventListener('click', function () { iff.click(); });
+          iff.addEventListener('change', function (e) {
+            var f = e.target.files && e.target.files[0];
+            e.target.value = '';
+            if (!f) return;
+            _tgFileToIcon(f).then(function (d) {
+              if (!d) { showToast('图片没读出来，换一张试试'); return; }
+              _tgCustomIcon = d;
+              _tgSetIconPreview();
+            });
+          });
+        }
       }
       function _tgAddCustom() {
         var inp = document.getElementById('tgCustomInput');
@@ -20655,7 +20724,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!v) { showToast('先写个活动名吧'); return; }
         var cs = _tgGetCustom();
         if (cs.some(function (x) { return x.name === v; })) { showToast('已经有这个啦'); return; }
-        cs.push({ key: 'c_' + Date.now(), name: v, icon: SPARK, custom: true });
+        cs.push({ key: 'c_' + Date.now(), name: v, icon: (_tgCustomIcon || SPARK), custom: true });
+        _tgCustomIcon = null;
         _tgSaveCustom(cs);
         _tgSelKey = cs[cs.length - 1].key;
         _tgRenderSelect();
@@ -20667,6 +20737,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       var _tgInviteIv = null;
       var _tgInviteJoinTimer = null;
       var _tgSelKey = null;
+      var _tgCustomIcon = null;
       var _tgActive = null;   // {contactId, contactName, activity, key, custom, startTs, mode, acc, remain, paused, bpm, temp, logs}
       var _tgTimer = null;
       var _tgHbIv = null;
@@ -20940,7 +21011,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         h += '<div class="tg-actgrid">';
         acts.forEach(function (a) {
           h += '<div class="tg-actcard' + (_tgSelKey === a.key ? ' sel' : '') + '" data-key="' + a.key + '">' +
-               '<div class="tg-act-emoji">' + a.icon + '</div>' +
+               '\u003cdiv class="tg-act-emoji"\u003e' + _tgIconHtml(a.icon) + '\u003c/div\u003e' +
                '<div class="tg-act-name">' + _tgEsc(a.name) + '</div></div>';
         });
         h += '<div class="tg-actcard tg-addcard" data-key="__add__">' +
@@ -21373,7 +21444,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var rd = new Date(it.endTs);
             var rds = (rd.getMonth() + 1) + '/' + rd.getDate() + ' ' + String(rd.getHours()).padStart(2, '0') + ':' + String(rd.getMinutes()).padStart(2, '0');
             h += '<div class="tg-log-item">' +
-                 '<div class="tg-emoji">' + (_tgIcon(it.key, it.activity) || _tgEsc(it.emoji || '')) + '</div>' +
+                 '\u003cdiv class="tg-emoji"\u003e' + (_tgIconHtml(_tgIcon(it.key, it.activity)) || _tgEsc(it.emoji || '')) + '\u003c/div\u003e' +
                  '<div class="tg-main">' +
                    '<div class="tg-line1">' + _tgEsc(nm) + ' 拒绝了「' + _tgEsc(it.activity) + '」的邀请</div>' +
                    '<div class="tg-line2">' + _tgEsc(it.note || '') + ' · ' + rds + '</div>' +
@@ -21389,7 +21460,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             : ('和 ' + _tgEsc(nm) + ' 一起' + _tgEsc(it.activity));
           var tgIcoKey = (it.invite === false) ? (it.contactKey || it.key) : it.key;
           h += '<div class="tg-log-item">' +
-               '<div class="tg-emoji">' + (_tgIcon(tgIcoKey, it.contactAct || it.activity) || _tgEsc(it.emoji || '')) + '</div>' +
+               '\u003cdiv class="tg-emoji"\u003e' + (_tgIconHtml(_tgIcon(tgIcoKey, it.contactAct || it.activity)) || _tgEsc(it.emoji || '')) + '\u003c/div\u003e' +
                '<div class="tg-main">' +
                  '<div class="tg-line1">' + tgLine1 + '</div>' +
                  '<div class="tg-line2">' + ds + ' · 陪伴 ' + _tgFmtDurCn(it.durMs) + '</div>' +
@@ -21640,7 +21711,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var c = contacts.filter(function (x) { return x.id === a.contactId; })[0];
         if (ballAv) { if (c) _zkSetContactAvatar(ballAv, c); else { ballAv.textContent = (a.contactName || '?').charAt(0).toUpperCase(); ballAv.style.background = 'var(--primary)'; } }
         var bd = document.getElementById('tgmbBadge');
-        if (bd) { var _bic = _tgIcon(a.contactKey || a.key, a.contactAct || a.activity) || '💬'; if (_bic.indexOf('<svg') === 0) { bd.innerHTML = _bic; } else { bd.textContent = _bic; } }
+        if (bd) { var _bic = _tgIcon(a.contactKey || a.key, a.contactAct || a.activity) || '💬'; if (_bic.indexOf('data:image') === 0) { bd.innerHTML = _tgIconHtml(_bic); } else if (_bic.indexOf('\u003csvg') === 0) { bd.innerHTML = _bic; } else { bd.textContent = _bic; } }
         if (_tgMiniShape() === 'pill') {
           ball.classList.remove('active');
           pill.classList.add('active');
