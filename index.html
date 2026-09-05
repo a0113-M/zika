@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="322";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="323";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v322</title>
+  <title>字卡 · 小手机 v323</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21142,9 +21142,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var lvBox = document.getElementById('tgLiveVideoBox');
         if (lvBox) lvBox.classList.remove('full');
         if (isVid) _tgLiveVideoRender(a.media);
+        var _tgIsReadMedia = !!(a.media && a.media.type === 'read');
         document.getElementById('tgSelect').style.display = 'none';
         document.getElementById('tgActive').style.display = 'none';
-        live.classList.add('open');
+        live.classList.toggle('open', !_tgIsReadMedia);
         _tgTick();
         _tgStopTimer();
         _tgTimer = setInterval(_tgTick, 1000);
@@ -21542,6 +21543,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!pill || !ball) return;
         var a = _tgActive;
         if (!a) { pill.classList.remove('active'); ball.classList.remove('active'); if (line) line.classList.remove('active'); _tgMediaEnsure(); return; }
+        if (a.media && a.media.type === 'read') { pill.classList.remove('active'); ball.classList.remove('active'); if (line) line.classList.remove('active'); return; }
         var ballAv = document.getElementById('tgmbAvatar');
         var c = contacts.filter(function (x) { return x.id === a.contactId; })[0];
         if (ballAv) { if (c) _zkSetContactAvatar(ballAv, c); else { ballAv.textContent = (a.contactName || '?').charAt(0).toUpperCase(); ballAv.style.background = 'var(--primary)'; } }
@@ -21805,13 +21807,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           + '<div class="trf-body" id="trfBody"></div>'
           + '<div class="trf-bottom"><span id="trfPage">1/1</span><span class="trf-clockwrap"><span id="trfClockT">--:--</span><svg viewBox="0 0 28 14" width="24" height="12"><rect x="1" y="2" width="22" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="24.2" y="5" width="2.6" height="4" rx="1" fill="currentColor"/><rect id="trfBatFill" x="3" y="4" width="10" height="6" rx="1.2" fill="currentColor" opacity="0.85"/></svg><span id="trfBat"></span></span></div>'
           + '<div class="trf-mask" id="trfMask"></div>'
-          + '<div class="trf-drawer" id="trfDrawer"><div class="trf-drawer-h">目录 <b id="trfDCount"></b></div><div class="trf-drawer-list" id="trfDList"></div><div class="trf-drawer-f"><button type="button" id="trfDExit">返回陪伴页</button></div></div>'
+          + '<div class="trf-drawer" id="trfDrawer"><div class="trf-drawer-h">目录 <b id="trfDCount"></b></div><div class="trf-drawer-list" id="trfDList"></div><div class="trf-drawer-f"><button type="button" id="trfDExit">结束阅读</button></div></div>'
           + '<div class="trf-sheet" id="trfSheet"><div class="trf-sheet-t">给这段写个标注</div><div class="trf-sheet-p" id="trfShPrev"></div><textarea id="trfShText" maxlength="200" placeholder="记下此刻的想法…"></textarea><div class="trf-sheet-btns"><button type="button" class="trf-del" id="trfShDel">删除</button><button type="button" class="trf-cancel" id="trfShCancel">取消</button><button type="button" class="trf-ok" id="trfShOk">保存</button></div></div>';
         document.body.appendChild(fs);
-        document.getElementById('trfBack').addEventListener('click', function () { _tgRFClose(); });
+        document.getElementById('trfBack').addEventListener('click', function () { _tgEndTogether(); });
         document.getElementById('trfChap').addEventListener('click', function () { _tgRFDrawer(true); });
         document.getElementById('trfMask').addEventListener('click', function () { _tgRFDrawer(false); });
-        document.getElementById('trfDExit').addEventListener('click', function () { _tgRFDrawer(false); setTimeout(_tgRFClose, 120); });
+        document.getElementById('trfDExit').addEventListener('click', function () { _tgEndTogether(); });
         document.getElementById('trfDList').addEventListener('click', function (ev) {
           var b = ev.target.closest('[data-jump]'); if (!b) return;
           _tgRFDrawer(false);
@@ -22406,6 +22408,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (mi) mi.style.display = 'none';
           return;
         }
+        if (a.media.type === 'read') { fl.style.display = 'none'; if (mi) mi.style.display = 'none'; return; }
         var mkey = a.media.type + '|' + (a.media.kind || '') + '|' + (a.media.url || '') + '|' + (a.media.title || '');
         if (fl.dataset.min === '1') {
           fl.style.display = 'none';
