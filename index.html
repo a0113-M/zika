@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="340";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="341";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v340</title>
+  <title>字卡 · 小手机 v341</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -834,6 +834,7 @@
     .chat-menu-dropdown .menu-item:active {
       background: #f0f0f0;
     }
+    .chat-menu-dropdown .menu-item.danger { color: #e55a5a; }
 
     .chat-menu-dropdown .menu-item .menu-icon {
       font-size: 16px;
@@ -12573,6 +12574,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <button class="menu-item" data-action="import">导入聊天记录</button>
         <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="settings">设置</button>
+        <div class="chat-menu-divider"></div>
+        <button class="menu-item danger" data-action="clear">清空聊天记录</button>
       </div>
       <div class="chat-messages" id="chatMessages"></div>
       <!-- 多选工具栏 -->
@@ -16840,6 +16843,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             navItems.forEach(b => b.classList.remove('active'));
           } else if (action === 'settings') {
             showChatSettings();
+          } else if (action === 'clear') {
+            clearChatHistory();
           }
         });
       });
@@ -16866,6 +16871,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         // 触发文件选择
         document.getElementById('importChatFileInput').click();
+      }
+
+      // 清空聊天记录（弹确认卡片）
+      function clearChatHistory() {
+        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        var _con = contacts.find(function (c) { return c.id === currentChatId; });
+        var _nm = _con ? _con.name : '该联系人';
+        var _ov = document.createElement('div');
+        _ov.className = 'tg-del-confirm';
+        _ov.innerHTML = '<div class="tg-del-confirm-box"><div class="t">确定清空与「' + _nm + '」的聊天记录吗？</div><div class="s">清空后无法恢复</div><div class="tg-del-confirm-btns"><button type="button" class="cancel">取消</button><button type="button" class="ok">清空</button></div></div>';
+        function _close() { if (_ov.parentNode) _ov.parentNode.removeChild(_ov); }
+        _ov.addEventListener('click', function (e) { if (e.target === _ov) _close(); });
+        _ov.querySelector('.cancel').addEventListener('click', _close);
+        _ov.querySelector('.ok').addEventListener('click', function () {
+          _close();
+          chatHistories[currentChatId] = [];
+          try {
+            var _toSave = {};
+            for (var _k in chatHistories) { if (chatHistories[_k] && chatHistories[_k].length > 0) _toSave[_k] = chatHistories[_k]; }
+            localStorage.setItem('contactChatHistories', JSON.stringify(_toSave));
+          } catch (e) {}
+          if (_con) { _con.lastMsg = ''; _con.time = ''; saveContacts(); if (!cardView.classList.contains('hidden')) refreshList(); }
+          renderMessages(currentChatId);
+          showToast('已清空聊天记录');
+        });
       }
 
       // 处理导入的聊天记录文件
