@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="314";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="315";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v314</title>
+  <title>字卡 · 小手机 v315</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7701,6 +7701,8 @@
     .tg-app-chat-item.ta { align-self: flex-start; background: rgba(255,255,255,.14); color: #fff; border-bottom-left-radius: 4px; }
     .tg-app-chat-empty { text-align: center; font-size: 11px; color: rgba(255,255,255,.42); padding: 4px 0; }
     .tg-app-chat-row { display: flex; align-items: center; gap: 8px; }
+    .tg-app-chat-time { display: block; font-size: 9px; opacity: .5; margin-top: 2px; }
+    .tg-app-chat-item.me .tg-app-chat-time { text-align: right; }
     .tg-live-app .tg-app-chat { display: flex; flex: 1 1 auto; min-height: 0; }
     .tg-live-app .acd-logbox.tg-logopen + .tg-app-chat { flex: 0 1 auto; }
     .tg-live-app .acd-logbox.tg-logopen + .tg-app-chat .tg-app-chat-list { flex: 0 1 auto; max-height: 148px; }
@@ -21304,35 +21306,78 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgAppChatRender() {
         var box = document.getElementById('tgAppChatList');
         if (!box) return;
-        var msgs = (_tgActive && _tgActive.chat) || [];
-        if (!msgs.length) { box.innerHTML = '<div class="tg-app-chat-empty">发条消息，和 TA 边看边聊</div>'; return; }
-        box.innerHTML = msgs.map(function (m) {
-          return '<div class="tg-app-chat-item ' + (m.me ? 'me' : 'ta') + '">' + _tgEsc(m.x) + '</div>';
+        if (!_tgActive) { box.innerHTML = ''; return; }
+        var msgs = (typeof chatHistories !== 'undefined' && chatHistories[_tgActive.contactId]) || [];
+        var tail = msgs.slice(-30);
+        if (!tail.length) { box.innerHTML = '<div class="tg-app-chat-empty">发条消息，和 TA 边看边聊</div>'; return; }
+        box.innerHTML = tail.map(function (m) {
+          var me = m.from === 'me';
+          var txt;
+          if (m.withdrawn) txt = '撤回了一条消息';
+          else if (m.voice) txt = '[语音] ' + (m.voiceName || '');
+          else if (m.image) txt = '[图片]';
+          else if (typeof m.text === 'string' && m.text) txt = m.text;
+          else txt = '[消息]';
+          var tm = m.time ? '<span class="tg-app-chat-time">' + _tgEsc(m.time) + '</span>' : '';
+          return '<div class="tg-app-chat-item ' + (me ? 'me' : 'ta') + '">' + _tgEsc(txt) + tm + '</div>';
         }).join('');
         box.scrollTop = box.scrollHeight;
-      }
-      function _tgAppChatPush(x, me) {
-        if (!_tgActive) return;
-        if (!_tgActive.chat) _tgActive.chat = [];
-        _tgActive.chat.push({ t: Date.now(), x: x, me: !!me });
-        if (_tgActive.chat.length > 50) _tgActive.chat.shift();
-        _tgSaveActive(_tgActive);
-        _tgAppChatRender();
       }
       function _tgAppChatSend() {
         var inp = document.getElementById('tgAppChatIn');
         if (!inp || !_tgActive) return;
         var t = (inp.value || '').trim();
         if (!t) return;
+        var cid = _tgActive.contactId;
+        if (cid == null) return;
         inp.value = '';
-        _tgAppChatPush(t, true);
-        if (Math.random() < 0.8) {
-          setTimeout(function () {
-            if (!_tgActive) return;
-            _tgAppChatPush(TG_CHAT_REPLY[Math.floor(Math.random() * TG_CHAT_REPLY.length)], false);
-          }, 1500 + Math.floor(Math.random() * 2800));
-        }
+        if (!chatHistories[cid]) chatHistories[cid] = [];
+        var now = new Date();
+        var timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+        chatHistories[cid].push({ text: t, from: 'me', time: timeStr, sentAt: Date.now() });
+        renderMessages(cid);
+        var contact = contacts.find(function (c) { return c.id === cid; });
+        if (contact) { contact.lastMsg = t; contact.time = timeStr; if (!cardView.classList.contains('hidden')) refreshList(); }
+        if (contact && contact.readOnly) { if (typeof _zkMarkMyLastRead === 'function') _zkMarkMyLastRead(cid); return; }
+        if (typeof _zkShowTyping === 'function') _zkShowTyping();
+        setTimeout(function () {
+          if (!_tgActive || _tgActive.contactId !== cid) return;
+          var c2 = contacts.find(function (x) { return x.id === cid; });
+          var senderName = c2 ? c2.name : 'other';
+          var now2 = new Date();
+          var timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
+          var _voiceRoll = (typeof rollVoiceCard === 'function') ? rollVoiceCard() : null;
+          var lastTxt;
+          if (_voiceRoll) {
+            chatHistories[cid].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: timeStr2 });
+            lastTxt = '[语音]';
+          } else {
+            var reply = (typeof getRandomCard === 'function') ? getRandomCard() : '嗯嗯，我在';
+            if (senderName !== 'me') reply = String(reply).replace(/你/g, '我');
+            var msgData = { text: reply, from: senderName, time: timeStr2 };
+            if (Math.random() < 0.3) {
+              var ms = chatHistories[cid] || [];
+              for (var i = ms.length - 2; i >= 0; i--) {
+                if (ms[i].from === 'me' && !ms[i].withdrawn) { msgData.replyTo = i; break; }
+              }
+            }
+            chatHistories[cid].push(msgData);
+            lastTxt = reply;
+          }
+          var c3 = contacts.find(function (x) { return x.id === cid; });
+          if (c3) { c3.lastMsg = lastTxt; c3.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
+          if (typeof _zkHideTyping === 'function') _zkHideTyping(cid);
+          renderMessages(cid);
+        }, (typeof _zkGetReplyDelay === 'function' && contact) ? _zkGetReplyDelay(contact) : (1200 + Math.floor(Math.random() * 2500)));
       }
+      (function () {
+        var _origRM = renderMessages;
+        renderMessages = function (cid) {
+          var r = _origRM(cid);
+          try { if (_tgActive && _tgActive.contactId === cid) _tgAppChatRender(); } catch (e) {}
+          return r;
+        };
+      })();
       function _tgUserDmSend() {
         var inp = document.getElementById('tgDmInput');
         if (!inp || !_tgActive) return;
