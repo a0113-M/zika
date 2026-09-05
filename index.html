@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="338";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="339";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v338</title>
+  <title>字卡 · 小手机 v339</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -21874,6 +21874,17 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var h = _tgGetImportHist().filter(function (r) { return (r.type + '|' + (r.url || r.tkey || '')) !== sig; });
         _tgSaveImportHist(h);
       }
+      function _tgDelBook(tkey) {
+        var h = _tgGetImportHist().filter(function (r) { return !(r.type === 'book' && r.tkey === tkey); });
+        _tgSaveImportHist(h);
+        _tgBookDB().then(function (db) {
+          if (!db) return;
+          try { db.transaction('books', 'readwrite').objectStore('books').delete(tkey); } catch (e) {}
+        });
+        try { localStorage.removeItem(tkey); } catch (e) {}
+        try { localStorage.removeItem('zk_tg_read_pos_' + tkey); } catch (e) {}
+        try { localStorage.removeItem('zk_tg_read_meta_' + tkey); } catch (e) {}
+      }
       function _tgAddImportHist(rec) {
         var h = _tgGetImportHist();
         var sig = rec.type + '|' + (rec.url || rec.tkey || '');
@@ -21913,20 +21924,36 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var p = _tgShelfPos(r.tkey);
             var meta = p.n > 0 ? ('已读 ' + (p.pos > 0 ? Math.round(p.pos / p.n * 100) + '% · ' : '') + '共 ' + _tgShelfWc(p.n)) : '还没开始读';
             var sel = (typeof _tgSoloBook !== 'undefined' && _tgSoloBook && _tgSoloBook.tkey === r.tkey) ? ' sel' : '';
-            h += '\u003cdiv class="tg-hrec' + sel + '" data-i="' + i + '"\u003e\u003cspan class="tg-hrec-ico"\u003e\u0026#128218;\u003c/span\u003e\u003cspan class="tg-hrec-main"\u003e\u003cspan class="tg-hrec-t"\u003e' + _tgEsc(r.title || '未命名') + '\u003c/span\u003e\u003cspan class="tg-hrec-s"\u003e' + _tgEsc(meta) + '\u003c/span\u003e\u003c/span\u003e\u003cspan class="tg-hrec-arrow"\u003e\u0026#8250;\u003c/span\u003e\u003c/div\u003e';
+            h += '<div class="tg-hrec' + sel + '" data-i="' + i + '"><span class="tg-hrec-ico">&#128218;</span><span class="tg-hrec-main"><span class="tg-hrec-t">' + _tgEsc(r.title || '未命名') + '</span><span class="tg-hrec-s">' + _tgEsc(meta) + '</span></span><button type="button" class="tg-hrec-del" data-tkey="' + (r.tkey || '') + '" aria-label="删除">×</button><span class="tg-hrec-arrow">&#8250;</span></div>';
           });
           h += '\u003c/div\u003e';
         }
         h += '\u003cbutton type="button" class="tg-solo-import" id="tgSoloImportBook"\u003e\u0026#xFF0B; 导入一本书\u003c/button\u003e';
         inputEl.innerHTML = h;
         inputEl.querySelectorAll('.tg-hrec').forEach(function (row) {
-          row.addEventListener('click', function () {
+          _tgBindLongPress(row, function () { row.classList.add('del-open'); });
+          row.addEventListener('click', function (e) {
+            if (row._tgClickGuard && row._tgClickGuard(e)) return;
             var r = books[parseInt(row.dataset.i, 10)];
             if (!r) return;
             _tgSoloBook = { tkey: r.tkey, title: r.title || '未命名' };
             inputEl.querySelectorAll('.tg-hrec').forEach(function (x) { x.classList.remove('sel'); });
             row.classList.add('sel');
             showToast('已选中《' + _tgSoloBook.title + '》，点下面按钮开始');
+          });
+        });
+        inputEl.querySelectorAll('.tg-hrec-del').forEach(function (btn) {
+          btn.addEventListener('click', function (e) {
+            if (e && e.stopPropagation) e.stopPropagation();
+            var tkey = btn.dataset.tkey;
+            var bk = books.filter(function (r) { return r.tkey === tkey; })[0];
+            var name = bk ? (bk.title || '未命名') : '这本书';
+            _tgConfirmDel('《' + name + '》', function () {
+              _tgDelBook(tkey);
+              if (typeof _tgSoloBook !== 'undefined' && _tgSoloBook && _tgSoloBook.tkey === tkey) { _tgSoloBook = null; }
+              _tgSoloRenderBook();
+              showToast('已删除');
+            });
           });
         });
         var impBtn = document.getElementById('tgSoloImportBook');
