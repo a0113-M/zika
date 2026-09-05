@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="312";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="313";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v312</title>
+  <title>字卡 · 小手机 v313</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7693,7 +7693,13 @@
     .tg-live-app .acd-logbox.tg-logopen { flex: 1 1 0; max-height: none; justify-content: flex-start; overflow-y: auto; }
     .tg-log-arrow { font-weight: 400; font-style: normal; color: rgba(255,255,255,.55); margin-left: 6px; display: inline-block; transition: transform .25s; }
     .tg-live-app .acd-logbox.tg-logopen .tg-log-arrow { transform: rotate(180deg); }
-    .tg-app-chat { display: none; flex: 0 0 auto; align-items: center; gap: 8px; margin: 8px 12px 0; padding: 9px 12px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.16); border-radius: 20px; }
+    .tg-app-chat { display: none; flex: 0 0 auto; flex-direction: column; gap: 6px; margin: 8px 12px 0; padding: 8px 10px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.16); border-radius: 20px; }
+    .tg-app-chat-list { display: flex; flex-direction: column; gap: 6px; max-height: 148px; overflow-y: auto; padding: 2px 4px; }
+    .tg-app-chat-item { max-width: 78%; padding: 6px 11px; border-radius: 14px; font-size: 12.5px; line-height: 1.5; word-break: break-word; }
+    .tg-app-chat-item.me { align-self: flex-end; background: linear-gradient(135deg, #7a6bc4, #9a8ad8); color: #fff; border-bottom-right-radius: 4px; }
+    .tg-app-chat-item.ta { align-self: flex-start; background: rgba(255,255,255,.14); color: #fff; border-bottom-left-radius: 4px; }
+    .tg-app-chat-empty { text-align: center; font-size: 11px; color: rgba(255,255,255,.42); padding: 4px 0; }
+    .tg-app-chat-row { display: flex; align-items: center; gap: 8px; }
     .tg-live-app .tg-app-chat { display: flex; }
     .tg-app-chat input { flex: 1; min-width: 0; background: transparent; border: none; outline: none; color: #fff; font-size: 13px; }
     .tg-app-chat input::placeholder { color: rgba(255,255,255,.45); }
@@ -14456,8 +14462,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div class="acd-log-list" id="tgLogList"></div>
           </div>
           <div class="tg-app-chat" id="tgAppChat">
-            <input id="tgAppChatIn" placeholder="和 TA 聊聊…" maxlength="60">
-            <button type="button" id="tgAppChatSend">发送</button>
+            <div class="tg-app-chat-list" id="tgAppChatList"></div>
+            <div class="tg-app-chat-row">
+              <input id="tgAppChatIn" placeholder="和 TA 聊聊…" maxlength="60">
+              <button type="button" id="tgAppChatSend">发送</button>
+            </div>
           </div>
           <button class="acd-end" id="tgEndBtn2">结束陪伴</button>
         </div>
@@ -20582,7 +20591,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var el = document.getElementById('tgLogList');
         if (!el) return;
         var logs = (_tgActive && _tgActive.logs) || [];
-        el.innerHTML = logs.map(function (g) {
+        var namePre = _tgActive ? ((_tgActive.contactName || '') + '：') : '';
+        el.innerHTML = logs.filter(function (g) {
+          if (g.c) return false;
+          if (g.x.indexOf('你：') === 0) return false;
+          if (namePre && g.x.indexOf(namePre) === 0) return false;
+          return true;
+        }).map(function (g) {
           return '<div class="acd-log-item"><span class="acd-log-t">' + _tgRelTime(g.t) + '</span><span>' + _tgEsc(g.x) + '</span></div>';
         }).join('');
       }
@@ -21053,6 +21068,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (a.paused) { if (ip) ip.style.display = 'none'; if (iy) iy.style.display = 'block'; }
         else { if (ip) ip.style.display = 'block'; if (iy) iy.style.display = 'none'; }
         _tgRenderLiveLogs();
+        _tgAppChatRender();
         var isApp = !!(a.media && a.media.type === 'video' && a.media.kind === 'app');
         var isVid = !!(a.media && a.media.type === 'video' && a.media.kind !== 'app');
         live.classList.toggle('tg-live-video', isVid);
@@ -21282,17 +21298,35 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         showToast('已切到陪同模式，可以跳到 App 看正片');
       }
       var TG_CHAT_REPLY = ['嗯嗯我在看', '哈哈哈这段太搞了', '你看到第几集了？', '别急马上到高能了', '这段配乐绝了', '等等我先截个图', '主角这波操作太帅了', '进度和我一样诶', '最后十分钟别快进', '看完一起聊聊结局'];
+      function _tgAppChatRender() {
+        var box = document.getElementById('tgAppChatList');
+        if (!box) return;
+        var msgs = (_tgActive && _tgActive.chat) || [];
+        if (!msgs.length) { box.innerHTML = '<div class="tg-app-chat-empty">发条消息，和 TA 边看边聊</div>'; return; }
+        box.innerHTML = msgs.map(function (m) {
+          return '<div class="tg-app-chat-item ' + (m.me ? 'me' : 'ta') + '">' + _tgEsc(m.x) + '</div>';
+        }).join('');
+        box.scrollTop = box.scrollHeight;
+      }
+      function _tgAppChatPush(x, me) {
+        if (!_tgActive) return;
+        if (!_tgActive.chat) _tgActive.chat = [];
+        _tgActive.chat.push({ t: Date.now(), x: x, me: !!me });
+        if (_tgActive.chat.length > 50) _tgActive.chat.shift();
+        _tgSaveActive(_tgActive);
+        _tgAppChatRender();
+      }
       function _tgAppChatSend() {
         var inp = document.getElementById('tgAppChatIn');
         if (!inp || !_tgActive) return;
         var t = (inp.value || '').trim();
         if (!t) return;
         inp.value = '';
-        _tgLogLive('你：' + t, true);
+        _tgAppChatPush(t, true);
         if (Math.random() < 0.8) {
           setTimeout(function () {
             if (!_tgActive) return;
-            _tgLogLive(_tgActive.contactName + '：' + TG_CHAT_REPLY[Math.floor(Math.random() * TG_CHAT_REPLY.length)]);
+            _tgAppChatPush(TG_CHAT_REPLY[Math.floor(Math.random() * TG_CHAT_REPLY.length)], false);
           }, 1500 + Math.floor(Math.random() * 2800));
         }
       }
