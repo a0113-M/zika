@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="348";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="349";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v348</title>
+  <title>字卡 · 小手机 v349</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11519,11 +11519,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   pointer-events: none; overflow: hidden; z-index: 1;
 }
 
-/* 键盘弹出时：只有输入框贴键盘上沿，发送/挂断按钮平滑收缩淡出（挂断仍可用顶栏mini按钮） */
-.call-overlay.kb-open .call-send-bar,
+/* 键盘弹出时：聊天区与挂断按钮收缩淡出，输入框+发送按钮贴键盘保持可见 */
+.call-overlay.kb-open .call-chat-area,
 .call-overlay.kb-open .call-controls {
   max-height: 0; padding-top: 0; padding-bottom: 0;
-  opacity: 0; pointer-events: none;
+  opacity: 0; pointer-events: none; overflow: hidden;
 }
 .call-dynamic-ring {
   position: absolute;
