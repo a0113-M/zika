@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="342";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="343";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v342</title>
+  <title>字卡 · 小手机 v343</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5485,8 +5485,11 @@
     .zk-bg-sw { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.12); transition: transform 0.15s, border-color 0.15s; }
     .zk-bg-sw:active { transform: scale(0.92); }
     .zk-bg-sw.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(155,142,196,0.18), 0 2px 8px rgba(0,0,0,0.15); }
+    .zk-bg-img-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.12); font-size: 16px; line-height: 1; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.15s, border-color 0.15s; color: #666; }
+    .zk-bg-img-btn.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(155,142,196,0.18), 0 2px 8px rgba(0,0,0,0.15); }
     .zk-state-name { text-align: center; font-size: 18px; font-weight: 600; color: var(--text-main); margin: -6px 0 14px; }
     .zk-state-text { margin-top: 6px; font-size: 12px; line-height: 1.55; color: var(--text-main); }
+    #contactStateModal .contact-flip-back .contact-state { font-size: 11px; text-align: left; }
     #contactStateAvatar { cursor: default; }
     .profile-box .profile-actions {
       display: flex;
@@ -13929,6 +13932,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <button type="button" class="zk-bg-sw" data-bg="#e9f0f9" style="background:#e9f0f9"></button>
             <button type="button" class="zk-bg-sw" data-bg="#f1ebf8" style="background:#f1ebf8"></button>
             <button type="button" class="zk-bg-sw" data-bg="#fdeee4" style="background:#fdeee4"></button>
+            <button type="button" class="zk-bg-img-btn" id="contactBgImageBtn" title="选择图片">📷</button>
           </div>
         </div>
         <div class="profile-actions">
@@ -13937,6 +13941,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
       <input type="file" id="contactAvatarFileInput" accept="image/*">
+      <input type="file" id="contactBgFileInput" accept="image/*">
     </div>
 
     <!-- 联系人状态查看弹窗（只读） -->
@@ -13962,23 +13967,19 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="contact-tarot-grid">
           <div class="contact-tarot-item">
             <div class="contact-rule-head"><label>所在地方</label></div>
-            <div class="contact-tarot-cards" id="stateLocCards"></div>
-            <div class="zk-state-text" id="stateLocationState">—</div>
+            <div class="contact-flip-card" data-rule="loc"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="stateLocCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="stateLocationState">—</div></div></div></div>
           </div>
           <div class="contact-tarot-item">
             <div class="contact-rule-head"><label>在做什么</label></div>
-            <div class="contact-tarot-cards" id="stateActCards"></div>
-            <div class="zk-state-text" id="stateDoingState">—</div>
+            <div class="contact-flip-card" data-rule="act"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="stateActCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="stateDoingState">—</div></div></div></div>
           </div>
           <div class="contact-tarot-item">
             <div class="contact-rule-head"><label>状态</label></div>
-            <div class="contact-tarot-cards" id="stateStateCards"></div>
-            <div class="zk-state-text" id="stateStateState">—</div>
+            <div class="contact-flip-card" data-rule="state"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="stateStateCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="stateStateState">—</div></div></div></div>
           </div>
           <div class="contact-tarot-item">
             <div class="contact-rule-head"><label>距离</label></div>
-            <div class="contact-tarot-cards" id="stateDisCards"></div>
-            <div class="zk-state-text" id="stateDistanceState">—</div>
+            <div class="contact-flip-card" data-rule="dis"><div class="contact-flip-inner"><div class="contact-flip-face contact-flip-front"><div class="contact-tarot-cards" id="stateDisCards"></div></div><div class="contact-flip-face contact-flip-back"><div class="contact-state" id="stateDistanceState">—</div></div></div></div>
           </div>
         </div>
         <div class="profile-actions">
@@ -15830,6 +15831,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       const _zkContactModal = document.getElementById('contactModal');
       let _zkSelectedChatBg = null;
       const _zkContactBgSwatches = document.getElementById('contactBgSwatches');
+      const _zkContactBgImageBtn = document.getElementById('contactBgImageBtn');
+      const _zkContactBgFileInput = document.getElementById('contactBgFileInput');
       const _zkContactAvatarEdit = document.getElementById('contactAvatarEdit');
       const _zkContactAvatarFileInput = document.getElementById('contactAvatarFileInput');
       const _zkContactNameInput = document.getElementById('contactNameInput');
@@ -16254,6 +16257,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           saveContacts();
         }
         _zkRenderContactStateView(contact);
+        _zkStateModal.querySelectorAll('.contact-flip-card').forEach(function (c) { c.classList.remove('flipped'); });
         _zkStateModal.classList.add('show');
         var _box = _zkStateModal.querySelector('.profile-box');
         if (_box) _box.scrollTop = 0;
@@ -16262,10 +16266,25 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       document.getElementById('contactStateClose').addEventListener('click', function () { _zkStateModal.classList.remove('show'); });
       function _zkHighlightChatBg() {
         if (!_zkContactBgSwatches) return;
+        var _isImg = _zkSelectedChatBg && _zkSelectedChatBg.indexOf('data:') === 0;
         var sw = _zkContactBgSwatches.querySelectorAll('.zk-bg-sw');
         for (var i = 0; i < sw.length; i++) {
           var cur = sw[i].getAttribute('data-bg') || '';
-          sw[i].classList.toggle('sel', cur === (_zkSelectedChatBg || ''));
+          sw[i].classList.toggle('sel', !_isImg && cur === (_zkSelectedChatBg || ''));
+        }
+        if (_zkContactBgImageBtn) {
+          _zkContactBgImageBtn.classList.toggle('sel', _isImg);
+          if (_isImg) {
+            _zkContactBgImageBtn.style.backgroundImage = 'url("' + _zkSelectedChatBg + '")';
+            _zkContactBgImageBtn.style.backgroundSize = 'cover';
+            _zkContactBgImageBtn.style.backgroundPosition = 'center';
+            _zkContactBgImageBtn.textContent = '';
+          } else {
+            _zkContactBgImageBtn.style.backgroundImage = '';
+            _zkContactBgImageBtn.style.backgroundSize = '';
+            _zkContactBgImageBtn.style.backgroundPosition = '';
+            _zkContactBgImageBtn.textContent = '📷';
+          }
         }
       }
       if (_zkContactBgSwatches) {
@@ -16274,6 +16293,34 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (!btn) return;
           _zkSelectedChatBg = btn.getAttribute('data-bg') || '';
           _zkHighlightChatBg();
+        });
+      }
+      if (_zkContactBgImageBtn) {
+        _zkContactBgImageBtn.addEventListener('click', function () {
+          if (_zkContactBgFileInput) _zkContactBgFileInput.click();
+        });
+      }
+      if (_zkContactBgFileInput) {
+        _zkContactBgFileInput.addEventListener('change', function (e) {
+          var file = this.files[0]; if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function (ev) {
+            var img = new Image();
+            img.onload = function () {
+              var maxW = 720;
+              var sc = Math.min(1, maxW / img.width);
+              var w = Math.round(img.width * sc), h = Math.round(img.height * sc);
+              var cv = document.createElement('canvas');
+              cv.width = w; cv.height = h;
+              cv.getContext('2d').drawImage(img, 0, 0, w, h);
+              _zkSelectedChatBg = cv.toDataURL('image/jpeg', 0.82);
+              _zkHighlightChatBg();
+            };
+            img.onerror = function () { _zkSelectedChatBg = ev.target.result; _zkHighlightChatBg(); };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+          this.value = '';
         });
       }
       _zkContactAvatarEdit.addEventListener('click', function () { _zkContactAvatarFileInput.click(); });
@@ -16372,7 +16419,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           const avatar = document.createElement('div');
           avatar.className = 'contact-avatar';
           _zkSetContactAvatar(avatar, item);
-          avatar.addEventListener('click', function (e) { e.stopPropagation(); _zkOpenContactModal(item.id); });
+          avatar.addEventListener('click', function (e) { e.stopPropagation(); _zkOpenContactStateModal(item.id); });
           const info = document.createElement('div');
           info.className = 'contact-info';
           const nameDiv = document.createElement('div');
@@ -16895,8 +16942,36 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       // ----- 打开/关闭聊天 -----
       function _zkApplyChatBg(contact) {
         var _bg = (contact && contact.chatBg) || '#ededed';
-        try { if (chatView) chatView.style.background = _bg; } catch (e) {}
-        try { if (chatMessages) chatMessages.style.background = _bg; } catch (e) {}
+        var _isImg = _bg.indexOf('data:') === 0;
+        try {
+          if (chatView) {
+            if (_isImg) {
+              chatView.style.background = 'none';
+              chatView.style.backgroundColor = '#ededed';
+              chatView.style.backgroundImage = 'url("' + _bg + '")';
+              chatView.style.backgroundSize = 'cover';
+              chatView.style.backgroundPosition = 'center';
+            } else {
+              chatView.style.backgroundImage = '';
+              chatView.style.backgroundSize = '';
+              chatView.style.backgroundPosition = '';
+              chatView.style.background = _bg;
+            }
+          }
+        } catch (e) {}
+        try {
+          if (chatMessages) {
+            if (_isImg) {
+              chatMessages.style.backgroundImage = '';
+              chatMessages.style.background = 'transparent';
+            } else {
+              chatMessages.style.backgroundImage = '';
+              chatMessages.style.backgroundSize = '';
+              chatMessages.style.backgroundPosition = '';
+              chatMessages.style.background = _bg;
+            }
+          }
+        } catch (e) {}
       }
       function openChat(contactId) {
         const contact = contacts.find(c => c.id === contactId);
