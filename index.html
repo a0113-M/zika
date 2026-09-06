@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="345";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="346";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v345</title>
+  <title>字卡 · 小手机 v346</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -19578,7 +19578,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           row.className = 'dt-met-row';
           var av = document.createElement('div');
           av.className = 'dt-met-avatar';
-          av.textContent = (c.name || '?').charAt(0).toUpperCase();
+          _zkSetContactAvatar(av, c);
           var info = document.createElement('div');
           info.className = 'dt-met-info';
           var nm = document.createElement('div');
@@ -20358,7 +20358,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           it.className = 'act-citem' + (c.id === _actCurrentId ? ' active' : '');
           var av = document.createElement('div');
           av.className = 'act-cavatar';
-          av.textContent = (c.name || '?').charAt(0).toUpperCase();
+          _zkSetContactAvatar(av, c);
           var nm = document.createElement('div');
           nm.className = 'act-cname';
           nm.textContent = c.name;
@@ -21274,7 +21274,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           it.className = 'tg-citem' + (c.id === (_tgActive ? _tgActive.contactId : _tgCurrentId) ? ' active' : '');
           var av = document.createElement('div');
           av.className = 'tg-cavatar';
-          av.textContent = (c.name || '?').charAt(0).toUpperCase();
+          _zkSetContactAvatar(av, c);
           var nm = document.createElement('div');
           nm.className = 'tg-cname';
           nm.textContent = c.name;
@@ -21422,7 +21422,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var mask = document.getElementById('tgInviteMask');
         if (!box || !mask) { _tgStartTogether(true); return; }
         var ava = document.getElementById('tgInviteAva');
-        if (ava) ava.textContent = (c.name || '?').charAt(0).toUpperCase();
+        if (ava) _zkSetContactAvatar(ava, c);
         var title = document.getElementById('tgInviteTitle');
         if (title) title.innerHTML = '邀请 <b>' + _tgEsc(c.name) + '</b> 一起' + _tgEsc(act.name);
         var winMin = _tgInviteWinMin();
@@ -21606,7 +21606,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var bg = st.bg ? sceneBg : 'linear-gradient(160deg, #3a3560, #6a5fa8)';
         var bgEl = document.getElementById('tgLiveBg');
         if (bgEl) bgEl.style.background = bg || 'linear-gradient(160deg, #3a3560, #6a5fa8)';
-        var ava = document.getElementById('tgLiveAva'); if (ava) ava.textContent = (a.contactName || '?').charAt(0).toUpperCase();
+        var _liveC = contacts.filter(function (x) { return x.id === a.contactId; })[0]; var ava = document.getElementById('tgLiveAva'); if (ava) _zkSetContactAvatar(ava, _liveC);
         var nm = document.getElementById('tgLiveName'); if (nm) nm.textContent = a.contactName;
         var tag = document.getElementById('tgLiveTag'); if (tag) tag.textContent = a.contactAct || a.activity;
         var p = function (n) { return (n < 10 ? '0' : '') + n; };
@@ -22368,6 +22368,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var el = document.getElementById('tgPanelContacts');
         el.innerHTML = h;
         el.querySelectorAll('.tg-pc').forEach(function (b) {
+          var _pcid = b.dataset.cid;
+          var _pcc = contacts.filter(function (x) { return x.id === _pcid; })[0];
+          var _pca = b.querySelector('.tg-pc-ava');
+          if (_pcc && _pca) _zkSetContactAvatar(_pca, _pcc);
           b.addEventListener('click', function () {
             _tgPanelCid = b.dataset.cid;
             var cc = contacts.filter(function (x) { return x.id === _tgPanelCid; })[0];
@@ -28636,8 +28640,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
 
           const avatar = document.createElement('div');
           avatar.className = 'guess-contact-avatar';
-          avatar.textContent = c.name.charAt(0).toUpperCase();
-          if (c.isGroup) avatar.style.background = '#9b9b9b';
+          _zkSetContactAvatar(avatar, c);
           item.appendChild(avatar);
 
           const nameSpan = document.createElement('span');
@@ -31761,7 +31764,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         var contactName = contact.name;
         clpTitle.textContent = contactName;
         // 头像首字母
-        clpAvatar.textContent = contactName.charAt(0).toUpperCase();
+        _zkSetContactAvatar(clpAvatar, contact);
 
         // 筛选该联系人的信件
         var contactLetters = letterList.filter(function (l) {
@@ -32208,7 +32211,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         var contact = contacts.find(function (c) { return c.id === currentChatId; });
         if (!contact) return;
         var name = contact.name || 'TA';
-        document.getElementById('cstAvatar').textContent = contact.isGroup ? '群' : name.charAt(0).toUpperCase();
+        if (contact.isGroup) { document.getElementById('cstAvatar').textContent = '群'; } else { _zkSetContactAvatar(document.getElementById('cstAvatar'), contact); }
         document.getElementById('cstTitle').textContent = '和 ' + name + ' 的统计';
 
         // ---- 在一起 ----
@@ -35926,8 +35929,8 @@ function addToCart(goodId) {
         closeCallTypeModal();
         callState = 'ringing';
         var initial = callContact.name.charAt(0).toUpperCase();
-        callRingAvatar.textContent = initial;
-        callRingAvatar.style.background = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
+        _zkSetContactAvatar(callRingAvatar, callContact);
+        
         callRingName.textContent = callContact.name;
         callRingStatus.textContent = type === 'video' ? '\u89c6\u9891\u901a\u8bdd\u4e2d...' : '\u6b63\u5728\u547c\u53eb...';
         callRinging.classList.add('active');
@@ -35968,12 +35971,12 @@ function addToCart(goodId) {
         callOverlay.classList.remove('ringing-mode');
         var initial = callContact.name.charAt(0).toUpperCase();
         var avatarBg = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
-      if (callActAvatar) { callActAvatar.textContent = initial; callActAvatar.style.background = avatarBg; }
+      if (callActAvatar) { _zkSetContactAvatar(callActAvatar, callContact); }
       if (callActName) callActName.textContent = callContact.name;
-        callVoiceAvatar.textContent = initial;
-        callVoiceAvatar.style.background = avatarBg;
-        if(callVideoAvatarBig){ callVideoAvatarBig.textContent = initial; }
-        if(callVideoAvatarBig){ callVideoAvatarBig.style.background = avatarBg; }
+        _zkSetContactAvatar(callVoiceAvatar, callContact);
+        
+        if(callVideoAvatarBig){ _zkSetContactAvatar(callVideoAvatarBig, callContact); }
+        
         if(callVideoAvatarSmall){ callVideoAvatarSmall.textContent = '我'; }
         if(callVideoAvatarSmall){ callVideoAvatarSmall.style.background = _pc; }
         if (callVideoTimer) callVideoTimer.textContent = '00:00';
@@ -36400,8 +36403,8 @@ function addToCart(goodId) {
             callMiniWindow.style.backgroundColor = (callVideoBig && callVideoBig.style.backgroundColor) ? callVideoBig.style.backgroundColor : 'var(--primary)';
             if (cmwAvatar) {
               cmwAvatar.style.display = 'flex';
-              cmwAvatar.textContent = callContact ? callContact.name.charAt(0).toUpperCase() : '?';
-              cmwAvatar.style.background = callContact ? (callContact.isGroup ? '#9b9b9b' : 'var(--primary)') : 'var(--primary)';
+              _zkSetContactAvatar(cmwAvatar, callContact);
+              
             }
           }
         } else {
@@ -36419,9 +36422,9 @@ function addToCart(goodId) {
             callMiniWindow.style.backgroundColor = _ovC || '';
           }
           if (cmwAvatar) cmwAvatar.style.display = '';
-          var initial = callContact ? callContact.name.charAt(0).toUpperCase() : '?';
-          cmwAvatar.textContent = initial;
-          if (callContact) cmwAvatar.style.background = callContact.isGroup ? '#9b9b9b' : 'var(--primary)';
+          
+          _zkSetContactAvatar(cmwAvatar, callContact);
+          
         }
         startMiniWaveSpeech();
         makeMiniWindowDraggable();
@@ -36816,7 +36819,7 @@ function addToCart(goodId) {
           var bal = document.getElementById('hbBalance');
           var sub = document.getElementById('hbHeadSub');
           if (nm) nm.textContent = c.name;
-          if (ava) ava.textContent = (c.name || '?').charAt(0);
+          if (ava) _zkSetContactAvatar(ava, c);
           if (sub) sub.textContent = '给 ' + c.name + ' 发一个红包';
           var books = hbGetBooksLoose();
           var cb = null;
