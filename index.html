@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="347";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="348";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v347</title>
+  <title>字卡 · 小手机 v348</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11729,9 +11729,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 /* 视频模式：白底由 call-chat-area 承担，消息容器不重复套白 */
 .call-overlay.video-mode .call-chat-messages {
-  background: none;
-  backdrop-filter: none; -webkit-backdrop-filter: none;
-  border-radius: 0;
+  background: rgba(255,255,255,0.62);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border-radius: 14px;
 }
 /* 第1行：联系人消息（居中） */
 .call-chat-row-incoming {
@@ -36146,9 +36146,8 @@ function addToCart(goodId) {
         }
       }
       function updateVideoAvatars() {
-        var bigHasImg=callVideoBig && callVideoBig.style.backgroundImage && callVideoBig.style.backgroundImage!=='none';
         var smallHasImg=callVideoSmall && callVideoSmall.style.backgroundImage && callVideoSmall.style.backgroundImage!=='none';
-        if(callVideoAvatarBig) callVideoAvatarBig.style.display=bigHasImg?'none':'flex';
+        if(callVideoAvatarBig) callVideoAvatarBig.style.display='flex';
         if(callVideoAvatarSmall) callVideoAvatarSmall.style.display=smallHasImg?'none':'flex';
       }
 
