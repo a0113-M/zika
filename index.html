@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="341";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="342";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v341</title>
+  <title>字卡 · 小手机 v342</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5480,6 +5480,14 @@
       background: white;
     }
 
+    /* --- 联系人聊天背景 / 状态查看 --- */
+    .zk-bg-swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+    .zk-bg-sw { width: 40px; height: 40px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.12); transition: transform 0.15s, border-color 0.15s; }
+    .zk-bg-sw:active { transform: scale(0.92); }
+    .zk-bg-sw.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(155,142,196,0.18), 0 2px 8px rgba(0,0,0,0.15); }
+    .zk-state-name { text-align: center; font-size: 18px; font-weight: 600; color: var(--text-main); margin: -6px 0 14px; }
+    .zk-state-text { margin-top: 6px; font-size: 12px; line-height: 1.55; color: var(--text-main); }
+    #contactStateAvatar { cursor: default; }
     .profile-box .profile-actions {
       display: flex;
       gap: 12px;
@@ -13912,12 +13920,71 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="profile-field"><label>显示想法</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">TA 消息下方显示内心想法</span><label class="toggle-switch"><input type="checkbox" id="contactMindThought" checked><span class="toggle-slider"></span></label></div></div>
         <div class="profile-field"><label>显示情绪</label><div style="display:flex;align-items:center;justify-content:space-between;"><span style="font-size:12px;color:#999;">TA 消息下方显示情绪</span><label class="toggle-switch"><input type="checkbox" id="contactMindMood" checked><span class="toggle-slider"></span></label></div></div>
         <div class="profile-field"><label>输入中提示</label><input type="text" id="contactTypingText" placeholder="对方正在输入中" maxlength="30"></div>
+        <div class="profile-field"><label>聊天背景</label>
+          <div class="zk-bg-swatches" id="contactBgSwatches">
+            <button type="button" class="zk-bg-sw" data-bg="" style="background:#ededed"></button>
+            <button type="button" class="zk-bg-sw" data-bg="#fdeef0" style="background:#fdeef0"></button>
+            <button type="button" class="zk-bg-sw" data-bg="#fdf3e3" style="background:#fdf3e3"></button>
+            <button type="button" class="zk-bg-sw" data-bg="#e8f4ec" style="background:#e8f4ec"></button>
+            <button type="button" class="zk-bg-sw" data-bg="#e9f0f9" style="background:#e9f0f9"></button>
+            <button type="button" class="zk-bg-sw" data-bg="#f1ebf8" style="background:#f1ebf8"></button>
+            <button type="button" class="zk-bg-sw" data-bg="#fdeee4" style="background:#fdeee4"></button>
+          </div>
+        </div>
         <div class="profile-actions">
           <button class="btn-cancel" id="contactModalCancel">取消</button>
           <button class="btn-save" id="contactModalSave">保存</button>
         </div>
       </div>
       <input type="file" id="contactAvatarFileInput" accept="image/*">
+    </div>
+
+    <!-- 联系人状态查看弹窗（只读） -->
+    <div class="profile-modal" id="contactStateModal">
+      <div class="profile-box">
+        <div class="profile-avatar-wrap">
+          <div class="profile-avatar-edit" id="contactStateAvatar">?</div>
+        </div>
+        <div class="zk-state-name" id="contactStateName">?</div>
+        <div class="profile-field"><label>相识</label>
+          <div class="zk-met-card">
+            <div class="zk-met-top">
+              <div class="zk-met-avatar" id="stateMetUserAvatar">我</div>
+              <svg class="zk-met-seg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="zk-ecg" points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16" vector-effect="non-scaling-stroke"></polyline></svg>
+              <svg class="zk-met-heart" viewBox="0 0 40 36"><path class="zk-heart-line" d="M20 34 C8 26 0 20 0 12 C0 6 5 2 11 2 C15 2 18 5 20 9 C22 5 25 2 29 2 C35 2 40 6 40 12 C40 20 32 26 20 34 Z"></path></svg>
+              <svg class="zk-met-seg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline class="zk-ecg" points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16" vector-effect="non-scaling-stroke"></polyline></svg>
+              <div class="zk-met-avatar" id="stateMetContactAvatar">?</div>
+            </div>
+            <div class="zk-met-days" id="stateMetDays">还没记录相识那天</div>
+            <div class="zk-met-date" id="stateMetDate"></div>
+          </div>
+        </div>
+        <div class="contact-tarot-grid">
+          <div class="contact-tarot-item">
+            <div class="contact-rule-head"><label>所在地方</label></div>
+            <div class="contact-tarot-cards" id="stateLocCards"></div>
+            <div class="zk-state-text" id="stateLocationState">—</div>
+          </div>
+          <div class="contact-tarot-item">
+            <div class="contact-rule-head"><label>在做什么</label></div>
+            <div class="contact-tarot-cards" id="stateActCards"></div>
+            <div class="zk-state-text" id="stateDoingState">—</div>
+          </div>
+          <div class="contact-tarot-item">
+            <div class="contact-rule-head"><label>状态</label></div>
+            <div class="contact-tarot-cards" id="stateStateCards"></div>
+            <div class="zk-state-text" id="stateStateState">—</div>
+          </div>
+          <div class="contact-tarot-item">
+            <div class="contact-rule-head"><label>距离</label></div>
+            <div class="contact-tarot-cards" id="stateDisCards"></div>
+            <div class="zk-state-text" id="stateDistanceState">—</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-save" id="contactStateClose">关闭</button>
+        </div>
+      </div>
     </div>
 
     <!-- 功能页面 -->
@@ -15761,6 +15828,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       // ----- 联系人编辑弹窗 -----
       let contactModalEditId = null;
       const _zkContactModal = document.getElementById('contactModal');
+      let _zkSelectedChatBg = null;
+      const _zkContactBgSwatches = document.getElementById('contactBgSwatches');
       const _zkContactAvatarEdit = document.getElementById('contactAvatarEdit');
       const _zkContactAvatarFileInput = document.getElementById('contactAvatarFileInput');
       const _zkContactNameInput = document.getElementById('contactNameInput');
@@ -16087,6 +16156,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (_zkContactMindThought) _zkContactMindThought.checked = contact.mindThought !== false;
         if (_zkContactMindMood) _zkContactMindMood.checked = contact.mindMood !== false;
         _zkContactTypingText.value = contact.typingText || '';
+        _zkSelectedChatBg = contact.chatBg || '';
+        _zkHighlightChatBg();
         _zkUpdateReplyRange();
         var _zkNeed = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_zkNeed) {
@@ -16111,7 +16182,98 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         el.style.cursor = 'pointer';
         el.addEventListener('click', function (e) {
           e.stopPropagation();
-          _zkOpenContactModal(id);
+          _zkOpenContactStateModal(id);
+        });
+      }
+      // ----- 联系人状态查看（只读）-----
+      const _zkStateModal = document.getElementById('contactStateModal');
+      function _zkUpdateMetCardView(contactId) {
+        var contact = contacts.find(function (c) { return c.id === contactId; });
+        var _u = document.getElementById('stateMetUserAvatar');
+        var _c = document.getElementById('stateMetContactAvatar');
+        var _d = document.getElementById('stateMetDays');
+        var _dt = document.getElementById('stateMetDate');
+        if (_u) {
+          _u.innerHTML = '';
+          _u.style.background = 'var(--primary)';
+          _u.style.overflow = 'hidden';
+          if (userProfile.avatarImage) {
+            var uim = document.createElement('img');
+            uim.src = userProfile.avatarImage;
+            _u.appendChild(uim);
+          } else {
+            _u.textContent = (userProfile.avatar || '我').charAt(0).toUpperCase();
+          }
+        }
+        if (_c) { _zkSetContactAvatar(_c, contact); }
+        var ts = _zkGetMetDates()[contactId];
+        if (!_d || !_dt) return;
+        if (!ts) {
+          _d.textContent = '还没记录相识那天';
+          _dt.textContent = '去侧边栏「设置认识日期」写下它';
+          return;
+        }
+        var a = new Date(); a.setHours(0, 0, 0, 0);
+        var b = new Date(ts); b.setHours(0, 0, 0, 0);
+        var days = Math.round((a - b) / 86400000);
+        if (days === 0) {
+          _d.textContent = '今天，是我们相识的日子';
+        } else if (days > 0) {
+          _d.innerHTML = '已经相识 <b class="zk-num">' + days + '</b> 天';
+        } else {
+          _d.innerHTML = '还有 <b class="zk-num">' + (-days) + '</b> 天相遇';
+        }
+        _dt.textContent = _zkDateToStr(ts).replace(/-/g, '.');
+      }
+      function _zkRenderContactStateView(contact) {
+        document.getElementById('stateLocationState').textContent = contact.location || '—';
+        document.getElementById('stateDoingState').textContent = contact.doing || '—';
+        document.getElementById('stateStateState').textContent = contact.stateText || contact.state || '—';
+        var dm = null;
+        for (var i = 0; i < _ZK_DISTANCES.length; i++) { if (_ZK_DISTANCES[i].v === contact.distance) { dm = _ZK_DISTANCES[i]; break; } }
+        document.getElementById('stateDistanceState').textContent = contact.distanceText || (dm ? (contact.distance + ' · ' + dm.t) : '—');
+        _zkRenderCardChips(document.getElementById('stateLocCards'), contact.tarot ? contact.tarot.loc : null);
+        _zkRenderCardChips(document.getElementById('stateActCards'), contact.tarot ? contact.tarot.act : null);
+        _zkRenderCardChips(document.getElementById('stateStateCards'), contact.tarot ? contact.tarot.state : null);
+        _zkRenderCardChips(document.getElementById('stateDisCards'), contact.tarot ? contact.tarot.dis : null);
+      }
+      function _zkOpenContactStateModal(contactId) {
+        var contact = contacts.find(function (c) { return c.id === contactId; });
+        if (!contact) return;
+        _zkSetContactAvatar(document.getElementById('contactStateAvatar'), contact);
+        document.getElementById('contactStateName').textContent = contact.name || '?';
+        _zkUpdateMetCardView(contactId);
+        var _need = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
+        if (_need) {
+          _zkRollContactState(contact);
+          contact.tarotNextTs = Date.now() + 3600000 + Math.floor(Math.random() * 3600000);
+          saveContacts();
+        } else if (!contact.tarotNextTs || Date.now() >= contact.tarotNextTs) {
+          _zkRollContactState(contact);
+          contact.tarotNextTs = Date.now() + 3600000 + Math.floor(Math.random() * 3600000);
+          saveContacts();
+        }
+        _zkRenderContactStateView(contact);
+        _zkStateModal.classList.add('show');
+        var _box = _zkStateModal.querySelector('.profile-box');
+        if (_box) _box.scrollTop = 0;
+      }
+      _zkStateModal.addEventListener('click', function (e) { if (e.target === this) { this.classList.remove('show'); } });
+      document.getElementById('contactStateClose').addEventListener('click', function () { _zkStateModal.classList.remove('show'); });
+      function _zkHighlightChatBg() {
+        if (!_zkContactBgSwatches) return;
+        var sw = _zkContactBgSwatches.querySelectorAll('.zk-bg-sw');
+        for (var i = 0; i < sw.length; i++) {
+          var cur = sw[i].getAttribute('data-bg') || '';
+          sw[i].classList.toggle('sel', cur === (_zkSelectedChatBg || ''));
+        }
+      }
+      if (_zkContactBgSwatches) {
+        _zkContactBgSwatches.addEventListener('click', function (e) {
+          var btn = e.target.closest('.zk-bg-sw');
+          if (!btn) return;
+          _zkSelectedChatBg = btn.getAttribute('data-bg') || '';
+          _zkHighlightChatBg();
         });
       }
       _zkContactAvatarEdit.addEventListener('click', function () { _zkContactAvatarFileInput.click(); });
@@ -16145,10 +16307,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         contact.mindThought = _zkContactMindThought ? _zkContactMindThought.checked : true;
         contact.mindMood = _zkContactMindMood ? _zkContactMindMood.checked : true;
         contact.typingText = _zkContactTypingText.value.trim();
+        contact.chatBg = _zkSelectedChatBg || null;
         saveContacts();
         renderContacts();
         if (currentChatId === contact.id) {
           chatTitle.textContent = contact.name;
+          _zkApplyChatBg(contact);
         }
         showToast('已保存');
         closeContactModal();
@@ -16729,6 +16893,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       });
 
       // ----- 打开/关闭聊天 -----
+      function _zkApplyChatBg(contact) {
+        var _bg = (contact && contact.chatBg) || '#ededed';
+        try { if (chatView) chatView.style.background = _bg; } catch (e) {}
+        try { if (chatMessages) chatMessages.style.background = _bg; } catch (e) {}
+      }
       function openChat(contactId) {
         const contact = contacts.find(c => c.id === contactId);
         if (!contact) return;
@@ -16738,6 +16907,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           chatHistories[contactId] = [{ text: '我们开始聊天吧！', from: contact.name, time: '刚刚' }];
         }
         chatView.classList.add('show');
+        _zkApplyChatBg(contact);
         var bn=document.querySelector('.bottom-nav');if(bn)bn.style.display='none';
         showHeaderForContact(contact);
         renderMessages(contactId);
@@ -17635,7 +17805,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
 
       function showChatSettings() {
-        showToast('⚙️ 聊天设置功能开发中...');
+        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        var _c = contacts.find(function (c) { return c.id === currentChatId; });
+        if (!_c) { showToast('未找到该联系人'); return; }
+        _zkOpenContactModal(currentChatId);
       }
 
       // ----- 渲染消息 -----
