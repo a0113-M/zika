@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="359";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="360";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v359</title>
+  <title>字卡 · 小手机 v360</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7680,7 +7680,28 @@
     .tmf-iframe.tmf-short { aspect-ratio: auto; height: 86px; }
     .tmf-reader { padding: 14px 16px 22px; font-size: 15px; line-height: 1.9; color: #eae4f6; white-space: pre-wrap; word-break: break-word; }
     .tmf-music { padding: 12px 14px 16px; }
-    .tmf-mname { font-size: 14px; font-weight: 600; color: #eae4f6; margin-bottom: 10px; }
+        .tmf-mname { font-size: 14px; font-weight: 600; color: #eae4f6; margin-bottom: 10px; }
+    /* v360 保存到导入记录 + 网易云风音乐播放器 */
+    .tg-solo-save { display: block; width: 100%; border: 1.5px solid rgba(var(--primary-rgba), 0.55); background: rgba(var(--primary-rgba), 0.08); color: var(--primary); font-size: 14px; font-weight: 600; padding: 10px; border-radius: 14px; margin: 0 0 6px; cursor: pointer; letter-spacing: 1px; }
+    .tg-solo-save:active { background: rgba(var(--primary-rgba), 0.16); }
+    .tp-player { display: flex; flex-direction: column; gap: 11px; padding: 14px 14px 15px; background: linear-gradient(150deg, #2b2242, #19122e); }
+    .tp-top { display: flex; gap: 12px; align-items: center; }
+    .tp-cover { flex: 0 0 auto; width: 58px; height: 58px; border-radius: 12px; background: linear-gradient(145deg, #8d7bd8, #5643a3); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.32); position: relative; overflow: hidden; }
+    .tp-cover-note { font-size: 26px; color: rgba(255,255,255,0.92); }
+    .tp-info { flex: 1 1 auto; min-width: 0; }
+    .tp-song { font-size: 16px; font-weight: 700; color: #f4effc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tp-artist { font-size: 12px; color: rgba(234,226,248,0.58); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tp-track { display: flex; align-items: center; gap: 8px; }
+    .tp-time { flex: 0 0 auto; font-size: 11px; color: rgba(236,230,250,0.72); font-variant-numeric: tabular-nums; }
+    .tp-bar { flex: 1 1 auto; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.18); cursor: pointer; position: relative; }
+    .tp-bar-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: 2px; background: linear-gradient(90deg, #b7a4f0, #fff); }
+    .tp-ctrl { display: flex; align-items: center; justify-content: center; gap: 18px; }
+    .tp-cb { border: none; background: none; color: rgba(240,235,250,0.88); cursor: pointer; font-size: 17px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .tp-cb.tp-play { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,0.16); font-size: 19px; box-shadow: 0 2px 10px rgba(0,0,0,0.25); }
+    .tp-cb:active { opacity: 0.6; }
+    .tp-cb.tp-fav.on { color: #ff6b9d; }
+    .tp-cb.tp-cast { font-size: 11px; width: auto; color: rgba(236,230,250,0.7); }
+    .tp-audio { display: none; }
     .tg-media-mini { position: fixed; right: 14px; bottom: 160px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #7a6bc4, #9a8ad8); color: #fff; font-size: 19px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(90,70,160,0.4); z-index: 11260; cursor: pointer; border: none; }
     /* 一起：底部选择单 & 导入弹窗 */
     .tg-pick-mask { position: fixed; inset: 0; background: rgba(20,12,40,0.45); z-index: 11500; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s; }
@@ -13415,7 +13436,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
         <div id="tgSoloInput"></div>
         <div class="tg-panel-histhead">导入记录<span class="tg-panel-histtip">点一条，接着看</span></div>
-        <div class="tg-panel-hist" id="tgSoloHist"></div>
+        <div class="tg-panel-hist" id="tgSoloHist"></div><button type="button" class="tg-solo-save" id="tgSoloSave">保存到导入记录</button>
         <div class="tg-btnrow"><button type="button" class="tg-btn tg-btn-direct" id="tgSoloPlay">开始播放</button><button type="button" class="tg-btn tg-btn-invite" id="tgSoloInvite">邀请TA</button><button type="button" class="tg-btn tg-btn-direct" id="tgSoloStart">直接开始</button></div>
       </div>
     </div>
@@ -22462,7 +22483,24 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _tgShelfShowImport();
         });
       }
-      function _tgSoloClose() { document.getElementById('tgSoloPick').classList.remove('show'); }
+            function _tgSoloClose() { document.getElementById('tgSoloPick').classList.remove('show'); }
+      function _tgSoloSaveAction() {
+        if (!_tgSoloKey) return;
+        if (_tgSoloKey === 'book') {
+          if (!_tgSoloBook || !_tgSoloBook.tkey) { showToast('先挑一本书'); return; }
+          _tgAddImportHist({ type: 'book', tkey: _tgSoloBook.tkey, title: _tgSoloBook.title || '未命名', contactId: '', contactName: '', ts: Date.now() });
+          showToast('已保存');
+          return;
+        }
+        var url = (document.getElementById('tgSoloInUrl').value || '').trim();
+        if (!url) { showToast('先粘贴链接'); return; }
+        var pp = _tgParseMediaUrl(_tgSoloKey, url);
+        if (!pp) return;
+        var title = (document.getElementById('tgSoloInTitle').value || '').trim();
+        _tgAddImportHist({ type: _tgSoloKey, url: pp.url, kind: pp.kind, title: title || pp.title, contactId: '', contactName: '', ts: Date.now() });
+        _tgSoloRenderHist();
+        showToast('已保存');
+      }
       function _tgSoloRenderInput() {
         var m = TG_HERO_META[_tgSoloKey];
         document.getElementById('tgSoloInput').innerHTML = '<input class="tg-media-input" id="tgSoloInUrl" placeholder="粘贴链接…">' +
@@ -22602,6 +22640,49 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (bd) bd.innerHTML = '';
         if (lay) lay.classList.remove('on');
       }
+      function _tpFmt(sec) {
+        if (!isFinite(sec) || sec < 0) sec = 0;
+        sec = Math.floor(sec);
+        var m = Math.floor(sec / 60), s = sec % 60;
+        return m + ':' + (s < 10 ? '0' + s : s);
+      }
+      function _tpMusicHTML(m) {
+        var t = (m.title || '正在听').toString().replace(/^《/, '').replace(/》$/, '').replace(/\|.*$/, '').trim() || '正在听';
+        return '<div class="tp-player">' +
+          '<div class="tp-top"><div class="tp-cover"><span class="tp-cover-note">♪</span></div>' +
+          '<div class="tp-info"><div class="tp-song">' + _tgEsc(t) + '</div><div class="tp-artist">一起听歌 · 陪伴中</div></div></div>' +
+          '<div class="tp-track"><span class="tp-time tp-cur">0:00</span><div class="tp-bar"><div class="tp-bar-fill"></div></div><span class="tp-time tp-dur">0:00</span></div>' +
+          '<div class="tp-ctrl">' +
+          '<button type="button" class="tp-cb tp-fav" data-tp="fav" aria-label="收藏">♡</button>' +
+          '<button type="button" class="tp-cb tp-prev" data-tp="prev" aria-label="上一曲">⏮</button>' +
+          '<button type="button" class="tp-cb tp-play" data-tp="play" aria-label="播放">▶</button>' +
+          '<button type="button" class="tp-cb tp-next" data-tp="next" aria-label="下一曲">⏭</button>' +
+          '<button type="button" class="tp-cb tp-cast" data-tp="cast" aria-label="投屏">投屏</button>' +
+          '</div><audio class="tp-audio" src="' + m.url + '" preload="metadata" loop></audio></div>';
+      }
+      function _tpBindMusic(root, m) {
+        var audio = root.querySelector('.tp-audio');
+        var playBtn = root.querySelector('[data-tp="play"]');
+        var fill = root.querySelector('.tp-bar-fill');
+        var bar = root.querySelector('.tp-bar');
+        var curEl = root.querySelector('.tp-cur');
+        var durEl = root.querySelector('.tp-dur');
+        var favBtn = root.querySelector('[data-tp="fav"]');
+        function _icon() { if (playBtn) playBtn.textContent = (audio && !audio.paused) ? '⏸' : '▶'; }
+        if (playBtn) playBtn.addEventListener('click', function () { if (!audio) return; if (audio.paused) { audio.play(); } else { audio.pause(); } });
+        if (audio) {
+          audio.addEventListener('play', _icon);
+          audio.addEventListener('pause', _icon);
+          audio.addEventListener('loadedmetadata', function () { if (durEl && isFinite(audio.duration) && audio.duration) durEl.textContent = _tpFmt(audio.duration); });
+          audio.addEventListener('timeupdate', function () { var d = audio.duration || 0; if (curEl) curEl.textContent = _tpFmt(audio.currentTime); if (fill && d) fill.style.width = (Math.min(1, audio.currentTime / d) * 100) + '%'; });
+        }
+        if (bar) bar.addEventListener('click', function (e) { if (!audio || !audio.duration) return; var r = bar.getBoundingClientRect(); var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); try { audio.currentTime = p * audio.duration; } catch (e2) {} if (fill) fill.style.width = (p * 100) + '%'; });
+        if (favBtn) favBtn.addEventListener('click', function () { var on = favBtn.classList.toggle('on'); favBtn.textContent = on ? '♥' : '♡'; showToast(on ? '已收藏' : '已取消收藏'); });
+        var prev = root.querySelector('[data-tp="prev"]'), next = root.querySelector('[data-tp="next"]'), cast = root.querySelector('[data-tp="cast"]');
+        if (prev) prev.addEventListener('click', function () { showToast('单曲循环中'); });
+        if (next) next.addEventListener('click', function () { showToast('单曲循环中'); });
+        if (cast) cast.addEventListener('click', function () { showToast('可用手机自带投屏'); });
+      }
       (function () {
         var sp = document.getElementById('tgSoloPick');
         if (!sp) return;
@@ -22610,6 +22691,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         document.getElementById('tgSoloPlay').addEventListener('click', _tgSoloPlayAction);
         document.getElementById('tgSoloInvite').addEventListener('click', _tgSoloInviteAction);
         document.getElementById('tgSoloStart').addEventListener('click', _tgSoloStartAction);
+        document.getElementById('tgSoloSave').addEventListener('click', _tgSoloSaveAction);
         document.getElementById('tgSoloMClose').addEventListener('click', _tgSoloCloseMedia);
       })();
       function _tgOpenHeroPanel(key) {
@@ -23575,7 +23657,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (_tsw) _tsw.addEventListener('click', _tgSwitchToApp);
         } else if (m.type === 'music') {
           if (m.kind === 'iframe') body.innerHTML = '<iframe class="tmf-iframe tmf-short" src="' + m.url + '" referrerpolicy="no-referrer"></iframe>';
-          else body.innerHTML = '<div class="tmf-music"><div class="tmf-mname">' + _tgEsc(m.title || '正在听') + '</div><audio src="' + m.url + '" controls loop style="width:100%;display:block;"></audio></div>';
+          else { body.innerHTML = _tpMusicHTML(m); _tpBindMusic(body, m); }
         } else {
           body.innerHTML = '<div class="tmf-appcard"><div class="tmf-appname">' + _tgEsc(m.title || '一起读书') + '</div><div class="tmf-appdesc" id="tmfReadProg">和 TA 一起读</div><button class="tmf-appbtn" id="tmfReadGo">进入阅读</button></div>';
           var rg = document.getElementById('tmfReadGo');
