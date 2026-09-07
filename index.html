@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="357";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="358";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v357</title>
+  <title>字卡 · 小手机 v358</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -36205,8 +36205,9 @@ function addToCart(goodId) {
         callOverlay.classList.add('ringing-mode');
         callOverlay.style.backgroundColor = ''; callOverlay.style.backgroundImage = '';
         if (callRinging) {
-          if (_callWallpaper) {
-            callRinging.style.backgroundImage = _callWallpaper;
+          var ringBg = (type === 'video') ? (_callVideoBgBig || _callWallpaper) : _callWallpaper;
+          if (ringBg) {
+            callRinging.style.backgroundImage = ringBg;
             callRinging.style.backgroundSize = 'cover';
             callRinging.style.backgroundPosition = 'center';
             callRinging.style.backgroundRepeat = 'no-repeat';
