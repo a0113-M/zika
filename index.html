@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="355";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="356";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v355</title>
+  <title>字卡 · 小手机 v356</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5482,6 +5482,8 @@
     .zk-mood-day:active { background: rgba(155,142,196,0.12); }
     .zk-mood-day.empty { cursor: default; }
     .zk-mood-day.future { cursor: default; }
+    .zk-mood-day.today { background: rgba(155,142,196,0.10); }
+    .zk-mood-day.today .zk-mood-num { color: var(--primary); font-weight: 600; }
     .zk-mood-num { font-size: 11px; color: #999; line-height: 1; }
     .zk-mood-num.future { color: #d0d0d0; }
     .zk-mood-mark { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; font-size: 11px; line-height: 1; }
@@ -13999,7 +14001,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div class="zk-mood-legend">
               <span class="zk-mood-legend-item"><i class="zk-mood-dot me"></i>我</span>
               <span class="zk-mood-legend-item"><i class="zk-mood-dot them"></i>TA</span>
-              <span class="zk-mood-legend-item"><i class="zk-mood-dot empty"></i>点日期记录</span>
+              <span class="zk-mood-legend-item"><i class="zk-mood-dot empty"></i>仅今天可记</span>
             </div>
             <div class="zk-mood-picker" id="zkMoodPicker" style="display:none;">
               <div class="zk-mood-picker-date" id="zkMoodPickerDate"></div>
@@ -14007,7 +14009,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <span class="zk-mood-picker-label">我</span>
                 <div class="zk-mood-opts" id="zkMoodPickerMe"></div>
               </div>
-              <div class="zk-mood-picker-hint">TA 的心情每天自动随机生成</div>
+              <div class="zk-mood-picker-hint">TA 的心情每天自动记录 · 我只能记今天</div>
               <div class="zk-mood-picker-actions">
                 <button class="zk-mood-picker-clear" id="zkMoodPickerClear" type="button">清空这天</button>
                 <button class="zk-mood-picker-done" id="zkMoodPickerDone" type="button">完成</button>
@@ -16290,12 +16292,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       // ===== 心情日记（联系人状态弹窗内） =====
       var ZK_MOODS = [
-        { key: 'happy', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.3c1.5-1.5 3.8-1.5 5.3 0"/><path d="M11.7 9.3c1.5-1.5 3.8-1.5 5.3 0"/><path d="M6.5 14.6c1.8 2.6 4.3 3 5.5 3s3.7-.4 5.5-3"/></svg>', color: '#FFD97D' },
-        { key: 'calm', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 10.6c1.2-1.1 2.7-1.1 4 0"/><path d="M12.5 10.6c1.2-1.1 2.7-1.1 4 0"/><path d="M9 15.4h6"/></svg>', color: '#A8E6CF' },
-        { key: 'sad', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 9c1.2 1.2 2.7 1.2 4 0"/><path d="M12.5 9c1.2 1.2 2.7 1.2 4 0"/><path d="M8 15.8c1.2-1.1 2.8-1.1 4 0s2.8 1.1 4 0"/><path d="M16.6 12.3c.3 1.3 1 2.3 1.9 2.9"/></svg>', color: '#A0C4FF' },
-        { key: 'angry', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 9.2l3.4 1.8"/><path d="M17.2 9.2l-3.4 1.8"/><path d="M8 14.8c1.2-.7 2.8-.7 4 0s2.8.7 4 0"/></svg>', color: '#FFADAD' },
-        { key: 'surprise', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.6" cy="10.6" r="1.5" fill="#fff" stroke="none"/><circle cx="15.4" cy="10.6" r="1.5" fill="#fff" stroke="none"/><circle cx="12" cy="15.6" r="2.3" fill="none"/></svg>', color: '#FFC6FF' },
-        { key: 'tired', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 11.2h4.2"/><path d="M13 11.2h4.2"/><path d="M9.2 16c.9.7 1.9.7 2.8 0s1.9.7 2.8 0"/><path d="M15.6 4.4h4.2l-3.8 4.6h3.8"/></svg>', color: '#E3D0BC' }
+        { key: 'happy', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.3c1.5-1.5 3.8-1.5 5.3 0"/><path d="M11.7 9.3c1.5-1.5 3.8-1.5 5.3 0"/><path d="M6.5 14.6c1.8 2.6 4.3 3 5.5 3s3.7-.4 5.5-3"/></svg>', color: '#FFD97D' },
+        { key: 'calm', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 10.6c1.2-1.1 2.7-1.1 4 0"/><path d="M12.5 10.6c1.2-1.1 2.7-1.1 4 0"/><path d="M9 15.4h6"/></svg>', color: '#A8E6CF' },
+        { key: 'sad', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 9c1.2 1.2 2.7 1.2 4 0"/><path d="M12.5 9c1.2 1.2 2.7 1.2 4 0"/><path d="M8 15.8c1.2-1.1 2.8-1.1 4 0s2.8 1.1 4 0"/><path d="M16.6 12.3c.3 1.3 1 2.3 1.9 2.9"/></svg>', color: '#A0C4FF' },
+        { key: 'angry', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 9.2l3.4 1.8"/><path d="M17.2 9.2l-3.4 1.8"/><path d="M8 14.8c1.2-.7 2.7-.7 4 0s2.8.7 4 0"/></svg>', color: '#FFADAD' },
+        { key: 'surprise', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.6" cy="10.6" r="1.5" fill="#fff" stroke="none"/><circle cx="15.4" cy="10.6" r="1.5" fill="#fff" stroke="none"/><circle cx="12" cy="15.6" r="2.3" fill="none"/></svg>', color: '#FFC6FF' },
+        { key: 'tired', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 11.2h4.2"/><path d="M13 11.2h4.2"/><path d="M9.2 16c.9.7 1.9.7 2.8 0s1.9.7 2.8 0"/><path d="M15.6 4.4h4.2l-3.8 4.6h3.8"/></svg>', color: '#E3D0BC' }
       ];
       var zkMoodState = { contactId: null, year: 0, month: 0, pending: null, pendingMe: null, pendingThem: null };
       var zkMoodDiary = {};
@@ -16309,12 +16311,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         return ZK_MOODS[s % ZK_MOODS.length].key;
       }
       function _zkMoodGet(day) { var c = zkMoodDiary[zkMoodState.contactId]; return (c && c[day]) || null; }
-      function _zkMoodSet(day, me, them) {
+      function _zkMoodSet(day, me) {
         if (!zkMoodDiary[zkMoodState.contactId]) zkMoodDiary[zkMoodState.contactId] = {};
-        var rec = zkMoodDiary[zkMoodState.contactId][day] || {};
-        rec.me = me || null; rec.them = them || null;
-        if (!rec.me && !rec.them) { delete zkMoodDiary[zkMoodState.contactId][day]; }
-        else { zkMoodDiary[zkMoodState.contactId][day] = rec; }
+        if (me) { zkMoodDiary[zkMoodState.contactId][day] = { me: me }; }
+        else { delete zkMoodDiary[zkMoodState.contactId][day]; }
         _zkSaveMoodDiary();
       }
       function _zkRenderMoodCalendar() {
@@ -16328,27 +16328,34 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var startDow = first.getDay();
         var daysInMonth = new Date(st.year, st.month + 1, 0).getDate();
         var today = new Date(); today.setHours(0, 0, 0, 0);
+        var todayT = today.getTime();
         var html = '';
         for (var i = 0; i < startDow; i++) html += '<div class="zk-mood-day empty"></div>';
         for (var d = 1; d <= daysInMonth; d++) {
           var date = new Date(st.year, st.month, d);
           var key = _zkMoodKey(date);
           var r = rec[key];
-          var isFuture = date > today;
-          var meHtml, themHtml;
+          var dt = date.getTime();
+          var isFuture = dt > todayT;
+          var isToday = dt === todayT;
+          var themHtml, meHtml;
+          if (!isFuture) {
+            var tmk = _zkAutoThemMood(key);
+            var tm = _zkMoodFind(tmk);
+            themHtml = '<span class="zk-mood-mark them" style="background:' + (tm ? tm.color : '#eee') + '">' + (tm ? tm.svg : '') + '</span>';
+          } else {
+            themHtml = '<span class="zk-mood-mark them empty-mark"></span>';
+          }
           if (r && r.me) {
             var mm = _zkMoodFind(r.me);
             meHtml = '<span class="zk-mood-mark me" style="background:' + (mm ? mm.color : '#eee') + '">' + (mm ? mm.svg : '') + '</span>';
           } else {
             meHtml = '<span class="zk-mood-mark me empty-mark"></span>';
           }
-          if (r && r.them) {
-            var tm = _zkMoodFind(r.them);
-            themHtml = '<span class="zk-mood-mark them" style="background:' + (tm ? tm.color : '#eee') + '">' + (tm ? tm.svg : '') + '</span>';
-          } else {
-            themHtml = '<span class="zk-mood-mark them empty-mark"></span>';
-          }
-          html += '<div class="zk-mood-day' + (isFuture ? ' future' : '') + '" data-day="' + key + '"><span class="zk-mood-num">' + d + '</span>' + meHtml + themHtml + '</div>';
+          var cls = 'zk-mood-day';
+          if (isFuture) cls += ' future';
+          if (isToday) cls += ' today';
+          html += '<div class="' + cls + '" data-day="' + key + '"><span class="zk-mood-num">' + d + '</span>' + meHtml + themHtml + '</div>';
         }
         grid.innerHTML = html;
         var stat = document.getElementById('zkMoodStat');
@@ -16357,12 +16364,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var ks = Object.keys(rec);
           for (var k = 0; k < ks.length; k++) {
             var rr = rec[ks[k]];
-            if (rr && rr.me && rr.them) {
+            if (rr && rr.me) {
               var y = parseInt(ks[k].slice(0, 4), 10), m = parseInt(ks[k].slice(5, 7), 10);
               if (y === st.year && (m - 1) === st.month) cnt++;
             }
           }
-          stat.textContent = '这个月一起记录了 ' + cnt + ' 天';
+          stat.textContent = '这个月记录了 ' + cnt + ' 天';
         }
       }
       function _zkRenderMoodOpts() {
@@ -16410,7 +16417,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var meBox = document.getElementById('zkMoodPickerMe');
         if (grid) grid.addEventListener('click', function (e) {
           var dayEl = e.target.closest ? e.target.closest('.zk-mood-day[data-day]') : null;
-          if (!dayEl || dayEl.classList.contains('future')) return;
+          if (!dayEl || !dayEl.classList.contains('today')) return;
           _zkOpenMoodPicker(dayEl.getAttribute('data-day'));
         });
         function shift(delta) {
@@ -16434,15 +16441,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           zkMoodState.pending = null;
         }
         if (done) done.addEventListener('click', function () {
-          if (zkMoodState.pending) {
-            var them = zkMoodState.pendingMe ? _zkAutoThemMood(zkMoodState.pending) : null;
-            _zkMoodSet(zkMoodState.pending, zkMoodState.pendingMe, them);
-          }
+          if (zkMoodState.pending) { _zkMoodSet(zkMoodState.pending, zkMoodState.pendingMe); }
           closePicker();
           _zkRenderMoodCalendar();
         });
         if (clear) clear.addEventListener('click', function () {
-          if (zkMoodState.pending) { _zkMoodSet(zkMoodState.pending, null, null); }
+          if (zkMoodState.pending) { _zkMoodSet(zkMoodState.pending, null); }
           closePicker();
           _zkRenderMoodCalendar();
         });
