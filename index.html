@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="360";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="361";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v360</title>
+  <title>字卡 · 小手机 v361</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -7671,7 +7671,7 @@
     .tg-hero-arrow { flex: 0 0 auto; color: var(--text-muted); font-size: 20px; line-height: 1; }
     /* 陪伴媒体悬浮窗 */
     .tg-media-float { position: fixed; left: 12px; right: 12px; bottom: 210px; z-index: 11300; background: var(--bg-card); border-radius: 16px; overflow: hidden; border: 1px solid rgba(var(--primary-rgba), 0.18); box-shadow: 0 10px 30px rgba(35,25,70,0.28); display: none; }
-    .tmf-bar { display: flex; align-items: center; gap: 8px; padding: 9px 10px 9px 13px; background: rgba(var(--primary-rgba), 0.08); }
+    .tmf-bar { display: flex; align-items: center; gap: 8px; padding: 9px 10px 9px 13px; background: rgba(var(--primary-rgba), 0.08); cursor: grab; touch-action: none; }
     .tmf-ico { font-size: 14px; flex: 0 0 auto; }
     .tmf-title { flex: 1 1 auto; font-size: 12px; font-weight: 600; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .tmf-btn { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 9px; border: none; background: transparent; color: var(--text-secondary); font-size: 17px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
@@ -7701,7 +7701,7 @@
     .tp-cb:active { opacity: 0.6; }
     .tp-cb.tp-fav.on { color: #ff6b9d; }
     .tp-cb.tp-cast { font-size: 11px; width: auto; color: rgba(236,230,250,0.7); }
-    .tp-audio { display: none; }
+    .tp-audio { position: absolute; left: 0; bottom: 0; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
     .tg-media-mini { position: fixed; right: 14px; bottom: 160px; width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #7a6bc4, #9a8ad8); color: #fff; font-size: 19px; display: none; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(90,70,160,0.4); z-index: 11260; cursor: pointer; border: none; }
     /* 一起：底部选择单 & 导入弹窗 */
     .tg-pick-mask { position: fixed; inset: 0; background: rgba(20,12,40,0.45); z-index: 11500; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s; }
@@ -22658,7 +22658,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           '<button type="button" class="tp-cb tp-play" data-tp="play" aria-label="播放">▶</button>' +
           '<button type="button" class="tp-cb tp-next" data-tp="next" aria-label="下一曲">⏭</button>' +
           '<button type="button" class="tp-cb tp-cast" data-tp="cast" aria-label="投屏">投屏</button>' +
-          '</div><audio class="tp-audio" src="' + m.url + '" preload="metadata" loop></audio></div>';
+          '</div><audio class="tp-audio" src="' + m.url + '" preload="auto" loop playsinline webkit-playsinline></audio></div>';
       }
       function _tpBindMusic(root, m) {
         var audio = root.querySelector('.tp-audio');
@@ -22669,14 +22669,35 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var durEl = root.querySelector('.tp-dur');
         var favBtn = root.querySelector('[data-tp="fav"]');
         function _icon() { if (playBtn) playBtn.textContent = (audio && !audio.paused) ? '⏸' : '▶'; }
-        if (playBtn) playBtn.addEventListener('click', function () { if (!audio) return; if (audio.paused) { audio.play(); } else { audio.pause(); } });
+        function _play() {
+          if (!audio) return;
+          var p = audio.play();
+          if (p && p.catch) p.catch(function () { _icon(); showToast('这段音频暂时播不了，试试换一条链接'); });
+        }
+        if (playBtn) playBtn.addEventListener('click', function () { if (!audio) return; if (audio.paused) { _play(); } else { audio.pause(); } });
         if (audio) {
           audio.addEventListener('play', _icon);
           audio.addEventListener('pause', _icon);
           audio.addEventListener('loadedmetadata', function () { if (durEl && isFinite(audio.duration) && audio.duration) durEl.textContent = _tpFmt(audio.duration); });
+          audio.addEventListener('durationchange', function () { if (durEl && isFinite(audio.duration) && audio.duration) durEl.textContent = _tpFmt(audio.duration); });
           audio.addEventListener('timeupdate', function () { var d = audio.duration || 0; if (curEl) curEl.textContent = _tpFmt(audio.currentTime); if (fill && d) fill.style.width = (Math.min(1, audio.currentTime / d) * 100) + '%'; });
+          audio.addEventListener('error', function () { showToast('音频加载失败，可能是链接失效了'); });
         }
-        if (bar) bar.addEventListener('click', function (e) { if (!audio || !audio.duration) return; var r = bar.getBoundingClientRect(); var p = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width)); try { audio.currentTime = p * audio.duration; } catch (e2) {} if (fill) fill.style.width = (p * 100) + '%'; });
+        function _seekPct(e) {
+          if (!audio || !audio.duration || !bar) return -1;
+          var r = bar.getBoundingClientRect();
+          var x = (e.clientX !== undefined ? e.clientX : 0) - r.left;
+          return Math.max(0, Math.min(1, x / r.width));
+        }
+        if (bar) {
+          bar.addEventListener('click', function (e) { var p = _seekPct(e); if (p < 0) return; try { audio.currentTime = p * audio.duration; } catch (e2) {} if (fill) fill.style.width = (p * 100) + '%'; });
+          var _seekDrag = false;
+          bar.addEventListener('pointerdown', function (e) { if (!audio || !audio.duration) return; _seekDrag = true; try { bar.setPointerCapture(e.pointerId); } catch (err) {} var p = _seekPct(e); if (p >= 0 && fill) fill.style.width = (p * 100) + '%'; });
+          bar.addEventListener('pointermove', function (e) { if (!_seekDrag) return; var p = _seekPct(e); if (p >= 0 && fill) fill.style.width = (p * 100) + '%'; if (e.cancelable) e.preventDefault(); });
+          function _seekEnd(e) { if (!_seekDrag) return; _seekDrag = false; var p = _seekPct(e); if (p >= 0 && audio) { try { audio.currentTime = p * audio.duration; } catch (e2) {} } }
+          bar.addEventListener('pointerup', _seekEnd);
+          bar.addEventListener('pointercancel', function () { _seekDrag = false; });
+        }
         if (favBtn) favBtn.addEventListener('click', function () { var on = favBtn.classList.toggle('on'); favBtn.textContent = on ? '♥' : '♡'; showToast(on ? '已收藏' : '已取消收藏'); });
         var prev = root.querySelector('[data-tp="prev"]'), next = root.querySelector('[data-tp="next"]'), cast = root.querySelector('[data-tp="cast"]');
         if (prev) prev.addEventListener('click', function () { showToast('单曲循环中'); });
@@ -23679,6 +23700,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       (function () {
         var fl = document.getElementById('tgMediaFloat');
         if (!fl) return;
+        var _floatBar = fl.querySelector('.tmf-bar');
+        if (_floatBar) {
+          var _fd = { on: false, moved: false, sx: 0, sy: 0, sl: 0, st: 0, w: 0, h: 0 };
+          _floatBar.addEventListener('pointerdown', function (e) {
+            if (e.target && e.target.closest && e.target.closest('button')) return;
+            var r = fl.getBoundingClientRect();
+            _fd.on = true; _fd.moved = false; _fd.sx = e.clientX; _fd.sy = e.clientY;
+            _fd.sl = r.left; _fd.st = r.top; _fd.w = r.width; _fd.h = r.height;
+            fl.style.left = r.left + 'px'; fl.style.top = r.top + 'px'; fl.style.width = r.width + 'px'; fl.style.right = 'auto'; fl.style.bottom = 'auto';
+            try { _floatBar.setPointerCapture(e.pointerId); } catch (err) {}
+          });
+          _floatBar.addEventListener('pointermove', function (e) {
+            if (!_fd.on) return;
+            var dx = e.clientX - _fd.sx, dy = e.clientY - _fd.sy;
+            if (!_fd.moved && Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
+            _fd.moved = true;
+            var nl = Math.max(0, Math.min(window.innerWidth - _fd.w, _fd.sl + dx));
+            var nt = Math.max(0, Math.min(window.innerHeight - _fd.h, _fd.st + dy));
+            fl.style.left = nl + 'px'; fl.style.top = nt + 'px';
+            if (e.cancelable) e.preventDefault();
+          });
+          function _fdUp() { _fd.on = false; }
+          _floatBar.addEventListener('pointerup', _fdUp);
+          _floatBar.addEventListener('pointercancel', _fdUp);
+        }
         document.getElementById('tmfMin').addEventListener('click', function (e) { e.stopPropagation(); fl.dataset.min = '1'; _tgMediaEnsure(); });
         document.getElementById('tmfClose').addEventListener('click', function (e) {
           e.stopPropagation();
