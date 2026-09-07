@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="352";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="353";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v352</title>
+  <title>字卡 · 小手机 v353</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11524,6 +11524,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   max-height: 0; padding-top: 0; padding-bottom: 0;
   opacity: 0; pointer-events: none; overflow: hidden;
 }
+/* 键盘弹出时：语音头像区缩小，给聊天区腾出空间 */
+.call-overlay.kb-open .call-voice-visual { padding-top: 6px; }
+.call-overlay.kb-open .call-voice-avatar-wrap { width: 76px; height: 76px; }
+.call-overlay.kb-open .call-voice-avatar { width: 76px; height: 76px; font-size: 26px; }
+.call-overlay.kb-open .call-voice-timer { margin-top: 8px; margin-bottom: 2px; }
 .call-dynamic-ring {
   position: absolute;
   border-radius: 50%;
@@ -36020,6 +36025,7 @@ function addToCart(goodId) {
         callState = 'idle';
         callOverlay.classList.remove('active');
         callOverlay.classList.remove('ringing-mode');
+        callOverlay.classList.remove('video-mode');
         callOverlay.style.backgroundColor = ''; callOverlay.style.backgroundImage = '';
         document.body.style.background = '';
         stopMiniWaveSpeech();
@@ -36061,7 +36067,7 @@ function addToCart(goodId) {
         if (callVideoSmall) { callVideoSmall.style.backgroundImage = ''; callVideoSmall.style.backgroundSize = ''; callVideoSmall.style.backgroundPosition = ''; callVideoSmall.style.backgroundColor = ''; callVideoSmall.style.background = ''; }
         if (callVideoBgBig) callVideoBgBig.value = '';
         if (callVideoBgSmall) callVideoBgSmall.value = '';
-        callChatMessages.innerHTML = '';
+        // v353: 不再整容器清空 callChatMessages，避免删除 callRowIncoming/Outgoing 结构导致二次通话消息不可见
         updateControlUI();
         // Restore toolbar after call ends
         var tg = document.getElementById('toolbarGrid');
@@ -36565,12 +36571,19 @@ function addToCart(goodId) {
         function sync() {
           refreshBase();
           var h = vv();
-          // 高度完全交给 100dvh + resizes-content 自动适配（避免 JS 设 inline 高度与浏览器打架、导致卡顿）；
-          // 这里只负责切换挂断按钮收起状态
-          if ((baseVV - h) > 60) {
-            ov.classList.add('kb-open');
+          // 键盘弹起/收起状态翻转时才动一次 overlay 高度，让布局跟随可视区收缩、
+          // 聊天区+输入框+发送不被键盘遮挡；不在每帧 resize 反复写高度，避免卡顿
+          var kbOpen = (baseVV - h) > 60;
+          if (kbOpen) {
+            if (!ov.classList.contains('kb-open')) {
+              ov.classList.add('kb-open');
+              ov.style.height = h + 'px';
+            }
           } else {
-            ov.classList.remove('kb-open');
+            if (ov.classList.contains('kb-open')) {
+              ov.classList.remove('kb-open');
+              ov.style.height = '';
+            }
           }
         }
         function schedule() {
@@ -36593,6 +36606,7 @@ function addToCart(goodId) {
           if (window.visualViewport) window.visualViewport.removeEventListener('resize', schedule);
           window.removeEventListener('resize', schedule);
           ov.classList.remove('kb-open');
+          ov.style.height = '';
         };
 
         // 聚焦刷新基准并同步；失焦延迟同步（等键盘收起）
