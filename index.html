@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="353";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="354";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v353</title>
+  <title>字卡 · 小手机 v354</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5466,6 +5466,48 @@
 .zk-met-days { margin-top: 10px; font-size: 14px; font-weight: 500; color: var(--text-main); line-height: 1.5; text-align: center; }
 .zk-met-days .zk-num { font-size: 22px; font-weight: 700; color: var(--primary); margin: 0 3px; }
 .zk-met-date { margin-top: 4px; font-size: 12px; color: var(--text-muted); text-align: center; }
+
+    /* --- 心情日记日历（联系人状态弹窗内） --- */
+    .zk-mood-card { margin-top: 2px; padding: 12px 10px 10px; border-radius: 14px; background: linear-gradient(135deg, var(--primary-lighter), var(--bg-soft)); border: 1px solid var(--border-light); }
+    .zk-mood-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .zk-mood-stat { font-size: 12px; color: var(--text-muted); }
+    .zk-mood-nav { display: flex; align-items: center; gap: 6px; }
+    .zk-mood-navbtn { width: 26px; height: 26px; border: 1px solid var(--border-light); border-radius: 8px; background: #fff; color: var(--text-main); font-size: 16px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .zk-mood-navbtn:active { background: var(--bg-soft); }
+    .zk-mood-month { font-size: 13px; font-weight: 600; color: var(--text-main); min-width: 74px; text-align: center; }
+    .zk-mood-week { display: grid; grid-template-columns: repeat(7, 1fr); margin-bottom: 4px; }
+    .zk-mood-week span { text-align: center; font-size: 10px; color: #aaa; }
+    .zk-mood-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .zk-mood-day { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 3px 0 4px; border-radius: 8px; cursor: pointer; min-height: 52px; }
+    .zk-mood-day:active { background: rgba(155,142,196,0.12); }
+    .zk-mood-day.empty { cursor: default; }
+    .zk-mood-day.future { cursor: default; }
+    .zk-mood-num { font-size: 11px; color: #999; line-height: 1; }
+    .zk-mood-num.future { color: #d0d0d0; }
+    .zk-mood-mark { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; font-size: 11px; line-height: 1; }
+    .zk-mood-mark.me { border-radius: 50%; }
+    .zk-mood-mark.them { border-radius: 5px; }
+    .zk-mood-mark.empty-mark { background: transparent; border: 1.5px dashed #e2ddd0; }
+    .zk-mood-legend { display: flex; gap: 12px; margin-top: 8px; justify-content: center; }
+    .zk-mood-legend-item { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #999; }
+    .zk-mood-dot { display: inline-block; width: 12px; height: 12px; }
+    .zk-mood-dot.me { border-radius: 50%; background: #FFD97D; }
+    .zk-mood-dot.them { border-radius: 3px; background: #A8E6CF; }
+    .zk-mood-dot.empty { border-radius: 50%; border: 1.5px dashed #ccc; background: transparent; }
+    .zk-mood-picker { margin-top: 10px; padding: 10px; border-radius: 12px; background: #fff; border: 1px solid var(--border-light); }
+    .zk-mood-picker-date { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; text-align: center; }
+    .zk-mood-picker-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .zk-mood-picker-label { font-size: 12px; color: #888; width: 20px; flex: 0 0 auto; }
+    .zk-mood-opts { display: flex; gap: 6px; flex-wrap: wrap; }
+    .zk-mood-opt { width: 30px; height: 30px; border: 2px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .zk-mood-opt.me { border-radius: 50%; }
+    .zk-mood-opt.them { border-radius: 7px; }
+    .zk-mood-opt.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(155,142,196,0.18); }
+    .zk-mood-opt:active { transform: scale(0.9); }
+    .zk-mood-picker-actions { display: flex; gap: 8px; }
+    .zk-mood-picker-actions button { flex: 1; padding: 8px 0; border: none; border-radius: 9px; font-size: 13px; cursor: pointer; }
+    .zk-mood-picker-clear { background: #f0f0f0; color: #666; }
+    .zk-mood-picker-done { background: var(--primary); color: #fff; }
 .zk-range { position: relative; height: 32px; margin: 8px 0 2px; }
 .zk-range-line { position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%); border-radius: 2px; background: #e9e3f4; }
 .zk-range-fill { position: absolute; top: 50%; height: 4px; transform: translateY(-50%); border-radius: 2px; background: var(--primary); }
@@ -13938,6 +13980,41 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div class="zk-met-date" id="stateMetDate"></div>
           </div>
         </div>
+        <div class="profile-field zk-mood-field">
+          <label>心情日记</label>
+          <div class="zk-mood-card">
+            <div class="zk-mood-head">
+              <div class="zk-mood-stat" id="zkMoodStat">这个月一起记录了 0 天</div>
+              <div class="zk-mood-nav">
+                <button class="zk-mood-navbtn" id="zkMoodPrev" type="button">‹</button>
+                <div class="zk-mood-month" id="zkMoodMonth">2026年9月</div>
+                <button class="zk-mood-navbtn" id="zkMoodNext" type="button">›</button>
+              </div>
+            </div>
+            <div class="zk-mood-week"><span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span></div>
+            <div class="zk-mood-grid" id="zkMoodGrid"></div>
+            <div class="zk-mood-legend">
+              <span class="zk-mood-legend-item"><i class="zk-mood-dot me"></i>我</span>
+              <span class="zk-mood-legend-item"><i class="zk-mood-dot them"></i>TA</span>
+              <span class="zk-mood-legend-item"><i class="zk-mood-dot empty"></i>点日期记录</span>
+            </div>
+            <div class="zk-mood-picker" id="zkMoodPicker" style="display:none;">
+              <div class="zk-mood-picker-date" id="zkMoodPickerDate"></div>
+              <div class="zk-mood-picker-row">
+                <span class="zk-mood-picker-label">我</span>
+                <div class="zk-mood-opts" id="zkMoodPickerMe"></div>
+              </div>
+              <div class="zk-mood-picker-row">
+                <span class="zk-mood-picker-label">TA</span>
+                <div class="zk-mood-opts" id="zkMoodPickerThem"></div>
+              </div>
+              <div class="zk-mood-picker-actions">
+                <button class="zk-mood-picker-clear" id="zkMoodPickerClear" type="button">清空这天</button>
+                <button class="zk-mood-picker-done" id="zkMoodPickerDone" type="button">完成</button>
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="contact-tarot-grid">
           <div class="contact-tarot-item">
             <div class="contact-rule-head"><label>所在地方</label></div>
@@ -16211,12 +16288,186 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _zkRenderCardChips(document.getElementById('stateStateCards'), contact.tarot ? contact.tarot.state : null);
         _zkRenderCardChips(document.getElementById('stateDisCards'), contact.tarot ? contact.tarot.dis : null);
       }
+      // ===== 心情日记（联系人状态弹窗内） =====
+      var ZK_MOODS = [
+        { key: 'happy', emoji: '😊', color: '#FFD97D' },
+        { key: 'calm', emoji: '😌', color: '#A8E6CF' },
+        { key: 'sad', emoji: '😢', color: '#A0C4FF' },
+        { key: 'angry', emoji: '😠', color: '#FFADAD' },
+        { key: 'surprise', emoji: '🤩', color: '#FFC6FF' },
+        { key: 'tired', emoji: '😴', color: '#E3D0BC' }
+      ];
+      var zkMoodState = { contactId: null, year: 0, month: 0, pending: null, pendingMe: null, pendingThem: null };
+      var zkMoodDiary = {};
+      function _zkLoadMoodDiary() { try { zkMoodDiary = JSON.parse(localStorage.getItem('zk_mood_diary') || '{}'); } catch (e) { zkMoodDiary = {}; } }
+      function _zkSaveMoodDiary() { try { localStorage.setItem('zk_mood_diary', JSON.stringify(zkMoodDiary)); } catch (e) {} }
+      function _zkMoodKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+      function _zkMoodFind(k) { for (var i = 0; i < ZK_MOODS.length; i++) if (ZK_MOODS[i].key === k) return ZK_MOODS[i]; return null; }
+      function _zkMoodGet(day) { var c = zkMoodDiary[zkMoodState.contactId]; return (c && c[day]) || null; }
+      function _zkMoodSet(day, me, them) {
+        if (!zkMoodDiary[zkMoodState.contactId]) zkMoodDiary[zkMoodState.contactId] = {};
+        var rec = zkMoodDiary[zkMoodState.contactId][day] || {};
+        rec.me = me || null; rec.them = them || null;
+        if (!rec.me && !rec.them) { delete zkMoodDiary[zkMoodState.contactId][day]; }
+        else { zkMoodDiary[zkMoodState.contactId][day] = rec; }
+        _zkSaveMoodDiary();
+      }
+      function _zkRenderMoodCalendar() {
+        var st = zkMoodState;
+        var lbl = document.getElementById('zkMoodMonth');
+        if (lbl) lbl.textContent = st.year + '年' + (st.month + 1) + '月';
+        var grid = document.getElementById('zkMoodGrid');
+        if (!grid) return;
+        var rec = (zkMoodDiary[st.contactId] || {});
+        var first = new Date(st.year, st.month, 1);
+        var startDow = first.getDay();
+        var daysInMonth = new Date(st.year, st.month + 1, 0).getDate();
+        var today = new Date(); today.setHours(0, 0, 0, 0);
+        var html = '';
+        for (var i = 0; i < startDow; i++) html += '<div class="zk-mood-day empty"></div>';
+        for (var d = 1; d <= daysInMonth; d++) {
+          var date = new Date(st.year, st.month, d);
+          var key = _zkMoodKey(date);
+          var r = rec[key];
+          var isFuture = date > today;
+          var meHtml, themHtml;
+          if (r && r.me) {
+            var mm = _zkMoodFind(r.me);
+            meHtml = '<span class="zk-mood-mark me" style="background:' + (mm ? mm.color : '#eee') + '">' + (mm ? mm.emoji : '') + '</span>';
+          } else {
+            meHtml = '<span class="zk-mood-mark me empty-mark"></span>';
+          }
+          if (r && r.them) {
+            var tm = _zkMoodFind(r.them);
+            themHtml = '<span class="zk-mood-mark them" style="background:' + (tm ? tm.color : '#eee') + '">' + (tm ? tm.emoji : '') + '</span>';
+          } else {
+            themHtml = '<span class="zk-mood-mark them empty-mark"></span>';
+          }
+          html += '<div class="zk-mood-day' + (isFuture ? ' future' : '') + '" data-day="' + key + '"><span class="zk-mood-num">' + d + '</span>' + meHtml + themHtml + '</div>';
+        }
+        grid.innerHTML = html;
+        var stat = document.getElementById('zkMoodStat');
+        if (stat) {
+          var cnt = 0;
+          var ks = Object.keys(rec);
+          for (var k = 0; k < ks.length; k++) {
+            var rr = rec[ks[k]];
+            if (rr && rr.me && rr.them) {
+              var y = parseInt(ks[k].slice(0, 4), 10), m = parseInt(ks[k].slice(5, 7), 10);
+              if (y === st.year && (m - 1) === st.month) cnt++;
+            }
+          }
+          stat.textContent = '这个月一起记录了 ' + cnt + ' 天';
+        }
+      }
+      function _zkRenderMoodOpts() {
+        var meBox = document.getElementById('zkMoodPickerMe');
+        var themBox = document.getElementById('zkMoodPickerThem');
+        if (meBox) {
+          meBox.innerHTML = '';
+          for (var i = 0; i < ZK_MOODS.length; i++) {
+            var o = ZK_MOODS[i];
+            var b = document.createElement('button');
+            b.type = 'button'; b.className = 'zk-mood-opt me'; b.setAttribute('data-mood', o.key);
+            b.style.background = o.color; b.textContent = o.emoji;
+            if (zkMoodState.pendingMe === o.key) b.classList.add('sel');
+            meBox.appendChild(b);
+          }
+        }
+        if (themBox) {
+          themBox.innerHTML = '';
+          for (var j = 0; j < ZK_MOODS.length; j++) {
+            var o2 = ZK_MOODS[j];
+            var b2 = document.createElement('button');
+            b2.type = 'button'; b2.className = 'zk-mood-opt them'; b2.setAttribute('data-mood', o2.key);
+            b2.style.background = o2.color; b2.textContent = o2.emoji;
+            if (zkMoodState.pendingThem === o2.key) b2.classList.add('sel');
+            themBox.appendChild(b2);
+          }
+        }
+      }
+      function _zkOpenMoodPicker(day) {
+        var st = zkMoodState;
+        st.pending = day;
+        var rec = _zkMoodGet(day);
+        st.pendingMe = rec ? rec.me : null;
+        st.pendingThem = rec ? rec.them : null;
+        var dt = document.getElementById('zkMoodPickerDate');
+        if (dt) dt.textContent = parseInt(day.slice(0, 4), 10) + '年' + parseInt(day.slice(5, 7), 10) + '月' + parseInt(day.slice(8, 10), 10) + '日';
+        _zkRenderMoodOpts();
+        var picker = document.getElementById('zkMoodPicker');
+        if (picker) picker.style.display = 'block';
+      }
+      function _zkRenderMood(contactId) {
+        zkMoodState.contactId = contactId;
+        var now = new Date();
+        zkMoodState.year = now.getFullYear();
+        zkMoodState.month = now.getMonth();
+        zkMoodState.pending = null;
+        var picker = document.getElementById('zkMoodPicker');
+        if (picker) picker.style.display = 'none';
+        _zkRenderMoodCalendar();
+      }
+      (function _zkMoodInit() {
+        _zkLoadMoodDiary();
+        var grid = document.getElementById('zkMoodGrid');
+        var prev = document.getElementById('zkMoodPrev');
+        var next = document.getElementById('zkMoodNext');
+        var done = document.getElementById('zkMoodPickerDone');
+        var clear = document.getElementById('zkMoodPickerClear');
+        var meBox = document.getElementById('zkMoodPickerMe');
+        var themBox = document.getElementById('zkMoodPickerThem');
+        if (grid) grid.addEventListener('click', function (e) {
+          var dayEl = e.target.closest ? e.target.closest('.zk-mood-day[data-day]') : null;
+          if (!dayEl || dayEl.classList.contains('future')) return;
+          _zkOpenMoodPicker(dayEl.getAttribute('data-day'));
+        });
+        function shift(delta) {
+          zkMoodState.month += delta;
+          if (zkMoodState.month < 0) { zkMoodState.month = 11; zkMoodState.year--; }
+          if (zkMoodState.month > 11) { zkMoodState.month = 0; zkMoodState.year++; }
+          _zkRenderMoodCalendar();
+        }
+        if (prev) prev.addEventListener('click', function () { shift(-1); });
+        if (next) next.addEventListener('click', function () { shift(1); });
+        if (meBox) meBox.addEventListener('click', function (e) {
+          var b = e.target.closest ? e.target.closest('.zk-mood-opt') : null;
+          if (!b) return;
+          var k = b.getAttribute('data-mood');
+          zkMoodState.pendingMe = (zkMoodState.pendingMe === k) ? null : k;
+          _zkRenderMoodOpts();
+        });
+        if (themBox) themBox.addEventListener('click', function (e) {
+          var b = e.target.closest ? e.target.closest('.zk-mood-opt') : null;
+          if (!b) return;
+          var k = b.getAttribute('data-mood');
+          zkMoodState.pendingThem = (zkMoodState.pendingThem === k) ? null : k;
+          _zkRenderMoodOpts();
+        });
+        function closePicker() {
+          var picker = document.getElementById('zkMoodPicker');
+          if (picker) picker.style.display = 'none';
+          zkMoodState.pending = null;
+        }
+        if (done) done.addEventListener('click', function () {
+          if (zkMoodState.pending) { _zkMoodSet(zkMoodState.pending, zkMoodState.pendingMe, zkMoodState.pendingThem); }
+          closePicker();
+          _zkRenderMoodCalendar();
+        });
+        if (clear) clear.addEventListener('click', function () {
+          if (zkMoodState.pending) { _zkMoodSet(zkMoodState.pending, null, null); }
+          closePicker();
+          _zkRenderMoodCalendar();
+        });
+      })();
+
       function _zkOpenContactStateModal(contactId) {
         var contact = contacts.find(function (c) { return c.id === contactId; });
         if (!contact) return;
         _zkSetContactAvatar(document.getElementById('contactStateAvatar'), contact);
         document.getElementById('contactStateName').textContent = contact.name || '?';
         _zkUpdateMetCardView(contactId);
+        _zkRenderMood(contactId);
         var _need = !contact.location || !contact.doing || !contact.stateText || !contact.tarot || !Array.isArray(contact.tarot.loc) || !Array.isArray(contact.tarot.state) || contact.tarot.state.length < 3 || !Array.isArray(contact.tarot.dis) || contact.tarot.dis.length < 3;
         if (_need) {
           _zkRollContactState(contact);
