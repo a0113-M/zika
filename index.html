@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="354";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="355";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v354</title>
+  <title>字卡 · 小手机 v355</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -5488,6 +5488,7 @@
     .zk-mood-mark.me { border-radius: 50%; }
     .zk-mood-mark.them { border-radius: 5px; }
     .zk-mood-mark.empty-mark { background: transparent; border: 1.5px dashed #e2ddd0; }
+    .zk-mood-mark svg { width: 100%; height: 100%; display: block; }
     .zk-mood-legend { display: flex; gap: 12px; margin-top: 8px; justify-content: center; }
     .zk-mood-legend-item { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; color: #999; }
     .zk-mood-dot { display: inline-block; width: 12px; height: 12px; }
@@ -5496,10 +5497,12 @@
     .zk-mood-dot.empty { border-radius: 50%; border: 1.5px dashed #ccc; background: transparent; }
     .zk-mood-picker { margin-top: 10px; padding: 10px; border-radius: 12px; background: #fff; border: 1px solid var(--border-light); }
     .zk-mood-picker-date { font-size: 13px; font-weight: 600; color: var(--text-main); margin-bottom: 8px; text-align: center; }
+    .zk-mood-picker-hint { font-size: 11px; color: #aaa; text-align: center; margin: 2px 0 8px; }
     .zk-mood-picker-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
     .zk-mood-picker-label { font-size: 12px; color: #888; width: 20px; flex: 0 0 auto; }
     .zk-mood-opts { display: flex; gap: 6px; flex-wrap: wrap; }
-    .zk-mood-opt { width: 30px; height: 30px; border: 2px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; line-height: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .zk-mood-opt { width: 30px; height: 30px; border: 2px solid transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 16px; line-height: 1; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+    .zk-mood-opt svg { width: 74%; height: 74%; display: block; }
     .zk-mood-opt.me { border-radius: 50%; }
     .zk-mood-opt.them { border-radius: 7px; }
     .zk-mood-opt.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(155,142,196,0.18); }
@@ -14004,10 +14007,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <span class="zk-mood-picker-label">我</span>
                 <div class="zk-mood-opts" id="zkMoodPickerMe"></div>
               </div>
-              <div class="zk-mood-picker-row">
-                <span class="zk-mood-picker-label">TA</span>
-                <div class="zk-mood-opts" id="zkMoodPickerThem"></div>
-              </div>
+              <div class="zk-mood-picker-hint">TA 的心情每天自动随机生成</div>
               <div class="zk-mood-picker-actions">
                 <button class="zk-mood-picker-clear" id="zkMoodPickerClear" type="button">清空这天</button>
                 <button class="zk-mood-picker-done" id="zkMoodPickerDone" type="button">完成</button>
@@ -16290,12 +16290,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       // ===== 心情日记（联系人状态弹窗内） =====
       var ZK_MOODS = [
-        { key: 'happy', emoji: '😊', color: '#FFD97D' },
-        { key: 'calm', emoji: '😌', color: '#A8E6CF' },
-        { key: 'sad', emoji: '😢', color: '#A0C4FF' },
-        { key: 'angry', emoji: '😠', color: '#FFADAD' },
-        { key: 'surprise', emoji: '🤩', color: '#FFC6FF' },
-        { key: 'tired', emoji: '😴', color: '#E3D0BC' }
+        { key: 'happy', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7 9.3c1.5-1.5 3.8-1.5 5.3 0"/><path d="M11.7 9.3c1.5-1.5 3.8-1.5 5.3 0"/><path d="M6.5 14.6c1.8 2.6 4.3 3 5.5 3s3.7-.4 5.5-3"/></svg>', color: '#FFD97D' },
+        { key: 'calm', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 10.6c1.2-1.1 2.7-1.1 4 0"/><path d="M12.5 10.6c1.2-1.1 2.7-1.1 4 0"/><path d="M9 15.4h6"/></svg>', color: '#A8E6CF' },
+        { key: 'sad', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 9c1.2 1.2 2.7 1.2 4 0"/><path d="M12.5 9c1.2 1.2 2.7 1.2 4 0"/><path d="M8 15.8c1.2-1.1 2.8-1.1 4 0s2.8 1.1 4 0"/><path d="M16.6 12.3c.3 1.3 1 2.3 1.9 2.9"/></svg>', color: '#A0C4FF' },
+        { key: 'angry', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 9.2l3.4 1.8"/><path d="M17.2 9.2l-3.4 1.8"/><path d="M8 14.8c1.2-.7 2.8-.7 4 0s2.8.7 4 0"/></svg>', color: '#FFADAD' },
+        { key: 'surprise', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.6" cy="10.6" r="1.5" fill="#fff" stroke="none"/><circle cx="15.4" cy="10.6" r="1.5" fill="#fff" stroke="none"/><circle cx="12" cy="15.6" r="2.3" fill="none"/></svg>', color: '#FFC6FF' },
+        { key: 'tired', svg: '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6.8 11.2h4.2"/><path d="M13 11.2h4.2"/><path d="M9.2 16c.9.7 1.9.7 2.8 0s1.9.7 2.8 0"/><path d="M15.6 4.4h4.2l-3.8 4.6h3.8"/></svg>', color: '#E3D0BC' }
       ];
       var zkMoodState = { contactId: null, year: 0, month: 0, pending: null, pendingMe: null, pendingThem: null };
       var zkMoodDiary = {};
@@ -16303,6 +16303,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _zkSaveMoodDiary() { try { localStorage.setItem('zk_mood_diary', JSON.stringify(zkMoodDiary)); } catch (e) {} }
       function _zkMoodKey(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
       function _zkMoodFind(k) { for (var i = 0; i < ZK_MOODS.length; i++) if (ZK_MOODS[i].key === k) return ZK_MOODS[i]; return null; }
+      function _zkAutoThemMood(day) {
+        var s = 0, str = (zkMoodState.contactId || '') + '|' + day;
+        for (var i = 0; i < str.length; i++) { s = (s * 31 + str.charCodeAt(i)) >>> 0; }
+        return ZK_MOODS[s % ZK_MOODS.length].key;
+      }
       function _zkMoodGet(day) { var c = zkMoodDiary[zkMoodState.contactId]; return (c && c[day]) || null; }
       function _zkMoodSet(day, me, them) {
         if (!zkMoodDiary[zkMoodState.contactId]) zkMoodDiary[zkMoodState.contactId] = {};
@@ -16333,13 +16338,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var meHtml, themHtml;
           if (r && r.me) {
             var mm = _zkMoodFind(r.me);
-            meHtml = '<span class="zk-mood-mark me" style="background:' + (mm ? mm.color : '#eee') + '">' + (mm ? mm.emoji : '') + '</span>';
+            meHtml = '<span class="zk-mood-mark me" style="background:' + (mm ? mm.color : '#eee') + '">' + (mm ? mm.svg : '') + '</span>';
           } else {
             meHtml = '<span class="zk-mood-mark me empty-mark"></span>';
           }
           if (r && r.them) {
             var tm = _zkMoodFind(r.them);
-            themHtml = '<span class="zk-mood-mark them" style="background:' + (tm ? tm.color : '#eee') + '">' + (tm ? tm.emoji : '') + '</span>';
+            themHtml = '<span class="zk-mood-mark them" style="background:' + (tm ? tm.color : '#eee') + '">' + (tm ? tm.svg : '') + '</span>';
           } else {
             themHtml = '<span class="zk-mood-mark them empty-mark"></span>';
           }
@@ -16362,27 +16367,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       function _zkRenderMoodOpts() {
         var meBox = document.getElementById('zkMoodPickerMe');
-        var themBox = document.getElementById('zkMoodPickerThem');
         if (meBox) {
           meBox.innerHTML = '';
           for (var i = 0; i < ZK_MOODS.length; i++) {
             var o = ZK_MOODS[i];
             var b = document.createElement('button');
             b.type = 'button'; b.className = 'zk-mood-opt me'; b.setAttribute('data-mood', o.key);
-            b.style.background = o.color; b.textContent = o.emoji;
+            b.style.background = o.color; b.innerHTML = o.svg;
             if (zkMoodState.pendingMe === o.key) b.classList.add('sel');
             meBox.appendChild(b);
-          }
-        }
-        if (themBox) {
-          themBox.innerHTML = '';
-          for (var j = 0; j < ZK_MOODS.length; j++) {
-            var o2 = ZK_MOODS[j];
-            var b2 = document.createElement('button');
-            b2.type = 'button'; b2.className = 'zk-mood-opt them'; b2.setAttribute('data-mood', o2.key);
-            b2.style.background = o2.color; b2.textContent = o2.emoji;
-            if (zkMoodState.pendingThem === o2.key) b2.classList.add('sel');
-            themBox.appendChild(b2);
           }
         }
       }
@@ -16391,7 +16384,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         st.pending = day;
         var rec = _zkMoodGet(day);
         st.pendingMe = rec ? rec.me : null;
-        st.pendingThem = rec ? rec.them : null;
         var dt = document.getElementById('zkMoodPickerDate');
         if (dt) dt.textContent = parseInt(day.slice(0, 4), 10) + '年' + parseInt(day.slice(5, 7), 10) + '月' + parseInt(day.slice(8, 10), 10) + '日';
         _zkRenderMoodOpts();
@@ -16416,7 +16408,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var done = document.getElementById('zkMoodPickerDone');
         var clear = document.getElementById('zkMoodPickerClear');
         var meBox = document.getElementById('zkMoodPickerMe');
-        var themBox = document.getElementById('zkMoodPickerThem');
         if (grid) grid.addEventListener('click', function (e) {
           var dayEl = e.target.closest ? e.target.closest('.zk-mood-day[data-day]') : null;
           if (!dayEl || dayEl.classList.contains('future')) return;
@@ -16437,20 +16428,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           zkMoodState.pendingMe = (zkMoodState.pendingMe === k) ? null : k;
           _zkRenderMoodOpts();
         });
-        if (themBox) themBox.addEventListener('click', function (e) {
-          var b = e.target.closest ? e.target.closest('.zk-mood-opt') : null;
-          if (!b) return;
-          var k = b.getAttribute('data-mood');
-          zkMoodState.pendingThem = (zkMoodState.pendingThem === k) ? null : k;
-          _zkRenderMoodOpts();
-        });
-        function closePicker() {
+                function closePicker() {
           var picker = document.getElementById('zkMoodPicker');
           if (picker) picker.style.display = 'none';
           zkMoodState.pending = null;
         }
         if (done) done.addEventListener('click', function () {
-          if (zkMoodState.pending) { _zkMoodSet(zkMoodState.pending, zkMoodState.pendingMe, zkMoodState.pendingThem); }
+          if (zkMoodState.pending) {
+            var them = zkMoodState.pendingMe ? _zkAutoThemMood(zkMoodState.pending) : null;
+            _zkMoodSet(zkMoodState.pending, zkMoodState.pendingMe, them);
+          }
           closePicker();
           _zkRenderMoodCalendar();
         });
