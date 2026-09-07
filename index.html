@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="350";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="351";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v350</title>
+  <title>字卡 · 小手机 v351</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -15574,6 +15574,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       }
 
       function apply() {
+        // 通话浮层激活时由通话专属键盘逻辑接管，主聊天键盘适配短路，避免双重 reflow 卡顿
+        var _callOv = document.getElementById('callOverlay');
+        if (_callOv && _callOv.classList.contains('active')) return;
         var curVH = getVH();
         // 更新最大高度（键盘收起时 curVH 最大）
         // 键盘弹出期间浏览器可能隐藏地址栏导致 curVH 虚高，不采信，防止收起后容器过高
@@ -15591,18 +15594,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           targetH = maxVH;
         }
         if (phone) phone.style.height = targetH + 'px';
-        // 通话浮层同步高度：键盘弹出时浮层变矮，flex 压缩聊天区，输入框贴合键盘
-        // （老 WebView 不认识 dvh / 不响应键盘时的 JS 兜底；visualViewport 在 iOS 上同样生效）
-        var callOv = document.getElementById('callOverlay');
-        if (callOv) {
-          callOv.style.height = targetH + 'px';
-          // 键盘弹出时压缩头像区，给聊天区腾出空间，避免消息被挤没
-          if (inputFocused && shrank) {
-            callOv.classList.add('kb-open');
-          } else {
-            callOv.classList.remove('kb-open');
-          }
-        }
         // 若浏览器已把页面上推（scroll 模式），强制复位，避免内容错位
         if (window.scrollX !== 0 || window.scrollY !== 0) window.scrollTo(0, 0);
 
@@ -35994,6 +35985,7 @@ function addToCart(goodId) {
 
         callState = 'active';
         callStartTime = Date.now();
+        if (window.__callKbStart) window.__callKbStart();
         callRinging.classList.remove('active');
         callActiveView.classList.add('active');
         callOverlay.classList.remove('ringing-mode');
@@ -36025,7 +36017,7 @@ function addToCart(goodId) {
       }
 
       function endCall() {
-        callOverlay.classList.remove('call-keyboard-open');
+        if (window.__callKbStop) window.__callKbStop();
         callState = 'idle';
         callOverlay.classList.remove('active');
         callOverlay.classList.remove('ringing-mode');
@@ -36554,32 +36546,61 @@ function addToCart(goodId) {
       callChatSend.addEventListener('click', sendCallChatMessage);
       callChatInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') { e.preventDefault(); sendCallChatMessage(); } });
 
-      // 键盘检测：键盘打开时切换样式
+      // ===== 通话专属键盘适配（独立于主聊天，单一 visualViewport 信号 + rAF 去抖，消除卡顿）=====
       (function() {
-        var baseHeight = 0;
-        var keyboardThreshold = 200;
+        var ov = document.getElementById('callOverlay');
         var inputEl = document.getElementById('callChatInput');
-        var initialized = false;
-        function checkKeyboard() {
-          if (!initialized) {
-            baseHeight = window.innerHeight;
-            initialized = true;
-            return;
-          }
-          var currentHeight = window.innerHeight;
-          var keyboardHeight = baseHeight - currentHeight;
-          var isKeyboardOpen = keyboardHeight > keyboardThreshold;
-          document.getElementById('callOverlay').classList.toggle('call-keyboard-open', isKeyboardOpen);
-          /* flex 布局自动适应，无需手动调整 */
+        if (!ov || !inputEl) return;
+
+        var baseVV = 0;   // 无键盘时的可视高度基准
+        var raf = null;
+
+        function vv() {
+          return window.visualViewport ? Math.round(window.visualViewport.height) : window.innerHeight;
         }
-        // 页面稳定后再开始检测
-        setTimeout(function() {
-          baseHeight = window.innerHeight;
-          initialized = true;
-          window.addEventListener('resize', checkKeyboard);
-        }, 500);
-        callChatInput.addEventListener('focus', function() { setTimeout(checkKeyboard, 100); });
-        callChatInput.addEventListener('blur', function() { setTimeout(checkKeyboard, 100); });
+        // 基准取观测到的最大可视高度，避免把键盘缩小的值误当基准
+        function refreshBase() {
+          var h = vv();
+          if (h > baseVV) baseVV = h;
+        }
+        function sync() {
+          refreshBase();
+          var h = vv();
+          var kbOpen = (baseVV - h) > 80;   // 阈值放宽，过滤输入法面板切换的小抖动
+          if (kbOpen) {
+            ov.style.height = h + 'px';     // 贴键盘：仅当浏览器不响应 resizes-content 时才需要改高度
+            ov.classList.add('kb-open');    // 挂断按钮收起，聊天区+输入+发送保持可见
+          } else {
+            ov.style.height = '';           // 回到 CSS 的 100dvh
+            ov.classList.remove('kb-open');
+          }
+        }
+        function schedule() {
+          if (raf) return;
+          raf = requestAnimationFrame(function() {
+            raf = null;
+            sync();
+          });
+        }
+
+        window.__callKbStart = function() {
+          baseVV = 0;
+          refreshBase();
+          if (window.visualViewport) window.visualViewport.addEventListener('resize', schedule);
+          window.addEventListener('resize', schedule);
+        };
+        window.__callKbStop = function() {
+          baseVV = 0;
+          if (raf) { cancelAnimationFrame(raf); raf = null; }
+          if (window.visualViewport) window.visualViewport.removeEventListener('resize', schedule);
+          window.removeEventListener('resize', schedule);
+          ov.style.height = '';
+          ov.classList.remove('kb-open');
+        };
+
+        // 聚焦刷新基准并同步；失焦延迟同步（等键盘收起）
+        inputEl.addEventListener('focus', function() { refreshBase(); schedule(); });
+        inputEl.addEventListener('blur', function() { setTimeout(schedule, 150); });
       })();
 
       // 小窗拖拽 + 点击放大回全屏 + 背景切换
