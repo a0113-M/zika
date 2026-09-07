@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="351";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="352";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v351</title>
+  <title>字卡 · 小手机 v352</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -11736,11 +11736,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   backdrop-filter: none; -webkit-backdrop-filter: none;
   border-radius: 0;
 }
-/* 视频模式：白底由 call-chat-area 承担，消息容器不重复套白 */
+/* 视频模式：白底由 call-chat-area 承担，消息容器保持透明，避免双层白底叠影 */
 .call-overlay.video-mode .call-chat-messages {
-  background: rgba(255,255,255,0.62);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border-radius: 14px;
+  background: transparent;
+  backdrop-filter: none; -webkit-backdrop-filter: none;
 }
 /* 第1行：联系人消息（居中） */
 .call-chat-row-incoming {
@@ -36566,12 +36565,11 @@ function addToCart(goodId) {
         function sync() {
           refreshBase();
           var h = vv();
-          var kbOpen = (baseVV - h) > 80;   // 阈值放宽，过滤输入法面板切换的小抖动
-          if (kbOpen) {
-            ov.style.height = h + 'px';     // 贴键盘：仅当浏览器不响应 resizes-content 时才需要改高度
-            ov.classList.add('kb-open');    // 挂断按钮收起，聊天区+输入+发送保持可见
+          // 高度完全交给 100dvh + resizes-content 自动适配（避免 JS 设 inline 高度与浏览器打架、导致卡顿）；
+          // 这里只负责切换挂断按钮收起状态
+          if ((baseVV - h) > 60) {
+            ov.classList.add('kb-open');
           } else {
-            ov.style.height = '';           // 回到 CSS 的 100dvh
             ov.classList.remove('kb-open');
           }
         }
@@ -36594,7 +36592,6 @@ function addToCart(goodId) {
           if (raf) { cancelAnimationFrame(raf); raf = null; }
           if (window.visualViewport) window.visualViewport.removeEventListener('resize', schedule);
           window.removeEventListener('resize', schedule);
-          ov.style.height = '';
           ov.classList.remove('kb-open');
         };
 
