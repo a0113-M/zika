@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="387";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="388";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v387</title>
+  <title>字卡 · 小手机 v388</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -324,6 +324,16 @@
       font-weight: 400;
     }
 
+    .contact-name .ai-tag {
+      font-size: 11px;
+      background: #d8f1e4;
+      color: #2e8b57;
+      padding: 0 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+      font-weight: 500;
+    }
+
     .contact-lastmsg {
       font-size: 13px;
       color: #999;
@@ -504,6 +514,30 @@
 
     .modal-actions .btn-confirm:active {
       background: var(--primary);
+    }
+
+    .modal-type-toggle {
+      display: flex;
+      gap: 8px;
+    }
+
+    .modal-type-opt {
+      flex: 1;
+      padding: 9px 0;
+      border: 1px solid #d0d0d0;
+      border-radius: 10px;
+      background: #fafafa;
+      color: #666;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .modal-type-opt.active {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+      font-weight: 500;
     }
     /* --- 动态编辑弹窗 --- */
     .moment-edit-overlay {
@@ -12953,6 +12987,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <label>昵称</label>
           <input type="text" id="modalName" placeholder="输入昵称">
         </div>
+        <div class="modal-field" id="contactTypeField">
+          <label>聊天方式</label>
+          <div class="modal-type-toggle" id="modalTypeToggle">
+            <button type="button" class="modal-type-opt active" data-type="card">字卡聊天</button>
+            <button type="button" class="modal-type-opt" data-type="ai">AI聊天</button>
+          </div>
+        </div>
         <div class="modal-field" id="groupMemberField" style="display:none;">
           <label>选择成员</label>
           <div class="member-checkbox-group" id="memberCheckboxGroup"></div>
@@ -13024,7 +13065,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <button class="menu-item" data-action="export">导出聊天记录</button>
         <button class="menu-item" data-action="import">导入聊天记录</button>
         <div class="chat-menu-divider"></div>
-        <button class="menu-item" data-action="aiChat" id="aiChatMenuItem">AI聊天</button>
         <button class="menu-item" data-action="persona" id="personaMenuItem">人设 · 世界书</button>
         <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="settings">设置</button>
@@ -17047,6 +17087,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         return contacts.filter(function(c) { return !c.isGroup; });
       };
       let currentModalMode = 'contact';
+      let currentContactType = 'card';
       let selectedGroupMemberIds = [];
 
       // DOM 引用
@@ -17061,6 +17102,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       const modalConfirm = document.getElementById('modalConfirm');
       const modalCancel = document.getElementById('modalCancel');
       const groupMemberField = document.getElementById('groupMemberField');
+      const contactTypeField = document.getElementById('contactTypeField');
+      const modalTypeToggle = document.getElementById('modalTypeToggle');
       const memberCheckboxGroup = document.getElementById('memberCheckboxGroup');
       const memberWarning = document.getElementById('memberWarning');
       const searchInput = document.getElementById('searchInput');
@@ -17103,6 +17146,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const tag = document.createElement('span');
             tag.className = 'group-tag';
             tag.textContent = '群聊';
+            nameDiv.appendChild(tag);
+          } else if (_zkIsAiContact(item)) {
+            const tag = document.createElement('span');
+            tag.className = 'ai-tag';
+            tag.textContent = 'AI';
             nameDiv.appendChild(tag);
           }
           const lastMsg = document.createElement('div');
@@ -17763,8 +17811,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             navItems.forEach(b => b.classList.remove('active'));
           } else if (action === 'settings') {
             showChatSettings();
-          } else if (action === 'aiChat') {
-            _zkToggleChatMode('ai');
           } else if (action === 'persona') {
             var _pb = document.getElementById('dvdChatPersonaBtn');
             if (_pb) { _pb.click(); } else { showToast('未找到人设面板'); }
@@ -19563,9 +19609,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
               return;
             }
-            var _zkChatMode = _zkGetChatMode(currentChatId);
-            if (_zkChatMode) {
-              _zkAiChatReply(currentChatId, contact, senderName, text, _zkChatMode);
+            if (_zkIsAiContact(contact)) {
+              _zkAiChatReply(currentChatId, contact, senderName, text, 'ai');
               return;
             }
             let reply = getRandomCard();
@@ -19608,37 +19653,21 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
         }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
       }
-      // ----- 聊天右上角菜单：AI聊天 / 占卜聊天（联系人用接入的 API 回复）-----
+      // ----- 联系人聊天方式：AI 聊天（在添加联系人时选定，用接入的 API 回复）-----
       function _zkGetChatMode(cid) {
         try {
           var m = JSON.parse(localStorage.getItem('zk_contact_chat_mode') || '{}');
           return (m && m[cid]) ? m[cid] : '';
         } catch (e) { return ''; }
       }
-      function _zkSetChatMode(cid, mode) {
-        try {
-          var m = JSON.parse(localStorage.getItem('zk_contact_chat_mode') || '{}');
-          if (!m || typeof m !== 'object') m = {};
-          if (mode) m[cid] = mode; else delete m[cid];
-          localStorage.setItem('zk_contact_chat_mode', JSON.stringify(m));
-        } catch (e) {}
+      function _zkIsAiContact(contact) {
+        return !!(contact && (contact.chatType === 'ai' || _zkGetChatMode(contact.id) === 'ai'));
       }
       function _zkRefreshChatMenu() {
-        var aiBtn = document.getElementById('aiChatMenuItem');
-        if (!aiBtn) return;
-        var cur = currentChatId != null ? _zkGetChatMode(currentChatId) : '';
-        aiBtn.textContent = (cur === 'ai' ? '✓ ' : '') + 'AI聊天';
-      }
-      function _zkToggleChatMode(mode) {
-        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
-        var contact = contacts.find(function (c) { return c.id === currentChatId; });
-        var nm = contact ? contact.name : '该联系人';
-        var cur = _zkGetChatMode(currentChatId);
-        var next = (cur === mode) ? '' : mode;
-        _zkSetChatMode(currentChatId, next);
-        _zkRefreshChatMenu();
-        if (next === 'ai') showToast('已开启 AI聊天，' + nm + ' 会用 AI 回复你');
-        else showToast('已关闭，恢复默认回复');
+        var pBtn = document.getElementById('personaMenuItem');
+        if (!pBtn) return;
+        var contact = currentChatId != null ? contacts.find(function (c) { return c.id === currentChatId; }) : null;
+        pBtn.style.display = _zkIsAiContact(contact) ? '' : 'none';
       }
       function _zkGetApiCfg() { try { return JSON.parse(localStorage.getItem('divineApiConfig') || '{}'); } catch (e) { return {}; } }
       function _zkGetPersonas() { try { return JSON.parse(localStorage.getItem('zk_personas') || '[]'); } catch (e) { return []; } }
@@ -19798,7 +19827,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         chatHistories[cid].push({ divineDraw: draw, from: senderName, time: _ts });
         renderMessages(cid);
         if (contact) { contact.lastMsg = '抽牌占卜'; contact.time = _ts; if (!cardView.classList.contains('hidden')) refreshList(); }
-        if (_zkGetChatMode(cid) === 'ai') {
+        if (_zkIsAiContact(contact)) {
           _zkAiChatReply(cid, contact, senderName, '看看我们最近的状况', 'divine', draw);
         }
       }
@@ -20537,9 +20566,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
 
       // ----- 添加联系人 / 群聊 -----
-      function addContact(name) {
+      function addContact(name, chatType) {
         if (!name.trim()) return false;
-        contacts.push({ id: nextId++, name: name.trim(), isGroup: false, lastMsg: '新联系人', time: '刚刚', createdAt: Date.now() });
+        contacts.push({ id: nextId++, name: name.trim(), isGroup: false, chatType: chatType === 'ai' ? 'ai' : '', lastMsg: '新联系人', time: '刚刚', createdAt: Date.now() });
         _dtAutoRecordMet();
         saveContacts();
         refreshList();
@@ -20565,9 +20594,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (mode === 'contact') {
           modalTitle.textContent = '添加联系人';
           groupMemberField.style.display = 'none';
+          if (contactTypeField) contactTypeField.style.display = 'block';
+          _zkSetContactType('card');
         } else {
           modalTitle.textContent = '创建群聊';
           groupMemberField.style.display = 'block';
+          if (contactTypeField) contactTypeField.style.display = 'none';
           const members = contacts.filter(c => !c.isGroup);
           memberCheckboxGroup.innerHTML = '';
           if (members.length === 0) {
@@ -20601,7 +20633,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const name = modalName.value.trim();
         if (!name) { alert('请输入昵称'); return; }
         if (currentModalMode === 'contact') {
-          if (addContact(name)) closeModal();
+          if (addContact(name, currentContactType)) closeModal();
           else alert('添加失败，请检查输入');
         } else {
           const selected = selectedGroupMemberIds;
@@ -20611,6 +20643,20 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (createGroup(name, selected)) closeModal();
           else alert('创建群聊失败，请确保至少选择2位联系人');
         }
+      }
+
+      // ----- 聊天方式切换（添加联系人弹窗内） -----
+      function _zkSetContactType(type) {
+        currentContactType = (type === 'ai') ? 'ai' : 'card';
+        var opts = modalTypeToggle ? modalTypeToggle.querySelectorAll('.modal-type-opt') : [];
+        for (var i = 0; i < opts.length; i++) {
+          opts[i].classList.toggle('active', opts[i].getAttribute('data-type') === currentContactType);
+        }
+      }
+      if (modalTypeToggle) {
+        modalTypeToggle.querySelectorAll('.modal-type-opt').forEach(function (b) {
+          b.addEventListener('click', function (e) { e.stopPropagation(); _zkSetContactType(b.getAttribute('data-type')); });
+        });
       }
 
       // ----- 导航切换 -----
