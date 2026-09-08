@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="377";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="378";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v377</title>
+  <title>字卡 · 小手机 v378</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14187,6 +14187,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <path d="M12 11v5" />
                 <path d="M9 13l3 3 3-3" />
               </svg></span><span class="item-text">数据</span></div>
+          <div class="sidebar-menu-item" data-action="api"><span class="item-icon"><svg viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg></span><span class="item-text">API</span></div>
           <div class="sidebar-menu-item" data-action="settings"><span class="item-icon"><svg viewBox="0 0 24 24">
                 <circle cx="12" cy="12" r="3" />
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
@@ -15783,7 +15784,30 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             </div>
           </div>
           <div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
-          <!-- v171: 占卜解读 API 设置 -->
+                  </div>
+      </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  
+
+
+
+  
+      <!-- API 配置页面 -->
+      <div class="feature-page" id="apiPage">
+        <div class="feature-header">
+          <button class="feature-back" id="apiBackBtn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+          </button>
+          <span class="feature-title">API</span>
+        </div>
+        <div class="feature-content settings-body">
+<!-- v171: 占卜解读 API 设置 -->
           <div class="settings-section">
             <div class="settings-section-title">占卜解读</div>
             <div class="settings-item" style="display:block;">
@@ -15817,21 +15841,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <button id="settingApiTestBtn" style="padding:7px 16px;border-radius:6px;border:none;background:linear-gradient(135deg,#9b8ec4,#7b6ba8);color:#fff;font-size:12px;font-weight:600;cursor:pointer;">测试连接</button>
               <span id="settingApiTestResult" style="font-size:12px;color:#888;"></span>
             </div>
-          </div>        </div>
-      </div>
+          </div>
+          <div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
         </div>
       </div>
-    </div>
-  </div>
 
 
-
-  
-
-
-
-  
-<!-- 装扮页面 -->
+  <!-- 装扮页面 -->
 <div class="theme-view" id="themeView">
   <div class="theme-header">
     <button class="todo-back" id="themeBackBtn">
@@ -20014,6 +20030,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (action === 'letters') {
             sidebarOverlay.classList.remove('show');
             openLetterModule();
+            return;
+          }
+          if (action === 'api') {
+            sidebarOverlay.classList.remove('show');
+            document.getElementById('apiPage').classList.add('show');
             return;
           }
           if (action === 'settings') {
@@ -24556,6 +24577,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         document.getElementById('settingsBackBtn').addEventListener('click', function() {
           document.getElementById('settingsPage').classList.remove('show');
         });
+        if (document.getElementById('apiBackBtn')) {
+          document.getElementById('apiBackBtn').addEventListener('click', function() {
+            document.getElementById('apiPage').classList.remove('show');
+          });
+        }
       }
 
       // ===== 联系人自动事件（写信/朋友圈/匿名来信）：按「间隔+概率」触发 =====
