@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="376";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="377";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v376</title>
+  <title>字卡 · 小手机 v377</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -1631,20 +1631,25 @@
     .letter-reply-item {
       margin-bottom: 16px;
       padding: 14px 16px;
-      background: #f8faff;
-      border-radius: 10px;
-      border-left: 3px solid #3a7bd5;
+      background: linear-gradient(135deg, var(--bg-soft) 0%, #ffffff 100%);
+      border-radius: 14px;
+      border-left: 3px solid var(--primary);
+      box-shadow: 0 2px 12px rgba(var(--primary-rgba), 0.08);
     }
     .letter-reply-item:last-child {
       margin-bottom: 0;
     }
     .letter-reply-header {
       font-size: 12px;
-      color: #999;
-      margin-bottom: 6px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
+    }
+    .letter-reply-header svg {
+      flex-shrink: 0;
     }
     .letter-reply-content {
       font-size: 15px;
@@ -1905,77 +1910,101 @@
     .letter-detail-ann-btn.ann-active {
       color: #4a90d9;
     }
-    /* 批注编辑弹窗 */
+    /* 批注编辑弹窗（底部 sheet） */
     .word-annotation-modal {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.4);
-      z-index: 280;
+      background: rgba(0,0,0,0.45);
+      z-index: 1300;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
     }
     .word-annotation-modal-content {
       background: #fff;
-      border-radius: 12px;
-      width: 85%;
-      max-width: 360px;
-      padding: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-width: 520px;
+      padding: 12px 18px calc(18px + env(safe-area-inset-bottom));
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.14);
+      animation: annSheetUp 0.25s ease-out;
+      position: relative;
+    }
+    .word-annotation-modal-content::before {
+      content: '';
+      display: block;
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: #e5e5e5;
+      margin: 0 auto 12px;
+    }
+    @keyframes annSheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
     }
     .word-annotation-modal-content .modal-word-tags {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .word-annotation-modal-content .modal-word-tag {
       display: inline-block;
-      padding: 3px 10px;
-      border-radius: 6px;
+      padding: 4px 12px;
+      border-radius: 8px;
       font-size: 13px;
+      font-weight: 500;
     }
     .word-annotation-modal-content .modal-label {
-      font-size: 12px;
-      color: #999;
-      margin-bottom: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
     }
     .word-annotation-modal-content textarea {
       width: 100%;
-      min-height: 80px;
-      padding: 10px;
-      border: 1px solid #e0e0e0;
-      border-radius: 6px;
+      min-height: 96px;
+      padding: 12px;
+      border: 1px solid #eee;
+      border-radius: 10px;
       font-size: 14px;
       line-height: 1.6;
       resize: none;
       outline: none;
       font-family: inherit;
       box-sizing: border-box;
+      background: #fafafa;
+      color: #444;
     }
     .word-annotation-modal-content textarea:focus {
-      border-color: #f9a825;
+      border-color: var(--primary);
+      background: #fff;
     }
     .word-annotation-modal-content .modal-actions {
       display: flex;
-      gap: 8px;
-      margin-top: 10px;
-      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 14px;
     }
     .word-annotation-modal-content .modal-actions button {
-      padding: 6px 16px;
-      border-radius: 4px;
+      flex: 1;
+      padding: 12px 16px;
+      border-radius: 12px;
       border: none;
-      font-size: 13px;
+      font-size: 15px;
+      font-weight: 600;
       cursor: pointer;
     }
     .word-annotation-modal-content .btn-save-note {
-      background: #f9a825;
+      background: var(--primary);
       color: #fff;
     }
+    .word-annotation-modal-content .btn-save-note:active {
+      opacity: 0.85;
+    }
     .word-annotation-modal-content .btn-cancel-note {
-      background: #e0e0e0;
-      color: #666;
+      background: var(--bg-soft);
+      color: var(--text-secondary);
     }
     /* 筛选栏 */
     .letter-filter-bar {
@@ -27510,7 +27539,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         // 日期
         const dateDiv = document.createElement('div');
         dateDiv.className = 'letter-date';
-        dateDiv.textContent = letter.time;
+        dateDiv.textContent = _zlLetterTime(letter);
         paper.appendChild(dateDiv);
 
         // 称呼
@@ -27644,7 +27673,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         }
         const sigDate = document.createElement('div');
         sigDate.className = 'letter-sig-date';
-        sigDate.textContent = letter.time;
+        sigDate.textContent = _zlLetterTime(letter);
         sigDiv.appendChild(sigName);
         sigDiv.appendChild(sigDate);
         paper.appendChild(sigDiv);
@@ -27672,10 +27701,10 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             const replyHeader = document.createElement('div');
             replyHeader.className = 'letter-reply-header';
             if (reply.fromContact) {
-              replyHeader.textContent = (reply.from || letter.from) + ' 的回信';
+              replyHeader.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>' + (reply.from || letter.from) + ' 的回信';
               replyHeader.style.color = tc.header;
             } else {
-              replyHeader.textContent = '我的回信';
+              replyHeader.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg> 我的回信';
             }
             replyEl.appendChild(replyHeader);
             const replyText = reply.text || (reply.words ? reply.words.map(w => w.name).join(' ') : '');
@@ -27956,7 +27985,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         preview.innerHTML =
           '<div class="preview-title">' +
             '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>' +
-            '原信 · ' + letter.from + ' · ' + letter.time +
+            '原信 · ' + letter.from + ' · ' + _zlLetterTime(letter) +
           '</div>' +
           '<div class="preview-content">' + wordsHtml + '</div>';
         // 清空输入框并打开弹窗
@@ -29621,6 +29650,16 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         if (!timestamp) return '';
         var d = new Date(timestamp);
         return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+      }
+
+      // 信件时间兼容：旧数据缺 time 字段时用 timestamp 兜底
+      function _zlLetterTime(letter) {
+        if (letter.time) return letter.time;
+        if (letter.timestamp) {
+          var d = new Date(letter.timestamp);
+          return (d.getMonth() + 1) + '月' + d.getDate() + '日 ' + d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+        }
+        return '';
       }
 
       // 聊天面板日历渲染
