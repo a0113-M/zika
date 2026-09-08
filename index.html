@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="365";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="366";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v365</title>
+  <title>字卡 · 小手机 v366</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10572,6 +10572,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 
 /* Chat todo reminder card style */
+.msg-left.msg-todo-row { max-width: 100%; }
+.msg-left.msg-todo-row .msg-wrapper { max-width: 100%; }
+
 .msg-todo-card {
   display: inline-block !important;
   min-width: 250px;
@@ -18316,7 +18319,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             tgCard.className = 'selectable-sys';
             tgCard.style.cssText = 'display:flex;justify-content:center;margin:6px 0;';
             const tgInner = document.createElement('div');
-            tgInner.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;max-width:84%;box-shadow:0 2px 8px rgba(155,142,196,0.08);';
+            tgInner.style.cssText = 'display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--border-light);border-radius:12px;min-width:65%;max-width:92%;box-shadow:0 2px 8px rgba(155,142,196,0.08);';
             const tgIc = document.createElement('div');
             tgIc.style.cssText = 'width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;background:var(--primary);flex-shrink:0;';
             var _mi2 = msg.icon || '';
@@ -18677,9 +18680,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             msgWrapper.appendChild(bubble);
 
             // 统一按 头像 -> 消息 -> 时间 的顺序添加
-            bubbleDiv.appendChild(avatar);
-            bubbleDiv.appendChild(msgWrapper);
-            bubbleDiv.appendChild(timeLabel);
+            if (msg.isReminder || msg.isCelebration) {
+              bubbleDiv.classList.add('msg-todo-row');
+              bubbleDiv.appendChild(msgWrapper);
+            } else {
+              bubbleDiv.appendChild(avatar);
+              bubbleDiv.appendChild(msgWrapper);
+              bubbleDiv.appendChild(timeLabel);
+            }
             if (msg.from === 'me' && msg.read) {
               const readLabel = document.createElement('span');
               readLabel.style.cssText = 'font-size:10px;color:#b0b0b0;flex-shrink:0;align-self:flex-end;margin:0 2px;';
