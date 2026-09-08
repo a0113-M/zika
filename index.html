@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="383";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="384";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v383</title>
+  <title>字卡 · 小手机 v384</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8337,6 +8337,34 @@
     .zki-btn.run:disabled { opacity: 0.55; }
     .zki-btn.collapse { background: var(--bg-soft2); color: var(--text-secondary); flex: 0 0 28%; }
     .zki-btn:active { transform: scale(0.97); }
+
+    .zki-ball { position: fixed; right: 14px; bottom: 116px; width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 21px; display: none; align-items: center; justify-content: center; border: none; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24); z-index: 1900; cursor: pointer; }
+    .zki-ball:active { transform: scale(0.9); }
+    .zki-records-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(var(--primary-rgba), 0.5); background: rgba(var(--primary-rgba), 0.07); color: var(--primary); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .zki-records-btn:active { transform: scale(0.97); }
+    .zki-records { margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: rgba(var(--primary-rgba), 0.05); border: 1px solid rgba(var(--primary-rgba), 0.2); font-size: 12.5px; color: var(--text-main); line-height: 1.65; white-space: pre-wrap; word-break: break-word; max-height: 160px; overflow-y: auto; display: none; }
+    .zki-records.show { display: block; }
+    .zki-pick-wrap { position: fixed; inset: 0; z-index: 2100; display: flex; align-items: flex-end; justify-content: center; pointer-events: none; }
+    .zki-pick-wrap.active { pointer-events: auto; }
+    .zki-pick-backdrop { position: absolute; inset: 0; background: rgba(18, 16, 30, 0.40); opacity: 0; transition: opacity 0.18s ease; }
+    .zki-pick-wrap.active .zki-pick-backdrop { opacity: 1; }
+    .zki-pick-sheet { position: relative; width: 100%; max-width: 480px; max-height: 74vh; display: flex; flex-direction: column; background: var(--bg-card); border-radius: 18px 18px 0 0; box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.28); transform: translateY(100%); transition: transform 0.22s ease; }
+    .zki-pick-wrap.active .zki-pick-sheet { transform: none; }
+    .zki-pick-head { display: flex; align-items: center; justify-content: space-between; padding: 15px 16px 10px; border-bottom: 1px solid var(--border-light); flex: none; }
+    .zki-pick-title { font-size: 15px; font-weight: 600; color: var(--text-main); }
+    .zki-pick-close { background: none; border: none; font-size: 18px; color: var(--text-secondary); cursor: pointer; padding: 2px 6px; }
+    .zki-pick-list { flex: 1 1 auto; overflow-y: auto; padding: 8px 12px; }
+    .zki-pick-item { display: flex; align-items: flex-start; gap: 10px; padding: 9px 10px; border-radius: 10px; cursor: pointer; }
+    .zki-pick-item + .zki-pick-item { margin-top: 2px; }
+    .zki-pick-item.sel { background: rgba(var(--primary-rgba), 0.10); }
+    .zki-pick-check { flex: none; width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border-light); display: flex; align-items: center; justify-content: center; margin-top: 1px; color: #fff; font-size: 12px; box-sizing: border-box; }
+    .zki-pick-item.sel .zki-pick-check { background: var(--primary); border-color: var(--primary); }
+    .zki-pick-body { flex: 1; min-width: 0; }
+    .zki-pick-who { font-size: 11px; color: var(--primary); font-weight: 600; }
+    .zki-pick-text { font-size: 13px; color: var(--text-main); line-height: 1.45; word-break: break-word; }
+    .zki-pick-foot { flex: none; padding: 12px 16px 16px; display: flex; gap: 10px; border-top: 1px solid var(--border-light); }
+    .zki-pick-done { flex: 1; padding: 12px 0; border-radius: 12px; background: var(--primary); color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .zki-pick-done:active { transform: scale(0.98); }
     .dvd-chat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .dvd-chat-meta { flex: 1; min-width: 0; }
     .dvd-chat-status { font-size: 11.5px; color: var(--text-secondary); margin-top: 1px; }
@@ -15283,15 +15311,37 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="zki-label">想问问什么？（可以留空）</div>
           <textarea class="zki-question" id="zkiQuestion" placeholder="比如：TA 最近心里在想什么？我们接下来会怎样？"></textarea>
           <div class="zki-row">
-            <button class="zki-draw-btn" id="zkiDrawBtn">🎴 抽三张牌</button>
-            <span class="zki-hint">也可以不抽牌，直接问</span>
+            <button class="zki-draw-btn" id="zkiDrawBtn">🎴 抽牌</button>
+            <span class="zki-hint">随机抽 1~3 张</span>
           </div>
           <div class="zki-cards" id="zkiCards" style="display:none;"></div>
+          <div class="zki-label" style="margin-top:14px;">需要解读的聊天记录（选填）</div>
+          <div class="zki-row">
+            <button class="zki-records-btn" id="zkiPickBtn">📜 选择聊天记录</button>
+            <span class="zki-hint">可多选</span>
+          </div>
+          <div class="zki-records" id="zkiRecords"></div>
           <div class="zki-result" id="zkiResult"></div>
         </div>
         <div class="zki-foot">
-          <button class="zki-btn run" id="zkiRunBtn">开始解读</button>
+          <button class="zki-btn run" id="zkiRunBtn">解读</button>
           <button class="zki-btn collapse" id="zkiCollapse">收起</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="zki-ball" id="zkiBall">🔮</button>
+
+    <div class="zki-pick-wrap" id="zkiPickWrap">
+      <div class="zki-pick-backdrop" id="zkiPickBackdrop"></div>
+      <div class="zki-pick-sheet">
+        <div class="zki-pick-head">
+          <span class="zki-pick-title">选择要解读的聊天记录</span>
+          <button class="zki-pick-close" id="zkiPickClose">✕</button>
+        </div>
+        <div class="zki-pick-list" id="zkiPickList"></div>
+        <div class="zki-pick-foot">
+          <button class="zki-pick-done" id="zkiPickDone">确定</button>
         </div>
       </div>
     </div>
@@ -19677,31 +19727,48 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
 
-      // ----- 解读：底部工具栏，屏幕居中卡片，问 + 可选抽牌，AI 解读，可收起 -----
+      // ----- 解读：底部工具栏，屏幕居中卡片，问 + 可选抽牌/选聊天记录 + AI 解读，可收起为悬浮球 -----
       var _zkiDraw = null;
       var _zkiRunning = false;
+      var _zkiSelected = [];
 
       function _zkInterpretOpen() {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
         var w = document.getElementById('zkiWrap');
+        var b = document.getElementById('zkiBall');
+        if (b) b.style.display = 'none';
+        var pw = document.getElementById('zkiPickWrap');
+        if (pw) pw.classList.remove('active');
         if (!w) return;
         w.classList.add('active');
         setTimeout(function () { var q = document.getElementById('zkiQuestion'); if (q) q.focus(); }, 120);
       }
 
+      function _zkInterpretCollapse() {
+        var w = document.getElementById('zkiWrap');
+        var b = document.getElementById('zkiBall');
+        if (w) w.classList.remove('active');
+        if (b) b.style.display = 'flex';
+      }
+
       function _zkInterpretClose(reset) {
         var w = document.getElementById('zkiWrap');
+        var b = document.getElementById('zkiBall');
         if (w) w.classList.remove('active');
+        if (b) b.style.display = 'none';
         if (reset) {
           _zkiDraw = null;
+          _zkiSelected = [];
           var q = document.getElementById('zkiQuestion'); if (q) q.value = '';
           _zkInterpretRenderCards();
+          _zkInterpretRenderRecords();
           _zkInterpretShowResult('');
         }
       }
 
       function _zkInterpretDraw() {
-        _zkiDraw = _zkDrawCards(3);
+        var n = 1 + Math.floor(Math.random() * 3);
+        _zkiDraw = _zkDrawCards(n);
         _zkInterpretRenderCards();
       }
 
@@ -19728,26 +19795,130 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         else { box.classList.remove('show'); box.innerHTML = ''; }
       }
 
+      function _zkMsgLabel(from) {
+        if (from === 'me') return '我';
+        var c = contacts.find(function (x) { return x.id === currentChatId; });
+        var nm = (c && c.name) ? c.name : 'TA';
+        return (from && from !== 'me') ? from : nm;
+      }
+
+      function _zkMsgPreview(m) {
+        if (m.text) return m.text;
+        if (m.image) return '[图片]';
+        if (m.voice) return '[语音]';
+        if (m.video) return '[视频]';
+        if (m.hongbao) return '[红包]';
+        return '[消息]';
+      }
+
+      function _zkIsPickable(m) {
+        if (!m || m.withdrawn || m.isPat || m.isDecision || m.hbSys || m.together || m.divineDraw || m.hongbao) return false;
+        if (m.sticker && m.image) return false;
+        return !!(m.text || m.image || m.voice || m.video);
+      }
+
+      function _zkInterpretRenderRecords() {
+        var box = document.getElementById('zkiRecords');
+        if (!box) return;
+        if (!_zkiSelected || !_zkiSelected.length) { box.classList.remove('show'); box.innerHTML = ''; return; }
+        var html = _zkiSelected.map(function (m) {
+          return _zkEscHtml(_zkMsgLabel(m.from) + '：' + _zkMsgPreview(m));
+        }).join('\n');
+        box.classList.add('show');
+        box.innerHTML = html;
+      }
+
+      function _zkInterpretOpenPick() {
+        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        var wrap = document.getElementById('zkiPickWrap');
+        var list = document.getElementById('zkiPickList');
+        if (!wrap || !list) return;
+        var msgs = chatHistories[currentChatId] || [];
+        var selIdx = {};
+        _zkiSelected.forEach(function (m) { if (m && m.__i !== undefined) selIdx[m.__i] = true; });
+        var idxs = [];
+        for (var i = 0; i < msgs.length; i++) {
+          var m = msgs[i];
+          if (!_zkIsPickable(m)) continue;
+          m.__i = i;
+          idxs.push(i);
+        }
+        if (idxs.length) {
+          list.innerHTML = idxs.map(function (i) {
+            var m = msgs[i];
+            var on = !!selIdx[i];
+            var prev = _zkMsgPreview(m);
+            if (prev.length > 90) prev = prev.slice(0, 90) + '…';
+            return '<div class="zki-pick-item' + (on ? ' sel' : '') + '" data-i="' + i + '">'
+              + '<div class="zki-pick-check">' + (on ? '✓' : '') + '</div>'
+              + '<div class="zki-pick-body">'
+              + '<div class="zki-pick-who">' + _zkEscHtml(_zkMsgLabel(m.from)) + '</div>'
+              + '<div class="zki-pick-text">' + _zkEscHtml(prev) + '</div>'
+              + '</div></div>';
+          }).join('');
+          list.onclick = function (e) {
+            var it = e.target;
+            while (it && it !== list && !(it.getAttribute && it.getAttribute('data-i'))) it = it.parentNode;
+            if (!it || it === list) return;
+            var i2 = parseInt(it.getAttribute('data-i'), 10);
+            var m2 = msgs[i2];
+            if (!m2) return;
+            var idx = -1;
+            for (var k = 0; k < _zkiSelected.length; k++) { if (_zkiSelected[k].__i === i2) { idx = k; break; } }
+            if (idx >= 0) _zkiSelected.splice(idx, 1);
+            else _zkiSelected.push(m2);
+            it.classList.toggle('sel');
+            var ck = it.querySelector('.zki-pick-check');
+            if (ck) ck.textContent = (it.classList.contains('sel') ? '✓' : '');
+          };
+        } else {
+          list.innerHTML = '<div style="text-align:center;color:#b0b0b0;padding:30px 0;font-size:13px;">暂无可解读的聊天记录</div>';
+          list.onclick = null;
+        }
+        wrap.classList.add('active');
+      }
+
+      function _zkInterpretClosePick() {
+        var wrap = document.getElementById('zkiPickWrap');
+        if (wrap) wrap.classList.remove('active');
+        _zkInterpretRenderRecords();
+      }
+
+      function _zkInterpretRecordsText() {
+        if (!_zkiSelected || !_zkiSelected.length) return '';
+        return _zkiSelected.map(function (m) {
+          return _zkMsgLabel(m.from) + '：' + _zkMsgPreview(m);
+        }).join('\n');
+      }
+
       function _zkInterpretRun() {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
         if (_zkiRunning) return;
         var qEl = document.getElementById('zkiQuestion');
         var q = (qEl ? qEl.value : '').replace(/^\s+|\s+$/g, '');
-        if (!q && (!_zkiDraw || !_zkiDraw.length)) { showToast('写个问题，或先抽几张牌'); return; }
+        var hasRec = !!(_zkiSelected && _zkiSelected.length);
+        if (!q && !hasRec && (!_zkiDraw || !_zkiDraw.length)) { showToast('写个问题、选段聊天记录，或先抽几张牌'); return; }
         var cfg = _zkGetApiCfg();
         if (!cfg.url || !cfg.key) {
           if (_zkiDraw && _zkiDraw.length) { showToast('已抽牌（牌面见下），去「API」页配好接口再点一次即可解读'); }
+          else if (hasRec) { showToast('已选聊天记录，去「API」页配好接口再点一次即可解读'); }
           else { showToast('请先在「API」页配置接口，才能让 AI 解读'); }
           return;
         }
         var contact = contacts.find(function (c) { return c.id === currentChatId; });
         var pname = (contact && contact.name) ? contact.name : 'TA';
         var sys = _zkPersonaPromptFor(contact);
-        var userLine = '（用户在「解读」里问你：「' + (q || '看看我现在的状况') + '」）';
+        var recText = _zkInterpretRecordsText();
+        var userLine = '（用户在「解读」里问你：「' + (q || '帮我看看这段聊天') + '」）';
+        if (recText) {
+          userLine += '\n\n（下面是用户想让你解读的聊天记录，请按顺序逐条、逐段地解读给他听）\n' + recText
+            + '\n\n请用你（' + pname + '）的口吻，结合你的设定和世界书，把这一段段对话背后 TA 的真实想法、情绪、没说出口的话，一条一条地自然地解读出来，像在认真回应他，不要机械地逐字翻译，要有自己的判断和温度。';
+        }
         if (_zkiDraw && _zkiDraw.length) {
           userLine += '\n\n（她这次抽到了 ' + _zkiDraw.length + ' 张牌，牌面如下）\n' + _zkCardText(_zkiDraw)
-            + '\n\n请以这些牌为参考，用你（' + pname + '）的口吻自然为她解读：把牌意、你对她这个问题的想法、想对她说的话自然地说出来，直接给答案，不要报牌名、不要逐张解牌、不要显得像在占卜，就像你看着这些牌联想到了什么、顺势说给她听。';
-        } else {
+            + '\n\n请以这些牌为参考，用你（' + pname + '）的口吻自然地把牌意融入上面的解读里，回答她的问题，不要报牌名、不要逐张解牌、不要显得像在占卜，就像你看着这些牌联想到了什么、顺势说给她听。';
+        }
+        if (!recText && (!_zkiDraw || !_zkiDraw.length)) {
           userLine += '\n\n请用你的口吻，结合你的设定和世界书，自然地回应她的问题，直接给答案，像聊天一样。';
         }
         var msgs = [{ role: 'system', content: sys }, { role: 'user', content: userLine }];
@@ -19757,7 +19928,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _zkiRunning = true;
         var _timer = setTimeout(function () {
           if (!_zkiRunning) return; _zkiRunning = false;
-          if (btn) { btn.disabled = false; btn.textContent = '开始解读'; }
+          if (btn) { btn.disabled = false; btn.textContent = '解读'; }
           showToast('解读超时，请重试');
         }, 30000);
         fetch(cfg.url, {
@@ -19776,13 +19947,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           else if (data2 && data2.content) text = data2.content;
           text = _zkCleanAi(text);
           clearTimeout(_timer); _zkiRunning = false;
-          if (btn) { btn.disabled = false; btn.textContent = '开始解读'; }
+          if (btn) { btn.disabled = false; btn.textContent = '解读'; }
           if (!text) { showToast('AI 没有返回内容'); return; }
           _zkInterpretShowResult(text);
         }).catch(function (err) {
           if (!_zkiRunning) return;
           clearTimeout(_timer); _zkiRunning = false;
-          if (btn) { btn.disabled = false; btn.textContent = '开始解读'; }
+          if (btn) { btn.disabled = false; btn.textContent = '解读'; }
           showToast('AI 解读失败：' + (err && err.message ? err.message : '未知错误'));
         });
       }
@@ -19801,11 +19972,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!isToolbarOpen) { isToolbarOpen = true; chatToolbar.classList.add('open'); }
         _zkInterpretOpen();
       });
-      document.getElementById('zkiBackdrop').addEventListener('click', function () { _zkInterpretClose(false); });
+      document.getElementById('zkiBackdrop').addEventListener('click', function () { _zkInterpretCollapse(); });
       document.getElementById('zkiClose').addEventListener('click', function () { _zkInterpretClose(true); });
-      document.getElementById('zkiCollapse').addEventListener('click', function () { _zkInterpretClose(false); });
+      document.getElementById('zkiCollapse').addEventListener('click', function () { _zkInterpretCollapse(); });
       document.getElementById('zkiDrawBtn').addEventListener('click', function () { _zkInterpretDraw(); });
       document.getElementById('zkiRunBtn').addEventListener('click', function () { _zkInterpretRun(); });
+      document.getElementById('zkiBall').addEventListener('click', function () { _zkInterpretOpen(); });
+      document.getElementById('zkiPickBtn').addEventListener('click', function () { _zkInterpretOpenPick(); });
+      document.getElementById('zkiPickBackdrop').addEventListener('click', function () { _zkInterpretClosePick(); });
+      document.getElementById('zkiPickClose').addEventListener('click', function () { _zkInterpretClosePick(); });
+      document.getElementById('zkiPickDone').addEventListener('click', function () { _zkInterpretClosePick(); });
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
