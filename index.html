@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="361";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="362";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v361</title>
+  <title>字卡 · 小手机 v362</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -22383,7 +22383,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       var TG_HERO_META = {
         movie: { ico: _tgHeroSvg('movie'), name: '看电影', sub: '导入视频链接，开始观看', tip: '支持B站UP主投稿视频（bilibili.com/video/BV…）或 mp4 直链；番剧/影视（含限免）、红果等正片不支持网页播放，可跳 App 看' },
         book: { ico: _tgHeroSvg('book'), name: '看书', sub: '导入小说文本，开始阅读', tip: '' },
-        music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，开始播放', tip: '支持网易云歌曲链接（music.163.com/song?id=…）或 mp3 直链' }
+        music: { ico: _tgHeroSvg('music'), name: '听歌', sub: '导入音乐，开始播放', tip: '支持本地导入 mp3，或粘贴 mp3 直链；网易云等平台因版权限制无法网页点播' }
       };
       function _tgHeroAct(key) { return TG_ACTS.filter(function (a) { return a.key === key; })[0]; }
       var _tgPanelKey = null, _tgPanelCid = null;
@@ -22391,7 +22391,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _tgGetImportHist() { try { var h = JSON.parse(localStorage.getItem('zk_tg_import_hist') || '[]'); return Array.isArray(h) ? h : []; } catch (e) { return []; } }
       function _tgSaveImportHist(h) { try { localStorage.setItem('zk_tg_import_hist', JSON.stringify(h)); } catch (e) {} }
       function _tgDelImportHist(sig) {
-        var h = _tgGetImportHist().filter(function (r) { return (r.type + '|' + (r.url || r.tkey || '')) !== sig; });
+        var h0 = _tgGetImportHist();
+        var tgt = h0.filter(function (r) { return (r.type + '|' + (r.url || r.tkey || '')) === sig; })[0];
+        if (tgt && tgt.kind === 'local' && tgt.tkey) _tgMusicDel(tgt.tkey);
+        var h = h0.filter(function (r) { return (r.type + '|' + (r.url || r.tkey || '')) !== sig; });
         _tgSaveImportHist(h);
       }
       function _tgDelBook(tkey) {
@@ -22406,6 +22409,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         try { localStorage.removeItem('zk_tg_read_meta_' + tkey); } catch (e) {}
       }
       function _tgAddImportHist(rec) {
+        if (rec.url && /^blob:/.test(rec.url)) return;
         var h = _tgGetImportHist();
         var sig = rec.type + '|' + (rec.url || rec.tkey || '');
         h = h.filter(function (r) { return (r.type + '|' + (r.url || r.tkey || '')) !== sig; });
@@ -22503,9 +22507,95 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
       function _tgSoloRenderInput() {
         var m = TG_HERO_META[_tgSoloKey];
+        var imp = (_tgSoloKey === 'music')
+          ? '<div class="tg-media-tip">或 <span class="tg-file-link" id="tgSoloImportMusic">导入本地歌曲（mp3 / m4a 等）</span></div>'
+          : '';
         document.getElementById('tgSoloInput').innerHTML = '<input class="tg-media-input" id="tgSoloInUrl" placeholder="粘贴链接…">' +
           '<input class="tg-media-input" id="tgSoloInTitle" placeholder="标题（选填）">' +
+          imp +
           '<div class="tg-media-tip">' + m.tip + '</div>';
+        if (_tgSoloKey === 'music') {
+          var ib = document.getElementById('tgSoloImportMusic');
+          if (ib) ib.addEventListener('click', _tgSoloPickMusic);
+        }
+      }
+      // ===== v362 本地歌曲导入（IndexedDB 存 Blob） =====
+      var _tgSoloMusicInp = null;
+      function _tgMusicDB() {
+        return new Promise(function (res) {
+          if (!window.indexedDB) { res(null); return; }
+          try {
+            var rq = indexedDB.open('zk_tg_music_disk', 1);
+            rq.onupgradeneeded = function () { try { rq.result.createObjectStore('music'); } catch (e) {} };
+            rq.onsuccess = function () { res(rq.result); };
+            rq.onerror = function () { res(null); };
+            rq.onblocked = function () { res(null); };
+          } catch (e) { res(null); }
+        });
+      }
+      function _tgMusicPut(key, rec) {
+        return _tgMusicDB().then(function (db) {
+          if (!db) return false;
+          return new Promise(function (res) {
+            try {
+              var tx = db.transaction('music', 'readwrite');
+              tx.objectStore('music').put(rec, key);
+              tx.oncomplete = function () { res(true); };
+              tx.onerror = function () { res(false); };
+              tx.onabort = function () { res(false); };
+            } catch (e) { res(false); }
+          });
+        });
+      }
+      function _tgMusicGet(key) {
+        return _tgMusicDB().then(function (db) {
+          if (!db) return null;
+          return new Promise(function (res) {
+            try {
+              var rq = db.transaction('music').objectStore('music').get(key);
+              rq.onsuccess = function () { res(rq.result || null); };
+              rq.onerror = function () { res(null); };
+            } catch (e) { res(null); }
+          });
+        });
+      }
+      function _tgMusicDel(key) {
+        _tgMusicDB().then(function (db) {
+          if (!db) return;
+          try { db.transaction('music', 'readwrite').objectStore('music').delete(key); } catch (e) {}
+        });
+      }
+      function _tgSoloPickMusic() {
+        if (!_tgSoloMusicInp) {
+          _tgSoloMusicInp = document.createElement('input');
+          _tgSoloMusicInp.type = 'file';
+          _tgSoloMusicInp.accept = 'audio/*,.mp3,.m4a,.aac,.wav,.ogg,.flac';
+          _tgSoloMusicInp.style.display = 'none';
+          document.body.appendChild(_tgSoloMusicInp);
+          _tgSoloMusicInp.onchange = function () {
+            var f = _tgSoloMusicInp.files && _tgSoloMusicInp.files[0];
+            if (!f) return;
+            var nice = (f.name || '歌曲').replace(/\.(mp3|m4a|aac|wav|ogg|flac|flv|mp4|webm|m4r)$/i, '');
+            var isAudio = /^audio\//.test(f.type || '') || /\.(mp3|m4a|aac|wav|ogg|flac|m4r)$/i.test(f.name || '');
+            if (!isAudio) { showToast('请选一个音频文件（mp3 等）'); _tgSoloMusicInp.value = ''; return; }
+            if (f.size > 25 * 1024 * 1024) { showToast('歌曲超过 25MB，换个小点的'); _tgSoloMusicInp.value = ''; return; }
+            var tk = 'zk_tg_music_' + Date.now();
+            _tgMusicPut(tk, { name: nice, type: f.type || 'audio/mpeg', blob: f }).then(function (ok) {
+              if (!ok) { showToast('浏览器存储有限，换个小点的文件'); _tgSoloMusicInp.value = ''; return; }
+              _tgAddImportHist({ type: 'music', tkey: tk, kind: 'local', title: nice, ts: Date.now() });
+              var ou = null; try { ou = URL.createObjectURL(f); } catch (e) {}
+              var ui = document.getElementById('tgSoloInUrl');
+              if (ui) ui.value = ou || '';
+              var ti = document.getElementById('tgSoloInTitle');
+              if (ti) ti.value = nice;
+              _tgSoloRenderHist();
+              showToast('已导入「' + nice + '」，点下面按钮开始');
+              _tgSoloMusicInp.value = '';
+            });
+          };
+        }
+        _tgSoloMusicInp.value = '';
+        _tgSoloMusicInp.click();
       }
       function _tgSoloRenderHist() {
         var t = _tgSoloKey;
@@ -22516,7 +22606,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         hist.forEach(function (r, i) {
           var rt = r.title || (t === 'movie' ? '视频' : '音乐');
           var sig = t + '|' + (r.url || r.tkey || '');
-          h += '<div class="tg-hrec" data-i="' + i + '"><span class="tg-hrec-ico">' + _tgHeroIcoSmall(t, 16) + '</span><span class="tg-hrec-main"><span class="tg-hrec-t">' + _tgEsc(rt) + '</span><span class="tg-hrec-s">' + _tgFmtTs(r.ts || Date.now()) + '</span></span><button type="button" class="tg-hrec-del" data-sig="' + sig + '" aria-label="删除">×</button><span class="tg-hrec-arrow">›</span></div>';
+          var sloc = (r.kind === 'local') ? '本地 · ' : '';
+          h += '<div class="tg-hrec" data-i="' + i + '"><span class="tg-hrec-ico">' + _tgHeroIcoSmall(t, 16) + '</span><span class="tg-hrec-main"><span class="tg-hrec-t">' + _tgEsc(rt) + '</span><span class="tg-hrec-s">' + sloc + _tgFmtTs(r.ts || Date.now()) + '</span></span><button type="button" class="tg-hrec-del" data-sig="' + sig + '" aria-label="删除">×</button><span class="tg-hrec-arrow">›</span></div>';
         });
         el.innerHTML = h;
         el.querySelectorAll('.tg-hrec').forEach(function (row) {
@@ -22527,6 +22618,17 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (!rec) return;
             var urlIn = document.getElementById('tgSoloInUrl');
             var titleIn = document.getElementById('tgSoloInTitle');
+            if (rec.kind === 'local' && rec.tkey) {
+              _tgMusicGet(rec.tkey).then(function (mr) {
+                if (!mr || !mr.blob) { showToast('本地歌曲数据丢了，重新导入一下'); return; }
+                var ou = null; try { ou = URL.createObjectURL(mr.blob); } catch (e) {}
+                if (!ou) { showToast('浏览器不支持播放这个文件'); return; }
+                if (urlIn) urlIn.value = ou;
+                if (titleIn) titleIn.value = rec.title || '';
+                showToast('已选中本地歌曲《' + (rec.title || '') + '》，点下面按钮开始');
+              });
+              return;
+            }
             if (urlIn) urlIn.value = rec.url || '';
             if (titleIn) titleIn.value = rec.title || '';
             showToast('已选中，点下面按钮开始');
@@ -23467,8 +23569,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         var ne = url.match(/music\.163\.com\/song\?id=(\d+)/) || url.match(/music\.163\.com\/m\/song\?id=(\d+)/);
         if (ne) return { kind: 'iframe', url: 'https://music.163.com/outchain/player?type=2&id=' + ne[1] + '&auto=0&height=66', title: '网易云' };
-        if (/^https?:\/\//.test(url)) return { kind: 'audio', url: url, title: '音乐' };
-        showToast('识别不了这个链接，试试网易云歌曲链接或mp3直链'); return null;
+        if (/^blob:/.test(url)) return { kind: 'audio', url: url, title: '本地歌曲' };
+        if (/^https?:\/\//.test(url)) {
+          var mm = url.match(/([^\/?#]+\.(?:mp3|m4a|aac|wav|ogg|flac))(?:\?|#|$)/i);
+          if (mm) return { kind: 'audio', url: url, title: decodeURIComponent(mm[1]) };
+          return { kind: 'audio', url: url, title: '音乐' };
+        }
+        showToast('识别不了这个链接，试试 mp3 直链，或点「导入本地歌曲」'); return null;
       }
 
       // ===== v325 看书·书架 =====
