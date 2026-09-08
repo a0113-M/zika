@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="385";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="386";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v385</title>
+  <title>字卡 · 小手机 v386</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -19828,7 +19828,19 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (m.voice) return '[语音]';
         if (m.video) return '[视频]';
         if (m.hongbao) return '[红包]';
+        if (m.divineDraw && m.divineDraw.length) return '[抽牌] ' + m.divineDraw.map(function (c) { return c.name + (c.upright ? '正位' : '逆位'); }).join('、');
+        if (m.together) {
+          if (m.kind === 'invite') return '[邀请] 一起' + (m.activity || '');
+          if (m.kind === 'end') return '[结束陪伴]' + (m.dur ? ' · 共' + m.dur : '');
+          return '[一起] ' + (m.contactName || 'TA') + ' 来陪你' + (m.activity ? ' · ' + m.activity : '');
+        }
         return '[消息]';
+      }
+
+      function _zkRecordLine(m) {
+        var p = _zkMsgPreview(m);
+        if (m.from === 'system' || m.from === 'sys' || m.isCallEvent || m.isPat || m.isDecision || m.hbSys || m.together || m.divineDraw) return p;
+        return _zkMsgLabel(m.from) + '：' + p;
       }
 
       function _zkIsEmojiOnly(t) {
@@ -19841,9 +19853,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       }
 
       function _zkIsPickable(m) {
-        if (!m || m.withdrawn || m.isPat || m.isDecision || m.hbSys || m.together || m.divineDraw || m.hongbao) return false;
-        if (m.sticker) return false;
-        if (m.from === 'system' || m.from === 'sys' || m.isCallEvent) return false;
+        if (!m || m.withdrawn || m.sticker) return false;
+        if (m.hongbao || m.isCallEvent || m.isPat || m.isDecision || m.hbSys || m.together || m.divineDraw) return true;
         if (m.image || m.voice || m.video) return true;
         if (m.text && !_zkIsEmojiOnly(m.text)) return true;
         return false;
@@ -19854,7 +19865,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!box) return;
         if (!_zkiSelected || !_zkiSelected.length) { box.classList.remove('show'); box.innerHTML = ''; return; }
         var html = _zkiSelected.map(function (m) {
-          return _zkEscHtml(_zkMsgLabel(m.from) + '：' + _zkMsgPreview(m));
+          return _zkEscHtml(_zkRecordLine(m));
         }).join('\n');
         box.classList.add('show');
         box.innerHTML = html;
@@ -19885,7 +19896,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _zkInterpretRecordsText() {
         if (!_zkiSelected || !_zkiSelected.length) return '';
         return _zkiSelected.map(function (m) {
-          return _zkMsgLabel(m.from) + '：' + _zkMsgPreview(m);
+          return _zkRecordLine(m);
         }).join('\n');
       }
 
