@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="371";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="372";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v371</title>
+  <title>字卡 · 小手机 v372</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14716,10 +14716,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="tg-motto">无论何时何地 · 与TA共度每时每刻</div>
         <div class="tg-cbar-wrap"><div class="tg-cbar" id="tgCbar"></div></div>
         <div class="tg-settings" id="tgSettings">
-          <button class="tg-set" data-k="bg"><span class="tg-set-label">背景图</span><span class="tg-set-val" id="tgSetBg"></span></button>
-          <button class="tg-set" data-k="sound"><span class="tg-set-label">背景音</span><span class="tg-set-val" id="tgSetSound"></span></button>
           <button class="tg-set" data-k="timer"><span class="tg-set-label">计时</span><span class="tg-set-val" id="tgSetTimer"></span></button>
-          <button class="tg-set" data-k="mini"><span class="tg-set-label">药丸</span><span class="tg-set-val" id="tgSetMini"></span></button>
           <button class="tg-set" data-k="ballLine"><span class="tg-set-label">陪伴时光</span><span class="tg-set-val" id="tgSetBallLine"></span></button>
         </div>
         <div class="tg-select" id="tgSelect"></div>
@@ -21228,9 +21225,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           else if (v.timer === 'up') v.timer = 0;
           if (typeof v.timer !== 'number' || v.timer < 0 || v.timer > 2) v.timer = 0;
           if (typeof v.sound === 'boolean') v.sound = v.sound ? 1 : 0;
-          if (typeof v.sound !== 'number' || v.sound < 0 || v.sound > 3) v.sound = 0;
+          v.sound = 0;
           if (typeof v.bg !== 'boolean') v.bg = true;
-          if (v.miniShape !== 'pill') v.miniShape = 'ball';
+          v.miniShape = 'ball';
           if (typeof v.ballLine !== 'boolean') v.ballLine = true;
           return v;
         } catch (e) { return { bg: true, sound: 0, timer: 0, miniShape: 'ball', ballLine: true }; }
@@ -22011,12 +22008,17 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (_bd0) _bd0.classList.remove('active');
         }
         if (!a.logs) a.logs = [];
-        var st = _tgGetSettings();
-        var sceneBg = TG_BG[a.key] || (a.custom ? TG_BG['__custom__'] : '');
-        var bg = st.bg ? sceneBg : 'linear-gradient(160deg, #3a3560, #6a5fa8)';
-        var bgEl = document.getElementById('tgLiveBg');
-        if (bgEl) bgEl.style.background = bg || 'linear-gradient(160deg, #3a3560, #6a5fa8)';
         var _liveC = contacts.filter(function (x) { return x.id === a.contactId; })[0]; var ava = document.getElementById('tgLiveAva'); if (ava) _zkSetContactAvatar(ava, _liveC);
+        var bgEl = document.getElementById('tgLiveBg');
+        if (bgEl) {
+          if (_liveC && _liveC.avatarImage) {
+            bgEl.style.background = 'none';
+            bgEl.innerHTML = '<img src="' + _liveC.avatarImage + '" style="width:100%;height:100%;object-fit:cover;filter:blur(26px) saturate(1.15) brightness(0.85);transform:scale(1.25);"/>' + '<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,16,40,0.35),rgba(20,16,40,0.55));"></div>' + '<div class="acd-glow"></div>';
+          } else {
+            bgEl.style.background = 'linear-gradient(160deg, #3a3560, #6a5fa8)';
+            bgEl.innerHTML = '<div class="acd-glow"></div>';
+          }
+        }
         var nm = document.getElementById('tgLiveName'); if (nm) nm.textContent = a.contactName;
         var tag = document.getElementById('tgLiveTag'); if (tag) tag.textContent = a.contactAct || a.activity;
         var p = function (n) { return (n < 10 ? '0' : '') + n; };
