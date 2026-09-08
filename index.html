@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="374";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="375";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v374</title>
+  <title>字卡 · 小手机 v375</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -24474,24 +24474,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       function tryAutoLetter(contact) {
         try {
-          var msgs = chatHistories[contact.id];
-          if (!msgs || msgs.length === 0) return;
-          var msg = msgs[Math.floor(Math.random() * msgs.length)];
-          var words = [];
-          if (msg.text) {
-            var chars = msg.text.replace(/\s+/g, '');
-            if (chars.length > 0) {
-              for (var ci = 0; ci < chars.length; ci++) {
-                words.push({ name: chars[ci], category: '文字' });
-              }
-            }
-          }
-          if (words.length === 0) {
-            var sampleChars = '你好呀最近怎么样想你了';
-            for (var i = 0; i < sampleChars.length; i++) {
-              words.push({ name: sampleChars[i], category: '文字' });
-            }
-          }
+          var words = _zkSampleLetterWords(Math.floor(Math.random() * 100) + 1);
+          if (words.length === 0) return;
           var newLetter = {
             id: 'L' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
             from: contact.name, to: 'me', words: words, timestamp: Date.now(),
@@ -26902,8 +26886,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         try { localStorage.setItem('letterList', JSON.stringify(letterList)); } catch(e) {}
       }
 
-      function generateLetter() {
-        // 收集所有字卡（排除拍一拍）
+      function _zkSampleLetterWords(count) {
         const allCards = [];
         Object.keys(cardData.general).forEach(type => {
           if (type === '拍一拍') return;
@@ -26916,17 +26899,10 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             allCards.push({ name: item.name || item, category: type });
           });
         });
-        // 表情包（聊天工具栏里的图片）也纳入抽取
         const emojiCards = (typeof emojiList !== 'undefined' && emojiList ? emojiList : []).map(src => ({ name: '[表情包]', category: '表情', img: src }));
-        if (allCards.length === 0 && emojiCards.length === 0) {
-          showToast('请先添加一些字卡');
-          return null;
-        }
-        // 随机 1-100 张字卡
-        const count = Math.floor(Math.random() * 100) + 1;
         const words = [];
         let emojiUsed = 0;
-        const maxEmoji = 2; // 表情包是图片，限制张数避免信件过大
+        const maxEmoji = 2;
         for (let i = 0; i < count; i++) {
           const canEmoji = emojiCards.length > 0 && emojiUsed < maxEmoji;
           const useEmoji = canEmoji && (allCards.length === 0 || Math.random() < 0.12);
@@ -26938,6 +26914,17 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             const card = allCards[Math.floor(Math.random() * allCards.length)];
             words.push({ name: card.name, category: card.category });
           }
+        }
+        return words;
+      }
+
+      function generateLetter() {
+        // 抽取字卡（排除拍一拍，含表情包）
+        const count = Math.floor(Math.random() * 100) + 1;
+        const words = _zkSampleLetterWords(count);
+        if (words.length === 0) {
+          showToast('请先添加一些字卡');
+          return null;
         }
         // 随机选一个联系人作为发信人
         let sender = null;
