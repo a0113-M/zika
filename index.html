@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="379";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="380";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v379</title>
+  <title>字卡 · 小手机 v380</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12940,6 +12940,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <button class="menu-item" data-action="export">导出聊天记录</button>
         <button class="menu-item" data-action="import">导入聊天记录</button>
         <div class="chat-menu-divider"></div>
+        <button class="menu-item" data-action="aiChat" id="aiChatMenuItem">AI聊天</button>
+        <button class="menu-item" data-action="divineChat" id="divineChatMenuItem">占卜聊天</button>
+        <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="settings">设置</button>
         <div class="chat-menu-divider"></div>
         <button class="menu-item danger" data-action="clear">清空聊天记录</button>
@@ -17524,6 +17527,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       chatMenuBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         chatMenuDropdown.classList.toggle('show');
+        if (chatMenuDropdown.classList.contains('show')) _zkRefreshChatMenu();
       });
       // 聊天搜索按钮
       const chatSearchBtn = document.getElementById('chatSearchBtn');
@@ -17606,6 +17610,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             navItems.forEach(b => b.classList.remove('active'));
           } else if (action === 'settings') {
             showChatSettings();
+          } else if (action === 'aiChat') {
+            _zkToggleChatMode('ai');
+          } else if (action === 'divineChat') {
+            _zkToggleChatMode('divine');
           } else if (action === 'clear') {
             clearChatHistory();
           }
@@ -18828,6 +18836,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 tNotes.textContent = msg.reminderNotes;
                 bubble.appendChild(tNotes);
               }
+            } else if (msg.ai) {
+              bubble.innerHTML = _zkEscHtml(msg.text).replace(/\n/g, '<br>');
             } else {
               bubble.textContent = msg.text;
             }
@@ -19346,6 +19356,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
               return;
             }
+            var _zkChatMode = _zkGetChatMode(currentChatId);
+            if (_zkChatMode) {
+              _zkAiChatReply(currentChatId, contact, senderName, text, _zkChatMode);
+              return;
+            }
             let reply = getRandomCard();
             if (senderName !== 'me') {
               reply = reply.replace(/你/g, '我');
@@ -19385,6 +19400,172 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(currentChatId, senderName);
           }
         }, _zkGetReplyDelay(contacts.find(c => c.id === currentChatId)));
+      }
+      // ----- 聊天右上角菜单：AI聊天 / 占卜聊天（联系人用接入的 API 回复）-----
+      function _zkGetChatMode(cid) {
+        try {
+          var m = JSON.parse(localStorage.getItem('zk_contact_chat_mode') || '{}');
+          return (m && m[cid]) ? m[cid] : '';
+        } catch (e) { return ''; }
+      }
+      function _zkSetChatMode(cid, mode) {
+        try {
+          var m = JSON.parse(localStorage.getItem('zk_contact_chat_mode') || '{}');
+          if (!m || typeof m !== 'object') m = {};
+          if (mode) m[cid] = mode; else delete m[cid];
+          localStorage.setItem('zk_contact_chat_mode', JSON.stringify(m));
+        } catch (e) {}
+      }
+      function _zkRefreshChatMenu() {
+        var aiBtn = document.getElementById('aiChatMenuItem');
+        var dvBtn = document.getElementById('divineChatMenuItem');
+        if (!aiBtn || !dvBtn) return;
+        var cur = currentChatId != null ? _zkGetChatMode(currentChatId) : '';
+        aiBtn.textContent = (cur === 'ai' ? '✓ ' : '') + 'AI聊天';
+        dvBtn.textContent = (cur === 'divine' ? '✓ ' : '') + '占卜聊天';
+      }
+      function _zkToggleChatMode(mode) {
+        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        var contact = contacts.find(function (c) { return c.id === currentChatId; });
+        var nm = contact ? contact.name : '该联系人';
+        var cur = _zkGetChatMode(currentChatId);
+        var next = (cur === mode) ? '' : mode;
+        _zkSetChatMode(currentChatId, next);
+        _zkRefreshChatMenu();
+        if (next === 'ai') showToast('已开启 AI聊天，' + nm + ' 会用 AI 回复你');
+        else if (next === 'divine') showToast('已开启 占卜聊天，' + nm + ' 会抽牌回复你');
+        else showToast('已关闭，恢复默认回复');
+      }
+      function _zkGetApiCfg() { try { return JSON.parse(localStorage.getItem('divineApiConfig') || '{}'); } catch (e) { return {}; } }
+      function _zkGetPersonas() { try { return JSON.parse(localStorage.getItem('zk_personas') || '[]'); } catch (e) { return []; } }
+      function _zkGetWorldbook() { try { return localStorage.getItem('zk_worldbook') || ''; } catch (e) { return ''; } }
+      function _zkEscHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+      function _zkCleanAi(text) {
+        return String(text || '').replace(/\*\*/g, '').replace(/^[ \t]*\*+[ \t]?/gm, '').replace(/^[ \t]*#{1,6}[ \t]+/gm, '').replace(/\|/g, ' · ').trim();
+      }
+      function _zkPersonaPromptFor(contact) {
+        var name = contact && contact.name ? contact.name : '';
+        var ps = _zkGetPersonas();
+        var p = null;
+        for (var i = 0; i < ps.length; i++) {
+          if (ps[i] && ps[i].enabled !== false && String(ps[i].name || '').trim() === String(name || '').trim()) { p = ps[i]; break; }
+        }
+        if (p) {
+          var wb = (p.worldbook && p.worldbook.trim()) ? p.worldbook.trim() : String(_zkGetWorldbook() || '').trim();
+          var st = (p.setting || '').trim();
+          var pn = String(p.name || '').trim();
+          var out = ['你正在扮演「' + pn + '」，一位专属于用户（梦女）的虚拟爱人/角色。'];
+          if (st) out.push('【设定】' + st);
+          if (wb) out.push('【世界书】' + wb);
+          out.push('请严格代入「' + pn + '」的口吻、语气、性格、说话方式与背景来回复用户。');
+          return out.join('\n');
+        }
+        var nm = name || 'TA';
+        return '你正在扮演「' + nm + '」，一位专属于用户（梦女）的虚拟爱人/角色。请用温柔、自然、亲近的口吻像熟识已久的人一样回复用户，语气生活化，不说教、不啰嗦，像正常聊天一样。';
+      }
+      function _zkBuildHistory(cid) {
+        var h = chatHistories[cid] || [];
+        var out = [];
+        var cnt = 0;
+        for (var i = h.length - 1; i >= 0 && cnt < 12; i--) {
+          var m = h[i];
+          if (!m || m.withdrawn || m.isPat || m.isDecision || m.hbSys || m.together) continue;
+          if (m.voice || m.image || m.video) continue;
+          if (!m.text) continue;
+          if (m.from === 'me') out.unshift({ role: 'user', content: m.text });
+          else out.unshift({ role: 'assistant', content: m.text });
+          cnt++;
+        }
+        return out;
+      }
+      function _zkDrawCards(n) {
+        n = n || 3;
+        var pool = _ZK_TAROT.slice();
+        var out = [];
+        while (out.length < n && pool.length) {
+          var i = Math.floor(Math.random() * pool.length);
+          var c = pool.splice(i, 1)[0];
+          out.push({ name: c.name, suit: c.suit || '', upright: Math.random() >= 0.5, side: null });
+          out[out.length - 1].side = out[out.length - 1].upright ? c.up : c.rev;
+        }
+        return out;
+      }
+      function _zkCardText(draw) {
+        return draw.map(function (d, i) {
+          var tag = d.suit ? ('小阿卡纳 · ' + d.suit) : '大阿卡纳';
+          return (i + 1) + '. ' + tag + '「' + d.name + '」' + (d.upright ? '正位' : '逆位')
+            + '：人在 ' + d.side.loc.join('、') + '，正在 ' + d.side.act + '，状态 ' + d.side.state;
+        }).join('\n');
+      }
+      function _zkFallbackReply(cid, contact, senderName) {
+        if (!chatHistories[cid]) chatHistories[cid] = [];
+        var _fb = getRandomCard();
+        if (senderName !== 'me') _fb = _fb.replace(/你/g, '我');
+        var _t3 = new Date();
+        var _ts3 = _t3.getHours().toString().padStart(2, '0') + ':' + _t3.getMinutes().toString().padStart(2, '0');
+        chatHistories[cid].push({ text: _fb, from: senderName, time: _ts3 });
+        renderMessages(cid);
+        if (contact) { contact.lastMsg = _fb; contact.time = _ts3; if (!cardView.classList.contains('hidden')) refreshList(); }
+      }
+      function _zkAiChatReply(cid, contact, senderName, userText, mode) {
+        var cfg = _zkGetApiCfg();
+        if (!cfg.url || !cfg.key) {
+          showToast('请先在「API」页配置接口');
+          _zkFallbackReply(cid, contact, senderName);
+          return;
+        }
+        if (!chatHistories[cid]) chatHistories[cid] = [];
+        if (contact && !contact.readOnly) _zkShowTyping();
+        var sys = _zkPersonaPromptFor(contact);
+        var hist = _zkBuildHistory(cid);
+        var draw = null;
+        var userLine;
+        var pname = contact && contact.name ? contact.name : 'TA';
+        if (mode === 'divine') {
+          draw = _zkDrawCards(3);
+          userLine = '（本轮用户对你说：「' + userText + '」）\n\n（你刚抽到 ' + draw.length + ' 张牌，作为此刻心境的气象参考，牌面如下）\n' + _zkCardText(draw)
+            + '\n\n请以这些牌为参考，用你自己（' + pname + '）的口吻自然回复用户：把牌带给你的那种心情、状态、想说的话自然地融进回复里，但不要报牌名、不要逐张解牌、不要显得像在占卜，就像你此刻的心情刚好被这些牌说中了一样随口道来。';
+        } else {
+          userLine = '（本轮用户对你说：「' + userText + '」）请用你的口吻自然回复。';
+        }
+        var msgs = [{ role: 'system', content: sys }].concat(hist).concat([{ role: 'user', content: userLine }]);
+        var _done = false;
+        var _timer = setTimeout(function () {
+          if (_done) return; _done = true;
+          _zkHideTyping(cid);
+          _zkFallbackReply(cid, contact, senderName);
+        }, 20000);
+        fetch(cfg.url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+          body: JSON.stringify({ model: cfg.model || 'gpt-4o-mini', messages: msgs })
+        }).then(function (resp) {
+          return resp.text().then(function (t) {
+            if (!resp.ok) { var mm = 'HTTP ' + resp.status; try { var jj = JSON.parse(t); if (jj.error && jj.error.message) mm = jj.error.message; } catch (e) {} throw new Error(mm); }
+            try { return JSON.parse(t); } catch (e) { throw new Error('API 返回的不是 JSON，请检查 API 地址'); }
+          });
+        }).then(function (data) {
+          if (_done) return;
+          var text = '';
+          if (data && data.choices && data.choices[0] && data.choices[0].message) text = data.choices[0].message.content || '';
+          else if (data && data.content) text = data.content;
+          text = _zkCleanAi(text);
+          if (!text) throw new Error('empty');
+          clearTimeout(_timer); _done = true;
+          _zkHideTyping(cid);
+          var _now = new Date();
+          var _ts = _now.getHours().toString().padStart(2, '0') + ':' + _now.getMinutes().toString().padStart(2, '0');
+          chatHistories[cid].push({ text: text, from: senderName, time: _ts, ai: true });
+          renderMessages(cid);
+          if (contact) { contact.lastMsg = text; contact.time = _ts; if (!cardView.classList.contains('hidden')) refreshList(); }
+          if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(cid, senderName);
+        }).catch(function (err) {
+          if (_done) return;
+          clearTimeout(_timer); _done = true;
+          _zkHideTyping(cid);
+          if (!(err && err.message === 'empty')) showToast('AI 回复失败：' + (err && err.message ? err.message : '未知错误'));
+          _zkFallbackReply(cid, contact, senderName);
+        });
       }
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
