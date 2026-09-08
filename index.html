@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="364";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="365";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v364</title>
+  <title>字卡 · 小手机 v365</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10574,14 +10574,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 /* Chat todo reminder card style */
 .msg-todo-card {
   display: inline-block !important;
-  min-width: 168px;
+  min-width: 250px;
   max-width: 100%;
   padding: 0 !important;
   border: none !important;
   border-radius: 12px !important;
   overflow: hidden;
   background: #fff !important;
-  box-shadow: 0 2px 10px rgba(155,142,196,0.16) !important;
+  box-shadow: 0 2px 10px rgba(var(--primary-rgba), 0.16) !important;
 }
 .msg-todo-card .mtc-head {
   display: flex;
@@ -10593,15 +10593,15 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   color: #fff;
 }
 .msg-todo-card.rem .mtc-head {
-  background: linear-gradient(135deg, #b8a5d8, #9b8ec4);
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
 }
 .msg-todo-card.cel .mtc-head {
-  background: linear-gradient(135deg, #a8e6a3, #7bc67e);
+  background: linear-gradient(135deg, var(--accent-light), var(--accent));
 }
 .msg-todo-card .mtc-body {
   padding: 10px 12px 6px;
   font-size: 13.5px;
-  color: #554a68;
+  color: var(--primary-deep);
   line-height: 1.5;
   word-break: break-word;
 }
@@ -10611,18 +10611,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: #4a3f6b;
+  color: var(--primary-deep);
   display: flex;
   align-items: center;
   gap: 8px;
   word-break: break-word;
 }
 .msg-todo-card.rem .mtc-item {
-  background: rgba(155,142,196,0.13);
+  background: rgba(var(--primary-rgba), 0.14);
 }
 .msg-todo-card.cel .mtc-item {
-  background: rgba(123,198,126,0.16);
-  color: #3a8a35;
+  background: rgba(var(--primary-rgba), 0.14);
+  color: var(--primary-strong);
 }
 .msg-todo-card .mtc-check {
   width: 18px;
@@ -10637,20 +10637,20 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   line-height: 1;
 }
 .msg-todo-card.rem .mtc-check {
-  border: 2px solid #9b8ec4;
-  color: #9b8ec4;
+  border: 2px solid var(--primary);
+  color: var(--primary);
   box-sizing: border-box;
 }
 .msg-todo-card.cel .mtc-check {
-  background: #7bc67e;
+  background: var(--accent);
   color: #fff;
 }
 .msg-todo-card .mtc-notes {
   margin: 0 12px 10px;
   padding: 6px 8px;
   font-size: 11px;
-  color: #8b7aab;
-  background: rgba(155,142,196,0.08);
+  color: var(--primary-strong);
+  background: rgba(var(--primary-rgba), 0.08);
   border-radius: 6px;
   word-break: break-word;
 }
