@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="388";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="389";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v388</title>
+  <title>字卡 · 小手机 v389</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -19551,16 +19551,60 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (_cid !== null && chatHistories[_cid]) {
             const contact = contacts.find(c => c.id === _cid);
             if (contact && contact.readOnly) { _zkHideTyping(_cid); _zkMarkMyLastRead(_cid); return; }
-            let reply = getRandomCard();
             let senderName = 'other';
             if (contact && contact.isGroup && contact.members) {
               const memberId = contact.members[Math.floor(Math.random() * contact.members.length)];
               const member = contacts.find(c => c.id === memberId);
               if (member) senderName = member.name;
             } else if (contact) { senderName = contact.name; }
+            const _voiceRoll = rollVoiceCard();
+            if (_voiceRoll) {
+              const _nowV = new Date();
+              const _timeV = _nowV.getHours().toString().padStart(2, '0') + ':' + _nowV.getMinutes().toString().padStart(2, '0');
+              chatHistories[_cid].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: _timeV });
+              renderMessages(_cid);
+              _zkHideTyping(_cid);
+              if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
+              return;
+            }
+            if (_zkIsAiContact(contact)) {
+              _zkAiChatReply(_cid, contact, senderName, text, 'ai');
+              return;
+            }
+            let reply = getRandomCard();
+            if (senderName !== 'me') {
+              reply = reply.replace(/你/g, '我');
+            }
+            if (contact && contact.isGroup && contact.members) {
+              const memberId = contact.members[Math.floor(Math.random() * contact.members.length)];
+              const member = contacts.find(c => c.id === memberId);
+            }
             const now2 = new Date();
             const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
-            chatHistories[_cid].push({ text: reply, from: senderName, time: timeStr2 });
+
+            // 随机决定是否引用（30% 概率引用）
+            const shouldReply = Math.random() < 0.3;
+            let msgData = { text: reply, from: senderName, time: timeStr2 };
+
+            if (shouldReply) {
+              // 获取最近的消息（排除自己刚发的消息）
+              const messages = chatHistories[_cid];
+              // 找最近的对方消息（不是自己发的）
+              let lastOtherIndex = -1;
+              for (let i = messages.length - 2; i >= 0; i--) {
+                if (messages[i].from !== 'me' && !messages[i].withdrawn) {
+                  lastOtherIndex = i;
+                  break;
+                }
+              }
+              // 如果找到了可以引用的消息，并且不是刚发的消息，则添加引用
+              if (lastOtherIndex >= 0 && messages[lastOtherIndex]) {
+                msgData.replyTo = lastOtherIndex;
+                showToast(`💬 ${senderName} 引用了一条消息`);
+              }
+            }
+
+            chatHistories[_cid].push(msgData);
             renderMessages(_cid);
             _zkHideTyping(_cid);
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
@@ -19756,6 +19800,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _zkAiChatReply(cid, contact, senderName, userText, mode, preDraw) {
         var cfg = _zkGetApiCfg();
         if (!cfg.url || !cfg.key) {
+          _zkHideTyping(cid);
           showToast('请先在「API」页配置接口');
           _zkFallbackReply(cid, contact, senderName);
           return;
