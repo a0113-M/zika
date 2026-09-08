@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="373";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="374";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v373</title>
+  <title>字卡 · 小手机 v374</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -3705,23 +3705,25 @@
       border-bottom: 0.5px solid #f0f0f0;
     }
     .top-contact-item:last-child { border-bottom: none; }
-    .top-contact-rank {
-      width: 22px;
-      height: 22px;
+    .top-contact-avatar {
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      background: #f0f0f0;
-      color: #999;
-      font-size: 12px;
+      background: var(--primary-lighter);
+      color: white;
+      font-size: 14px;
       font-weight: 600;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-right: 10px;
       flex-shrink: 0;
+      overflow: hidden;
+      text-transform: uppercase;
     }
-    .top-contact-item:nth-child(1) .top-contact-rank { background: #ffd700; color: #8b6914; }
-    .top-contact-item:nth-child(2) .top-contact-rank { background: #c0c0c0; color: #666; }
-    .top-contact-item:nth-child(3) .top-contact-rank { background: #cd7f32; color: #fff; }
+    .top-contact-item:nth-child(1) .top-contact-avatar { box-shadow: 0 0 0 2px #ffd700; }
+    .top-contact-item:nth-child(2) .top-contact-avatar { box-shadow: 0 0 0 2px #c0c0c0; }
+    .top-contact-item:nth-child(3) .top-contact-avatar { box-shadow: 0 0 0 2px #cd7f32; }
     .top-contact-name {
       flex: 1;
       font-size: 14px;
@@ -13779,7 +13781,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="stats-body" id="statsBody">
           <!-- 总览 -->
           <div class="stats-card">
-            <div class="stats-card-title"><span class="icon">📊</span>总览</div>
+            <div class="stats-card-title"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span>总览</div>
             <div class="stats-overview-grid">
               <div class="stats-overview-item">
                 <div class="stats-overview-num" id="statInboxTotal">0</div>
@@ -13799,23 +13801,23 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               </div>
             </div>
           </div>
+          <!-- 最活跃联系人 -->
+          <div class="stats-card">
+            <div class="stats-card-title"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>最活跃联系人 Top 5</div>
+            <div id="topContactsList"></div>
+          </div>
           <!-- 月度趋势 -->
           <div class="stats-card">
-            <div class="stats-card-title"><span class="icon">📈</span>月度趋势（近6个月）</div>
+            <div class="stats-card-title"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 18"/><polyline points="16 7 22 7 22 13"/></svg></span>月度趋势（近6个月）</div>
             <div class="bar-chart" id="monthlyBarChart"></div>
             <div class="bar-chart-legend">
               <div class="bar-chart-legend-item"><span class="bar-chart-legend-dot inbox"></span>收到</div>
               <div class="bar-chart-legend-item"><span class="bar-chart-legend-dot outbox"></span>寄出</div>
             </div>
           </div>
-          <!-- 最活跃联系人 -->
-          <div class="stats-card">
-            <div class="stats-card-title"><span class="icon">👥</span>最活跃联系人 Top 5</div>
-            <div id="topContactsList"></div>
-          </div>
           <!-- 字卡类型分布 -->
           <div class="stats-card">
-            <div class="stats-card-title"><span class="icon">🏷️</span>收到字卡类型分布</div>
+            <div class="stats-card-title"><span class="icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg></span>收到字卡类型分布</div>
             <div id="typeDistribution"></div>
           </div>
         </div>
@@ -28055,14 +28057,23 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
           return;
         }
 
-        top5.forEach((c, idx) => {
+        top5.forEach((c) => {
           const item = document.createElement('div');
           item.className = 'top-contact-item';
-          item.innerHTML = `
-            <div class="top-contact-rank">${idx + 1}</div>
-            <div class="top-contact-name">${c.name}</div>
-            <div class="top-contact-count">${c.count} 封</div>
-          `;
+          const ava = document.createElement('div');
+          ava.className = 'top-contact-avatar';
+          const contact = contacts.find(cc => cc.name === c.name);
+          if (contact) _zkSetContactAvatar(ava, contact);
+          else ava.textContent = (c.name || '?').charAt(0).toUpperCase();
+          const nameEl = document.createElement('div');
+          nameEl.className = 'top-contact-name';
+          nameEl.textContent = c.name;
+          const countEl = document.createElement('div');
+          countEl.className = 'top-contact-count';
+          countEl.textContent = c.count + ' 封';
+          item.appendChild(ava);
+          item.appendChild(nameEl);
+          item.appendChild(countEl);
           el.appendChild(item);
         });
       }
