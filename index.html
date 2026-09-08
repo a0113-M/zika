@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="380";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="381";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v380</title>
+  <title>字卡 · 小手机 v381</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -12942,6 +12942,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="aiChat" id="aiChatMenuItem">AI聊天</button>
         <button class="menu-item" data-action="divineChat" id="divineChatMenuItem">占卜聊天</button>
+        <button class="menu-item" data-action="persona" id="personaMenuItem">人设 · 世界书</button>
         <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="settings">设置</button>
         <div class="chat-menu-divider"></div>
@@ -17614,6 +17615,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             _zkToggleChatMode('ai');
           } else if (action === 'divineChat') {
             _zkToggleChatMode('divine');
+          } else if (action === 'persona') {
+            var _pb = document.getElementById('dvdChatPersonaBtn');
+            if (_pb) { _pb.click(); } else { showToast('未找到人设面板'); }
           } else if (action === 'clear') {
             clearChatHistory();
           }
