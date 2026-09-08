@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="367";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="368";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v367</title>
+  <title>字卡 · 小手机 v368</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -14446,6 +14446,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       </div>
       <!-- 决定按钮 -->
       <div style="padding:12px 18px 18px; border-top:0.5px solid #eee; flex-shrink:0;">
+        <div id="decInlineResult" style="display:none; text-align:center; margin-bottom:12px; padding:14px 12px; border-radius:12px; background:var(--primary-lighter);">
+          <div style="font-size:12px; color:var(--primary-strong); margin-bottom:6px; letter-spacing:1px; font-weight:500;">我帮你决定好了</div>
+          <div id="decInlineResultText" style="font-size:28px; font-weight:700; color:#1a1a1a; letter-spacing:2px; line-height:1.1;"></div>
+        </div>
         <button id="decGoBtn" style="width:100%; padding:12px; border:none; border-radius:12px; background:var(--primary); color:#fff; font-size:16px; font-weight:500; cursor:pointer; transition:0.15s;">让他决定</button>
       </div>
     </div>
@@ -26620,6 +26624,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         decGoBtn.textContent = '让他决定';
         decGoBtn.disabled = false;
         decGoBtn.style.opacity = '1';
+        document.getElementById('decInlineResult').style.display = 'none';
         updateHistoryView();
         decisionModal.classList.add('show');
       }
@@ -26716,11 +26721,9 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             renderMessages(currentChatId);
           }
 
-          // 显示结果弹窗
-          document.getElementById('decResultText').textContent = result;
-          document.getElementById('decResultQuestion').textContent = question;
-          decisionModal.classList.remove('show');
-          decisionResultModal.classList.add('show');
+          // 结果直接显示在决策卡片内，不弹结果弹窗、不关闭卡片
+          document.getElementById('decInlineResultText').textContent = result;
+          document.getElementById('decInlineResult').style.display = '';
 
           // 恢复按钮
           decGoBtn.textContent = '让他决定';
