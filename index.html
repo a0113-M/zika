@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="386";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="387";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v386</title>
+  <title>字卡 · 小手机 v387</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8365,6 +8365,30 @@
     .zki-pick-foot { flex: none; padding: 12px 16px 16px; display: flex; gap: 10px; border-top: 1px solid var(--border-light); }
     .zki-pick-done { flex: 1; padding: 12px 0; border-radius: 12px; background: var(--primary); color: #fff; border: none; font-size: 14px; font-weight: 600; cursor: pointer; }
     .zki-pick-done:active { transform: scale(0.98); }
+    .zki-head-right { display: flex; align-items: center; gap: 6px; }
+    .zki-hist-btn { background: rgba(var(--primary-rgba), 0.10); border: none; color: var(--primary); font-size: 12px; font-weight: 600; padding: 5px 12px; border-radius: 999px; cursor: pointer; }
+    .zki-hist-wrap { position: fixed; inset: 0; z-index: 2200; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .zki-hist-wrap.active { pointer-events: auto; }
+    .zki-hist-backdrop { position: absolute; inset: 0; background: rgba(18, 16, 30, 0.46); opacity: 0; transition: opacity 0.18s ease; }
+    .zki-hist-wrap.active .zki-hist-backdrop { opacity: 1; }
+    .zki-hist-modal { position: relative; width: 88vw; max-width: 420px; max-height: 80vh; display: flex; flex-direction: column; background: var(--bg-card); border-radius: 18px; box-shadow: 0 18px 52px rgba(0, 0, 0, 0.30); overflow: hidden; opacity: 0; transform: translateY(16px) scale(0.98); transition: opacity 0.2s ease, transform 0.2s ease; }
+    .zki-hist-wrap.active .zki-hist-modal { opacity: 1; transform: none; }
+    .zki-hist-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; flex: none; }
+    .zki-hist-title { font-size: 16px; font-weight: 600; color: var(--text-main); }
+    .zki-hist-close { background: none; border: none; font-size: 18px; color: var(--text-secondary); cursor: pointer; padding: 2px 6px; }
+    .zki-hist-search-wrap { padding: 0 16px 10px; flex: none; }
+    .zki-hist-search { width: 100%; box-sizing: border-box; border: 1px solid var(--border-light); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--text-main); background: var(--bg-card); outline: none; }
+    .zki-hist-list { flex: 1 1 auto; overflow-y: auto; padding: 0 16px 14px; }
+    .zki-hist-empty { text-align: center; color: var(--text-secondary); font-size: 13px; padding: 40px 12px; }
+    .zki-hist-item { border: 1px solid var(--border-light); border-radius: 12px; padding: 11px 12px; margin-bottom: 10px; background: var(--bg-card); }
+    .zki-hist-item-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .zki-hist-item-q { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; color: var(--text-main); line-height: 1.45; word-break: break-word; }
+    .zki-hist-del { flex: none; background: none; border: none; color: var(--text-secondary); font-size: 11px; cursor: pointer; padding: 2px 4px; }
+    .zki-hist-item-meta { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+    .zki-hist-line { font-size: 12.5px; color: var(--text-main); line-height: 1.6; word-break: break-word; margin-top: 7px; white-space: pre-wrap; }
+    .zki-hist-line.cards { color: var(--primary); }
+    .zki-hist-line.records { background: rgba(var(--primary-rgba), 0.05); border-left: 3px solid rgba(var(--primary-rgba), 0.4); padding: 6px 10px; border-radius: 6px; }
+    .zki-hist-line.answer { background: rgba(var(--primary-rgba), 0.06); border: 1px solid rgba(var(--primary-rgba), 0.16); padding: 9px 11px; border-radius: 10px; }
     .dvd-chat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .dvd-chat-meta { flex: 1; min-width: 0; }
     .dvd-chat-status { font-size: 11.5px; color: var(--text-secondary); margin-top: 1px; }
@@ -15305,7 +15329,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div class="zki-modal" id="zkiModal">
         <div class="zki-head">
           <span class="zki-title">解读</span>
-          <button class="zki-close" id="zkiClose">✕</button>
+          <div class="zki-head-right">
+            <button class="zki-hist-btn" id="zkiHistBtn">历史</button>
+            <button class="zki-close" id="zkiClose">✕</button>
+          </div>
         </div>
         <div class="zki-body">
           <div class="zki-label">想问问什么？（可以留空）</div>
@@ -15343,6 +15370,21 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="zki-pick-foot">
           <button class="zki-pick-done" id="zkiPickDone">确定</button>
         </div>
+      </div>
+    </div>
+
+    <!-- 解读历史弹窗 -->
+    <div class="zki-hist-wrap" id="zkiHistWrap">
+      <div class="zki-hist-backdrop" id="zkiHistBackdrop"></div>
+      <div class="zki-hist-modal">
+        <div class="zki-hist-head">
+          <span class="zki-hist-title">解读历史</span>
+          <button class="zki-hist-close" id="zkiHistClose">✕</button>
+        </div>
+        <div class="zki-hist-search-wrap">
+          <input class="zki-hist-search" id="zkiHistSearch" type="text" placeholder="搜索过去的解读" />
+        </div>
+        <div class="zki-hist-list" id="zkiHistList"></div>
       </div>
     </div>
 
@@ -19659,6 +19701,19 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             + '：人在 ' + d.side.loc.join('、') + '，正在 ' + d.side.act + '，状态 ' + d.side.state;
         }).join('\n');
       }
+      function _zkCardsNameText(draw) {
+        return draw.map(function (d) { return d.name + '（' + (d.upright ? '正位' : '逆位') + '）'; }).join('、');
+      }
+      function _zkInterpretSystemPrompt() {
+        return '你是一位冷静、理性、克制的塔罗解读与解惑助手。你的目标是帮用户理清思路，而不是预测命运、渲染情绪或制造神秘感。\n'
+          + '原则：\n'
+          + '1. 客观中立：不替用户做决定，不暗示宿命吉凶，不迎合、不煽情；\n'
+          + '2. 克制表达：语气平静、清晰、务实，像一位理性顾问，避免夸张、玄学话术和情绪化措辞；\n'
+          + '3. 塔罗是镜子：把牌面当作一种思考框架，用来帮用户看到被忽略的角度，而非铁口直断；\n'
+          + '4. 落到现实：结合用户的问题和提供的材料，给出具体、可行动的分析与建议；\n'
+          + '5. 诚实：不确定时如实说明，不编造必然的结局。\n'
+          + '回答结构：先点明问题核心，再分点展开分析，最后给 1~2 条务实的建议。';
+      }
       function _zkFallbackReply(cid, contact, senderName) {
         if (!chatHistories[cid]) chatHistories[cid] = [];
         var _fb = getRandomCard();
@@ -19787,6 +19842,82 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
 
+      var _ZK_INTERP_HIST_KEY = 'zk_interpret_history';
+      var _zkHistKw = '';
+      function _zkLoadInterpHistory() {
+        try {
+          var raw = localStorage.getItem(_ZK_INTERP_HIST_KEY);
+          var arr = raw ? JSON.parse(raw) : [];
+          return Array.isArray(arr) ? arr : [];
+        } catch (e) { return []; }
+      }
+      function _zkSaveInterpHistory(list) {
+        try { localStorage.setItem(_ZK_INTERP_HIST_KEY, JSON.stringify(list)); } catch (e) {}
+      }
+      function _zkAddInterpHistory(item) {
+        var list = _zkLoadInterpHistory();
+        var now = new Date();
+        var p2 = function (n) { return (n < 10 ? '0' : '') + n; };
+        var entry = {
+          id: now.getTime(),
+          time: now.getFullYear() + '-' + p2(now.getMonth() + 1) + '-' + p2(now.getDate()) + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes()),
+          contactName: item.contactName || '',
+          question: item.question || '',
+          records: item.records || '',
+          cards: item.cards && item.cards.length ? item.cards.map(function (c) { return c.name + (c.upright ? '正位' : '逆位'); }).join('、') : '',
+          answer: item.answer || ''
+        };
+        list.unshift(entry);
+        if (list.length > 100) list = list.slice(0, 100);
+        _zkSaveInterpHistory(list);
+      }
+      function _zkInterpretHistoryOpen() {
+        var w = document.getElementById('zkiHistWrap');
+        if (!w) return;
+        _zkHistKw = '';
+        var si = document.getElementById('zkiHistSearch');
+        if (si) si.value = '';
+        _zkInterpretHistoryRender();
+        w.classList.add('active');
+      }
+      function _zkInterpretHistoryClose() {
+        var w = document.getElementById('zkiHistWrap');
+        if (w) w.classList.remove('active');
+      }
+      function _zkInterpretHistoryRender() {
+        var listEl = document.getElementById('zkiHistList');
+        if (!listEl) return;
+        var list = _zkLoadInterpHistory();
+        var kw = (_zkHistKw || '').trim().toLowerCase();
+        if (kw) {
+          list = list.filter(function (e) {
+            var hay = ((e.question || '') + '\n' + (e.records || '') + '\n' + (e.cards || '') + '\n' + (e.answer || '')).toLowerCase();
+            return hay.indexOf(kw) >= 0;
+          });
+        }
+        if (!list.length) {
+          listEl.innerHTML = '<div class="zki-hist-empty">' + (kw ? '没有匹配的记录' : '还没有解读记录，去解读一次试试') + '</div>';
+          return;
+        }
+        listEl.innerHTML = list.map(function (e) {
+          var q = e.question || '(无提问)';
+          var head = '<div class="zki-hist-item" data-id="' + e.id + '">'
+            + '<div class="zki-hist-item-head">'
+            + '<div class="zki-hist-item-q">' + _zkEscHtml(q) + '</div>'
+            + '<button class="zki-hist-del" data-del="' + e.id + '">删除</button>'
+            + '</div>'
+            + '<div class="zki-hist-item-meta">' + _zkEscHtml(e.time + (e.contactName ? ' · ' + e.contactName : '')) + '</div>';
+          if (e.cards) head += '<div class="zki-hist-line cards">' + _zkEscHtml('牌：' + e.cards) + '</div>';
+          if (e.records) head += '<div class="zki-hist-line records">' + _zkEscHtml(e.records) + '</div>';
+          head += '<div class="zki-hist-line answer">' + _zkEscHtml(e.answer) + '</div>';
+          return head + '</div>';
+        }).join('');
+      }
+      function _zkInterpretHistoryDel(id) {
+        var list = _zkLoadInterpHistory().filter(function (e) { return e.id !== id; });
+        _zkSaveInterpHistory(list);
+        _zkInterpretHistoryRender();
+      }
       function _zkInterpretDraw() {
         var n = 1 + Math.floor(Math.random() * 3);
         _zkiDraw = _zkDrawCards(n);
@@ -19803,7 +19934,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return '<div class="zki-card-item">'
             + '<div class="zki-card-info">'
             + '<div class="zki-card-name">' + _zkEscHtml(d.name) + ' · ' + tag + '</div>'
-            + '<div class="zki-card-desc">' + _zkEscHtml(d.side.loc.join('、') + '，' + d.side.act + '，' + d.side.state) + '</div>'
             + '</div></div>';
         }).join('');
       }
@@ -19916,20 +20046,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         var contact = contacts.find(function (c) { return c.id === currentChatId; });
         var pname = (contact && contact.name) ? contact.name : 'TA';
-        var sys = _zkPersonaPromptFor(contact);
+        var sys = _zkInterpretSystemPrompt();
         var recText = _zkInterpretRecordsText();
         var userLine = '（用户在「解读」里问你：「' + (q || '帮我看看这段聊天') + '」）';
         if (recText) {
-          userLine += '\n\n（下面是用户想让你解读的聊天记录，请按顺序逐条、逐段地解读给他听）\n' + recText
-            + '\n\n请用你（' + pname + '）的口吻，结合你的设定和世界书，把这一段段对话背后 TA 的真实想法、情绪、没说出口的话，一条一条地自然地解读出来，像在认真回应他，不要机械地逐字翻译，要有自己的判断和温度。';
+          userLine += '\n\n（下面是要解读的聊天记录）\n' + recText;
         }
         if (_zkiDraw && _zkiDraw.length) {
-          userLine += '\n\n（她这次抽到了 ' + _zkiDraw.length + ' 张牌，牌面如下）\n' + _zkCardText(_zkiDraw)
-            + '\n\n请以这些牌为参考，用你（' + pname + '）的口吻自然地把牌意融入上面的解读里，回答她的问题，不要报牌名、不要逐张解牌、不要显得像在占卜，就像你看着这些牌联想到了什么、顺势说给她听。';
+          userLine += '\n\n（这次抽到了 ' + _zkiDraw.length + ' 张牌：' + _zkCardsNameText(_zkiDraw) + '）';
         }
-        if (!recText && (!_zkiDraw || !_zkiDraw.length)) {
-          userLine += '\n\n请用你的口吻，结合你的设定和世界书，自然地回应她的问题，直接给答案，像聊天一样。';
-        }
+        userLine += '\n\n请站在客观中立的角度，结合我提供的问题、聊天记录和牌面，用平静、清晰、务实的方式给出分析。不要把塔罗讲成玄学或宿命，不要渲染情绪，不要扮演某个角色，就像一位理性顾问在帮对方把问题看清楚、找到可落地的方向。';
         var msgs = [{ role: 'system', content: sys }, { role: 'user', content: userLine }];
         var btn = document.getElementById('zkiRunBtn');
         if (btn) { btn.disabled = true; btn.textContent = '解读中…'; }
@@ -19959,6 +20085,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (btn) { btn.disabled = false; btn.textContent = '解读'; }
           if (!text) { showToast('AI 没有返回内容'); return; }
           _zkInterpretShowResult(text);
+          _zkAddInterpHistory({ question: q, records: recText, cards: _zkiDraw || null, answer: text, contactName: pname });
         }).catch(function (err) {
           if (!_zkiRunning) return;
           clearTimeout(_timer); _zkiRunning = false;
@@ -19991,6 +20118,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       document.getElementById('zkiPickBackdrop').addEventListener('click', function () { _zkInterpretClosePick(); });
       document.getElementById('zkiPickClose').addEventListener('click', function () { _zkInterpretClosePick(); });
       document.getElementById('zkiPickDone').addEventListener('click', function () { _zkInterpretClosePick(); });
+      document.getElementById('zkiHistBtn').addEventListener('click', function () { _zkInterpretHistoryOpen(); });
+      document.getElementById('zkiHistBackdrop').addEventListener('click', function () { _zkInterpretHistoryClose(); });
+      document.getElementById('zkiHistClose').addEventListener('click', function () { _zkInterpretHistoryClose(); });
+      document.getElementById('zkiHistSearch').addEventListener('input', function () { _zkHistKw = this.value; _zkInterpretHistoryRender(); });
+      document.getElementById('zkiHistList').addEventListener('click', function (e) {
+        var t = e.target;
+        while (t && t !== this) {
+          var d = t.getAttribute && t.getAttribute('data-del');
+          if (d) { _zkInterpretHistoryDel(Number(d)); return; }
+          t = t.parentElement;
+        }
+      });
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
