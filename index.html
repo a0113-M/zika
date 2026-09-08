@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="382";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="383";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v382</title>
+  <title>字卡 · 小手机 v383</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -8304,7 +8304,39 @@
     .dvd-confirm-btn.cancel { background: var(--bg-soft2); color: var(--text-secondary); }
     .dvd-confirm-btn.danger { background: #e55a5a; color: #fff; }
     .dvd-confirm-btn.primary { background: var(--primary); color: #fff; }
-    .dvd-confirm-btn:active { transform: scale(0.97); }
+        .dvd-confirm-btn:active { transform: scale(0.97); }
+    /* ---- 解读弹窗（屏幕居中卡片） ---- */
+    .zki-wrap { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; pointer-events: none; }
+    .zki-wrap.active { pointer-events: auto; }
+    .zki-backdrop { position: absolute; inset: 0; background: rgba(18, 16, 30, 0.46); opacity: 0; transition: opacity 0.18s ease; }
+    .zki-wrap.active .zki-backdrop { opacity: 1; }
+    .zki-modal { position: relative; width: 88vw; max-width: 400px; max-height: 82vh; display: flex; flex-direction: column; background: var(--bg-card); border-radius: 18px; box-shadow: 0 18px 52px rgba(0, 0, 0, 0.30); overflow: hidden; opacity: 0; transform: translateY(16px) scale(0.98); transition: opacity 0.2s ease, transform 0.2s ease; }
+    .zki-wrap.active .zki-modal { opacity: 1; transform: none; }
+    .zki-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; flex: none; }
+    .zki-title { font-size: 16px; font-weight: 600; color: var(--text-main); }
+    .zki-close { background: none; border: none; font-size: 18px; color: var(--text-secondary); cursor: pointer; padding: 2px 6px; }
+    .zki-body { padding: 0 16px; overflow-y: auto; flex: 1 1 auto; }
+    .zki-label { font-size: 12px; font-weight: 600; color: var(--text-main); margin-bottom: 6px; }
+    .zki-question { width: 100%; box-sizing: border-box; border: 1px solid rgba(var(--primary-rgba), 0.35); border-radius: 12px; padding: 10px 12px; font-size: 14px; color: var(--text-main); background: var(--bg-card); font-family: inherit; line-height: 1.5; resize: none; outline: none; min-height: 58px; }
+    .zki-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .zki-draw-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(var(--primary-rgba), 0.5); background: rgba(var(--primary-rgba), 0.07); color: var(--primary); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+    .zki-draw-btn:active { transform: scale(0.97); }
+    .zki-hint { font-size: 11px; color: var(--text-secondary); }
+    .zki-cards { margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .zki-card-item { display: flex; gap: 8px; align-items: flex-start; padding: 9px 11px; border: 1px solid rgba(var(--primary-rgba), 0.2); border-radius: 12px; background: rgba(var(--primary-rgba), 0.04); }
+    .zki-card-emoji { font-size: 18px; line-height: 1.2; }
+    .zki-card-info { flex: 1; min-width: 0; }
+    .zki-card-name { font-size: 13px; font-weight: 600; color: var(--text-main); }
+    .zki-card-desc { font-size: 11.5px; color: var(--text-secondary); line-height: 1.5; margin-top: 2px; }
+    .zki-result { margin-top: 14px; padding: 12px 13px; border-radius: 12px; background: rgba(var(--primary-rgba), 0.06); border: 1px solid rgba(var(--primary-rgba), 0.18); font-size: 13.5px; color: var(--text-main); line-height: 1.7; white-space: pre-wrap; word-break: break-word; max-height: 230px; overflow-y: auto; display: none; }
+    .zki-result.show { display: block; }
+    .zki-result-label { font-size: 11px; color: var(--primary); font-weight: 600; margin-bottom: 6px; }
+    .zki-foot { padding: 12px 16px 14px; display: flex; gap: 10px; flex: none; }
+    .zki-btn { flex: 1; padding: 11px 0; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
+    .zki-btn.run { background: var(--primary); color: #fff; }
+    .zki-btn.run:disabled { opacity: 0.55; }
+    .zki-btn.collapse { background: var(--bg-soft2); color: var(--text-secondary); flex: 0 0 28%; }
+    .zki-btn:active { transform: scale(0.97); }
     .dvd-chat-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .dvd-chat-meta { flex: 1; min-width: 0; }
     .dvd-chat-status { font-size: 11.5px; color: var(--text-secondary); margin-top: 1px; }
@@ -12941,7 +12973,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <button class="menu-item" data-action="import">导入聊天记录</button>
         <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="aiChat" id="aiChatMenuItem">AI聊天</button>
-        <button class="menu-item" data-action="divineDraw" id="divineChatMenuItem">抽牌占卜</button>
         <button class="menu-item" data-action="persona" id="personaMenuItem">人设 · 世界书</button>
         <div class="chat-menu-divider"></div>
         <button class="menu-item" data-action="settings">设置</button>
@@ -13075,6 +13106,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                   <path d="M9 20.5h6M10.5 17c1 1 2 1 3 0"/>
                 </svg></span>
               <span class="toolbar-label">占卜</span>
+            </button>
+              <button class="toolbar-item" data-tool="interpret">
+              <span class="toolbar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/></svg></span>
+              <span class="toolbar-label">解读</span>
             </button>
             </div>
           </div>
@@ -15232,6 +15267,31 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div style="display:flex;gap:8px;margin-top:14px;">
           <button class="dvd-hist-askbtn" id="peSaveBtn" style="flex:1;">保存人设</button>
           <button class="dvd-hist-askbtn" id="peDeleteBtn" style="flex:1;display:none;background:var(--text-secondary);">删除</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 解读弹窗 -->
+    <div class="zki-wrap" id="zkiWrap">
+      <div class="zki-backdrop" id="zkiBackdrop"></div>
+      <div class="zki-modal" id="zkiModal">
+        <div class="zki-head">
+          <span class="zki-title">🔮 解读</span>
+          <button class="zki-close" id="zkiClose">✕</button>
+        </div>
+        <div class="zki-body">
+          <div class="zki-label">想问问什么？（可以留空）</div>
+          <textarea class="zki-question" id="zkiQuestion" placeholder="比如：TA 最近心里在想什么？我们接下来会怎样？"></textarea>
+          <div class="zki-row">
+            <button class="zki-draw-btn" id="zkiDrawBtn">🎴 抽三张牌</button>
+            <span class="zki-hint">也可以不抽牌，直接问</span>
+          </div>
+          <div class="zki-cards" id="zkiCards" style="display:none;"></div>
+          <div class="zki-result" id="zkiResult"></div>
+        </div>
+        <div class="zki-foot">
+          <button class="zki-btn run" id="zkiRunBtn">开始解读</button>
+          <button class="zki-btn collapse" id="zkiCollapse">收起</button>
         </div>
       </div>
     </div>
@@ -17444,7 +17504,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       });
       document.querySelectorAll('.toolbar-item[data-tool]').forEach(item => {
         const tool = item.dataset.tool;
-        if (tool === 'emoji' || tool === 'letter' || tool === 'divine' || tool === 'together' || tool === 'stats') return;
+        if (tool === 'emoji' || tool === 'letter' || tool === 'divine' || tool === 'together' || tool === 'stats' || tool === 'interpret') return;
         item.addEventListener('click', function () {
           emojiModule.classList.remove('active');
           document.getElementById('toolbarGrid').classList.remove('hidden');
@@ -17613,8 +17673,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             showChatSettings();
           } else if (action === 'aiChat') {
             _zkToggleChatMode('ai');
-          } else if (action === 'divineDraw') {
-            _zkDivineDraw();
           } else if (action === 'persona') {
             var _pb = document.getElementById('dvdChatPersonaBtn');
             if (_pb) { _pb.click(); } else { showToast('未找到人设面板'); }
@@ -19618,6 +19676,136 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           _zkAiChatReply(cid, contact, senderName, '看看我们最近的状况', 'divine', draw);
         }
       }
+
+      // ----- 解读：底部工具栏，屏幕居中卡片，问 + 可选抽牌，AI 解读，可收起 -----
+      var _zkiDraw = null;
+      var _zkiRunning = false;
+
+      function _zkInterpretOpen() {
+        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        var w = document.getElementById('zkiWrap');
+        if (!w) return;
+        w.classList.add('active');
+        setTimeout(function () { var q = document.getElementById('zkiQuestion'); if (q) q.focus(); }, 120);
+      }
+
+      function _zkInterpretClose(reset) {
+        var w = document.getElementById('zkiWrap');
+        if (w) w.classList.remove('active');
+        if (reset) {
+          _zkiDraw = null;
+          var q = document.getElementById('zkiQuestion'); if (q) q.value = '';
+          _zkInterpretRenderCards();
+          _zkInterpretShowResult('');
+        }
+      }
+
+      function _zkInterpretDraw() {
+        _zkiDraw = _zkDrawCards(3);
+        _zkInterpretRenderCards();
+      }
+
+      function _zkInterpretRenderCards() {
+        var box = document.getElementById('zkiCards');
+        if (!box) return;
+        if (!_zkiDraw || !_zkiDraw.length) { box.innerHTML = ''; box.style.display = 'none'; return; }
+        box.style.display = '';
+        box.innerHTML = _zkiDraw.map(function (d) {
+          var tag = (d.upright ? '正位' : '逆位');
+          return '<div class="zki-card-item">'
+            + '<span class="zki-card-emoji">🎴</span>'
+            + '<div class="zki-card-info">'
+            + '<div class="zki-card-name">' + _zkEscHtml(d.name) + ' · ' + tag + '</div>'
+            + '<div class="zki-card-desc">' + _zkEscHtml(d.side.loc.join('、') + '，' + d.side.act + '，' + d.side.state) + '</div>'
+            + '</div></div>';
+        }).join('');
+      }
+
+      function _zkInterpretShowResult(text) {
+        var box = document.getElementById('zkiResult');
+        if (!box) return;
+        if (text) { box.classList.add('show'); box.innerHTML = '<div class="zki-result-label">解读</div>' + _zkEscHtml(text); }
+        else { box.classList.remove('show'); box.innerHTML = ''; }
+      }
+
+      function _zkInterpretRun() {
+        if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
+        if (_zkiRunning) return;
+        var qEl = document.getElementById('zkiQuestion');
+        var q = (qEl ? qEl.value : '').replace(/^\s+|\s+$/g, '');
+        if (!q && (!_zkiDraw || !_zkiDraw.length)) { showToast('写个问题，或先抽几张牌'); return; }
+        var cfg = _zkGetApiCfg();
+        if (!cfg.url || !cfg.key) {
+          if (_zkiDraw && _zkiDraw.length) { showToast('已抽牌（牌面见下），去「API」页配好接口再点一次即可解读'); }
+          else { showToast('请先在「API」页配置接口，才能让 AI 解读'); }
+          return;
+        }
+        var contact = contacts.find(function (c) { return c.id === currentChatId; });
+        var pname = (contact && contact.name) ? contact.name : 'TA';
+        var sys = _zkPersonaPromptFor(contact);
+        var userLine = '（用户在「解读」里问你：「' + (q || '看看我现在的状况') + '」）';
+        if (_zkiDraw && _zkiDraw.length) {
+          userLine += '\n\n（她这次抽到了 ' + _zkiDraw.length + ' 张牌，牌面如下）\n' + _zkCardText(_zkiDraw)
+            + '\n\n请以这些牌为参考，用你（' + pname + '）的口吻自然为她解读：把牌意、你对她这个问题的想法、想对她说的话自然地说出来，直接给答案，不要报牌名、不要逐张解牌、不要显得像在占卜，就像你看着这些牌联想到了什么、顺势说给她听。';
+        } else {
+          userLine += '\n\n请用你的口吻，结合你的设定和世界书，自然地回应她的问题，直接给答案，像聊天一样。';
+        }
+        var msgs = [{ role: 'system', content: sys }, { role: 'user', content: userLine }];
+        var btn = document.getElementById('zkiRunBtn');
+        if (btn) { btn.disabled = true; btn.textContent = '解读中…'; }
+        _zkInterpretShowResult('');
+        _zkiRunning = true;
+        var _timer = setTimeout(function () {
+          if (!_zkiRunning) return; _zkiRunning = false;
+          if (btn) { btn.disabled = false; btn.textContent = '开始解读'; }
+          showToast('解读超时，请重试');
+        }, 30000);
+        fetch(cfg.url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+          body: JSON.stringify({ model: cfg.model || 'gpt-4o-mini', messages: msgs })
+        }).then(function (resp) {
+          return resp.text().then(function (t) {
+            if (!resp.ok) { var m = 'HTTP ' + resp.status; try { var j = JSON.parse(t); if (j.error && j.error.message) m = j.error.message; } catch (e) {} throw new Error(m); }
+            try { return JSON.parse(t); } catch (e) { throw new Error('API 返回的不是 JSON，请检查 API 地址'); }
+          });
+        }).then(function (data2) {
+          if (!_zkiRunning) return;
+          var text = '';
+          if (data2 && data2.choices && data2.choices[0] && data2.choices[0].message) text = data2.choices[0].message.content || '';
+          else if (data2 && data2.content) text = data2.content;
+          text = _zkCleanAi(text);
+          clearTimeout(_timer); _zkiRunning = false;
+          if (btn) { btn.disabled = false; btn.textContent = '开始解读'; }
+          if (!text) { showToast('AI 没有返回内容'); return; }
+          _zkInterpretShowResult(text);
+        }).catch(function (err) {
+          if (!_zkiRunning) return;
+          clearTimeout(_timer); _zkiRunning = false;
+          if (btn) { btn.disabled = false; btn.textContent = '开始解读'; }
+          showToast('AI 解读失败：' + (err && err.message ? err.message : '未知错误'));
+        });
+      }
+
+      document.querySelector('.toolbar-item[data-tool="interpret"]').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById('chatLetterPanel').classList.remove('active');
+        document.getElementById('chatLetterDetail').classList.remove('active');
+        document.getElementById('clpBackdrop').classList.remove('active');
+        var _dp3 = document.getElementById('chatDivinePanel'); if (_dp3) _dp3.classList.remove('active');
+        var _db3 = document.getElementById('cdvBackdrop'); if (_db3) _db3.classList.remove('active');
+        var _ap3 = document.getElementById('chatAccompanyPanel'); if (_ap3) _ap3.classList.remove('active');
+        var _ab3 = document.getElementById('acdBackdrop'); if (_ab3) _ab3.classList.remove('active');
+        document.getElementById('emojiModule').classList.remove('active');
+        var _grid = document.getElementById('toolbarGrid'); if (_grid) _grid.classList.add('hidden');
+        if (!isToolbarOpen) { isToolbarOpen = true; chatToolbar.classList.add('open'); }
+        _zkInterpretOpen();
+      });
+      document.getElementById('zkiBackdrop').addEventListener('click', function () { _zkInterpretClose(false); });
+      document.getElementById('zkiClose').addEventListener('click', function () { _zkInterpretClose(true); });
+      document.getElementById('zkiCollapse').addEventListener('click', function () { _zkInterpretClose(false); });
+      document.getElementById('zkiDrawBtn').addEventListener('click', function () { _zkInterpretDraw(); });
+      document.getElementById('zkiRunBtn').addEventListener('click', function () { _zkInterpretRun(); });
 
       document.getElementById('chatDrawBtn').addEventListener('click', function () {
         if (currentChatId === null) { showToast('请先进入一个聊天'); return; }
