@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="375";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="376";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v375</title>
+  <title>字卡 · 小手机 v376</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -2712,6 +2712,157 @@
     .letter-compose-contact-select:focus {
       border-color: var(--primary);
     }
+    .letter-compose-contact-display {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 12px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      min-height: 30px;
+      transition: border-color 0.15s;
+    }
+    .letter-compose-contact-display:active { border-color: var(--primary); }
+    .letter-compose-contact-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      overflow: hidden;
+    }
+    .letter-compose-contact-name {
+      flex: 1;
+      font-size: 15px;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .letter-compose-contact-arrow { color: #bbb; font-size: 12px; flex-shrink: 0; }
+
+    /* 收信人选择弹窗 */
+    .compose-contact-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .compose-contact-backdrop.active { display: flex; }
+    .compose-contact-sheet {
+      width: 100%;
+      max-width: 520px;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      max-height: 62vh;
+      display: flex;
+      flex-direction: column;
+      animation: composeSheetUp 0.25s ease-out;
+    }
+    @keyframes composeSheetUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+    .compose-contact-sheet-header {
+      position: relative;
+      padding: 15px 18px 11px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #333;
+      text-align: center;
+      border-bottom: 0.5px solid #f0f0f0;
+      flex-shrink: 0;
+    }
+    .compose-contact-sheet-close {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: #f3f3f5;
+      border-radius: 50%;
+      color: #999;
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .compose-contact-list {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 6px 12px 20px;
+    }
+    .compose-contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .compose-contact-item:active { background: #f5f5f5; }
+    .compose-contact-item.selected { background: rgba(var(--primary-rgba), 0.06); }
+    .compose-contact-item .cc-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--primary);
+      overflow: hidden;
+    }
+    .compose-contact-item .cc-name {
+      flex: 1;
+      font-size: 15px;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .compose-contact-item .cc-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid #ddd;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 13px;
+      font-weight: 700;
+      transition: all 0.15s;
+      box-sizing: border-box;
+    }
+    .compose-contact-item.selected .cc-check {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: #fff;
+    }
     .letter-paper-wrap {
       border-radius: 12px;
       padding: 18px 16px 14px;
@@ -2721,7 +2872,7 @@
       transition: background 0.3s, border-color 0.3s;
     }
     .letter-paper-wrap.preview-simple {
-      background: #fff; border: 1px solid #e0e0e0;
+      background: transparent; border: none;
     }
     .letter-paper-wrap.preview-vintage {
       background: #f5f0e1;
@@ -13745,19 +13896,12 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="letter-compose-modal-body" id="letterComposeBody">
             <div class="letter-compose-contact-row">
               <span class="compose-label">收信人</span>
-              <select id="letterComposeContact" class="letter-compose-contact-select">
-              </select>
-            </div>
-                        <div class="compose-theme-row">
-              <span class="compose-label">信纸</span>
-              <div class="compose-theme-selector" id="composeThemeSelector">
-                <div class="theme-option theme-simple active" data-theme="simple"><span class="theme-name">简约</span></div>
-                <div class="theme-option theme-vintage" data-theme="vintage"><span class="theme-name">复古</span></div>
-                <div class="theme-option theme-festival" data-theme="festival"><span class="theme-name">节日</span></div>
-                <div class="theme-option theme-starry" data-theme="starry"><span class="theme-name">星空</span></div>
+              <div class="letter-compose-contact-display" id="letterComposeContactDisplay">
+                <div class="letter-compose-contact-avatar" id="letterComposeContactAvatar"></div>
+                <span class="letter-compose-contact-name" id="letterComposeContactName">选择联系人</span>
+                <span class="letter-compose-contact-arrow">▾</span>
               </div>
             </div>
-
 <div class="letter-paper-wrap preview-simple" id="letterPaperWrap">
               <div class="letter-compose-greeting" id="letterComposeGreeting"></div>
               <textarea id="letterComposeInput" class="letter-compose-textarea" placeholder="输入你想说的话..." rows="5"></textarea>
@@ -27860,6 +28004,8 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
 
       // --- 信纸主题相关 ---
       let currentComposeTheme = 'simple'; // 当前写信选择的信纸
+      let currentComposeContactId = null; // 当前写信选择的收信人id
+      let composeContactPickerBound = false;
 
       // 兼容旧数据：补上 theme 字段
       function migrateLetterThemes() {
@@ -28192,23 +28338,93 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
       }
 
       // === 写信功能 ===
-      function populateComposeContact() {
-        const select = document.getElementById('letterComposeContact');
+      function setComposeContactDisplay(contact) {
+        const avatarEl = document.getElementById('letterComposeContactAvatar');
+        const nameEl = document.getElementById('letterComposeContactName');
+        if (!contact) {
+          if (avatarEl) { avatarEl.innerHTML = ''; avatarEl.style.background = 'var(--primary)'; }
+          if (nameEl) nameEl.textContent = '选择联系人';
+          return;
+        }
+        if (avatarEl) { avatarEl.innerHTML = ''; _zkSetContactAvatar(avatarEl, contact); }
+        if (nameEl) nameEl.textContent = contact.name;
+      }
+
+      function openComposeContactPicker() {
+        let backdrop = document.getElementById('composeContactBackdrop');
+        if (!backdrop) {
+          backdrop = document.createElement('div');
+          backdrop.id = 'composeContactBackdrop';
+          backdrop.className = 'compose-contact-backdrop';
+          backdrop.innerHTML = '<div class="compose-contact-sheet">' +
+            '<div class="compose-contact-sheet-header">选择收信人' +
+              '<button type="button" class="compose-contact-sheet-close" id="composeContactPickerClose">\u2715</button>' +
+            '</div>' +
+            '<div class="compose-contact-list" id="composeContactPickerList"></div>' +
+          '</div>';
+          document.body.appendChild(backdrop);
+          backdrop.addEventListener('click', function(e) {
+            if (e.target === backdrop) closeComposeContactPicker();
+          });
+          document.getElementById('composeContactPickerClose').addEventListener('click', closeComposeContactPicker);
+        }
+        const listEl = document.getElementById('composeContactPickerList');
         const nonGroup = contacts.filter(c => !c.isGroup);
-        select.innerHTML = '';
+        listEl.innerHTML = '';
+        nonGroup.forEach(c => {
+          const item = document.createElement('div');
+          item.className = 'compose-contact-item';
+          if (currentComposeContactId === c.id) item.classList.add('selected');
+          const av = document.createElement('div');
+          av.className = 'cc-avatar';
+          _zkSetContactAvatar(av, c);
+          item.appendChild(av);
+          const nm = document.createElement('span');
+          nm.className = 'cc-name';
+          nm.textContent = c.name;
+          item.appendChild(nm);
+          const ck = document.createElement('span');
+          ck.className = 'cc-check';
+          ck.textContent = '\u2713';
+          item.appendChild(ck);
+          item.addEventListener('click', function() {
+            selectComposeContact(c);
+          });
+          listEl.appendChild(item);
+        });
+        backdrop.classList.add('active');
+      }
+
+      function closeComposeContactPicker() {
+        const backdrop = document.getElementById('composeContactBackdrop');
+        if (backdrop) backdrop.classList.remove('active');
+      }
+
+      function selectComposeContact(contact) {
+        currentComposeContactId = contact.id;
+        setComposeContactDisplay(contact);
+        updateComposeGreeting(contact.name);
+        updateComposeSignature(userProfile.name || '我');
+        closeComposeContactPicker();
+      }
+
+      function populateComposeContact() {
+        const nonGroup = contacts.filter(c => !c.isGroup);
         if (nonGroup.length === 0) {
-          select.innerHTML = '<option value="">暂无联系人</option>';
+          currentComposeContactId = null;
+          setComposeContactDisplay(null);
           updateComposeGreeting('');
           return;
         }
-        nonGroup.forEach(c => {
-          const opt = document.createElement('option');
-          opt.value = c.id;
-          opt.textContent = c.name;
-          select.appendChild(opt);
-        });
+        currentComposeContactId = nonGroup[0].id;
+        setComposeContactDisplay(nonGroup[0]);
         updateComposeGreeting(nonGroup[0].name);
         updateComposeSignature(userProfile.name || '我');
+        if (!composeContactPickerBound) {
+          composeContactPickerBound = true;
+          const display = document.getElementById('letterComposeContactDisplay');
+          if (display) display.addEventListener('click', openComposeContactPicker);
+        }
       }
 
       function updateComposeGreeting(name) {
@@ -28265,8 +28481,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
       }
 
       function sendCompose() {
-        const contactSelect = document.getElementById('letterComposeContact');
-        const contactId = parseInt(contactSelect.value);
+        const contactId = currentComposeContactId;
         const textarea = document.getElementById('letterComposeInput');
         const text = textarea.value.trim();
         const contact = contacts.find(c => c.id === contactId);
@@ -28960,14 +29175,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         sendCompose();
       });
 
-      // 收信人选择变化时更新称呼
-      document.getElementById('letterComposeContact').addEventListener('change', function() {
-        const contactId = parseInt(this.value);
-        const contact = contacts.find(c => c.id === contactId);
-        updateComposeGreeting(contact ? contact.name : '');
-        // 署名始终为当前用户
-        updateComposeSignature(userProfile.name || '我');
-      });
+
 
       // 信件返回按钮
       // ===== 匿名信箱事件绑定 =====
@@ -32379,11 +32587,11 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           document.getElementById('letterComposeModal').classList.add('active');
           // 预填当前联系人
           if (currentChatId !== null) {
-            var contactSelect = document.getElementById('letterComposeContact');
-            if (contactSelect) {
-              contactSelect.value = currentChatId;
-              var curContact = contacts.find(function(c){return c.id===currentChatId;});
-              updateComposeGreeting(curContact ? curContact.name : '');
+            var curContact = contacts.find(function(c){return c.id===currentChatId;});
+            if (curContact) {
+              currentComposeContactId = curContact.id;
+              setComposeContactDisplay(curContact);
+              updateComposeGreeting(curContact.name);
               updateComposeSignature(userProfile.name || '我');
             }
           }
