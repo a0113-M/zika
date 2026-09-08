@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="370";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="371";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v370</title>
+  <title>字卡 · 小手机 v371</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -19802,13 +19802,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (!delBtn) return;
         const id = parseInt(delBtn.dataset.id);
         if (!id) return;
-        if (confirm('确定要删除该联系人吗？')) {
+        const delTarget = contacts.find(c => c.id === id);
+        const cName = delTarget ? delTarget.name : '该联系人';
+        _zkConfirm('确定要删除该联系人吗？', '删除「' + cName + '」后将无法恢复', '删除', function () {
           const index = contacts.findIndex(c => c.id === id);
           if (index !== -1) { contacts.splice(index, 1); saveContacts(); refreshList(); }
-        } else {
+        }, function () {
           const item = delBtn.closest('.contact-item-wrap')?.querySelector('.contact-item');
           if (item) { item.classList.remove('swiped'); item.style.transform = 'translateX(0)'; item.style.transition = 'transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94)'; }
-        }
+        });
       });
       document.addEventListener('click', function (e) { if (!e.target.closest('.contact-item-wrap')) resetAllItems(); });
 
@@ -21266,6 +21268,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
         ov.querySelector('.cancel').addEventListener('click', close);
         ov.querySelector('.ok').addEventListener('click', function () { close(); onOk(); });
+        document.body.appendChild(ov);
+      }
+      function _zkConfirm(title, subtitle, okText, onOk, onCancel) {
+        var ov = document.createElement('div');
+        ov.className = 'tg-del-confirm';
+        ov.innerHTML = '<div class="tg-del-confirm-box"><div class="t">' + _tgEsc(title) + '</div><div class="s">' + _tgEsc(subtitle) + '</div><div class="tg-del-confirm-btns"><button type="button" class="cancel">取消</button><button type="button" class="ok">' + _tgEsc(okText) + '</button></div></div>';
+        function close() { if (ov.parentNode) ov.parentNode.removeChild(ov); }
+        ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+        ov.querySelector('.cancel').addEventListener('click', function () { close(); if (onCancel) onCancel(); });
+        ov.querySelector('.ok').addEventListener('click', function () { close(); if (onOk) onOk(); });
         document.body.appendChild(ov);
       }
       function _tgBindLongPress(el, onLong) {
