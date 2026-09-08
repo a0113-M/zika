@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="366";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="367";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v366</title>
+  <title>字卡 · 小手机 v367</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10572,8 +10572,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 
 /* Chat todo reminder card style */
-.msg-left.msg-todo-row { max-width: 100%; }
-.msg-left.msg-todo-row .msg-wrapper { max-width: 100%; }
+.msg-left.msg-todo-row { max-width: calc(100% - 36px); }
+.msg-left.msg-todo-row .msg-wrapper { width: 100%; max-width: 100%; }
+.msg-left.msg-todo-row .msg-todo-card { width: 100%; min-width: 0; }
 
 .msg-todo-card {
   display: inline-block !important;
@@ -18680,12 +18681,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             msgWrapper.appendChild(bubble);
 
             // 统一按 头像 -> 消息 -> 时间 的顺序添加
+            bubbleDiv.appendChild(avatar);
+            bubbleDiv.appendChild(msgWrapper);
             if (msg.isReminder || msg.isCelebration) {
               bubbleDiv.classList.add('msg-todo-row');
-              bubbleDiv.appendChild(msgWrapper);
             } else {
-              bubbleDiv.appendChild(avatar);
-              bubbleDiv.appendChild(msgWrapper);
               bubbleDiv.appendChild(timeLabel);
             }
             if (msg.from === 'me' && msg.read) {
