@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="363";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="364";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v363</title>
+  <title>字卡 · 小手机 v364</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10571,6 +10571,90 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   border-radius: 4px;
 }
 
+/* Chat todo reminder card style */
+.msg-todo-card {
+  display: inline-block !important;
+  min-width: 168px;
+  max-width: 100%;
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  background: #fff !important;
+  box-shadow: 0 2px 10px rgba(155,142,196,0.16) !important;
+}
+.msg-todo-card .mtc-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+.msg-todo-card.rem .mtc-head {
+  background: linear-gradient(135deg, #b8a5d8, #9b8ec4);
+}
+.msg-todo-card.cel .mtc-head {
+  background: linear-gradient(135deg, #a8e6a3, #7bc67e);
+}
+.msg-todo-card .mtc-body {
+  padding: 10px 12px 6px;
+  font-size: 13.5px;
+  color: #554a68;
+  line-height: 1.5;
+  word-break: break-word;
+}
+.msg-todo-card .mtc-item {
+  margin: 4px 12px 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #4a3f6b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  word-break: break-word;
+}
+.msg-todo-card.rem .mtc-item {
+  background: rgba(155,142,196,0.13);
+}
+.msg-todo-card.cel .mtc-item {
+  background: rgba(123,198,126,0.16);
+  color: #3a8a35;
+}
+.msg-todo-card .mtc-check {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+.msg-todo-card.rem .mtc-check {
+  border: 2px solid #9b8ec4;
+  color: #9b8ec4;
+  box-sizing: border-box;
+}
+.msg-todo-card.cel .mtc-check {
+  background: #7bc67e;
+  color: #fff;
+}
+.msg-todo-card .mtc-notes {
+  margin: 0 12px 10px;
+  padding: 6px 8px;
+  font-size: 11px;
+  color: #8b7aab;
+  background: rgba(155,142,196,0.08);
+  border-radius: 6px;
+  word-break: break-word;
+}
+
 /* Notes textarea in popup */
 .todo-prio-notes-area {
   margin: 10px 0 4px 0;
@@ -18513,25 +18597,37 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
             const bubble = document.createElement('div');
             bubble.className = 'msg-bubble';
-            if (msg.isReminder) {
-              bubble.classList.add('msg-reminder-bubble');
+            if (msg.isReminder || msg.isCelebration) {
+              bubble.classList.add('msg-todo-card');
+              bubble.classList.add(msg.isCelebration ? 'cel' : 'rem');
               bubble.innerHTML = '';
-              var rLabel = document.createElement('div');
-              rLabel.className = 'msg-reminder-label';
-              rLabel.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 待办提醒';
-              var rContent = document.createElement('div');
-              rContent.className = 'msg-reminder-content';
-              rContent.textContent = msg.text;
+              var tHead = document.createElement('div');
+              tHead.className = 'mtc-head';
+              tHead.innerHTML = msg.isCelebration
+                ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg><span>完成啦</span>'
+                : '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg><span>待办提醒</span>';
+              bubble.appendChild(tHead);
+              if (msg.cardText || !msg.todoText) {
+                var tBody = document.createElement('div');
+                tBody.className = 'mtc-body';
+                tBody.textContent = msg.cardText || msg.text;
+                bubble.appendChild(tBody);
+              }
+              if (msg.todoText) {
+                var tItem = document.createElement('div');
+                tItem.className = 'mtc-item';
+                var tCheck = document.createElement('span');
+                tCheck.className = 'mtc-check';
+                if (msg.isCelebration) tCheck.textContent = '✓';
+                tItem.appendChild(tCheck);
+                tItem.appendChild(document.createTextNode(msg.todoText));
+                bubble.appendChild(tItem);
+              }
               if (msg.reminderNotes) {
-                var rNotes = document.createElement('div');
-                rNotes.className = 'msg-reminder-notes';
-                rNotes.textContent = msg.reminderNotes;
-                bubble.appendChild(rLabel);
-                bubble.appendChild(rContent);
-                bubble.appendChild(rNotes);
-              } else {
-                bubble.appendChild(rLabel);
-                bubble.appendChild(rContent);
+                var tNotes = document.createElement('div');
+                tNotes.className = 'mtc-notes';
+                tNotes.textContent = msg.reminderNotes;
+                bubble.appendChild(tNotes);
               }
             } else {
               bubble.textContent = msg.text;
@@ -34651,7 +34747,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           if (!chatHistories[cid]) chatHistories[cid] = [];
           var now = new Date();
           var timeStr = (now.getHours()<10?'0':'') + now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes();
-          chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isReminder: true, reminderNotes: todo.notes || undefined });
+          chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isReminder: true, reminderNotes: todo.notes || undefined, cardText: cardText || '', todoText: todo.text || '' });
           if (typeof currentChatId !== 'undefined' && currentChatId === cid && typeof renderMessages === 'function') {
             renderMessages(cid);
           }
@@ -34974,7 +35070,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               if (!chatHistories[cid]) chatHistories[cid] = [];
               var now = new Date();
               var timeStr = (now.getHours()<10?'0':'') + now.getHours() + ':' + (now.getMinutes()<10?'0':'') + now.getMinutes();
-              chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isCelebration: true });
+              chatHistories[cid].push({ text: msgText, from: contact.name, time: timeStr, isCelebration: true, cardText: cardText || '', todoText: todo.text || '' });
               if (typeof currentChatId !== 'undefined' && currentChatId === cid && typeof renderMessages === 'function') {
                 renderMessages(cid);
               }
