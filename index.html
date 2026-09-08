@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="389";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="390";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v389</title>
+  <title>字卡 · 小手机 v390</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -19149,7 +19149,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (msg.from === 'me' && msg.read) {
               const readLabel = document.createElement('span');
               readLabel.style.cssText = 'font-size:10px;color:#b0b0b0;flex-shrink:0;align-self:flex-end;margin:0 2px;';
-              readLabel.textContent = '已读';
+              var _zkRd = contacts.find(function (c) { return c.id === contactId; });
+              readLabel.textContent = (_zkRd && _zkRd.readOnly) ? '已读不回' : '已读';
               bubbleDiv.appendChild(readLabel);
             }
 
@@ -20516,7 +20517,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const allCards = [];
         // 从 general 中收集，排除拍一拍（拍一拍单独处理）
         Object.keys(cardData.general).forEach(type => {
-          if (type === '拍一拍') return; // 拍一拍不参与普通聊天回复
+          if (type === '拍一拍' || type === '数字') return; // 拍一拍、数字不参与普通聊天回复
           (cardData.general[type] || []).forEach(item => {
             allCards.push({ name: item.name || item, useCount: item.useCount || 0, category: type });
           });
@@ -20529,7 +20530,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (allCards.length === 0) return "你还没有添加字卡，在首页侧边工具栏添加字卡，和我聊天吧！";
         const mergedTypes = [];
         Object.keys(cardData.general).forEach(type => {
-          if (type === '文字') return;
+          if (type === '文字' || type === '数字') return;
           if (localStorage.getItem(`merge_${type}`) === 'true') mergedTypes.push(type);
         });
         const MERGE_RATE = 0.3;
