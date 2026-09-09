@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="395";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="396";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v395</title>
+  <title>字卡 · 小手机 v396</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16174,6 +16174,16 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
     };
     window._zkNotifInit();
     window._zkScheduleCompanion();
+    window._zkGetPrimary = function () {
+      try { return getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#8E7CC3'; } catch (e) { return '#8E7CC3'; }
+    };
+    window._zkFloatSetState = function (mode, data) {
+      try {
+        if (window.AndroidFloat && window.AndroidFloat.setState) {
+          window.AndroidFloat.setState(JSON.stringify({ mode: String(mode || 'none'), data: data || {} }));
+        }
+      } catch (e) {}
+    };
     // ===== 键盘跟随 + 视口适配 =====
     (function () {
       const phone = document.querySelector('.phone');
@@ -23057,6 +23067,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (opt.media) o.media = opt.media;
         }
         _tgActive = o;
+        _zkFloatSetState('companion', { name: o.contactName || 'TA', avatar: o.contactName ? o.contactName.charAt(0).toUpperCase() : '?', color: _zkGetPrimary(), startTs: o.startTs || Date.now(), stats: '❤' + Math.round(o.bpm || 72) + ' · ' + (o.temp || 36.5).toFixed(1) + '℃', act: o.contactAct ? ('TA在' + o.contactAct) : '' });
         _tgSaveActive(_tgActive);
         _tgSelKey = null;
         _tgLastLineTs = 0;
@@ -23271,6 +23282,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var live = document.getElementById('tgLive');
         if (live) live.classList.remove('open');
         _tgActive = null;
+        _zkFloatSetState('none', {});
         try { localStorage.removeItem('zk_together_media_text'); } catch (e) {}
         _tgMediaEnsure();
         _tgClosePage();
@@ -37846,6 +37858,7 @@ function addToCart(goodId) {
 
         callState = 'active';
         callStartTime = Date.now();
+        _zkFloatSetState('call', { name: callContact ? callContact.name : 'TA', avatar: callContact ? (callContact.name ? callContact.name.charAt(0).toUpperCase() : '?') : '?', color: _zkGetPrimary(), type: callType, startTs: callStartTime });
         if (window.__callKbStart) window.__callKbStart();
         callRinging.classList.remove('active');
         callActiveView.classList.add('active');
@@ -37878,6 +37891,7 @@ function addToCart(goodId) {
       }
 
       function endCall() {
+        _zkFloatSetState('none', {});
         if (window.__callKbStop) window.__callKbStop();
         callState = 'idle';
         callOverlay.classList.remove('active');
