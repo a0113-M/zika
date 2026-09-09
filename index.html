@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="394";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="395";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v394</title>
+  <title>字卡 · 小手机 v395</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16140,6 +16140,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       try {
         var LN = window._zkGetLN();
         if (!LN) return;
+        try { LN.createChannel({ id: 'zk_high', name: '小手机提醒', description: '陪伴、来信与待办提醒', importance: 4, visibility: 1, lights: true, lightColor: '#B8D4EE', vibration: true }).catch(function () {}); } catch (e) {}
         LN.requestPermissions().then(function (p) { window._zkNotifReady = !!(p && p.display === 'granted'); }).catch(function () {});
       } catch (e) {}
     };
@@ -16147,7 +16148,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       try {
         var LN = window._zkGetLN();
         if (!LN) return;
-        var n = { id: Math.floor(Math.random() * 2147480000) + 1, title: String(title || '小手机'), body: String(body || ''), sound: null };
+        var n = { id: Math.floor(Math.random() * 2147480000) + 1, title: String(title || '小手机'), body: String(body || ''), importance: 4, channelId: 'zk_high' };
         if (at) n.schedule = { at: new Date(at), allowWhileIdle: true };
         LN.schedule({ notifications: [n] }).catch(function () {});
       } catch (e) {}
@@ -16168,7 +16169,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         var now = new Date();
         var at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
         if (at.getTime() <= Date.now()) at.setDate(at.getDate() + 1);
-        LN.schedule({ notifications: [{ id: 99001, title: '该陪陪 TA 啦', body: 'TA 在等你，去说说话吧～', sound: null, schedule: { at: at, allowWhileIdle: true, repeats: true, every: 'day' } }] }).catch(function () {});
+        LN.schedule({ notifications: [{ id: 99001, title: '该陪陪 TA 啦', body: 'TA 在等你，去说说话吧～', importance: 4, channelId: 'zk_high', schedule: { at: at, allowWhileIdle: true, repeats: true, every: 'day' } }] }).catch(function () {});
       } catch (e) {}
     };
     window._zkNotifInit();
@@ -27545,7 +27546,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var id = 910000 + Math.floor(t / 60000);
             var body = pool[Math.floor(Math.random() * pool.length)];
             ids.push(id);
-            LN.schedule({ notifications: [{ id: id, title: name + ' 发来消息', body: body, sound: null, schedule: { at: new Date(t), allowWhileIdle: true } }] }).catch(function () {});
+            LN.schedule({ notifications: [{ id: id, title: name + ' 发来消息', body: body, importance: 4, channelId: 'zk_high', schedule: { at: new Date(t), allowWhileIdle: true } }] }).catch(function () {});
           }
           try { localStorage.setItem('zk_pre_ids', JSON.stringify(ids)); } catch (e) {}
         } catch (e) {}
