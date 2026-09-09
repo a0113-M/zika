@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="390";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="392";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v390</title>
+  <title>字卡 · 小手机 v392</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -16131,6 +16131,48 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
 <script>
     (function(){window.onerror=function(msg,url,line){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}if(msg.indexOf("QuotaExceeded")<0)d.textContent="JS错误: "+msg+" @line "+line; else d.style.display="none";return false;};window.addEventListener("error",function(e){var d=document.getElementById("js-debug");if(!d){d=document.createElement("div");d.id="js-debug";d.style.cssText="position:fixed;top:6px;left:8px;right:8px;background:linear-gradient(135deg,#fff5f5,#fff0f6);border-left:3px solid var(--accent);border-radius:10px;z-index:99999;padding:8px 14px;font-size:11px;color:#6b4c6b;word-break:break-all;box-shadow:0 2px 12px rgba(155,142,196,0.15);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0.95;";document.body.prepend(d);}var m=e.message||e.filename||"";if(m.indexOf("QuotaExceeded")<0)d.textContent="资源错误: "+m; else d.style.display="none";});})();
+    // ===== 本地系统通知（Capacitor Local Notifications，网页版自动降级）=====
+    window._zkNotifReady = false;
+    window._zkGetLN = function () {
+      try { return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications) || null; } catch (e) { return null; }
+    };
+    window._zkNotifInit = function () {
+      try {
+        var LN = window._zkGetLN();
+        if (!LN) return;
+        LN.requestPermissions().then(function (p) { window._zkNotifReady = !!(p && p.display === 'granted'); }).catch(function () {});
+      } catch (e) {}
+    };
+    window._zkLocalNotify = function (title, body, at) {
+      try {
+        var LN = window._zkGetLN();
+        if (!LN) return;
+        var n = { id: Math.floor(Math.random() * 2147480000) + 1, title: String(title || '小手机'), body: String(body || ''), sound: null };
+        if (at) n.schedule = { at: new Date(at), allowWhileIdle: true };
+        LN.schedule({ notifications: [n] }).catch(function () {});
+      } catch (e) {}
+    };
+    window._zkMsgNotify = function (name, text) {
+      try {
+        var t = String(text == null ? '' : text);
+        if (t.indexOf('[语音]') === 0) { window._zkLocalNotify((name || 'TA') + ' 发来消息', '给你发了一条语音'); return; }
+        if (t.length > 40) t = t.slice(0, 40) + '…';
+        window._zkLocalNotify((name || 'TA') + ' 发来消息', t);
+      } catch (e) {}
+    };
+    window._zkScheduleCompanion = function () {
+      try {
+        var LN = window._zkGetLN(); if (!LN) return;
+        var hh = 20, mm = 0;
+        try { var c = JSON.parse(localStorage.getItem('zk_comp_remind') || '{}'); if (c.on === false) return; if (typeof c.h === 'number') hh = c.h; if (typeof c.m === 'number') mm = c.m; } catch (e) {}
+        var now = new Date();
+        var at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
+        if (at.getTime() <= Date.now()) at.setDate(at.getDate() + 1);
+        LN.schedule({ notifications: [{ id: 99001, title: '该陪陪 TA 啦', body: 'TA 在等你，去说说话吧～', sound: null, schedule: { at: at, allowWhileIdle: true, repeats: true, every: 'day' } }] }).catch(function () {});
+      } catch (e) {}
+    };
+    window._zkNotifInit();
+    window._zkScheduleCompanion();
     // ===== 键盘跟随 + 视口适配 =====
     (function () {
       const phone = document.querySelector('.phone');
@@ -19563,6 +19605,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               const _nowV = new Date();
               const _timeV = _nowV.getHours().toString().padStart(2, '0') + ':' + _nowV.getMinutes().toString().padStart(2, '0');
               chatHistories[_cid].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: _timeV });
+              try { window._zkMsgNotify(senderName, '[语音]'); } catch (e) {}
               renderMessages(_cid);
               _zkHideTyping(_cid);
               if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
@@ -19650,6 +19693,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               const _nowV = new Date();
               const _timeV = _nowV.getHours().toString().padStart(2, '0') + ':' + _nowV.getMinutes().toString().padStart(2, '0');
               chatHistories[currentChatId].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: _timeV });
+              try { window._zkMsgNotify(senderName, '[语音]'); } catch (e) {}
               renderMessages(currentChatId);
               if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
               return;
@@ -19693,6 +19737,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
             chatHistories[currentChatId].push(msgData);
             renderMessages(currentChatId);
+            try { window._zkMsgNotify(senderName, reply); } catch (e) {}
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
             if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(currentChatId, senderName);
           }
@@ -19848,6 +19893,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var _now = new Date();
           var _ts = _now.getHours().toString().padStart(2, '0') + ':' + _now.getMinutes().toString().padStart(2, '0');
           chatHistories[cid].push({ text: text, from: senderName, time: _ts, ai: true });
+          try { window._zkMsgNotify(senderName, text); } catch (e) {}
           renderMessages(cid);
           if (contact) { contact.lastMsg = text; contact.time = _ts; if (!cardView.classList.contains('hidden')) refreshList(); }
           if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(cid, senderName);
@@ -20228,6 +20274,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const _nowV2 = new Date();
             const _timeV2 = _nowV2.getHours().toString().padStart(2, '0') + ':' + _nowV2.getMinutes().toString().padStart(2, '0');
             chatHistories[_cid].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
+            try { window._zkMsgNotify(senderName, '[语音]'); } catch (e) {}
             renderMessages(_cid);
             _zkHideTyping(_cid);
             if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV2; if (!cardView.classList.contains('hidden')) refreshList(); }
@@ -25520,6 +25567,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           saveLetters();
           renderLetterList();
           updateLetterBadge();
+          try { window._zkLocalNotify(contact.name + ' 给你来信了', '去信箱看看 TA 想说什么吧～'); } catch (e) {}
         } catch(e) {}
       }
 
@@ -27438,6 +27486,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var now2 = new Date();
         var timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
         chatHistories[id].push({ text: reply, from: senderName, time: timeStr2 });
+        try { window._zkMsgNotify(senderName, reply); } catch (e) {}
         contact.lastMsg = reply; contact.time = timeStr2;
         if (currentChatId === id) renderMessages(id);
         if (cardView && cardView.classList && !cardView.classList.contains('hidden')) refreshList();
@@ -27449,7 +27498,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var now = Date.now();
           contacts.forEach(function (contact) {
             if (!contact || contact.readOnly || !contact.proactiveMsg) return;
-            var _cs = (typeof getContactProbSettings === 'function') ? (getContactProbSettings()[id] || {}) : {};
+            var _cs = (typeof getContactProbSettings === 'function') ? (getContactProbSettings()[contact.id] || {}) : {};
             var _iv = (typeof _cs.proactiveInterval === 'number' && _cs.proactiveInterval >= 5) ? _cs.proactiveInterval : ((typeof contact.proactiveInterval === 'number' && contact.proactiveInterval >= 5) ? contact.proactiveInterval : 60);
             var _pb = (typeof _cs.proactiveProb === 'number') ? _cs.proactiveProb : ((typeof contact.proactiveProb === 'number') ? contact.proactiveProb : 10);
             if (!(_pb > 0 && _iv > 0)) return;
@@ -27575,6 +27624,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
                 isPat: true,
                 isPatMessage: true
               });
+              try { window._zkMsgNotify(senderName, '拍了拍你'); } catch (e) {}
               renderMessages(_cid);
               _zkHideTyping(_cid);
               if (contact) {
@@ -27588,6 +27638,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               const now2 = new Date();
               const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
               chatHistories[_cid].push({ text: reply, from: senderName, time: timeStr2 });
+              try { window._zkMsgNotify(senderName, reply); } catch (e) {}
               renderMessages(_cid);
               _zkHideTyping(_cid);
               if (contact) {
@@ -35914,6 +35965,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           document.body.appendChild(toast);
           toast.querySelector('#toastCloseBtn').addEventListener('click', function() { toast.remove(); });
           setTimeout(function() { if (toast.parentNode) toast.remove(); }, 10000);
+          try { window._zkLocalNotify((isEarly ? '待办 · 提前提醒' : '待办 · 到点提醒'), '「' + todo.text + '」' + (isEarly ? ' (5分钟后)' : ' (到时间啦)')); } catch (e) {}
         }
         function injectTodoReminderChat(todo, isEarly) {
           var cid = todo.reminderContactId;
