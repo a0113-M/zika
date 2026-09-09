@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="392";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="393";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v392</title>
+  <title>字卡 · 小手机 v393</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -27512,6 +27512,46 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } catch (e) {}
       }
       setInterval(_zkProactiveTick, 60000);
+      window._zkPrescheduleProactive = function (_try) {
+        try {
+          var LN = window._zkGetLN(); if (!LN) return;
+          if (typeof contacts === 'undefined' || !contacts || !contacts.length) {
+            if (_try === undefined) _try = 0;
+            if (_try < 6) { setTimeout(function () { window._zkPrescheduleProactive(_try + 1); }, 3000); }
+            return;
+          }
+          var minIv = 0, prob = 0, name = 'TA';
+          contacts.forEach(function (contact) {
+            if (!contact || contact.readOnly || !contact.proactiveMsg) return;
+            var cs = (typeof getContactProbSettings === 'function') ? (getContactProbSettings()[contact.id] || {}) : {};
+            var iv = (typeof cs.proactiveInterval === 'number' && cs.proactiveInterval >= 5) ? cs.proactiveInterval : ((typeof contact.proactiveInterval === 'number' && contact.proactiveInterval >= 5) ? contact.proactiveInterval : 0);
+            var pb = (typeof cs.proactiveProb === 'number') ? cs.proactiveProb : ((typeof contact.proactiveProb === 'number') ? contact.proactiveProb : 0);
+            if (!(iv > 0 && pb > 0)) return;
+            if (minIv === 0 || iv < minIv) { minIv = iv; prob = pb; name = contact.name; }
+          });
+          if (!(minIv > 0 && prob > 0)) return;
+          var pool = ['想你了，出来冒个泡～', '好久不见，来说句话吧', '今天过得怎么样呀', '记得回我消息哦', '在忙吗，想你啦', '偷偷来看看你'];
+          var now = Date.now();
+          var start = now + 60 * 60000;
+          var end = now + 12 * 3600000;
+          var maxN = 20;
+          var ids = [];
+          try {
+            var old = JSON.parse(localStorage.getItem('zk_pre_ids') || '[]');
+            if (old && old.length) LN.cancel({ notifications: old.map(function (x) { return { id: x }; }) }).catch(function () {});
+          } catch (e) {}
+          for (var t = start; t <= end && ids.length < maxN; t += minIv * 60000) {
+            if (Math.random() * 100 >= prob) continue;
+            var id = 910000 + Math.floor(t / 60000);
+            var body = pool[Math.floor(Math.random() * pool.length)];
+            ids.push(id);
+            LN.schedule({ notifications: [{ id: id, title: name + ' 发来消息', body: body, sound: null, schedule: { at: new Date(t), allowWhileIdle: true } }] }).catch(function () {});
+          }
+          try { localStorage.setItem('zk_pre_ids', JSON.stringify(ids)); } catch (e) {}
+        } catch (e) {}
+      };
+      setTimeout(function () { window._zkPrescheduleProactive(); }, 5000);
+
 
       // ===== 拍一拍选择弹窗（移到这里，在 IIFE 内部） =====
       const patModal = document.getElementById('patModal');
