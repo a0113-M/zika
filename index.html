@@ -2,14 +2,14 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="396";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="404";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>字卡 · 小手机 v396</title>
+  <title>雾屿 · 小手机 v404</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -13875,7 +13875,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div id="letterListView" style="display:flex;flex-direction:column;height:100%;position:relative;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg-main);">
         <div class="letter-header">
           <button class="letter-back-btn" id="letterBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <span class="letter-title">信件</span>
+          <span class="letter-title">见字如晤</span>
           <span style="flex:1;"></span>
 
           <button id="letterComposeBtn" style="background:none;border:none;cursor:pointer;padding:6px 8px;color:var(--primary);font-size:13px;display:flex;align-items:center;gap:4px;">
@@ -27545,9 +27545,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (!(minIv > 0 && prob > 0)) return;
           var pool = ['想你了，出来冒个泡～', '好久不见，来说句话吧', '今天过得怎么样呀', '记得回我消息哦', '在忙吗，想你啦', '偷偷来看看你'];
           var now = Date.now();
-          var start = now + 60 * 60000;
+          var start = now + minIv * 60000;
           var end = now + 12 * 3600000;
-          var maxN = 20;
+          var maxN = 40;
           var ids = [];
           try {
             var old = JSON.parse(localStorage.getItem('zk_pre_ids') || '[]');
@@ -37845,6 +37845,38 @@ function addToCart(goodId) {
         setTimeout(function() { if (callState === 'ringing') acceptCall(); }, 2000);
       }
 
+      // v403: 悬浮窗状态同步——壁纸压缩成 320px 小图再推，避免超大 dataURL 拖垮悬浮 WebView
+      function _zkFloatBgMini(src, cb) {
+        try {
+          var m = /^url\((.*)\)$/.exec(src || '');
+          var u = m ? m[1].replace(/^["']|["']$/g, '') : '';
+          if (u.indexOf('data:') !== 0) { cb(src || ''); return; }
+          var img = new Image();
+          img.onload = function () {
+            try {
+              var w = 320, h = Math.max(1, Math.round(img.height * w / img.width));
+              var cv = document.createElement('canvas');
+              cv.width = w; cv.height = h;
+              cv.getContext('2d').drawImage(img, 0, 0, w, h);
+              cb('url(' + cv.toDataURL('image/jpeg', 0.75) + ')');
+            } catch (e) { cb(src || ''); }
+          };
+          img.onerror = function () { cb(src || ''); };
+          img.src = u;
+        } catch (e) { cb(src || ''); }
+      }
+      function _zkFloatPushCall() {
+        try {
+          if (!callStartTime) return;
+          var _flBg = '';
+          try { _flBg = (callType === 'video') ? (localStorage.getItem('zk_callVideoBgBig') || localStorage.getItem('zk_callWallpaper') || '') : (localStorage.getItem('zk_callWallpaper') || ''); } catch (e) {}
+          _zkFloatBgMini(_flBg, function (_mini) {
+            try {
+              _zkFloatSetState('call', { name: callContact ? callContact.name : 'TA', avatar: callContact ? (callContact.name ? callContact.name.charAt(0).toUpperCase() : '?') : '?', color: _zkGetPrimary(), type: callType, startTs: callStartTime, bg: _mini || '' });
+            } catch (e) {}
+          });
+        } catch (e) {}
+      }
       function acceptCall() {
         // 通话界面暗色底色（跟随主题色），不透明
         try {
@@ -37858,7 +37890,7 @@ function addToCart(goodId) {
 
         callState = 'active';
         callStartTime = Date.now();
-        _zkFloatSetState('call', { name: callContact ? callContact.name : 'TA', avatar: callContact ? (callContact.name ? callContact.name.charAt(0).toUpperCase() : '?') : '?', color: _zkGetPrimary(), type: callType, startTs: callStartTime });
+        _zkFloatPushCall();
         if (window.__callKbStart) window.__callKbStart();
         callRinging.classList.remove('active');
         callActiveView.classList.add('active');
@@ -37877,7 +37909,6 @@ function addToCart(goodId) {
         updateCallVisual();
         startCallTimer();
         startRippleAnimation();
-        scheduleAutoMessage();
         addCallChatMessage('system', '\u901a\u8bdd\u5df2\u5f00\u59cb');
         if (chatHistories[currentChatId]) {
           var now = new Date();
@@ -38124,6 +38155,7 @@ function addToCart(goodId) {
               try { localStorage.setItem('zk_callVideoBgBig', _callVideoBgBig); } catch(e) {}
             }
             updateVideoAvatars();
+            try { _zkFloatPushCall(); } catch(e) {}
           };
           reader.readAsDataURL(file);
           bgBigInput.value='';
@@ -38140,6 +38172,7 @@ function addToCart(goodId) {
               try { localStorage.setItem('zk_callVideoBgSmall', _callVideoBgSmall); } catch(e) {}
             }
             updateVideoAvatars();
+            try { _zkFloatPushCall(); } catch(e) {}
           };
           reader.readAsDataURL(file);
           bgSmallInput.value='';
@@ -38149,20 +38182,7 @@ function addToCart(goodId) {
       function createParticles() { /* no-op */ }
 
       function scheduleAutoMessage() {
-        if (callAutoMsgTimeout) clearTimeout(callAutoMsgTimeout);
-        var delay = 8000 + Math.random() * 7000;
-        callAutoMsgTimeout = setTimeout(function() {
-          if (callState !== 'active') return;
-          var cardText = getRandomCard();
-          addCallChatMessage('incoming', cardText);
-          scheduleAutoMessage();
-        }, delay);
-        // First message sooner
-        setTimeout(function() {
-          if (callState !== 'active') return;
-          var cardText = getRandomCard();
-          addCallChatMessage('incoming', cardText);
-        }, 3000 + Math.random() * 2000);
+        // v401: 通话中 TA 不再自顾自说话，改为用户发消息后按「回复速度」延迟回复（见 sendCallChatMessage）
       }
 
       // 当前显示的消息时间戳
@@ -38187,6 +38207,13 @@ function addToCart(goodId) {
             chatHistories[currentChatId].push({ text: text, from: 'them', time: timeStr });
           }
           if (currentChatId === callContactId) renderMessages(currentChatId);
+          var _zkAway = currentChatId !== callContactId;
+          var _zkMini = !!(callMiniWindow && callMiniWindow.classList.contains('active'));
+          if ((_zkAway || _zkMini || document.hidden) && callContact) {
+            var _nt = String(text == null ? '' : text);
+            try { var _cd2 = JSON.parse(text); if (_cd2 && _cd2.type) _nt = (_cd2.type === '文字') ? String(_cd2.name || _cd2.text || '') : ('[' + _cd2.type + ']'); } catch (e) {}
+            try { window._zkMsgNotify(callContact.name, _nt); } catch (e) {}
+          }
         }
 
         if (type === 'system') {
@@ -38251,6 +38278,33 @@ function addToCart(goodId) {
         }
       }
 
+      // v404: AI 联系人通话回复——走 API（人设/世界书/最近上下文），失败或未配置回退字卡
+      function _zkCallAiFetch(userText, cb) {
+        try {
+          var cfg = (typeof _zkGetApiCfg === 'function') ? _zkGetApiCfg() : {};
+          if (!cfg.url || !cfg.key) { cb(null); return; }
+          var sys = (typeof _zkPersonaPromptFor === 'function') ? _zkPersonaPromptFor(callContact) : '';
+          var hist = (typeof _zkBuildHistory === 'function') ? _zkBuildHistory(callContactId) : [];
+          var msgs = (sys ? [{ role: 'system', content: sys }] : []).concat(hist).concat([{ role: 'user', content: '（你们正在语音通话中）本轮用户对你说：「' + userText + '」。请像打电话聊天一样口语化、自然、简短地回复。' }]);
+          var _done = false;
+          var _timer = setTimeout(function () { if (!_done) { _done = true; cb(null); } }, 20000);
+          fetch(cfg.url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + cfg.key },
+            body: JSON.stringify({ model: cfg.model || 'gpt-4o-mini', messages: msgs })
+          }).then(function (r) {
+            return r.text().then(function (t) {
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              var d = JSON.parse(t);
+              var x = (d && d.choices && d.choices[0] && d.choices[0].message) ? d.choices[0].message.content : ((d && d.content) || '');
+              x = (typeof _zkCleanAi === 'function') ? _zkCleanAi(x) : String(x || '').trim();
+              if (_done) return;
+              _done = true; clearTimeout(_timer);
+              cb(x || null);
+            });
+          }).catch(function () { if (_done) return; _done = true; clearTimeout(_timer); cb(null); });
+        } catch (e) { cb(null); }
+      }
       function sendCallChatMessage() {
         var text = callChatInput.value.trim();
         if (!text) return;
@@ -38261,6 +38315,22 @@ function addToCart(goodId) {
           var timeStr = padTime(now);
           chatHistories[currentChatId].push({ text: text, from: 'me', time: timeStr, sentAt: Date.now() });
           if (currentChatId === callContactId) renderMessages(currentChatId);
+        }
+        if (callState === 'active' && callContact) {
+          if (callAutoMsgTimeout) clearTimeout(callAutoMsgTimeout);
+          var _rd = (typeof _zkGetReplyDelay === 'function') ? _zkGetReplyDelay(callContact) : (3000 + Math.random() * 3000);
+          callAutoMsgTimeout = setTimeout(function() {
+            if (callState !== 'active') return;
+            if (typeof _zkIsAiContact === 'function' && _zkIsAiContact(callContact)) {
+              // v404: AI 联系人走 API 回复，失败/未配置回退字卡
+              _zkCallAiFetch(text, function (_t) {
+                if (callState !== 'active') return;
+                addCallChatMessage('incoming', _t || getRandomCard());
+              });
+            } else {
+              addCallChatMessage('incoming', getRandomCard());
+            }
+          }, _rd);
         }
       }
 
@@ -38566,6 +38636,7 @@ function addToCart(goodId) {
                 callVideoSmall.style.backgroundPosition = 'center';
                 callVideoSmall.style.backgroundRepeat = 'no-repeat';
               }
+              try { _zkFloatPushCall(); } catch(e) {}
             };
             reader.readAsDataURL(file);
             fileInput.value = '';
