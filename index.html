@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v405</title>
+  <title>雾屿 · 小手机 v406</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9987,31 +9987,30 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-tabs-wrap { flex-shrink: 0; background: var(--bg-card); padding: 10px 12px 12px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
 .persona-tabs-wrap::-webkit-scrollbar { display: none; }
 .persona-tabs { display: inline-flex; gap: 8px; align-items: center; }
-.persona-tab { display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: 16px; background: #fff; border: 1px solid rgba(155,142,196,.35); color: #7a6fb0; font-size: 13px; cursor: pointer; }
+.persona-tab { display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: 16px; background: rgba(0,0,0,.05); border: none; color: #666; font-size: 13px; cursor: pointer; }
 .persona-tab.on { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
-.persona-tab-add { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 16px; border: 1px dashed rgba(155,142,196,.5); background: #fff; color: var(--primary); font-size: 18px; cursor: pointer; flex-shrink: 0; }
 .persona-body { flex: 1; overflow-y: auto; padding: 14px 14px 30px; -webkit-overflow-scrolling: touch; }
 .persona-empty { text-align: center; color: #999; font-size: 13px; padding: 60px 30px; line-height: 2; }
-.persona-empty .persona-empty-ico { font-size: 44px; margin-bottom: 6px; }
-.persona-sec-card { background: var(--bg-card); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(155,142,196,.10); }
+.persona-empty .persona-empty-ico { width: 64px; height: 64px; margin: 0 auto 12px; display: block; color: var(--primary); opacity: .38; }
+.persona-sec-card { background: var(--bg-card); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
 .persona-sec-item { display: flex; align-items: center; padding: 15px 14px; cursor: pointer; }
 .persona-sec-item:active { background: rgba(155,142,196,.08); }
 .persona-sec-info { flex: 1; min-width: 0; }
 .persona-sec-title { font-size: 15px; font-weight: 600; color: #333; }
 .persona-sec-sub { font-size: 12px; color: #999; margin-top: 3px; }
-.persona-sec-arrow { flex-shrink: 0; color: #c9c2e0; margin-left: 8px; font-size: 16px; }
+.persona-sec-arrow { flex-shrink: 0; color: #bbb; margin-left: 8px; font-size: 16px; }
 .persona-back-overview { display: inline-flex; align-items: center; border: none; background: transparent; color: var(--primary); font-size: 13px; cursor: pointer; padding: 2px 0 10px; }
 .persona-detail-title { font-size: 19px; font-weight: 700; color: #333; margin-bottom: 4px; }
 .persona-detail-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
-.persona-group-card { background: var(--bg-card); border-radius: 14px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(155,142,196,.10); }
-.persona-group-title { font-size: 13px; font-weight: 600; color: #7a6fb0; padding: 13px 14px 4px; }
-.persona-group-hint { font-size: 11px; color: #b3a8d6; padding: 0 14px 8px; line-height: 1.6; }
-.persona-field { display: flex; align-items: center; padding: 13px 14px; border-top: 1px solid rgba(155,142,196,.10); cursor: pointer; }
+.persona-group-card { background: var(--bg-card); border-radius: 14px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.05); }
+.persona-group-title { font-size: 13px; font-weight: 600; color: var(--primary); padding: 13px 14px 4px; }
+.persona-group-hint { font-size: 11px; color: var(--primary); opacity: .6; padding: 0 14px 8px; line-height: 1.6; }
+.persona-field { display: block; padding: 13px 14px; border-top: 1px solid rgba(0,0,0,.06); cursor: pointer; }
 .persona-field:active { background: rgba(155,142,196,.08); }
-.persona-field-label { flex-shrink: 0; font-size: 14px; color: #333; margin-right: 12px; }
-.persona-field-value { flex: 1; min-width: 0; text-align: right; font-size: 13px; color: #555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.persona-field-value.blank { color: #c4bdd9; }
-.persona-field-arrow { flex-shrink: 0; color: #c9c2e0; margin-left: 6px; font-size: 14px; }
+.persona-field-label { display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #999; margin: 0 0 5px; }
+.persona-field-value { display: block; font-size: 14px; color: #333; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+.persona-field-value.blank { color: #b8b8b8; }
+.persona-field-pen { font-size: 12px; color: var(--primary); opacity: .45; margin-left: 8px; }
 .persona-sheet-overlay { position: fixed; inset: 0; z-index: 2700; background: rgba(0,0,0,.42); display: none; align-items: flex-end; }
 .persona-sheet-overlay.show { display: flex; }
 .persona-sheet { width: 100%; background: #fff; border-radius: 18px 18px 0 0; padding: 20px 18px calc(20px + env(safe-area-inset-bottom)); animation: personaSheetUp .22s ease; }
@@ -10021,9 +10020,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-sheet input:focus, .persona-sheet textarea:focus { border-color: var(--primary); }
 .persona-sheet textarea { min-height: 96px; line-height: 1.6; }
 .persona-del-msg { text-align: center; color: #666; font-size: 13px; line-height: 1.7; margin-bottom: 4px; }
+.persona-menu-sheet { background: #fff; border-radius: 14px; overflow: hidden; margin: 0 14px calc(18px + env(safe-area-inset-bottom)); }
+.persona-menu-btn { display: block; width: 100%; text-align: center; padding: 15px 0; background: #fff; border: none; border-bottom: 1px solid rgba(0,0,0,.06); font-size: 15px; color: #333; cursor: pointer; }
+.persona-menu-btn.danger { color: #e55a5a; }
+.persona-menu-btn:last-of-type { border-bottom: none; }
 .persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
 .persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
-.persona-sheet-actions button:first-child { background: #f1edfb; color: #7a6fb0; }
+.persona-sheet-actions button:first-child { background: #f3f3f3; color: #777; }
 .persona-sheet-actions button:last-child { background: var(--primary); color: #fff; font-weight: 600; }
 .diary-fab {
   position: absolute;
@@ -14859,7 +14862,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   </div>
   <div class="persona-tabs-wrap"><div class="persona-tabs" id="personaTabs"></div></div>
   <div class="persona-body" id="personaHome">
-    <div class="persona-empty" id="personaEmpty"><div class="persona-empty-ico">👤</div><div>还没有人物档案<br>点右上方的 ＋ 创建一个吧<br>可以记录TA的名字、喜好、习惯<br>和你们之间的一切</div></div>
+    <div class="persona-empty" id="personaEmpty"><svg class="persona-empty-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.2" r="3.6"/><path d="M4.8 20.2c.4-3.8 3.4-5.9 7.2-5.9s6.8 2.1 7.2 5.9"/></svg><div>还没有人物档案<br>点右上角 ⋮ 创建一个吧<br>可以记录TA的名字、喜好、习惯<br>和你们之间的一切</div></div>
     <div class="persona-sec-list" id="personaSecList"></div>
   </div>
   <div class="persona-body" id="personaDetail" style="display:none">
@@ -14871,7 +14874,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   <div class="persona-sheet-overlay" id="personaNameOverlay">
     <div class="persona-sheet">
       <h3>新建人物</h3>
-      <input type="text" id="personaNameInput" placeholder="TA的名字，例如：沈星回" maxlength="20">
+      <input type="text" id="personaNameInput" placeholder="TA的名字，例如：张三" maxlength="20">
       <div class="persona-sheet-actions"><button id="personaNameCancel">取消</button><button id="personaNameOk">确定</button></div>
     </div>
   </div>
@@ -14880,6 +14883,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <h3 id="personaEditLabel">编辑</h3>
       <textarea id="personaEditInput" placeholder=""></textarea>
       <div class="persona-sheet-actions"><button id="personaEditCancel">取消</button><button id="personaEditOk">保存</button></div>
+    </div>
+  </div>
+  <div class="persona-sheet-overlay" id="personaMenuOverlay">
+    <div class="persona-menu-sheet">
+      <button class="persona-menu-btn" id="personaMenuAdd">新建人物</button>
+      <button class="persona-menu-btn danger" id="personaMenuDel" style="display:none;">删除当前人物</button>
+      <button class="persona-menu-btn" id="personaMenuCancel">取消</button>
     </div>
   </div>
   <div class="persona-sheet-overlay" id="personaDelOverlay">
@@ -34651,7 +34661,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   var SECTIONS = [
     {id:'who', title:'TA是谁', sub:'基本资料 · 世界设定 · 存在方式', groups:[
       {title:'基本资料', fields:[
-        ['who.nickname','昵称','例如：沈星回'],['who.call','称呼','例如：宝宝'],['who.birthday','生日','例如：10月16日'],['who.age','年龄','例如：未知（二十几岁吧）'],['who.identity','身份','例如：猎人'],['who.personality','性格','例如：安静、慢热，其实很温柔'],['who.look','外貌','头发、眼睛、常穿的衣服……'],['who.intro','自我介绍','如果TA要介绍自己，会怎么说？']]},
+        ['who.nickname','昵称','例如：张三'],['who.call','称呼','例如：宝宝'],['who.birthday','生日','例如：10月16日'],['who.age','年龄','例如：未知（二十几岁吧）'],['who.identity','身份','例如：猎人'],['who.personality','性格','例如：安静、慢热，其实很温柔'],['who.look','外貌','头发、眼睛、常穿的衣服……'],['who.intro','自我介绍','如果TA要介绍自己，会怎么说？']]},
       {title:'世界设定', fields:[
         ['who.from','来自哪里','例如：梦的另一边'],['who.world','属于什么世界','例如：梦境 / 现实的倒影'],['who.relation','与现实世界的关系','例如：偶尔重叠，大多时候平行']]},
       {title:'存在方式', hint:'不用写成绝对设定，「不固定」「说不好」也是答案。', fields:[
@@ -34701,13 +34711,10 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   function renderTabs(){
     var w = $('personaTabs'), h = '';
     for (var i=0;i<personas.length;i++){ var p = personas[i]; h += '<button class="persona-tab'+(p.id===cur?' on':'')+'" data-pid="'+p.id+'">'+esc(pName(p))+'</button>'; }
-    h += '<button class="persona-tab-add" id="personaAddBtn">＋</button>';
     w.innerHTML = h;
-    var add = $('personaAddBtn');
-    if (add) add.onclick = function(){ $('personaNameInput').value=''; $('personaNameOverlay').classList.add('show'); setTimeout(function(){ $('personaNameInput').focus(); },100); };
     var tabs = w.querySelectorAll('.persona-tab');
     for (var j=0;j<tabs.length;j++){ tabs[j].onclick = function(){ cur = this.getAttribute('data-pid'); localStorage.setItem(CURKEY,cur); renderTabs(); showHome(); }; }
-    $('personaMoreBtn').style.display = personas.length && curP() ? '' : 'none';
+    $('personaMenuDel').style.display = curP() ? '' : 'none';
   }
   function renderSecList(){
     var p = curP(), h = '';
@@ -34731,7 +34738,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       if (grp.hint) h += '<div class="persona-group-hint">'+grp.hint+'</div>';
       for (var f=0;f<grp.fields.length;f++){
         var fd = grp.fields[f], v = p.fields[fd[0]];
-        h += '<div class="persona-field" data-key="'+fd[0]+'"><span class="persona-field-label">'+fd[1]+'</span><span class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):'未记录')+'</span><span class="persona-field-arrow">›</span></div>';
+        h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):'点击填写')+'</div></div>';
       }
       h += '</div>';
     }
@@ -34778,11 +34785,20 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   });
   $('personaEditCancel').addEventListener('click', function(){ closeSheet('personaEditOverlay'); });
   $('personaEditOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaEditOverlay'); });
+  function openNameSheet(){ $('personaNameInput').value=''; $('personaNameOverlay').classList.add('show'); setTimeout(function(){ $('personaNameInput').focus(); },100); }
   $('personaMoreBtn').addEventListener('click', function(){
+    $('personaMenuDel').style.display = curP() ? '' : 'none';
+    $('personaMenuOverlay').classList.add('show');
+  });
+  $('personaMenuAdd').addEventListener('click', function(){ closeSheet('personaMenuOverlay'); openNameSheet(); });
+  $('personaMenuDel').addEventListener('click', function(){
+    closeSheet('personaMenuOverlay');
     var p = curP(); if (!p) return;
     $('personaDelMsg').textContent = '删除「'+pName(p)+'」的档案？所有记录将无法找回。';
     $('personaDelOverlay').classList.add('show');
   });
+  $('personaMenuCancel').addEventListener('click', function(){ closeSheet('personaMenuOverlay'); });
+  $('personaMenuOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaMenuOverlay'); });
   $('personaDelCancel').addEventListener('click', function(){ closeSheet('personaDelOverlay'); });
   $('personaDelOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaDelOverlay'); });
   $('personaDelOk').addEventListener('click', function(){
