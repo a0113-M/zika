@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v406</title>
+  <title>雾屿 · 小手机 v407</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10020,10 +10020,15 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-sheet input:focus, .persona-sheet textarea:focus { border-color: var(--primary); }
 .persona-sheet textarea { min-height: 96px; line-height: 1.6; }
 .persona-del-msg { text-align: center; color: #666; font-size: 13px; line-height: 1.7; margin-bottom: 4px; }
-.persona-menu-sheet { background: #fff; border-radius: 14px; overflow: hidden; margin: 0 14px calc(18px + env(safe-area-inset-bottom)); }
+.persona-menu-sheet { flex: 1; background: #fff; border-radius: 14px; overflow: hidden; margin: 0 14px calc(18px + env(safe-area-inset-bottom)); }
 .persona-menu-btn { display: block; width: 100%; text-align: center; padding: 15px 0; background: #fff; border: none; border-bottom: 1px solid rgba(0,0,0,.06); font-size: 15px; color: #333; cursor: pointer; }
 .persona-menu-btn.danger { color: #e55a5a; }
 .persona-menu-btn:last-of-type { border-bottom: none; }
+.persona-list-item { padding: 13px 14px; border-top: 1px solid rgba(0,0,0,.06); font-size: 14px; color: #333; line-height: 1.65; white-space: pre-wrap; word-break: break-word; cursor: pointer; }
+.persona-list-item:active { background: rgba(0,0,0,.04); }
+.persona-list-empty { padding: 12px 14px 2px; font-size: 12px; color: #b8b8b8; }
+.persona-list-add { display: block; width: 100%; padding: 13px 0; background: none; border: none; border-top: 1px solid rgba(0,0,0,.06); color: var(--primary); font-size: 13px; cursor: pointer; }
+.persona-edit-del { display: none; width: 100%; margin-top: 12px; padding: 12px 0; background: none; border: none; color: #e55a5a; font-size: 14px; cursor: pointer; }
 .persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
 .persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
 .persona-sheet-actions button:first-child { background: #f3f3f3; color: #777; }
@@ -14883,6 +14888,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <h3 id="personaEditLabel">编辑</h3>
       <textarea id="personaEditInput" placeholder=""></textarea>
       <div class="persona-sheet-actions"><button id="personaEditCancel">取消</button><button id="personaEditOk">保存</button></div>
+      <button class="persona-edit-del" id="personaEditDel">删除本条</button>
     </div>
   </div>
   <div class="persona-sheet-overlay" id="personaMenuOverlay">
@@ -34688,8 +34694,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         ['item.common','常用物品','例如：一台旧相机'],['item.fav','喜欢的东西','例如：薄荷糖'],['item.gift','互赠的礼物','例如：你送的围巾'],['item.share','共有的东西','例如：一把伞的约定']]}
     ]},
     {id:'dream', title:'TA的梦境', sub:'TA做过的、愿意让你知道的梦', groups:[
-      {title:'梦境', fields:[
-        ['dream.told','TA说过的梦','例如：一片会发光的海'],['dream.guess','你猜的梦','例如：也许梦见过这里']]}
+      {title:'TA说过的梦', type:'list', lkey:'dream.told', lph:'例如：一片会发光的海'},
+      {title:'我做的与TA有关的梦', type:'list', lkey:'dream.mine', lph:'例如：梦见和TA一起走了很远的路'}
     ]},
     {id:'common', title:'我们的共同记录', sub:'第一次 · 共同经历 · 时间线', groups:[
       {title:'共同记录', fields:[
@@ -34701,7 +34707,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     ]}
   ];
   var $ = function(id){ return document.getElementById(id); };
-  var page = $('personaPage'), personas = [], cur = null, curSec = null, editKey = null;
+  var page = $('personaPage'), personas = [], cur = null, curSec = null, editKey = null, editList = null;
   function load(){ try { personas = JSON.parse(localStorage.getItem(PKEY) || '[]'); } catch(e){ personas = []; } }
   function save(){ localStorage.setItem(PKEY, JSON.stringify(personas)); }
   function curP(){ for (var i=0;i<personas.length;i++) if (personas[i].id===cur) return personas[i]; return null; }
@@ -34726,6 +34732,12 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   }
   function renderDetail(){
     var p = curP(); if (!p) return;
+    if (p.fields && (p.fields['dream.told'] || p.fields['dream.guess'])){
+      if (!p.lists) p.lists = {};
+      if (p.fields['dream.told'] && !(p.lists['dream.told'] && p.lists['dream.told'].length)) p.lists['dream.told'] = [{ id:'d'+Date.now(), text: p.fields['dream.told'] }];
+      if (p.fields['dream.guess'] && !(p.lists['dream.mine'] && p.lists['dream.mine'].length)) p.lists['dream.mine'] = [{ id:'d'+(Date.now()+1), text: p.fields['dream.guess'] }];
+      delete p.fields['dream.told']; delete p.fields['dream.guess']; save();
+    }
     var sec = null;
     for (var i=0;i<SECTIONS.length;i++) if (SECTIONS[i].id===curSec) sec = SECTIONS[i];
     if (!sec) return;
@@ -34736,19 +34748,31 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       var grp = sec.groups[g];
       h += '<div class="persona-group-card"><div class="persona-group-title">'+grp.title+'</div>';
       if (grp.hint) h += '<div class="persona-group-hint">'+grp.hint+'</div>';
+        if (grp.type === 'list'){
+          var arr = (p.lists && p.lists[grp.lkey]) || [];
+          if (!arr.length) h += '<div class="persona-list-empty">还没有记录</div>';
+          for (var L=0;L<arr.length;L++) h += '<div class="persona-list-item" data-lkey="'+grp.lkey+'" data-iid="'+arr[L].id+'">'+(esc(arr[L].text)||'&nbsp;')+'</div>';
+          h += '<button class="persona-list-add" data-lkey="'+grp.lkey+'">＋ 添加一条</button>';
+        } else {
       for (var f=0;f<grp.fields.length;f++){
         var fd = grp.fields[f], v = p.fields[fd[0]];
-        h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):'点击填写')+'</div></div>';
+        h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):fd[2])+</div></div>';
       }
       h += '</div>';
+        }
+        h += '</div>';
     }
     $('personaDetailGroups').innerHTML = h;
     var fs = $('personaDetailGroups').querySelectorAll('.persona-field');
     for (var k=0;k<fs.length;k++){ fs[k].onclick = function(){ openEdit(this.getAttribute('data-key')); }; }
-  }
-  function openEdit(key){
+    var lis = $('personaDetailGroups').querySelectorAll('.persona-list-item');
+    for (var m=0;m<lis.length;m++){ lis[m].onclick = function(){ openEditItem(this.getAttribute('data-lkey'), this.getAttribute('data-iid')); }; }
+    var adds = $('personaDetailGroups').querySelectorAll('.persona-list-add');
+    for (var n=0;n<adds.length;n++){ adds[n].onclick = function(){ openAddItem(this.getAttribute('data-lkey')); }; }
+  }  function openEdit(key){
     var p = curP(); if (!p) return;
-    editKey = key;
+    editKey = key; editList = null;
+    $('personaEditDel').style.display = 'none';
     var label='', ph='';
     for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++) for (var f=0;f<SECTIONS[i].groups[g].fields.length;f++){ var fd = SECTIONS[i].groups[g].fields[f]; if (fd[0]===key){ label=fd[1]; ph=fd[2]; } }
     $('personaEditLabel').textContent = label;
@@ -34780,10 +34804,64 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   $('personaNameCancel').addEventListener('click', function(){ closeSheet('personaNameOverlay'); });
   $('personaNameOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaNameOverlay'); });
   $('personaEditOk').addEventListener('click', function(){
-    var p = curP(); if (p && editKey){ p.fields[editKey] = $('personaEditInput').value.trim(); save(); }
-    closeSheet('personaEditOverlay'); renderDetail(); if (editKey==='who.nickname') renderTabs();
+    var p = curP();
+    if (p && editList){
+      var val = $('personaEditInput').value.trim();
+      var arr = getArr(editList.lkey);
+      if (editList.iid){ for (var i=0;i<arr.length;i++) if (arr[i].id===editList.iid) arr[i].text = val; }
+      else if (val) arr.push({ id: 'd'+Date.now(), text: val });
+      if (!arr.length) delete p.lists[editList.lkey];
+      save(); renderDetail();
+    } else if (p && editKey){
+      p.fields[editKey] = $('personaEditInput').value.trim(); save();
+      renderDetail(); if (editKey==='who.nickname') renderTabs();
+    }
+    closeSheet('personaEditOverlay');
   });
+  function findListMeta(lkey){
+    for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++){
+      var gp = SECTIONS[i].groups[g];
+      if (gp.type==='list' && gp.lkey===lkey) return { label: gp.title, ph: gp.lph };
+    }
+    return { label:'编辑', ph:'' };
+  }
+  function openListSheet(meta, text, deletable){
+    editKey = null;
+    $('personaEditLabel').textContent = meta.label;
+    var inp = $('personaEditInput');
+    inp.value = text || '';
+    inp.placeholder = meta.ph;
+    $('personaEditDel').style.display = deletable ? 'block' : 'none';
+    $('personaEditOverlay').classList.add('show');
+    setTimeout(function(){ inp.focus(); },100);
+  }
+  function openEditItem(lkey, iid){
+    var p = curP(); if (!p) return;
+    var arr = (p.lists && p.lists[lkey]) || [], it = null;
+    for (var i=0;i<arr.length;i++) if (arr[i].id===iid) it = arr[i];
+    if (!it) return;
+    editList = { lkey: lkey, iid: iid };
+    openListSheet(findListMeta(lkey), it.text, true);
+  }
+  function openAddItem(lkey){
+    var p = curP(); if (!p) return;
+    editList = { lkey: lkey, iid: null };
+    openListSheet(findListMeta(lkey), '', false);
+  }
+  function getArr(lkey){
+    var p = curP(); if (!p) return null;
+    if (!p.lists) p.lists = {};
+    if (!p.lists[lkey]) p.lists[lkey] = [];
+    return p.lists[lkey];
+  }
   $('personaEditCancel').addEventListener('click', function(){ closeSheet('personaEditOverlay'); });
+  $('personaEditDel').addEventListener('click', function(){
+    var p = curP(); if (!p || !editList) return;
+    var arr = (p.lists && p.lists[editList.lkey]) || [], nxt = [];
+    for (var i=0;i<arr.length;i++) if (arr[i].id!==editList.iid) nxt.push(arr[i]);
+    if (nxt.length) p.lists[editList.lkey] = nxt; else delete p.lists[editList.lkey];
+    save(); closeSheet('personaEditOverlay'); renderDetail();
+  });
   $('personaEditOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaEditOverlay'); });
   function openNameSheet(){ $('personaNameInput').value=''; $('personaNameOverlay').classList.add('show'); setTimeout(function(){ $('personaNameInput').focus(); },100); }
   $('personaMoreBtn').addEventListener('click', function(){
