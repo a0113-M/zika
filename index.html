@@ -34756,9 +34756,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         } else {
       for (var f=0;f<grp.fields.length;f++){
         var fd = grp.fields[f], v = p.fields[fd[0]];
-        h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):fd[2])+</div></div>';
+        h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):fd[2])+'</div></div>';
       }
-      h += '</div>';
         }
         h += '</div>';
     }
