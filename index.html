@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v404</title>
+  <title>雾屿 · 小手机 v405</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -9976,6 +9976,55 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 
 /* FAB */
+
+/* ===== 人物档案 persona ===== */
+.persona-page { position: fixed; inset: 0; z-index: 2600; background: var(--bg-main); display: none; flex-direction: column; }
+.persona-page.show { display: flex; }
+.persona-header { flex-shrink: 0; height: 52px; display: flex; align-items: center; padding: 0 14px; background: var(--bg-card); border-bottom: 1px solid rgba(155,142,196,.14); position: relative; }
+.persona-back { width: 34px; height: 34px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+.persona-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 16px; font-weight: 600; color: #333; }
+.persona-more { margin-left: auto; width: 34px; height: 34px; border: none; background: transparent; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #666; font-size: 20px; letter-spacing: 1px; }
+.persona-tabs-wrap { flex-shrink: 0; background: var(--bg-card); padding: 10px 12px 12px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.persona-tabs-wrap::-webkit-scrollbar { display: none; }
+.persona-tabs { display: inline-flex; gap: 8px; align-items: center; }
+.persona-tab { display: inline-flex; align-items: center; height: 32px; padding: 0 16px; border-radius: 16px; background: #fff; border: 1px solid rgba(155,142,196,.35); color: #7a6fb0; font-size: 13px; cursor: pointer; }
+.persona-tab.on { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
+.persona-tab-add { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 16px; border: 1px dashed rgba(155,142,196,.5); background: #fff; color: var(--primary); font-size: 18px; cursor: pointer; flex-shrink: 0; }
+.persona-body { flex: 1; overflow-y: auto; padding: 14px 14px 30px; -webkit-overflow-scrolling: touch; }
+.persona-empty { text-align: center; color: #999; font-size: 13px; padding: 60px 30px; line-height: 2; }
+.persona-empty .persona-empty-ico { font-size: 44px; margin-bottom: 6px; }
+.persona-sec-card { background: var(--bg-card); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 1px 4px rgba(155,142,196,.10); }
+.persona-sec-item { display: flex; align-items: center; padding: 15px 14px; cursor: pointer; }
+.persona-sec-item:active { background: rgba(155,142,196,.08); }
+.persona-sec-info { flex: 1; min-width: 0; }
+.persona-sec-title { font-size: 15px; font-weight: 600; color: #333; }
+.persona-sec-sub { font-size: 12px; color: #999; margin-top: 3px; }
+.persona-sec-arrow { flex-shrink: 0; color: #c9c2e0; margin-left: 8px; font-size: 16px; }
+.persona-back-overview { display: inline-flex; align-items: center; border: none; background: transparent; color: var(--primary); font-size: 13px; cursor: pointer; padding: 2px 0 10px; }
+.persona-detail-title { font-size: 19px; font-weight: 700; color: #333; margin-bottom: 4px; }
+.persona-detail-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
+.persona-group-card { background: var(--bg-card); border-radius: 14px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(155,142,196,.10); }
+.persona-group-title { font-size: 13px; font-weight: 600; color: #7a6fb0; padding: 13px 14px 4px; }
+.persona-group-hint { font-size: 11px; color: #b3a8d6; padding: 0 14px 8px; line-height: 1.6; }
+.persona-field { display: flex; align-items: center; padding: 13px 14px; border-top: 1px solid rgba(155,142,196,.10); cursor: pointer; }
+.persona-field:active { background: rgba(155,142,196,.08); }
+.persona-field-label { flex-shrink: 0; font-size: 14px; color: #333; margin-right: 12px; }
+.persona-field-value { flex: 1; min-width: 0; text-align: right; font-size: 13px; color: #555; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.persona-field-value.blank { color: #c4bdd9; }
+.persona-field-arrow { flex-shrink: 0; color: #c9c2e0; margin-left: 6px; font-size: 14px; }
+.persona-sheet-overlay { position: fixed; inset: 0; z-index: 2700; background: rgba(0,0,0,.42); display: none; align-items: flex-end; }
+.persona-sheet-overlay.show { display: flex; }
+.persona-sheet { width: 100%; background: #fff; border-radius: 18px 18px 0 0; padding: 20px 18px calc(20px + env(safe-area-inset-bottom)); animation: personaSheetUp .22s ease; }
+@keyframes personaSheetUp { from { transform: translateY(40%); opacity: .4; } to { transform: translateY(0); opacity: 1; } }
+.persona-sheet h3 { font-size: 16px; font-weight: 600; color: #333; text-align: center; margin-bottom: 16px; }
+.persona-sheet input, .persona-sheet textarea { width: 100%; box-sizing: border-box; border: 1px solid rgba(155,142,196,.3); border-radius: 10px; padding: 11px 12px; font-size: 14px; color: #333; background: #faf8ff; outline: none; resize: none; font-family: inherit; }
+.persona-sheet input:focus, .persona-sheet textarea:focus { border-color: var(--primary); }
+.persona-sheet textarea { min-height: 96px; line-height: 1.6; }
+.persona-del-msg { text-align: center; color: #666; font-size: 13px; line-height: 1.7; margin-bottom: 4px; }
+.persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
+.persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
+.persona-sheet-actions button:first-child { background: #f1edfb; color: #7a6fb0; }
+.persona-sheet-actions button:last-child { background: var(--primary); color: #fff; font-weight: 600; }
 .diary-fab {
   position: absolute;
   bottom: 20px; right: 16px;
@@ -14800,13 +14849,54 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
 
   <!-- 日记页面 -->
-  <div class="diary-page" id="diaryPage">
+  
+<!-- 人物档案页面 -->
+<div class="persona-page" id="personaPage">
+  <div class="persona-header">
+    <button class="persona-back" id="personaBackBtn"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg></button>
+    <span class="persona-title">人物档案</span>
+    <button class="persona-more" id="personaMoreBtn">⋮</button>
+  </div>
+  <div class="persona-tabs-wrap"><div class="persona-tabs" id="personaTabs"></div></div>
+  <div class="persona-body" id="personaHome">
+    <div class="persona-empty" id="personaEmpty"><div class="persona-empty-ico">👤</div><div>还没有人物档案<br>点右上方的 ＋ 创建一个吧<br>可以记录TA的名字、喜好、习惯<br>和你们之间的一切</div></div>
+    <div class="persona-sec-list" id="personaSecList"></div>
+  </div>
+  <div class="persona-body" id="personaDetail" style="display:none">
+    <button class="persona-back-overview" id="personaBackOverview">‹ 返回总览</button>
+    <div class="persona-detail-title" id="personaDetailTitle"></div>
+    <div class="persona-detail-sub" id="personaDetailSub"></div>
+    <div id="personaDetailGroups"></div>
+  </div>
+  <div class="persona-sheet-overlay" id="personaNameOverlay">
+    <div class="persona-sheet">
+      <h3>新建人物</h3>
+      <input type="text" id="personaNameInput" placeholder="TA的名字，例如：沈星回" maxlength="20">
+      <div class="persona-sheet-actions"><button id="personaNameCancel">取消</button><button id="personaNameOk">确定</button></div>
+    </div>
+  </div>
+  <div class="persona-sheet-overlay" id="personaEditOverlay">
+    <div class="persona-sheet">
+      <h3 id="personaEditLabel">编辑</h3>
+      <textarea id="personaEditInput" placeholder=""></textarea>
+      <div class="persona-sheet-actions"><button id="personaEditCancel">取消</button><button id="personaEditOk">保存</button></div>
+    </div>
+  </div>
+  <div class="persona-sheet-overlay" id="personaDelOverlay">
+    <div class="persona-sheet">
+      <h3>删除人物</h3>
+      <p class="persona-del-msg" id="personaDelMsg"></p>
+      <div class="persona-sheet-actions"><button id="personaDelCancel">取消</button><button id="personaDelOk" style="background:#e55a5a;">删除</button></div>
+    </div>
+  </div>
+</div>
+<div class="diary-page" id="diaryPage">
     <div class="diary-header">
       <button class="diary-back" id="diaryBackBtn">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
       </button>
       <span class="diary-title">日记</span>
-      <button class="diary-fav-btn" id="diaryFavBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button>
+      <button class="diary-fav-btn" id="diaryPersonaBtn" title="人物档案"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></button><button class="diary-fav-btn" id="diaryFavBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button>
     </div>
     <div class="diary-category-bar" id="diaryCategoryBar"></div>
     <!-- 分类管理弹窗 -->
@@ -34556,6 +34646,155 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
       var diaryPage = document.getElementById('diaryPage');
       var diaryBackBtn = document.getElementById('diaryBackBtn');
+;(function(){
+  var PKEY = 'wuyu_personas_v1', CURKEY = 'wuyu_persona_cur_v1';
+  var SECTIONS = [
+    {id:'who', title:'TA是谁', sub:'基本资料 · 世界设定 · 存在方式', groups:[
+      {title:'基本资料', fields:[
+        ['who.nickname','昵称','例如：沈星回'],['who.call','称呼','例如：宝宝'],['who.birthday','生日','例如：10月16日'],['who.age','年龄','例如：未知（二十几岁吧）'],['who.identity','身份','例如：猎人'],['who.personality','性格','例如：安静、慢热，其实很温柔'],['who.look','外貌','头发、眼睛、常穿的衣服……'],['who.intro','自我介绍','如果TA要介绍自己，会怎么说？']]},
+      {title:'世界设定', fields:[
+        ['who.from','来自哪里','例如：梦的另一边'],['who.world','属于什么世界','例如：梦境 / 现实的倒影'],['who.relation','与现实世界的关系','例如：偶尔重叠，大多时候平行']]},
+      {title:'存在方式', hint:'不用写成绝对设定，「不固定」「说不好」也是答案。', fields:[
+        ['who.seen','能否被看见','例如：很少，但没有真切见过'],['who.touch','能否被触碰','例如：记忆里没有感觉'],['who.mode','存在方式','例如：通常在身边，但不一定能被直接观察'],['who.where','平时在哪里','例如：可能就在身边，感觉不到，不过应该不会很远'],['who.leave','是否会离开','例如：会离开一阵子，但总会回来'],['who.special','特殊能力 / 特殊设定','例如：能让房间变得安静']]}
+    ]},
+    {id:'like', title:'TA的喜好', sub:'喜欢 / 不喜欢 / 偏好', groups:[
+      {title:'喜好', fields:[
+        ['like.fav','喜欢','例如：雨天的窗边'],['like.dis','不喜欢','例如：吵闹的地方'],['like.prefer','小偏好','例如：泡面要泡满三分钟']]}
+    ]},
+    {id:'habit', title:'TA的习惯', sub:'日常 · 小动作 · 表达 · 陪伴', groups:[
+      {title:'习惯', fields:[
+        ['habit.daily','日常习惯','例如：睡前会看一会儿星星'],['habit.gesture','小动作','例如：思考时会摸耳垂'],['habit.express','表达方式','例如：话不多，但都会做到'],['habit.accompany','陪伴习惯','例如：安静地待在旁边']]}
+    ]},
+    {id:'along', title:'TA与我的相处', sub:'称呼 · 态度 · 亲密 · 陪伴的方式', groups:[
+      {title:'相处', fields:[
+        ['along.callme','怎么称呼我','例如：小家伙'],['along.attitude','对我的态度','例如：嘴上嫌弃，行动诚实'],['along.intimate','亲密程度','例如：灵魂伴侣'],['along.way','陪伴方式','例如：半夜也愿意陪我聊天']]}
+    ]},
+    {id:'place', title:'TA的位置感', sub:'TA常出现的位置与方位', groups:[
+      {title:'位置感', fields:[
+        ['place.often','常出现的位置','例如：窗边'],['place.dir','方位感','例如：总在身后半步的地方']]}
+    ]},
+    {id:'item', title:'TA的物品', sub:'常用 · 喜欢 · 互赠 · 共有', groups:[
+      {title:'物品', fields:[
+        ['item.common','常用物品','例如：一台旧相机'],['item.fav','喜欢的东西','例如：薄荷糖'],['item.gift','互赠的礼物','例如：你送的围巾'],['item.share','共有的东西','例如：一把伞的约定']]}
+    ]},
+    {id:'dream', title:'TA的梦境', sub:'TA做过的、愿意让你知道的梦', groups:[
+      {title:'梦境', fields:[
+        ['dream.told','TA说过的梦','例如：一片会发光的海'],['dream.guess','你猜的梦','例如：也许梦见过这里']]}
+    ]},
+    {id:'common', title:'我们的共同记录', sub:'第一次 · 共同经历 · 时间线', groups:[
+      {title:'共同记录', fields:[
+        ['common.first','第一次','例如：第一次说话是在梦里'],['common.exp','共同经历','例如：一起看过一场流星'],['common.line','时间线','例如：从2026年春天到现在']]}
+    ]},
+    {id:'ifw', title:'当前IF世界', sub:'TA在这个世界里的身份与变化', groups:[
+      {title:'IF世界', fields:[
+        ['ifw.id','TA的身份','例如：同班同学'],['ifw.set','这个世界的设定','例如：平行的小镇'],['ifw.diff','与主世界的不同','例如：没有了猎人的宿命']]}
+    ]}
+  ];
+  var $ = function(id){ return document.getElementById(id); };
+  var page = $('personaPage'), personas = [], cur = null, curSec = null, editKey = null;
+  function load(){ try { personas = JSON.parse(localStorage.getItem(PKEY) || '[]'); } catch(e){ personas = []; } }
+  function save(){ localStorage.setItem(PKEY, JSON.stringify(personas)); }
+  function curP(){ for (var i=0;i<personas.length;i++) if (personas[i].id===cur) return personas[i]; return null; }
+  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+  function pName(p){ return (p.fields && (p.fields['who.nickname'] || p.fields['who.name'])) || '未命名'; }
+  function closeSheet(ov){ $(ov).classList.remove('show'); }
+  function renderTabs(){
+    var w = $('personaTabs'), h = '';
+    for (var i=0;i<personas.length;i++){ var p = personas[i]; h += '<button class="persona-tab'+(p.id===cur?' on':'')+'" data-pid="'+p.id+'">'+esc(pName(p))+'</button>'; }
+    h += '<button class="persona-tab-add" id="personaAddBtn">＋</button>';
+    w.innerHTML = h;
+    var add = $('personaAddBtn');
+    if (add) add.onclick = function(){ $('personaNameInput').value=''; $('personaNameOverlay').classList.add('show'); setTimeout(function(){ $('personaNameInput').focus(); },100); };
+    var tabs = w.querySelectorAll('.persona-tab');
+    for (var j=0;j<tabs.length;j++){ tabs[j].onclick = function(){ cur = this.getAttribute('data-pid'); localStorage.setItem(CURKEY,cur); renderTabs(); showHome(); }; }
+    $('personaMoreBtn').style.display = personas.length && curP() ? '' : 'none';
+  }
+  function renderSecList(){
+    var p = curP(), h = '';
+    $('personaEmpty').style.display = p ? 'none' : '';
+    if (p) for (var i=0;i<SECTIONS.length;i++){ var sec = SECTIONS[i]; h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="'+sec.id+'"><div class="persona-sec-info"><div class="persona-sec-title">'+sec.title+'</div><div class="persona-sec-sub">'+sec.sub+'</div></div><span class="persona-sec-arrow">›</span></div></div>'; }
+    $('personaSecList').innerHTML = h;
+    var items = $('personaSecList').querySelectorAll('.persona-sec-item');
+    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ showDetail(this.getAttribute('data-sid')); }; }
+  }
+  function renderDetail(){
+    var p = curP(); if (!p) return;
+    var sec = null;
+    for (var i=0;i<SECTIONS.length;i++) if (SECTIONS[i].id===curSec) sec = SECTIONS[i];
+    if (!sec) return;
+    $('personaDetailTitle').textContent = sec.title;
+    $('personaDetailSub').textContent = sec.sub;
+    var h = '';
+    for (var g=0;g<sec.groups.length;g++){
+      var grp = sec.groups[g];
+      h += '<div class="persona-group-card"><div class="persona-group-title">'+grp.title+'</div>';
+      if (grp.hint) h += '<div class="persona-group-hint">'+grp.hint+'</div>';
+      for (var f=0;f<grp.fields.length;f++){
+        var fd = grp.fields[f], v = p.fields[fd[0]];
+        h += '<div class="persona-field" data-key="'+fd[0]+'"><span class="persona-field-label">'+fd[1]+'</span><span class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):'未记录')+'</span><span class="persona-field-arrow">›</span></div>';
+      }
+      h += '</div>';
+    }
+    $('personaDetailGroups').innerHTML = h;
+    var fs = $('personaDetailGroups').querySelectorAll('.persona-field');
+    for (var k=0;k<fs.length;k++){ fs[k].onclick = function(){ openEdit(this.getAttribute('data-key')); }; }
+  }
+  function openEdit(key){
+    var p = curP(); if (!p) return;
+    editKey = key;
+    var label='', ph='';
+    for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++) for (var f=0;f<SECTIONS[i].groups[g].fields.length;f++){ var fd = SECTIONS[i].groups[g].fields[f]; if (fd[0]===key){ label=fd[1]; ph=fd[2]; } }
+    $('personaEditLabel').textContent = label;
+    var inp = $('personaEditInput');
+    inp.value = p.fields[key] || '';
+    inp.placeholder = ph;
+    $('personaEditOverlay').classList.add('show');
+    setTimeout(function(){ inp.focus(); },100);
+  }
+  function showHome(){ $('personaHome').style.display=''; $('personaDetail').style.display='none'; renderSecList(); }
+  function showDetail(sid){ curSec = sid; $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderDetail(); }
+  function openPersona(){
+    load(); cur = localStorage.getItem(CURKEY) || null;
+    if (!curP() && personas.length) cur = personas[0].id;
+    page.classList.add('show'); renderTabs(); showHome();
+  }
+  // 入口：日记页右上角人像按钮
+  $('diaryPersonaBtn').addEventListener('click', function(e){ e.stopPropagation(); openPersona(); });
+  $('personaBackBtn').addEventListener('click', function(){ if (cur) localStorage.setItem(CURKEY,cur); page.classList.remove('show'); });
+  $('personaBackOverview').addEventListener('click', showHome);
+  $('personaNameOk').addEventListener('click', function(){
+    var name = $('personaNameInput').value.trim();
+    if (!name){ $('personaNameInput').focus(); return; }
+    load();
+    var p = { id: 'p'+Date.now(), fields: { 'who.nickname': name } };
+    personas.push(p); cur = p.id; save(); localStorage.setItem(CURKEY,cur);
+    closeSheet('personaNameOverlay'); renderTabs(); showHome();
+  });
+  $('personaNameCancel').addEventListener('click', function(){ closeSheet('personaNameOverlay'); });
+  $('personaNameOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaNameOverlay'); });
+  $('personaEditOk').addEventListener('click', function(){
+    var p = curP(); if (p && editKey){ p.fields[editKey] = $('personaEditInput').value.trim(); save(); }
+    closeSheet('personaEditOverlay'); renderDetail(); if (editKey==='who.nickname') renderTabs();
+  });
+  $('personaEditCancel').addEventListener('click', function(){ closeSheet('personaEditOverlay'); });
+  $('personaEditOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaEditOverlay'); });
+  $('personaMoreBtn').addEventListener('click', function(){
+    var p = curP(); if (!p) return;
+    $('personaDelMsg').textContent = '删除「'+pName(p)+'」的档案？所有记录将无法找回。';
+    $('personaDelOverlay').classList.add('show');
+  });
+  $('personaDelCancel').addEventListener('click', function(){ closeSheet('personaDelOverlay'); });
+  $('personaDelOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaDelOverlay'); });
+  $('personaDelOk').addEventListener('click', function(){
+    load(); var nxt = [];
+    for (var i=0;i<personas.length;i++) if (personas[i].id!==cur) nxt.push(personas[i]);
+    personas = nxt; save();
+    cur = personas.length ? personas[0].id : null;
+    if (cur) localStorage.setItem(CURKEY,cur); else localStorage.removeItem(CURKEY);
+    closeSheet('personaDelOverlay'); renderTabs(); showHome();
+  });
+})();
+
       var diaryFeed = document.getElementById('diaryFeed');
       var diaryFab = document.getElementById('diaryFab');
       var diaryWriteOverlay = document.getElementById('diaryWriteOverlay');
