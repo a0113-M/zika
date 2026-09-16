@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v407</title>
+  <title>雾屿 · 小手机 v408</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10028,6 +10028,11 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-list-item:active { background: rgba(0,0,0,.04); }
 .persona-list-empty { padding: 12px 14px 2px; font-size: 12px; color: #b8b8b8; }
 .persona-list-add { display: block; width: 100%; padding: 13px 0; background: none; border: none; border-top: 1px solid rgba(0,0,0,.06); color: var(--primary); font-size: 13px; cursor: pointer; }
+.persona-dream-tabs { display: flex; background: rgba(0,0,0,.05); border-radius: 12px; padding: 4px; margin: 2px 0 14px; }
+.persona-dream-tab { flex: 1; text-align: center; padding: 9px 0; font-size: 13px; color: #888; border-radius: 9px; cursor: pointer; transition: all .15s; }
+.persona-dream-tab.on { background: var(--primary); color: #fff; font-weight: 600; }
+.persona-list-head { display: flex; justify-content: flex-end; padding: 8px 12px 2px; }
+.persona-list-add-inline { width: auto; flex: 0 0 auto; padding: 5px 12px; border-top: none; font-size: 13px; }
 .persona-edit-del { display: none; width: 100%; margin-top: 12px; padding: 12px 0; background: none; border: none; color: #e55a5a; font-size: 14px; cursor: pointer; }
 .persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
 .persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
@@ -34730,6 +34735,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     var items = $('personaSecList').querySelectorAll('.persona-sec-item');
     for (var k=0;k<items.length;k++){ items[k].onclick = function(){ showDetail(this.getAttribute('data-sid')); }; }
   }
+  var dreamTab = 0;
   function renderDetail(){
     var p = curP(); if (!p) return;
     if (p.fields && (p.fields['dream.told'] || p.fields['dream.guess'])){
@@ -34743,6 +34749,20 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     if (!sec) return;
     $('personaDetailTitle').textContent = sec.title;
     $('personaDetailSub').textContent = sec.sub;
+    var h = '';
+    var isDream = (curSec === 'dream' && sec.groups.length > 0 && sec.groups[0].type === 'list');
+    if (isDream){
+      if (dreamTab >= sec.groups.length) dreamTab = 0;
+      h += '<div class="persona-dream-tabs">';
+      for (var g=0;g<sec.groups.length;g++) h += '<div class="persona-dream-tab'+(g===dreamTab?' on':'')+'" data-g="'+g+'">'+sec.groups[g].title+'</div>';
+      h += '</div>';
+      var grp = sec.groups[dreamTab];
+      h += '<div class="persona-group-card"><div class="persona-list-head"><button class="persona-list-add persona-list-add-inline" data-lkey="'+grp.lkey+'">＋ 添加</button></div>';
+      var arr = (p.lists && p.lists[grp.lkey]) || [];
+      if (!arr.length) h += '<div class="persona-list-empty">还没有记录</div>';
+      for (var L=0;L<arr.length;L++) h += '<div class="persona-list-item" data-lkey="'+grp.lkey+'" data-iid="'+arr[L].id+'">'+(esc(arr[L].text)||'&nbsp;')+'</div>';
+      h += '</div>';
+    } else {
     var h = '';
     for (var g=0;g<sec.groups.length;g++){
       var grp = sec.groups[g];
@@ -34761,6 +34781,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         }
         h += '</div>';
     }
+    }
     $('personaDetailGroups').innerHTML = h;
     var fs = $('personaDetailGroups').querySelectorAll('.persona-field');
     for (var k=0;k<fs.length;k++){ fs[k].onclick = function(){ openEdit(this.getAttribute('data-key')); }; }
@@ -34768,6 +34789,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     for (var m=0;m<lis.length;m++){ lis[m].onclick = function(){ openEditItem(this.getAttribute('data-lkey'), this.getAttribute('data-iid')); }; }
     var adds = $('personaDetailGroups').querySelectorAll('.persona-list-add');
     for (var n=0;n<adds.length;n++){ adds[n].onclick = function(){ openAddItem(this.getAttribute('data-lkey')); }; }
+    var tabs = $('personaDetailGroups').querySelectorAll('.persona-dream-tab');
+    for (var q=0;q<tabs.length;q++){ tabs[q].onclick = function(){ dreamTab = parseInt(this.getAttribute('data-g'),10)||0; renderDetail(); }; }
   }  function openEdit(key){
     var p = curP(); if (!p) return;
     editKey = key; editList = null;
