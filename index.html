@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v408</title>
+  <title>雾屿 · 小手机 v409</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10031,6 +10031,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-dream-tabs { display: flex; background: rgba(0,0,0,.05); border-radius: 12px; padding: 4px; margin: 2px 0 14px; }
 .persona-dream-tab { flex: 1; text-align: center; padding: 9px 0; font-size: 13px; color: #888; border-radius: 9px; cursor: pointer; transition: all .15s; }
 .persona-dream-tab.on { background: var(--primary); color: #fff; font-weight: 600; }
+.persona-group-head { display: flex; justify-content: space-between; align-items: center; }
+.persona-group-head .persona-group-title { flex: 1 1 auto; }
+.persona-group-offbtn { flex: 0 0 auto; margin-right: 12px; padding: 4px 10px; background: none; border: 1px solid rgba(0,0,0,.12); border-radius: 20px; color: #999; font-size: 11px; cursor: pointer; }
+.persona-group-offcard { background: var(--bg-card); border-radius: 14px; margin-bottom: 12px; padding: 13px 14px; font-size: 12px; color: #b8b8b8; cursor: pointer; text-align: center; }
 .persona-list-head { display: flex; justify-content: flex-end; padding: 8px 12px 2px; }
 .persona-list-add-inline { width: auto; flex: 0 0 auto; padding: 5px 12px; border-top: none; font-size: 13px; }
 .persona-edit-del { display: none; width: 100%; margin-top: 12px; padding: 12px 0; background: none; border: none; color: #e55a5a; font-size: 14px; cursor: pointer; }
@@ -34702,12 +34706,16 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       {title:'TA说过的梦', type:'list', lkey:'dream.told', lph:'例如：一片会发光的海'},
       {title:'我做的与TA有关的梦', type:'list', lkey:'dream.mine', lph:'例如：梦见和TA一起走了很远的路'}
     ]},
-    {id:'common', title:'我们的共同记录', sub:'第一次 · 共同经历 · 时间线', groups:[
-      {title:'共同记录', fields:[
+    {id:'common', title:'我们的共同记录', sub:'原作与现在 · 第一次 · 共同经历 · 时间线', groups:[
+      {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[
+        ['common.o.first','第一次','例如：原作里的第一次相遇'],['common.o.exp','共同经历','例如：原作里一起经历的事'],['common.o.line','时间线','例如：原作第几章到结局']]},
+      {title:'现在', fields:[
         ['common.first','第一次','例如：第一次说话是在梦里'],['common.exp','共同经历','例如：一起看过一场流星'],['common.line','时间线','例如：从2026年春天到现在']]}
     ]},
-    {id:'ifw', title:'当前IF世界', sub:'TA在这个世界里的身份与变化', groups:[
-      {title:'IF世界', fields:[
+    {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', groups:[
+      {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[
+        ['ifw.o.id','TA原作的身份','例如：猎人'],['ifw.o.set','原作的世界','例如：边境小镇']]},
+      {title:'现在的IF世界', fields:[
         ['ifw.id','TA的身份','例如：同班同学'],['ifw.set','这个世界的设定','例如：平行的小镇'],['ifw.diff','与主世界的不同','例如：没有了猎人的宿命']]}
     ]}
   ];
@@ -34766,7 +34774,11 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     var h = '';
     for (var g=0;g<sec.groups.length;g++){
       var grp = sec.groups[g];
-      h += '<div class="persona-group-card"><div class="persona-group-title">'+grp.title+'</div>';
+      if (grp.offKey && p.fields[grp.offKey]){
+        h += '<div class="persona-group-offcard" data-offkey="'+grp.offKey+'">'+grp.title+'已隐藏 · 点击显示</div>';
+        continue;
+      }
+      h += '<div class="persona-group-card"><div class="persona-group-head"><span class="persona-group-title">'+grp.title+'</span>'+(grp.offKey?'<button class="persona-group-offbtn" data-offkey="'+grp.offKey+'">隐藏</button>':'')+'</div>';
       if (grp.hint) h += '<div class="persona-group-hint">'+grp.hint+'</div>';
         if (grp.type === 'list'){
           var arr = (p.lists && p.lists[grp.lkey]) || [];
@@ -34791,6 +34803,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     for (var n=0;n<adds.length;n++){ adds[n].onclick = function(){ openAddItem(this.getAttribute('data-lkey')); }; }
     var tabs = $('personaDetailGroups').querySelectorAll('.persona-dream-tab');
     for (var q=0;q<tabs.length;q++){ tabs[q].onclick = function(){ dreamTab = parseInt(this.getAttribute('data-g'),10)||0; renderDetail(); }; }
+    var offs = $('personaDetailGroups').querySelectorAll('[data-offkey]');
+    for (var r=0;r<offs.length;r++){ offs[r].onclick = function(){ var p2=curP(); if(!p2) return; var k2=this.getAttribute('data-offkey'); if (p2.fields[k2]) delete p2.fields[k2]; else p2.fields[k2]='1'; save(); renderDetail(); }; }
   }  function openEdit(key){
     var p = curP(); if (!p) return;
     editKey = key; editList = null;
