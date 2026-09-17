@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v415</title>
+  <title>雾屿 · 小手机 v416</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20932,6 +20932,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           const action = this.dataset.action;
           if (action === 'contact') openModal('contact');
           else if (action === 'group') openModal('group');
+          else if (action === 'mini-phone') {
+            cardView.classList.add('hidden');
+            if (momentsView) momentsView.classList.add('hidden');
+            phoneView.classList.remove('hidden');
+            navItems.forEach(b => b.classList.remove('active'));
+          }
           addMenu.classList.remove('show');
         });
       });
