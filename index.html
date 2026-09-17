@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v422</title>
+  <title>雾屿 · 小手机 v423</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -630,17 +630,14 @@
     .mp-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 2px; font-size: 14px; color: var(--primary-strong); }
     .mp-clock { font-weight: 700; font-size: 15px; }
     .mp-status { display: flex; align-items: center; gap: 6px; }
-    .mp-hero { text-align: center; padding: 6px 0 12px; }
-    .mp-avatar { font-size: 46px; line-height: 1; filter: drop-shadow(0 4px 8px rgba(var(--primary-rgba), .38)); }
-    .mp-hi { margin-top: 6px; font-size: 17px; font-weight: 700; color: var(--primary-deep); }
-    .mp-sub { margin-top: 3px; font-size: 12px; color: var(--text-muted); }
-    .mp-widgets { display: flex; flex-direction: column; gap: 10px; padding: 2px 16px 14px; }
-    .mp-widget-row { display: flex; gap: 10px; }
-    .mp-widget { background: rgba(255,255,255,.66); border-radius: 18px; padding: 12px 14px; box-shadow: 0 4px 14px rgba(var(--primary-rgba), .14); backdrop-filter: blur(8px); }
-    .mp-widget-clock { flex: 1.1; display: flex; flex-direction: column; justify-content: center; }
+    .mp-widgets { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px 16px 14px; }
+    .mp-widget { background: rgba(255,255,255,.66); border-radius: 18px; padding: 12px 14px; box-shadow: 0 4px 14px rgba(var(--primary-rgba), .14); backdrop-filter: blur(8px); touch-action: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mp-widget.dragging { opacity: .35; }
+    .mp-widget-ghost { position: fixed; z-index: 5000; pointer-events: none; opacity: .92; transform: scale(1.03); box-shadow: 0 12px 28px rgba(var(--primary-rgba), .35); }
+    .mp-widget-clock { display: flex; flex-direction: column; justify-content: center; }
     .mp-widget-clock .w-time { font-size: 30px; font-weight: 800; line-height: 1; color: var(--primary-deep); }
     .mp-widget-clock .w-date { margin-top: 6px; font-size: 12px; color: var(--text-secondary); }
-    .mp-widget-todo { flex: 1; cursor: pointer; display: flex; flex-direction: column; justify-content: center; }
+    .mp-widget-todo { display: flex; flex-direction: column; justify-content: center; }
     .mp-widget-todo .w-label { font-size: 11px; color: var(--text-muted); }
     .mp-widget-todo .w-num { font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.2; }
     .mp-widget-todo .w-text { margin-top: 4px; font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -12636,30 +12633,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <span class="mp-clock" id="mpTime">--:--</span>
           <div class="mp-status">
             <svg class="mp-wifi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114 0"/><path d="M8.5 16.2a5 5 0 017 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-            <svg class="mp-battery" width="24" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1.5" width="18" height="11" rx="2.5"/><rect x="20" y="5" width="2.5" height="4" rx="0.8" fill="currentColor" stroke="none"/><rect x="3.5" y="4" width="11" height="6" rx="1.2" fill="currentColor" stroke="none"/></svg>
+            <svg class="mp-battery" width="24" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1.5" width="18" height="11" rx="2.5"/><rect x="20" y="5" width="2.5" height="4" rx="0.8" fill="currentColor" stroke="none"/><rect id="mpBatteryFill" x="3.5" y="4" width="11" height="6" rx="1.2" fill="currentColor" stroke="none"/></svg>
           </div>
         </div>
-        <div class="mp-hero">
-          <div class="mp-avatar">☁️</div>
-          <div class="mp-sub">长按图标可以自由摆放</div>
-        </div>
-        <div class="mp-widgets" id="mpWidgets">
-          <div class="mp-widget-row">
-            <div class="mp-widget mp-widget-clock">
-              <div class="w-time" id="mpWTime">--:--</div>
-              <div class="w-date" id="mpWDate">-</div>
-            </div>
-            <div class="mp-widget mp-widget-todo" id="mpWidgetTodo">
-              <div class="w-label">待办</div>
-              <div class="w-num" id="mpWTodoNum">0</div>
-              <div class="w-text" id="mpWTodoText">今天没有待办~</div>
-            </div>
-          </div>
-          <div class="mp-widget mp-widget-quote">
-            <span class="w-emoji">☁️</span>
-            <span class="w-quote" id="mpWQuote">慢慢来，比较快。</span>
-          </div>
-        </div>
+        <div class="mp-widgets" id="mpWidgets"></div>
         <div class="mp-grid" id="mpGrid"></div>
         <div class="mp-dock" id="mpDock"></div>
       </div>
@@ -21272,6 +21249,51 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
+        var WIDGET_ALL = ['clock', 'todo', 'quote'];
+        var widgetOrder = (function () {
+          try {
+            var a = JSON.parse(localStorage.getItem('zk_phone_widgets') || 'null');
+            if (Array.isArray(a) && a.length === WIDGET_ALL.length) {
+              var seen = {};
+              for (var i = 0; i < a.length; i++) seen[a[i]] = true;
+              var ok = true;
+              for (var j = 0; j < WIDGET_ALL.length; j++) { if (!seen[WIDGET_ALL[j]]) { ok = false; break; } }
+              if (ok) return a;
+            }
+          } catch (e) {}
+          return WIDGET_ALL.slice();
+        })();
+
+        function saveWidgetOrder() {
+          try { localStorage.setItem('zk_phone_widgets', JSON.stringify(widgetOrder)); } catch (e) {}
+        }
+
+        function widgetHtml(kind) {
+          if (kind === 'clock') {
+            return '<div class="mp-widget mp-widget-clock" data-widget="clock"><div class="w-time" id="mpWTime">--:--</div><div class="w-date" id="mpWDate">-</div></div>';
+          }
+          if (kind === 'todo') {
+            return '<div class="mp-widget mp-widget-todo" data-widget="todo"><div class="w-label">待办</div><div class="w-num" id="mpWTodoNum">0</div><div class="w-text" id="mpWTodoText">今天没有待办~</div></div>';
+          }
+          return '<div class="mp-widget mp-widget-quote" data-widget="quote"><span class="w-emoji">☁️</span><span class="w-quote" id="mpWQuote">慢慢来，比较快。</span></div>';
+        }
+
+        var widgetDrag = null;
+        var widgetGhost = null;
+        var widgetDragTriggered = false;
+
+        function renderWidgetCards() {
+          var w = document.getElementById('mpWidgets');
+          if (!w) return;
+          var html = '';
+          for (var i = 0; i < widgetOrder.length; i++) html += widgetHtml(widgetOrder[i]);
+          w.innerHTML = html;
+          if (widgetDrag) {
+            var cur = w.querySelector('.mp-widget[data-widget="' + widgetDrag.kind + '"]');
+            if (cur) cur.classList.add('dragging');
+          }
+        }
+
         function renderWidgets() {
           var now = new Date();
           var wt = document.getElementById('mpWTime');
@@ -21300,16 +21322,137 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           else { txt.textContent = undone[0].text || ('还有 ' + undone.length + ' 件待办'); }
         }
 
-        function refreshWidgets() { renderWidgets(); renderTodoWidget(); }
+        function refreshWidgets() {
+          renderWidgetCards();
+          renderWidgets();
+          renderTodoWidget();
+        }
 
-        var widgetTodo = document.getElementById('mpWidgetTodo');
-        if (widgetTodo) {
-          widgetTodo.addEventListener('click', function () {
+        function widgetTargetAt(cx, cy) {
+          var w = document.getElementById('mpWidgets');
+          if (!w) return null;
+          var cards = w.querySelectorAll('.mp-widget');
+          for (var i = 0; i < cards.length; i++) {
+            var c = cards[i];
+            if (c.getAttribute('data-widget') === (widgetDrag ? widgetDrag.kind : null)) continue;
+            var r = c.getBoundingClientRect();
+            if (cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom) {
+              return c.getAttribute('data-widget');
+            }
+          }
+          return null;
+        }
+
+        function startWidgetDrag(kind, card, sx, sy) {
+          widgetDrag = { kind: kind, lastHit: null };
+          widgetDragTriggered = true;
+          var r = card.getBoundingClientRect();
+          widgetGhost = card.cloneNode(true);
+          var gids = widgetGhost.querySelectorAll('[id]');
+          for (var k = 0; k < gids.length; k++) gids[k].removeAttribute('id');
+          widgetGhost.classList.add('mp-widget-ghost');
+          widgetGhost.style.width = r.width + 'px';
+          widgetGhost.style.height = r.height + 'px';
+          widgetGhost.style.left = (sx - r.width / 2) + 'px';
+          widgetGhost.style.top = (sy - 24) + 'px';
+          document.body.appendChild(widgetGhost);
+          card.classList.add('dragging');
+          if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+        }
+
+        function moveWidgetDrag(ev) {
+          if (!widgetDrag || !widgetGhost) return;
+          var gw = widgetGhost.getBoundingClientRect();
+          widgetGhost.style.left = (ev.clientX - gw.width / 2) + 'px';
+          widgetGhost.style.top = (ev.clientY - 24) + 'px';
+          var hit = widgetTargetAt(ev.clientX, ev.clientY);
+          if (hit && hit !== widgetDrag.lastHit) {
+            widgetDrag.lastHit = hit;
+            var from = widgetOrder.indexOf(widgetDrag.kind);
+            var to = widgetOrder.indexOf(hit);
+            if (from >= 0 && to >= 0 && from !== to) {
+              widgetOrder.splice(from, 1);
+              widgetOrder.splice(to, 0, widgetDrag.kind);
+              saveWidgetOrder();
+              renderWidgetCards();
+              renderWidgets();
+              renderTodoWidget();
+            }
+          }
+        }
+
+        function endWidgetDrag(ev) {
+          if (widgetGhost && widgetGhost.parentNode) widgetGhost.parentNode.removeChild(widgetGhost);
+          widgetGhost = null;
+          widgetDrag = null;
+          renderWidgetCards();
+          renderWidgets();
+          renderTodoWidget();
+          setTimeout(function () { widgetDragTriggered = false; }, 100);
+        }
+
+        function updateBattery(level, charging) {
+          var fill = document.getElementById('mpBatteryFill');
+          if (!fill) return;
+          var lvl = Math.max(0, Math.min(1, level));
+          fill.setAttribute('width', (lvl * 13.5).toFixed(2));
+          if (charging) { fill.setAttribute('fill', '#34b96f'); }
+          else if (lvl <= 0.2) { fill.setAttribute('fill', '#e0483e'); }
+          else { fill.setAttribute('fill', 'currentColor'); }
+        }
+
+        function initBattery() {
+          if (typeof navigator !== 'undefined' && navigator.getBattery) {
+            try {
+              navigator.getBattery().then(function (b) {
+                function sync() { updateBattery(b.level, b.charging); }
+                sync();
+                b.addEventListener('levelchange', sync);
+                b.addEventListener('chargingchange', sync);
+              }).catch(function () {});
+            } catch (e) {}
+          }
+        }
+
+        (function () {
+          var w = document.getElementById('mpWidgets');
+          if (!w) return;
+          w.addEventListener('click', function (e) {
+            if (widgetDragTriggered) return;
+            var card = e.target.closest('.mp-widget[data-widget="todo"]');
+            if (!card) return;
             var tv = document.getElementById('todoView');
             if (tv) tv.classList.add('show');
             if (typeof renderTodoList === 'function') renderTodoList();
           });
-        }
+          w.addEventListener('pointerdown', function (e) {
+            var card = e.target.closest('.mp-widget');
+            if (!card) return;
+            var kind = card.getAttribute('data-widget');
+            if (widgetOrder.indexOf(kind) < 0) return;
+            var sx = e.clientX, sy = e.clientY;
+            var timer = setTimeout(function () { startWidgetDrag(kind, card, sx, sy); }, 340);
+            var onMove = function (ev) {
+              if (!widgetDrag) {
+                if (Math.abs(ev.clientX - sx) > 8 || Math.abs(ev.clientY - sy) > 8) clearTimeout(timer);
+              } else {
+                moveWidgetDrag(ev);
+              }
+            };
+            var onUp = function (ev) {
+              clearTimeout(timer);
+              document.removeEventListener('pointermove', onMove);
+              document.removeEventListener('pointerup', onUp);
+              document.removeEventListener('pointercancel', onUp);
+              if (widgetDrag) endWidgetDrag(ev);
+            };
+            document.addEventListener('pointermove', onMove);
+            document.addEventListener('pointerup', onUp);
+            document.addEventListener('pointercancel', onUp);
+          });
+        })();
+
+        initBattery();
 
         function indexAt(cx, cy) {
           if (!grid) return -1;
