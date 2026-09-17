@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v420</title>
+  <title>雾屿 · 小手机 v421</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -622,26 +622,42 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: linear-gradient(180deg, #e9e2f6 0%, #f5f0ff 46%, #f5f0ff 100%);
-      color: #555;
+      background: linear-gradient(180deg, var(--bg-soft2) 0%, var(--bg-main) 46%, var(--bg-main) 100%);
+      color: var(--text-main);
       overflow-y: auto;
       position: relative;
     }
-    .mp-top { display: flex; align-items: center; gap: 6px; padding: 14px 16px 2px; font-size: 14px; color: #6d6484; }
+    .mp-top { display: flex; align-items: center; gap: 6px; padding: 14px 16px 2px; font-size: 14px; color: var(--primary-strong); }
     .mp-clock { font-weight: 700; font-size: 15px; }
-    .mp-hero { text-align: center; padding: 8px 0 18px; }
-    .mp-avatar { font-size: 54px; line-height: 1; filter: drop-shadow(0 5px 10px rgba(155,142,196,.38)); }
-    .mp-hi { margin-top: 8px; font-size: 17px; font-weight: 700; color: #4a3f6b; }
-    .mp-sub { margin-top: 3px; font-size: 12px; color: #a99fbe; }
-    .mp-grid { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 22px; padding: 4px 12px 22px; }
-    .mp-app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mp-hero { text-align: center; padding: 6px 0 12px; }
+    .mp-avatar { font-size: 46px; line-height: 1; filter: drop-shadow(0 4px 8px rgba(var(--primary-rgba), .38)); }
+    .mp-hi { margin-top: 6px; font-size: 17px; font-weight: 700; color: var(--primary-deep); }
+    .mp-sub { margin-top: 3px; font-size: 12px; color: var(--text-muted); }
+    .mp-widgets { display: flex; flex-direction: column; gap: 10px; padding: 2px 16px 14px; }
+    .mp-widget-row { display: flex; gap: 10px; }
+    .mp-widget { background: rgba(255,255,255,.66); border-radius: 18px; padding: 12px 14px; box-shadow: 0 4px 14px rgba(var(--primary-rgba), .14); backdrop-filter: blur(8px); }
+    .mp-widget-clock { flex: 1.1; display: flex; flex-direction: column; justify-content: center; }
+    .mp-widget-clock .w-time { font-size: 30px; font-weight: 800; line-height: 1; color: var(--primary-deep); }
+    .mp-widget-clock .w-date { margin-top: 6px; font-size: 12px; color: var(--text-secondary); }
+    .mp-widget-todo { flex: 1; cursor: pointer; display: flex; flex-direction: column; justify-content: center; }
+    .mp-widget-todo .w-label { font-size: 11px; color: var(--text-muted); }
+    .mp-widget-todo .w-num { font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.2; }
+    .mp-widget-todo .w-text { margin-top: 4px; font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mp-widget-quote { display: flex; align-items: center; gap: 10px; }
+    .mp-widget-quote .w-emoji { font-size: 22px; }
+    .mp-widget-quote .w-quote { font-size: 12px; line-height: 1.6; color: var(--text-secondary); }
+    .mp-grid { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 20px; padding: 4px 12px 20px; }
+    .mp-app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: none; }
     .mp-app:active .mp-ico { transform: scale(.88); }
-    .mp-ico { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 30px; background: #fff; border-radius: 16px; box-shadow: 0 3px 10px rgba(155,142,196,.18); transition: transform .12s; }
-    .mp-ico svg { width: 28px; height: 28px; color: #8d7ab8; display: block; }
-    .mp-name { font-size: 12px; color: #5a5770; }
+    .mp-app.dragging { opacity: .35; }
+    .mp-ico { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 30px; background: var(--bg-card); border-radius: 16px; box-shadow: 0 3px 10px rgba(var(--primary-rgba), .18); transition: transform .12s; }
+    .mp-ico svg { width: 28px; height: 28px; color: var(--primary); display: block; }
+    .mp-name { font-size: 12px; color: var(--text-secondary); }
+    .mp-ghost { position: fixed; z-index: 5000; pointer-events: none; }
+    .mp-ghost .mp-ico { width: 62px; height: 62px; font-size: 32px; transform: scale(1.06); box-shadow: 0 12px 28px rgba(var(--primary-rgba), .35); }
     .mp-dock { margin-top: auto; display: flex; justify-content: center; padding: 12px 16px 22px; }
-    .mp-dock-box { display: flex; gap: 26px; padding: 10px 26px; background: rgba(255,255,255,.78); border-radius: 24px; box-shadow: 0 8px 24px rgba(155,142,196,.2); backdrop-filter: blur(8px); }
-    .mp-dock .mp-ico { background: rgba(255,255,255,.95); }
+    .mp-dock-box { display: flex; gap: 26px; padding: 10px 26px; background: rgba(255,255,255,.7); border-radius: 24px; box-shadow: 0 8px 24px rgba(var(--primary-rgba), .2); backdrop-filter: blur(8px); }
+    .mp-dock .mp-ico { background: rgba(255,255,255,.92); }
 
     .hidden {
       display: none !important;
@@ -12617,12 +12633,29 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div id="phoneView" class="phone-view hidden">
         <div class="mp-top">
           <span class="mp-clock" id="mpTime">--:--</span>
-          <svg class="mp-wifi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6d6484;"><path d="M5 12.55a11 11 0 0114 0"/><path d="M8.5 16.2a5 5 0 017 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          <svg class="mp-wifi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114 0"/><path d="M8.5 16.2a5 5 0 017 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
         </div>
         <div class="mp-hero">
           <div class="mp-avatar">☁️</div>
           <div class="mp-hi">雾屿的小手机</div>
-          <div class="mp-sub">这些是为你准备的小应用</div>
+          <div class="mp-sub">长按图标可以自由摆放</div>
+        </div>
+        <div class="mp-widgets" id="mpWidgets">
+          <div class="mp-widget-row">
+            <div class="mp-widget mp-widget-clock">
+              <div class="w-time" id="mpWTime">--:--</div>
+              <div class="w-date" id="mpWDate">-</div>
+            </div>
+            <div class="mp-widget mp-widget-todo" id="mpWidgetTodo">
+              <div class="w-label">待办</div>
+              <div class="w-num" id="mpWTodoNum">0</div>
+              <div class="w-text" id="mpWTodoText">今天没有待办~</div>
+            </div>
+          </div>
+          <div class="mp-widget mp-widget-quote">
+            <span class="w-emoji">☁️</span>
+            <span class="w-quote" id="mpWQuote">慢慢来，比较快。</span>
+          </div>
         </div>
         <div class="mp-grid" id="mpGrid"></div>
         <div class="mp-dock" id="mpDock"></div>
@@ -21179,23 +21212,191 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
           chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>'
         };
-        var APPS = [['letters','信件'],['diary','日记'],['card','字卡'],['together','一起'],['todo','待办'],['activity','活动'],['ledger','记账'],['divine','占卜'],['theme','装扮'],['data','数据'],['api','API'],['settings','设置']];
+        var APP_NAMES = { letters:'信件', diary:'日记', card:'字卡', together:'一起', todo:'待办', activity:'活动', ledger:'记账', divine:'占卜', theme:'装扮', data:'数据', api:'API', settings:'设置' };
+        var APP_ORDER_DEFAULT = ['letters','diary','card','together','todo','activity','ledger','divine','theme','data','api','settings'];
+        var QUOTES = ['慢慢来，比较快。','今天也要对自己温柔一点。','云朵飘过来，把烦恼都带走啦。','你值得被好好对待。','把日子过成喜欢的样子。','偶尔发发呆，也挺好的。','世界很大，先照顾好自己。','下一次会更好。','保持可爱，保持热爱。','今天也是元气满满的一天。'];
         var DOCK = [['settings','设置'],['chat','聊天'],['home','主页']];
         function appHtml(action, name) {
           return '<div class="mp-app" data-action="' + action + '"><span class="mp-ico">' + (IC[action] || '') + '</span><span class="mp-name">' + name + '</span></div>';
         }
         var grid = document.getElementById('mpGrid');
-        if (grid) {
-          var gh = '';
-          for (var gi = 0; gi < APPS.length; gi++) gh += appHtml(APPS[gi][0], APPS[gi][1]);
-          grid.innerHTML = gh;
-        }
         var dock = document.getElementById('mpDock');
-        if (dock) {
+
+        var phoneApps = (function () {
+          try {
+            var a = JSON.parse(localStorage.getItem('zk_phone_apps') || 'null');
+            if (Array.isArray(a) && a.length === APP_ORDER_DEFAULT.length) {
+              var seen = {};
+              for (var i = 0; i < a.length; i++) seen[a[i]] = true;
+              var ok = true;
+              for (var j = 0; j < APP_ORDER_DEFAULT.length; j++) { if (!seen[APP_ORDER_DEFAULT[j]]) { ok = false; break; } }
+              if (ok) return a;
+            }
+          } catch (e) {}
+          return APP_ORDER_DEFAULT.slice();
+        })();
+        var drag = null;
+        var ghost = null;
+        var dragTriggered = false;
+
+        function savePhoneApps() {
+          try { localStorage.setItem('zk_phone_apps', JSON.stringify(phoneApps)); } catch (e) {}
+        }
+
+        function renderGrid() {
+          if (!grid) return;
+          var gh = '';
+          for (var gi = 0; gi < phoneApps.length; gi++) {
+            gh += appHtml(phoneApps[gi], APP_NAMES[phoneApps[gi]] || phoneApps[gi]);
+          }
+          grid.innerHTML = gh;
+          if (drag) {
+            var cur = grid.querySelector('.mp-app[data-action="' + drag.action + '"]');
+            if (cur) cur.classList.add('dragging');
+          }
+        }
+
+        function renderDock() {
+          if (!dock) return;
           var dh = '<div class="mp-dock-box">';
           for (var dj = 0; dj < DOCK.length; dj++) dh += appHtml(DOCK[dj][0], DOCK[dj][1]);
           dh += '</div>';
           dock.innerHTML = dh;
+        }
+
+        renderGrid();
+        renderDock();
+
+        function pad2(n) { return (n < 10 ? '0' : '') + n; }
+
+        function renderWidgets() {
+          var now = new Date();
+          var wt = document.getElementById('mpWTime');
+          if (wt) wt.textContent = pad2(now.getHours()) + ':' + pad2(now.getMinutes());
+          var wd = document.getElementById('mpWDate');
+          if (wd) {
+            var week = ['日','一','二','三','四','五','六'][now.getDay()];
+            wd.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 星期' + week;
+          }
+          var q = document.getElementById('mpWQuote');
+          if (q) {
+            var day = Math.floor(now.getTime() / 86400000);
+            q.textContent = QUOTES[((day % QUOTES.length) + QUOTES.length) % QUOTES.length];
+          }
+        }
+
+        function renderTodoWidget() {
+          var num = document.getElementById('mpWTodoNum');
+          var txt = document.getElementById('mpWTodoText');
+          if (!num || !txt) return;
+          var td = []; try { td = JSON.parse(localStorage.getItem('todos') || '[]'); } catch (e) {}
+          var undone = [];
+          for (var i = 0; i < td.length; i++) { if (!td[i].done) undone.push(td[i]); }
+          num.textContent = undone.length;
+          if (undone.length === 0) { txt.textContent = '今天没有待办，轻松一点~'; }
+          else { txt.textContent = undone[0].text || ('还有 ' + undone.length + ' 件待办'); }
+        }
+
+        function refreshWidgets() { renderWidgets(); renderTodoWidget(); }
+
+        var widgetTodo = document.getElementById('mpWidgetTodo');
+        if (widgetTodo) {
+          widgetTodo.addEventListener('click', function () {
+            var tv = document.getElementById('todoView');
+            if (tv) tv.classList.add('show');
+            if (typeof renderTodoList === 'function') renderTodoList();
+          });
+        }
+
+        function indexAt(cx, cy) {
+          if (!grid) return -1;
+          var rect = grid.getBoundingClientRect();
+          if (cx < rect.left || cx > rect.right || cy < rect.top || cy > rect.bottom) return -1;
+          var cols = 4;
+          var rows = Math.ceil(phoneApps.length / cols);
+          var col = Math.floor((cx - rect.left) / (rect.width / cols));
+          var row = Math.floor((cy - rect.top) / (rect.height / rows));
+          if (col < 0) col = 0; else if (col > cols - 1) col = cols - 1;
+          if (row < 0) row = 0; else if (row > rows - 1) row = rows - 1;
+          var idx = row * cols + col;
+          if (idx < 0) idx = 0; else if (idx > phoneApps.length - 1) idx = phoneApps.length - 1;
+          return idx;
+        }
+
+        function startDrag(action, el, sx, sy) {
+          drag = { action: action, lastIndex: phoneApps.indexOf(action) };
+          dragTriggered = true;
+          el.classList.add('dragging');
+          ghost = document.createElement('div');
+          ghost.className = 'mp-ghost';
+          ghost.innerHTML = appHtml(action, APP_NAMES[action] || action);
+          ghost.style.left = (sx - 36) + 'px';
+          ghost.style.top = (sy - 45) + 'px';
+          ghost.style.width = '72px';
+          ghost.style.height = '90px';
+          document.body.appendChild(ghost);
+          if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
+        }
+
+        function moveDrag(ev) {
+          if (!drag || !ghost) return;
+          ghost.style.left = (ev.clientX - 36) + 'px';
+          ghost.style.top = (ev.clientY - 45) + 'px';
+          var target = indexAt(ev.clientX, ev.clientY);
+          if (target >= 0 && target !== drag.lastIndex) {
+            var from = phoneApps.indexOf(drag.action);
+            if (from >= 0) {
+              phoneApps.splice(from, 1);
+              phoneApps.splice(target, 0, drag.action);
+            }
+            drag.lastIndex = target;
+            renderGrid();
+          }
+        }
+
+        function endDrag(ev) {
+          if (!drag) return;
+          var target = indexAt(ev.clientX, ev.clientY);
+          if (target >= 0) {
+            var from = phoneApps.indexOf(drag.action);
+            if (from >= 0 && from !== target) {
+              phoneApps.splice(from, 1);
+              phoneApps.splice(target, 0, drag.action);
+            }
+          }
+          if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost);
+          ghost = null;
+          drag = null;
+          savePhoneApps();
+          renderGrid();
+        }
+
+        if (grid) {
+          grid.addEventListener('pointerdown', function (e) {
+            var el = e.target.closest('.mp-app');
+            if (!el) return;
+            var action = el.getAttribute('data-action');
+            if (phoneApps.indexOf(action) < 0) return;
+            var sx = e.clientX, sy = e.clientY;
+            var timer = setTimeout(function () { startDrag(action, el, sx, sy); }, 340);
+            var onMove = function (ev) {
+              if (!drag) {
+                if (Math.abs(ev.clientX - sx) > 8 || Math.abs(ev.clientY - sy) > 8) clearTimeout(timer);
+              } else {
+                moveDrag(ev);
+              }
+            };
+            var onUp = function (ev) {
+              clearTimeout(timer);
+              document.removeEventListener('pointermove', onMove);
+              document.removeEventListener('pointerup', onUp);
+              document.removeEventListener('pointercancel', onUp);
+              if (drag) endDrag(ev);
+            };
+            document.addEventListener('pointermove', onMove);
+            document.addEventListener('pointerup', onUp);
+            document.addEventListener('pointercancel', onUp);
+          });
         }
         function zkOpenApp(action) {
           if (action === 'card') { document.getElementById('cardFeaturePage').classList.add('show'); return; }
@@ -21251,6 +21452,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         if (grid) {
           grid.addEventListener('click', function (e) {
+            if (dragTriggered) { dragTriggered = false; return; }
             var el = e.target.closest('.mp-app');
             if (!el) return;
             zkOpenApp(el.getAttribute('data-action'));
@@ -21270,10 +21472,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (mpEx) mpEx.addEventListener('click', closePhone);
         function tickClock() {
           var el = document.getElementById('mpTime');
-          if (!el) return;
-          var d = new Date(), hh = d.getHours(), mm = d.getMinutes();
-          el.textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+          if (el) {
+            var d = new Date(), hh = d.getHours(), mm = d.getMinutes();
+            el.textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+          }
+          renderWidgets();
         }
+        refreshWidgets();
         tickClock();
         setInterval(tickClock, 30000);
       })();
