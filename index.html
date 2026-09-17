@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v409</title>
+  <title>雾屿 · 小手机 v410</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10037,6 +10037,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-group-offcard { background: var(--bg-card); border-radius: 14px; margin-bottom: 12px; padding: 13px 14px; font-size: 12px; color: #b8b8b8; cursor: pointer; text-align: center; }
 .persona-list-head { display: flex; justify-content: flex-end; padding: 8px 12px 2px; }
 .persona-list-add-inline { width: auto; flex: 0 0 auto; padding: 5px 12px; border-top: none; font-size: 13px; }
+.persona-group-card > .persona-field:first-child { border-top: none; }
+.persona-group-card > .persona-list-item:first-child { border-top: none; }
+.persona-list-head .persona-group-offbtn { margin-right: 0; }
 .persona-edit-del { display: none; width: 100%; margin-top: 12px; padding: 12px 0; background: none; border: none; color: #e55a5a; font-size: 14px; cursor: pointer; }
 .persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
 .persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
@@ -34702,17 +34705,17 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       {title:'物品', fields:[
         ['item.common','常用物品','例如：一台旧相机'],['item.fav','喜欢的东西','例如：薄荷糖'],['item.gift','互赠的礼物','例如：你送的围巾'],['item.share','共有的东西','例如：一把伞的约定']]}
     ]},
-    {id:'dream', title:'TA的梦境', sub:'TA做过的、愿意让你知道的梦', groups:[
+    {id:'dream', title:'TA的梦境', sub:'TA做过的、愿意让你知道的梦', tabs:true, groups:[
       {title:'TA说过的梦', type:'list', lkey:'dream.told', lph:'例如：一片会发光的海'},
       {title:'我做的与TA有关的梦', type:'list', lkey:'dream.mine', lph:'例如：梦见和TA一起走了很远的路'}
     ]},
-    {id:'common', title:'我们的共同记录', sub:'原作与现在 · 第一次 · 共同经历 · 时间线', groups:[
+    {id:'common', title:'我们的共同记录', sub:'原作与现在 · 第一次 · 共同经历 · 时间线', tabs:true, groups:[
       {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[
         ['common.o.first','第一次','例如：原作里的第一次相遇'],['common.o.exp','共同经历','例如：原作里一起经历的事'],['common.o.line','时间线','例如：原作第几章到结局']]},
       {title:'现在', fields:[
         ['common.first','第一次','例如：第一次说话是在梦里'],['common.exp','共同经历','例如：一起看过一场流星'],['common.line','时间线','例如：从2026年春天到现在']]}
     ]},
-    {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', groups:[
+    {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', tabs:true, groups:[
       {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[
         ['ifw.o.id','TA原作的身份','例如：猎人'],['ifw.o.set','原作的世界','例如：边境小镇']]},
       {title:'现在的IF世界', fields:[
@@ -34758,18 +34761,33 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     $('personaDetailTitle').textContent = sec.title;
     $('personaDetailSub').textContent = sec.sub;
     var h = '';
-    var isDream = (curSec === 'dream' && sec.groups.length > 0 && sec.groups[0].type === 'list');
-    if (isDream){
+    if (sec.tabs){
       if (dreamTab >= sec.groups.length) dreamTab = 0;
       h += '<div class="persona-dream-tabs">';
       for (var g=0;g<sec.groups.length;g++) h += '<div class="persona-dream-tab'+(g===dreamTab?' on':'')+'" data-g="'+g+'">'+sec.groups[g].title+'</div>';
       h += '</div>';
       var grp = sec.groups[dreamTab];
-      h += '<div class="persona-group-card"><div class="persona-list-head"><button class="persona-list-add persona-list-add-inline" data-lkey="'+grp.lkey+'">＋ 添加</button></div>';
-      var arr = (p.lists && p.lists[grp.lkey]) || [];
-      if (!arr.length) h += '<div class="persona-list-empty">还没有记录</div>';
-      for (var L=0;L<arr.length;L++) h += '<div class="persona-list-item" data-lkey="'+grp.lkey+'" data-iid="'+arr[L].id+'">'+(esc(arr[L].text)||'&nbsp;')+'</div>';
-      h += '</div>';
+      if (grp.offKey && p.fields[grp.offKey]){
+        h += '<div class="persona-group-offcard" data-offkey="'+grp.offKey+'">'+grp.title+'已隐藏 · 点击显示</div>';
+      } else {
+        var headBtn = '';
+        if (grp.offKey) headBtn = '<button class="persona-group-offbtn" data-offkey="'+grp.offKey+'">隐藏</button>';
+        else if (grp.type === 'list') headBtn = '<button class="persona-list-add persona-list-add-inline" data-lkey="'+grp.lkey+'">＋ 添加</button>';
+        h += '<div class="persona-group-card">';
+        if (headBtn) h += '<div class="persona-list-head">'+headBtn+'</div>';
+        if (grp.hint) h += '<div class="persona-group-hint">'+grp.hint+'</div>';
+        if (grp.type === 'list'){
+          var arr = (p.lists && p.lists[grp.lkey]) || [];
+          if (!arr.length) h += '<div class="persona-list-empty">还没有记录</div>';
+          for (var L=0;L<arr.length;L++) h += '<div class="persona-list-item" data-lkey="'+grp.lkey+'" data-iid="'+arr[L].id+'">'+(esc(arr[L].text)||'&nbsp;')+'</div>';
+        } else {
+          for (var f=0;f<grp.fields.length;f++){
+            var fd = grp.fields[f], v = p.fields[fd[0]];
+            h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):fd[2])+'</div></div>';
+          }
+        }
+        h += '</div>';
+      }
     } else {
     var h = '';
     for (var g=0;g<sec.groups.length;g++){
@@ -34819,7 +34837,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     setTimeout(function(){ inp.focus(); },100);
   }
   function showHome(){ $('personaHome').style.display=''; $('personaDetail').style.display='none'; renderSecList(); }
-  function showDetail(sid){ curSec = sid; $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderDetail(); }
+  function showDetail(sid){ curSec = sid; dreamTab = 0; $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderDetail(); }
   function openPersona(){
     load(); cur = localStorage.getItem(CURKEY) || null;
     if (!curP() && personas.length) cur = personas[0].id;
