@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v418</title>
+  <title>雾屿 · 小手机 v419</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -629,7 +629,6 @@
     }
     .mp-top { display: flex; align-items: center; gap: 6px; padding: 14px 16px 2px; font-size: 14px; color: #6d6484; }
     .mp-clock { font-weight: 700; font-size: 15px; }
-    .mp-close { margin-left: auto; height: 28px; padding: 0 15px; border: none; border-radius: 14px; background: linear-gradient(135deg, #9b8ec4, #b8a5d8); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(155,142,196,.25); }
     .mp-hero { text-align: center; padding: 8px 0 18px; }
     .mp-avatar { font-size: 54px; line-height: 1; filter: drop-shadow(0 5px 10px rgba(155,142,196,.38)); }
     .mp-hi { margin-top: 8px; font-size: 17px; font-weight: 700; color: #4a3f6b; }
@@ -12605,6 +12604,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="add-menu" id="addMenu">
             <div class="add-menu-item" data-action="contact">添加联系人</div>
             <div class="add-menu-item" data-action="group">创建群聊</div>
+            <div class="add-menu-item" data-action="zika">字卡</div>
             <div class="add-menu-item" data-action="mini-phone">小手机</div>
           </div>
         </div>
@@ -12618,7 +12618,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="mp-top">
           <span class="mp-clock" id="mpTime">--:--</span>
           <svg class="mp-wifi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#6d6484;"><path d="M5 12.55a11 11 0 0114 0"/><path d="M8.5 16.2a5 5 0 017 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
-          <button class="mp-close" id="mpClose">字卡</button>
         </div>
         <div class="mp-hero">
           <div class="mp-avatar">☁️</div>
@@ -20939,6 +20938,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           const action = this.dataset.action;
           if (action === 'contact') openModal('contact');
           else if (action === 'group') openModal('group');
+          else if (action === 'zika') {
+            if (window.__zkClosePhone) window.__zkClosePhone();
+          }
           else if (action === 'mini-phone') {
             if (window.__zkEnterPhone) { window.__zkEnterPhone(); }
             else {
@@ -21168,10 +21170,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           data: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>',
           api: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>',
           settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>',
-          home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'
+          home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+          chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>'
         };
         var APPS = [['letters','信件'],['diary','日记'],['card','字卡'],['together','一起'],['todo','待办'],['activity','活动'],['ledger','记账'],['divine','占卜'],['theme','装扮'],['data','数据'],['api','API'],['settings','设置']];
-        var DOCK = [['settings','设置'],['card','字卡'],['home','首页']];
+        var DOCK = [['settings','设置'],['chat','聊天'],['home','主页']];
         function appHtml(action, name) {
           return '<div class="mp-app" data-action="' + action + '"><span class="mp-ico">' + (IC[action] || '') + '</span><span class="mp-name">' + name + '</span></div>';
         }
@@ -21227,6 +21230,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         window.__zkEnterPhone = enterPhone;
         window.__zkClosePhone = closePhone;
+        function backToHome() {
+          var pages = document.querySelectorAll('.feature-page.show, .card-feature-page.show');
+          for (var k = 0; k < pages.length; k++) pages[k].classList.remove('show');
+          var pv = document.getElementById('phoneView');
+          var cv = document.getElementById('cardView');
+          var mv = document.getElementById('momentsView');
+          var bn = document.getElementById('bottomNav');
+          if (cv) cv.classList.add('hidden');
+          if (mv) mv.classList.add('hidden');
+          if (pv) pv.classList.remove('hidden');
+          if (bn) bn.style.display = 'none';
+        }
         if (grid) {
           grid.addEventListener('click', function (e) {
             var el = e.target.closest('.mp-app');
@@ -21239,12 +21254,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var el = e.target.closest('.mp-app');
             if (!el) return;
             var action = el.getAttribute('data-action');
-            if (action === 'home') { closePhone(); return; }
+            if (action === 'home') { backToHome(); return; }
+            if (action === 'chat') { closePhone(); return; }
             zkOpenApp(action);
           });
         }
-        var mpC = document.getElementById('mpClose');
-        if (mpC) mpC.addEventListener('click', closePhone);
         var mpEx = document.getElementById('mpExitBtn');
         if (mpEx) mpEx.addEventListener('click', closePhone);
         function tickClock() {
