@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v421</title>
+  <title>雾屿 · 小手机 v422</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -627,8 +627,9 @@
       overflow-y: auto;
       position: relative;
     }
-    .mp-top { display: flex; align-items: center; gap: 6px; padding: 14px 16px 2px; font-size: 14px; color: var(--primary-strong); }
+    .mp-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 2px; font-size: 14px; color: var(--primary-strong); }
     .mp-clock { font-weight: 700; font-size: 15px; }
+    .mp-status { display: flex; align-items: center; gap: 6px; }
     .mp-hero { text-align: center; padding: 6px 0 12px; }
     .mp-avatar { font-size: 46px; line-height: 1; filter: drop-shadow(0 4px 8px rgba(var(--primary-rgba), .38)); }
     .mp-hi { margin-top: 6px; font-size: 17px; font-weight: 700; color: var(--primary-deep); }
@@ -12633,11 +12634,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       <div id="phoneView" class="phone-view hidden">
         <div class="mp-top">
           <span class="mp-clock" id="mpTime">--:--</span>
-          <svg class="mp-wifi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114 0"/><path d="M8.5 16.2a5 5 0 017 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+          <div class="mp-status">
+            <svg class="mp-wifi" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0114 0"/><path d="M8.5 16.2a5 5 0 017 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+            <svg class="mp-battery" width="24" height="14" viewBox="0 0 24 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1.5" width="18" height="11" rx="2.5"/><rect x="20" y="5" width="2.5" height="4" rx="0.8" fill="currentColor" stroke="none"/><rect x="3.5" y="4" width="11" height="6" rx="1.2" fill="currentColor" stroke="none"/></svg>
+          </div>
         </div>
         <div class="mp-hero">
           <div class="mp-avatar">☁️</div>
-          <div class="mp-hi">雾屿的小手机</div>
           <div class="mp-sub">长按图标可以自由摆放</div>
         </div>
         <div class="mp-widgets" id="mpWidgets">
