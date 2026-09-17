@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v412</title>
+  <title>雾屿 · 小手机 v413</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10042,7 +10042,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-list-head .persona-group-offbtn { margin-right: 0; }
 .persona-sublist { margin-top: 4px; }
 .persona-sublist-title { padding: 10px 14px 0; font-size: 12px; color: var(--primary); opacity: .75; font-weight: 600; }
-.persona-sublist .persona-list-add-inline { display: inline-block; margin: 2px 14px 12px; }
+.persona-sublist .persona-list-add { border-top: 1px solid rgba(0,0,0,.06); }
+.persona-list-bottom-add { margin-top: 4px; }
 #personaEditMulti { max-height: 45vh; overflow-y: auto; }
 .persona-multi-field { margin-bottom: 10px; text-align: left; }
 .persona-multi-label { font-size: 12px; color: var(--primary); opacity: .8; margin-bottom: 4px; font-weight: 600; }
@@ -34717,11 +34718,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       {title:'TA说过的梦', type:'list', lkey:'dream.told', lph:'例如：一片会发光的海'},
       {title:'我做的与TA有关的梦', type:'list', lkey:'dream.mine', lph:'例如：梦见和TA一起走了很远的路'}
     ]},
-    {id:'common', title:'我们的共同记录', sub:'原作与现在 · 第一次 · 共同经历 · 时间线', tabs:true, groups:[
-      {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[
-        ['common.o.first','第一次','例如：原作里的第一次相遇']], lists:[{lkey:'common.o.exps',title:'共同经历',wfields:[['time','时间','例如：原作第几章'],['story','发生了什么','例如：那天发生了什么']]}]},
-      {title:'现在', fields:[
-        ['common.first','第一次','例如：第一次说话是在梦里']], lists:[{lkey:'common.exps',title:'共同经历',wfields:[['time','时间','例如：2026年春天'],['story','发生了什么','例如：那天发生了什么']]}]}
+    {id:'common', title:'我们的共同记录', sub:'原作与现在 · 共同经历', tabs:true, groups:[
+      {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[], lists:[{lkey:'common.o.exps',title:'共同经历',wfields:[['time','时间','例如：原作第几章'],['story','发生了什么','例如：那天发生了什么']]}]},
+      {title:'现在', fields:[], lists:[{lkey:'common.exps',title:'共同经历',wfields:[['time','时间','例如：2026年春天'],['story','发生了什么','例如：那天发生了什么']]}]}
     ]},
     {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', tabs:true, groups:[
       {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[], lists:[{lkey:'ifw.o.worlds',title:'世界',wfields:[['ta','TA的身份','例如：猎人'],['me','我的身份','例如：同行的伙伴'],['bg','世界背景','例如：边境小镇'],['story','发生的故事','例如：一起猎过狼群']]}]},
@@ -34769,6 +34768,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     if (p.fields['ifw.id'] || p.fields['ifw.set'] || p.fields['ifw.diff']){ if (!p.lists) p.lists = {}; if (!p.lists['ifw.worlds']) p.lists['ifw.worlds'] = []; p.lists['ifw.worlds'].push({ id:'d'+(Date.now()+4), data:{ ta: p.fields['ifw.id'] || '', bg: p.fields['ifw.set'] || '', story: p.fields['ifw.diff'] ? '与主世界的不同：' + p.fields['ifw.diff'] : '' } }); delete p.fields['ifw.id']; delete p.fields['ifw.set']; delete p.fields['ifw.diff']; save(); }
     if (p.lists && p.lists['common.exps']){ var a5 = p.lists['common.exps']; for (var t5=0;t5<a5.length;t5++) if (a5[t5].text && !a5[t5].data){ a5[t5].data = { story: a5[t5].text }; delete a5[t5].text; save(); } }
     if (p.lists && p.lists['common.o.exps']){ var a6 = p.lists['common.o.exps']; for (var t6=0;t6<a6.length;t6++) if (a6[t6].text && !a6[t6].data){ a6[t6].data = { story: a6[t6].text }; delete a6[t6].text; save(); } }
+    if (p.fields['common.first']){ if (!p.lists) p.lists = {}; if (!p.lists['common.exps']) p.lists['common.exps'] = []; p.lists['common.exps'].push({ id:'d'+(Date.now()+5), data:{ story: p.fields['common.first'] } }); delete p.fields['common.first']; save(); }
+    if (p.fields['common.o.first']){ if (!p.lists) p.lists = {}; if (!p.lists['common.o.exps']) p.lists['common.o.exps'] = []; p.lists['common.o.exps'].push({ id:'d'+(Date.now()+6), data:{ story: p.fields['common.o.first'] } }); delete p.fields['common.o.first']; save(); }
     var sec = null;
     for (var i=0;i<SECTIONS.length;i++) if (SECTIONS[i].id===curSec) sec = SECTIONS[i];
     if (!sec) return;
@@ -34786,7 +34787,6 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       } else {
         var headBtn = '';
         if (grp.offKey) headBtn = '<button class="persona-group-offbtn" data-offkey="'+grp.offKey+'">隐藏</button>';
-        else if (grp.type === 'list') headBtn = '<button class="persona-list-add persona-list-add-inline" data-lkey="'+grp.lkey+'">＋ 添加</button>';
         h += '<div class="persona-group-card">';
         if (headBtn) h += '<div class="persona-list-head">'+headBtn+'</div>';
         if (grp.hint) h += '<div class="persona-group-hint">'+grp.hint+'</div>';
@@ -34794,6 +34794,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var arr = (p.lists && p.lists[grp.lkey]) || [];
           if (!arr.length) h += '<div class="persona-list-empty">还没有记录</div>';
           for (var L=0;L<arr.length;L++) h += '<div class="persona-list-item" data-lkey="'+grp.lkey+'" data-iid="'+arr[L].id+'">'+(esc(arr[L].text)||'&nbsp;')+'</div>';
+          h += '<button class="persona-list-add persona-list-bottom-add" data-lkey="'+grp.lkey+'">＋ 添加</button>';
         } else {
           for (var f=0;f<grp.fields.length;f++){
             var fd = grp.fields[f], v = p.fields[fd[0]];
@@ -34812,7 +34813,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               }
               h += '<div class="persona-list-item" data-lkey="'+lst.lkey+'" data-iid="'+it2.id+'">'+(esc(txt2)||'&nbsp;')+'</div>';
             }
-            h += '<button class="persona-list-add persona-list-add-inline persona-sublist-add" data-lkey="'+lst.lkey+'">＋ 添加</button></div>';
+            h += '<button class="persona-list-add persona-sublist-add" data-lkey="'+lst.lkey+'">＋ 添加</button></div>';
           }
         }
         h += '</div>';
