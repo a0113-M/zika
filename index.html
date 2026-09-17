@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v411</title>
+  <title>雾屿 · 小手机 v412</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10043,6 +10043,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-sublist { margin-top: 4px; }
 .persona-sublist-title { padding: 10px 14px 0; font-size: 12px; color: var(--primary); opacity: .75; font-weight: 600; }
 .persona-sublist .persona-list-add-inline { display: inline-block; margin: 2px 14px 12px; }
+#personaEditMulti { max-height: 45vh; overflow-y: auto; }
+.persona-multi-field { margin-bottom: 10px; text-align: left; }
+.persona-multi-label { font-size: 12px; color: var(--primary); opacity: .8; margin-bottom: 4px; font-weight: 600; }
+.persona-multi-input { width: 100%; box-sizing: border-box; min-height: 48px; padding: 9px 12px; border: 1px solid rgba(0,0,0,.1); border-radius: 10px; font-size: 14px; font-family: inherit; resize: vertical; background: #fff; color: #333; line-height: 1.5; }
 .persona-edit-del { display: none; width: 100%; margin-top: 12px; padding: 12px 0; background: none; border: none; color: #e55a5a; font-size: 14px; cursor: pointer; }
 .persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
 .persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
@@ -14901,6 +14905,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   <div class="persona-sheet-overlay" id="personaEditOverlay">
     <div class="persona-sheet">
       <h3 id="personaEditLabel">编辑</h3>
+      <div id="personaEditMulti" style="display:none;"></div>
       <textarea id="personaEditInput" placeholder=""></textarea>
       <div class="persona-sheet-actions"><button id="personaEditCancel">取消</button><button id="personaEditOk">保存</button></div>
       <button class="persona-edit-del" id="personaEditDel">删除本条</button>
@@ -34714,15 +34719,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     ]},
     {id:'common', title:'我们的共同记录', sub:'原作与现在 · 第一次 · 共同经历 · 时间线', tabs:true, groups:[
       {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[
-        ['common.o.first','第一次','例如：原作里的第一次相遇'],['common.o.line','时间线','例如：原作第几章到结局']], lists:[{lkey:'common.o.exps',title:'共同经历',lph:'例如：原作里一起经历的事'}]},
+        ['common.o.first','第一次','例如：原作里的第一次相遇']], lists:[{lkey:'common.o.exps',title:'共同经历',wfields:[['time','时间','例如：原作第几章'],['story','发生了什么','例如：那天发生了什么']]}]},
       {title:'现在', fields:[
-        ['common.first','第一次','例如：第一次说话是在梦里'],['common.line','时间线','例如：从2026年春天到现在']], lists:[{lkey:'common.exps',title:'共同经历',lph:'例如：一起看过一场流星'}]}
+        ['common.first','第一次','例如：第一次说话是在梦里']], lists:[{lkey:'common.exps',title:'共同经历',wfields:[['time','时间','例如：2026年春天'],['story','发生了什么','例如：那天发生了什么']]}]}
     ]},
     {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', tabs:true, groups:[
-      {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[
-        ['ifw.o.id','TA原作的身份','例如：猎人'],['ifw.o.set','原作的世界','例如：边境小镇']]},
-      {title:'现在的IF世界', fields:[
-        ['ifw.id','TA的身份','例如：同班同学'],['ifw.set','这个世界的设定','例如：平行的小镇'],['ifw.diff','与主世界的不同','例如：没有了猎人的宿命']]}
+      {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[], lists:[{lkey:'ifw.o.worlds',title:'世界',wfields:[['ta','TA的身份','例如：猎人'],['me','我的身份','例如：同行的伙伴'],['bg','世界背景','例如：边境小镇'],['story','发生的故事','例如：一起猎过狼群']]}]},
+      {title:'现在的IF世界', fields:[], lists:[{lkey:'ifw.worlds',title:'世界',wfields:[['ta','TA的身份','例如：同班同学'],['me','我的身份','例如：普通学生'],['bg','世界背景','例如：平行的小镇'],['story','发生的故事','例如：没有了猎人的宿命']]}]}
     ]}
   ];
   var $ = function(id){ return document.getElementById(id); };
@@ -34760,6 +34763,12 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     }
     if (p.fields['common.exp'] && !(p.lists && p.lists['common.exps'] && p.lists['common.exps'].length)){ if (!p.lists) p.lists = {}; p.lists['common.exps'] = [{ id:'d'+Date.now(), text: p.fields['common.exp'] }]; delete p.fields['common.exp']; save(); }
     if (p.fields['common.o.exp'] && !(p.lists && p.lists['common.o.exps'] && p.lists['common.o.exps'].length)){ if (!p.lists) p.lists = {}; p.lists['common.o.exps'] = [{ id:'d'+Date.now(), text: p.fields['common.o.exp'] }]; delete p.fields['common.o.exp']; save(); }
+    if (p.fields['common.o.line']){ if (!p.lists) p.lists = {}; if (!p.lists['common.o.exps']) p.lists['common.o.exps'] = []; p.lists['common.o.exps'].push({ id:'d'+(Date.now()+1), data:{ time: p.fields['common.o.line'] } }); delete p.fields['common.o.line']; save(); }
+    if (p.fields['common.line']){ if (!p.lists) p.lists = {}; if (!p.lists['common.exps']) p.lists['common.exps'] = []; p.lists['common.exps'].push({ id:'d'+(Date.now()+2), data:{ time: p.fields['common.line'] } }); delete p.fields['common.line']; save(); }
+    if (p.fields['ifw.o.id'] || p.fields['ifw.o.set']){ if (!p.lists) p.lists = {}; if (!p.lists['ifw.o.worlds']) p.lists['ifw.o.worlds'] = []; p.lists['ifw.o.worlds'].push({ id:'d'+(Date.now()+3), data:{ ta: p.fields['ifw.o.id'] || '', bg: p.fields['ifw.o.set'] || '' } }); delete p.fields['ifw.o.id']; delete p.fields['ifw.o.set']; save(); }
+    if (p.fields['ifw.id'] || p.fields['ifw.set'] || p.fields['ifw.diff']){ if (!p.lists) p.lists = {}; if (!p.lists['ifw.worlds']) p.lists['ifw.worlds'] = []; p.lists['ifw.worlds'].push({ id:'d'+(Date.now()+4), data:{ ta: p.fields['ifw.id'] || '', bg: p.fields['ifw.set'] || '', story: p.fields['ifw.diff'] ? '与主世界的不同：' + p.fields['ifw.diff'] : '' } }); delete p.fields['ifw.id']; delete p.fields['ifw.set']; delete p.fields['ifw.diff']; save(); }
+    if (p.lists && p.lists['common.exps']){ var a5 = p.lists['common.exps']; for (var t5=0;t5<a5.length;t5++) if (a5[t5].text && !a5[t5].data){ a5[t5].data = { story: a5[t5].text }; delete a5[t5].text; save(); } }
+    if (p.lists && p.lists['common.o.exps']){ var a6 = p.lists['common.o.exps']; for (var t6=0;t6<a6.length;t6++) if (a6[t6].text && !a6[t6].data){ a6[t6].data = { story: a6[t6].text }; delete a6[t6].text; save(); } }
     var sec = null;
     for (var i=0;i<SECTIONS.length;i++) if (SECTIONS[i].id===curSec) sec = SECTIONS[i];
     if (!sec) return;
@@ -34794,7 +34803,15 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             var lst = grp.lists[q2], arr2 = (p.lists && p.lists[lst.lkey]) || [];
             h += '<div class="persona-sublist"><div class="persona-sublist-title">'+lst.title+'</div>';
             if (!arr2.length) h += '<div class="persona-list-empty">还没有记录</div>';
-            for (var L2=0;L2<arr2.length;L2++) h += '<div class="persona-list-item" data-lkey="'+lst.lkey+'" data-iid="'+arr2[L2].id+'">'+(esc(arr2[L2].text)||'&nbsp;')+'</div>';
+            for (var L2=0;L2<arr2.length;L2++){
+              var it2 = arr2[L2], txt2 = it2.text || '';
+              if (lst.wfields && it2.data){
+                var parts = [];
+                for (var w3=0;w3<lst.wfields.length && parts.length<2;w3++){ var vv = it2.data[lst.wfields[w3][0]]; if (vv) parts.push(vv); }
+                txt2 = parts.join(' · ');
+              }
+              h += '<div class="persona-list-item" data-lkey="'+lst.lkey+'" data-iid="'+it2.id+'">'+(esc(txt2)||'&nbsp;')+'</div>';
+            }
             h += '<button class="persona-list-add persona-list-add-inline persona-sublist-add" data-lkey="'+lst.lkey+'">＋ 添加</button></div>';
           }
         }
@@ -34838,6 +34855,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   }  function openEdit(key){
     var p = curP(); if (!p) return;
     editKey = key; editList = null;
+    $('personaEditMulti').style.display = 'none';
+    $('personaEditInput').style.display = '';
     $('personaEditDel').style.display = 'none';
     var label='', ph='';
     for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++){ var gp0 = SECTIONS[i].groups[g]; if (gp0.fields) for (var f=0;f<gp0.fields.length;f++){ var fd = gp0.fields[f]; if (fd[0]===key){ label=fd[1]; ph=fd[2]; } } }
@@ -34871,7 +34890,18 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   $('personaNameOverlay').addEventListener('click', function(e){ if (e.target===this) closeSheet('personaNameOverlay'); });
   $('personaEditOk').addEventListener('click', function(){
     var p = curP();
-    if (p && editList){
+    if (p && editList && editList.wf){
+      var arr = getArr(editList.lkey), it = null;
+      if (editList.iid){ for (var i=0;i<arr.length;i++) if (arr[i].id===editList.iid) it = arr[i]; }
+      if (!it){ it = { id: 'd'+Date.now(), data: {} }; arr.push(it); }
+      if (!it.data) it.data = {};
+      var mIs = $('personaEditMulti').querySelectorAll('textarea,input');
+      for (var w=0;w<mIs.length;w++) it.data[mIs[w].getAttribute('data-wkey')] = mIs[w].value.trim();
+      var hasV = false; for (var kk in it.data) if (it.data[kk]) hasV = true;
+      if (!hasV){ var ix = arr.indexOf(it); if (ix > -1) arr.splice(ix, 1); }
+      if (!arr.length) delete p.lists[editList.lkey];
+      save(); renderDetail();
+    } else if (p && editList){
       var val = $('personaEditInput').value.trim();
       var arr = getArr(editList.lkey);
       if (editList.iid){ for (var i=0;i<arr.length;i++) if (arr[i].id===editList.iid) arr[i].text = val; }
@@ -34888,12 +34918,29 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++){
       var gp = SECTIONS[i].groups[g];
       if (gp.type==='list' && gp.lkey===lkey) return { label: gp.title, ph: gp.lph };
-      if (gp.lists) for (var q=0;q<gp.lists.length;q++) if (gp.lists[q].lkey===lkey) return { label: gp.lists[q].title, ph: gp.lists[q].lph };
+      if (gp.lists) for (var q=0;q<gp.lists.length;q++) if (gp.lists[q].lkey===lkey) return { label: gp.lists[q].title, ph: gp.lists[q].lph, wfields: gp.lists[q].wfields, lkey: lkey };
     }
     return { label:'编辑', ph:'' };
   }
+  function openWSheet(meta, it){
+    editKey = null;
+    editList = { lkey: meta.lkey, iid: it ? it.id : null, wf: meta.wfields };
+    $('personaEditLabel').textContent = meta.label;
+    var box = $('personaEditMulti'), hw = '';
+    for (var wi=0;wi<meta.wfields.length;wi++){
+      var wf2 = meta.wfields[wi], wv = (it && it.data && it.data[wf2[0]]) || '';
+      hw += '<div class="persona-multi-field"><div class="persona-multi-label">'+wf2[1]+'</div><textarea class="persona-multi-input" data-wkey="'+wf2[0]+'" placeholder="'+wf2[2]+'">'+esc(wv)+'</textarea></div>';
+    }
+    box.innerHTML = hw;
+    box.style.display = '';
+    $('personaEditInput').style.display = 'none';
+    $('personaEditDel').style.display = it ? 'block' : 'none';
+    $('personaEditOverlay').classList.add('show');
+  }
   function openListSheet(meta, text, deletable){
     editKey = null;
+    $('personaEditMulti').style.display = 'none';
+    $('personaEditInput').style.display = '';
     $('personaEditLabel').textContent = meta.label;
     var inp = $('personaEditInput');
     inp.value = text || '';
@@ -34907,13 +34954,17 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     var arr = (p.lists && p.lists[lkey]) || [], it = null;
     for (var i=0;i<arr.length;i++) if (arr[i].id===iid) it = arr[i];
     if (!it) return;
+    var meta2 = findListMeta(lkey);
+    if (meta2.wfields){ openWSheet(meta2, it); return; }
     editList = { lkey: lkey, iid: iid };
-    openListSheet(findListMeta(lkey), it.text, true);
+    openListSheet(meta2, it.text, true);
   }
   function openAddItem(lkey){
     var p = curP(); if (!p) return;
+    var meta3 = findListMeta(lkey);
+    if (meta3.wfields){ openWSheet(meta3, null); return; }
     editList = { lkey: lkey, iid: null };
-    openListSheet(findListMeta(lkey), '', false);
+    openListSheet(meta3, '', false);
   }
   function getArr(lkey){
     var p = curP(); if (!p) return null;
