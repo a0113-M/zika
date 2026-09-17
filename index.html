@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v419</title>
+  <title>雾屿 · 小手机 v420</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -20939,6 +20939,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (action === 'contact') openModal('contact');
           else if (action === 'group') openModal('group');
           else if (action === 'zika') {
+            window.__zkPhoneSession = false;
             if (window.__zkClosePhone) window.__zkClosePhone();
           }
           else if (action === 'mini-phone') {
@@ -21060,7 +21061,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const sidebarBg = document.getElementById('sidebarBg');
       const sidebarClose = document.getElementById('sidebarClose');
-      document.getElementById('userAvatar').addEventListener('click', function (e) { e.stopPropagation(); openProfileModal(); });
+      window.__zkPhoneSession = false;
+      document.getElementById('userAvatar').addEventListener('click', function (e) {
+        e.stopPropagation();
+        if (window.__zkPhoneSession) { openProfileModal(); }
+        else { sidebarOverlay.classList.add('show'); }
+      });
       sidebarBg.addEventListener('click', function () { sidebarOverlay.classList.remove('show'); });
       sidebarClose.addEventListener('click', function () { sidebarOverlay.classList.remove('show'); });
 
@@ -21206,6 +21212,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (action === 'together') { if (typeof openTogetherPage === 'function') openTogetherPage(); return; }
         }
         function enterPhone() {
+          window.__zkPhoneSession = true;
           var cv = document.getElementById('cardView');
           var pv = document.getElementById('phoneView');
           var mv = document.getElementById('momentsView');
