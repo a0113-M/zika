@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v414</title>
+  <title>雾屿 · 小手机 v415</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -617,25 +617,30 @@
     .moment-del-btns .btn-mdel:active { background: #c0392b; }
 
 
-    /* --- 占位视图 --- */
+    /* --- 小手机桌面 --- */
     .phone-view {
       flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background: #fafafa;
-      color: #888;
-      font-size: 18px;
-      font-weight: 300;
-      letter-spacing: 1px;
+      background: linear-gradient(180deg, #e9e2f6 0%, #f5f0ff 46%, #f5f0ff 100%);
+      color: #555;
+      overflow-y: auto;
+      position: relative;
     }
-
-    .phone-view .big-icon {
-      font-size: 60px;
-      margin-bottom: 12px;
-      opacity: 0.5;
-    }
+    .mp-top { display: flex; align-items: center; gap: 6px; padding: 14px 16px 2px; font-size: 14px; color: #6d6484; }
+    .mp-clock { font-weight: 700; font-size: 15px; }
+    .mp-close { margin-left: auto; width: 30px; height: 30px; border: none; border-radius: 50%; background: rgba(0,0,0,.08); color: #6d6484; font-size: 14px; cursor: pointer; }
+    .mp-hero { text-align: center; padding: 8px 0 18px; }
+    .mp-avatar { font-size: 54px; line-height: 1; filter: drop-shadow(0 5px 10px rgba(155,142,196,.38)); }
+    .mp-hi { margin-top: 8px; font-size: 17px; font-weight: 700; color: #4a3f6b; }
+    .mp-sub { margin-top: 3px; font-size: 12px; color: #a99fbe; }
+    .mp-grid { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 22px; padding: 4px 12px 22px; }
+    .mp-app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mp-app:active .mp-ico { transform: scale(.88); }
+    .mp-ico { width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; font-size: 30px; background: #fff; border-radius: 16px; box-shadow: 0 3px 10px rgba(155,142,196,.18); transition: transform .12s; }
+    .mp-name { font-size: 12px; color: #5a5770; }
+    .mp-dock { margin-top: auto; display: flex; justify-content: center; padding: 8px 16px 20px; }
+    .mp-dock .mp-ico { background: rgba(255,255,255,.9); }
 
     .hidden {
       display: none !important;
@@ -12608,9 +12613,20 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 
       <!-- 占位视图 -->
       <div id="phoneView" class="phone-view hidden">
-        <div class="big-icon">📱</div>
-        <span>小手机 · 占位</span>
-        <span style="font-size:13px; margin-top:8px; color:#bbb;">(功能开发中)</span>
+        <div class="mp-top">
+          <span class="mp-clock" id="mpTime">--:--</span>
+          <span class="mp-wifi">📶</span>
+          <button class="mp-close" id="mpClose">✕</button>
+        </div>
+        <div class="mp-hero">
+          <div class="mp-avatar">☁️</div>
+          <div class="mp-hi">雾屿的小手机</div>
+          <div class="mp-sub">这些是为你准备的小应用</div>
+        </div>
+        <div class="mp-grid" id="mpGrid"></div>
+        <div class="mp-dock">
+          <div class="mp-app" data-action="exit"><span class="mp-ico">🏠</span><span class="mp-name">首页</span></div>
+        </div>
       </div>
 
       <!-- 朋友圈视图 -->
@@ -21120,6 +21136,65 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           sidebarOverlay.classList.remove('show');
         });
       });
+
+      // ===== 小手机桌面 =====
+      (function () {
+        var grid = document.getElementById('mpGrid');
+        if (!grid) return;
+        var MP_APPS = [
+          ['letters', '💌', '信件'], ['diary', '📖', '日记'], ['card', '🃏', '字卡'], ['together', '💞', '一起'],
+          ['todo', '✅', '待办'], ['activity', '🎈', '活动'], ['ledger', '💰', '记账'], ['divine', '🔮', '占卜'],
+          ['theme', '🎨', '装扮'], ['data', '📊', '数据'], ['api', '🔌', 'API'], ['settings', '⚙️', '设置']
+        ];
+        var h = '';
+        for (var i = 0; i < MP_APPS.length; i++) {
+          h += '<div class="mp-app" data-action="' + MP_APPS[i][0] + '"><span class="mp-ico">' + MP_APPS[i][1] + '</span><span class="mp-name">' + MP_APPS[i][2] + '</span></div>';
+        }
+        grid.innerHTML = h;
+        function zkOpenApp(action) {
+          if (action === 'card') { document.getElementById('cardFeaturePage').classList.add('show'); return; }
+          if (action === 'letters') { if (typeof openLetterModule === 'function') openLetterModule(); return; }
+          if (action === 'api') { document.getElementById('apiPage').classList.add('show'); return; }
+          if (action === 'settings') { document.getElementById('settingsPage').classList.add('show'); if (typeof loadSettings === 'function') loadSettings(); if (typeof renderContactProbSelector === 'function') renderContactProbSelector(); return; }
+          if (action === 'diary') { document.getElementById('diaryPage').classList.add('show'); if (typeof renderDiary === 'function') renderDiary(); return; }
+          if (action === 'todo') { document.getElementById('todoView').classList.add('show'); if (typeof renderTodoList === 'function') renderTodoList(); return; }
+          if (action === 'theme') { if (typeof openThemeView === 'function') openThemeView(); return; }
+          if (action === 'data') { if (typeof openDataPage === 'function') openDataPage(); return; }
+          if (action === 'activity') { if (typeof openActivityPage === 'function') openActivityPage(); return; }
+          if (action === 'ledger') { document.getElementById('ledgerView').classList.add('show'); if (typeof renderLedger === 'function') renderLedger(); return; }
+          if (action === 'divine') { if (typeof openDivineModule === 'function') openDivineModule(); return; }
+          if (action === 'together') { if (typeof openTogetherPage === 'function') openTogetherPage(); return; }
+        }
+        function closePhone() {
+          var pv = document.getElementById('phoneView');
+          var cv = document.getElementById('cardView');
+          if (pv) pv.classList.add('hidden');
+          if (cv) cv.classList.remove('hidden');
+          var ni = document.querySelectorAll('.nav-item');
+          for (var k = 0; k < ni.length; k++) ni[k].classList.remove('active');
+          if (ni.length) ni[0].classList.add('active');
+        }
+        grid.addEventListener('click', function (e) {
+          var el = e.target.closest('.mp-app');
+          if (!el) return;
+          var action = el.getAttribute('data-action');
+          if (action === 'exit') { closePhone(); return; }
+          closePhone();
+          zkOpenApp(action);
+        });
+        var mpC = document.getElementById('mpClose');
+        if (mpC) mpC.addEventListener('click', closePhone);
+        var mpD = document.querySelector('.mp-dock .mp-app');
+        if (mpD) mpD.addEventListener('click', closePhone);
+        function tickClock() {
+          var el = document.getElementById('mpTime');
+          if (!el) return;
+          var d = new Date(), hh = d.getHours(), mm = d.getMinutes();
+          el.textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+        }
+        tickClock();
+        setInterval(tickClock, 30000);
+      })();
 
       // ===== 数据统计页 =====
       function _dtGetMetDates() { try { return JSON.parse(localStorage.getItem('contactMetDates') || '{}'); } catch (e) { return {}; } }
