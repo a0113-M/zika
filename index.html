@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v410</title>
+  <title>雾屿 · 小手机 v411</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -10040,6 +10040,9 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-group-card > .persona-field:first-child { border-top: none; }
 .persona-group-card > .persona-list-item:first-child { border-top: none; }
 .persona-list-head .persona-group-offbtn { margin-right: 0; }
+.persona-sublist { margin-top: 4px; }
+.persona-sublist-title { padding: 10px 14px 0; font-size: 12px; color: var(--primary); opacity: .75; font-weight: 600; }
+.persona-sublist .persona-list-add-inline { display: inline-block; margin: 2px 14px 12px; }
 .persona-edit-del { display: none; width: 100%; margin-top: 12px; padding: 12px 0; background: none; border: none; color: #e55a5a; font-size: 14px; cursor: pointer; }
 .persona-sheet-actions { display: flex; gap: 10px; margin-top: 16px; }
 .persona-sheet-actions button { flex: 1; height: 42px; border-radius: 21px; border: none; font-size: 15px; cursor: pointer; }
@@ -34711,9 +34714,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     ]},
     {id:'common', title:'我们的共同记录', sub:'原作与现在 · 第一次 · 共同经历 · 时间线', tabs:true, groups:[
       {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[
-        ['common.o.first','第一次','例如：原作里的第一次相遇'],['common.o.exp','共同经历','例如：原作里一起经历的事'],['common.o.line','时间线','例如：原作第几章到结局']]},
+        ['common.o.first','第一次','例如：原作里的第一次相遇'],['common.o.line','时间线','例如：原作第几章到结局']], lists:[{lkey:'common.o.exps',title:'共同经历',lph:'例如：原作里一起经历的事'}]},
       {title:'现在', fields:[
-        ['common.first','第一次','例如：第一次说话是在梦里'],['common.exp','共同经历','例如：一起看过一场流星'],['common.line','时间线','例如：从2026年春天到现在']]}
+        ['common.first','第一次','例如：第一次说话是在梦里'],['common.line','时间线','例如：从2026年春天到现在']], lists:[{lkey:'common.exps',title:'共同经历',lph:'例如：一起看过一场流星'}]}
     ]},
     {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', tabs:true, groups:[
       {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[
@@ -34755,6 +34758,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       if (p.fields['dream.guess'] && !(p.lists['dream.mine'] && p.lists['dream.mine'].length)) p.lists['dream.mine'] = [{ id:'d'+(Date.now()+1), text: p.fields['dream.guess'] }];
       delete p.fields['dream.told']; delete p.fields['dream.guess']; save();
     }
+    if (p.fields['common.exp'] && !(p.lists && p.lists['common.exps'] && p.lists['common.exps'].length)){ if (!p.lists) p.lists = {}; p.lists['common.exps'] = [{ id:'d'+Date.now(), text: p.fields['common.exp'] }]; delete p.fields['common.exp']; save(); }
+    if (p.fields['common.o.exp'] && !(p.lists && p.lists['common.o.exps'] && p.lists['common.o.exps'].length)){ if (!p.lists) p.lists = {}; p.lists['common.o.exps'] = [{ id:'d'+Date.now(), text: p.fields['common.o.exp'] }]; delete p.fields['common.o.exp']; save(); }
     var sec = null;
     for (var i=0;i<SECTIONS.length;i++) if (SECTIONS[i].id===curSec) sec = SECTIONS[i];
     if (!sec) return;
@@ -34784,6 +34789,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           for (var f=0;f<grp.fields.length;f++){
             var fd = grp.fields[f], v = p.fields[fd[0]];
             h += '<div class="persona-field" data-key="'+fd[0]+'"><div class="persona-field-label"><span>'+fd[1]+'</span><span class="persona-field-pen">✎</span></div><div class="persona-field-value'+(v?'':' blank')+'">'+(v?esc(v):fd[2])+'</div></div>';
+          }
+          if (grp.lists) for (var q2=0;q2<grp.lists.length;q2++){
+            var lst = grp.lists[q2], arr2 = (p.lists && p.lists[lst.lkey]) || [];
+            h += '<div class="persona-sublist"><div class="persona-sublist-title">'+lst.title+'</div>';
+            if (!arr2.length) h += '<div class="persona-list-empty">还没有记录</div>';
+            for (var L2=0;L2<arr2.length;L2++) h += '<div class="persona-list-item" data-lkey="'+lst.lkey+'" data-iid="'+arr2[L2].id+'">'+(esc(arr2[L2].text)||'&nbsp;')+'</div>';
+            h += '<button class="persona-list-add persona-list-add-inline persona-sublist-add" data-lkey="'+lst.lkey+'">＋ 添加</button></div>';
           }
         }
         h += '</div>';
@@ -34828,7 +34840,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     editKey = key; editList = null;
     $('personaEditDel').style.display = 'none';
     var label='', ph='';
-    for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++) for (var f=0;f<SECTIONS[i].groups[g].fields.length;f++){ var fd = SECTIONS[i].groups[g].fields[f]; if (fd[0]===key){ label=fd[1]; ph=fd[2]; } }
+    for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++){ var gp0 = SECTIONS[i].groups[g]; if (gp0.fields) for (var f=0;f<gp0.fields.length;f++){ var fd = gp0.fields[f]; if (fd[0]===key){ label=fd[1]; ph=fd[2]; } } }
     $('personaEditLabel').textContent = label;
     var inp = $('personaEditInput');
     inp.value = p.fields[key] || '';
@@ -34876,6 +34888,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     for (var i=0;i<SECTIONS.length;i++) for (var g=0;g<SECTIONS[i].groups.length;g++){
       var gp = SECTIONS[i].groups[g];
       if (gp.type==='list' && gp.lkey===lkey) return { label: gp.title, ph: gp.lph };
+      if (gp.lists) for (var q=0;q<gp.lists.length;q++) if (gp.lists[q].lkey===lkey) return { label: gp.lists[q].title, ph: gp.lists[q].lph };
     }
     return { label:'编辑', ph:'' };
   }
