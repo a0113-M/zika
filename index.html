@@ -641,6 +641,9 @@
     .mp-item { position: relative; -webkit-tap-highlight-color: transparent; }
     .mp-pager.editing .mp-item { touch-action: none; }
     .mp-item.mpp-card { grid-column: span 2; }
+    .mp-item.mpp-card.size-1 { grid-column: span 1; }
+    .mp-item.mpp-card.size-2 { grid-column: span 2; }
+    .mp-item.mpp-card.size-4 { grid-column: span 4; }
     .mp-item.mpp-app { grid-column: span 1; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
     .mp-item.mpp-app:active .mp-ico { transform: scale(.88); }
     .mp-item.mpp-card .mp-widget { height: 100%; }
@@ -650,6 +653,27 @@
     .mp-item-ghost .mp-del { display: none; }
     .mp-del { position: absolute; top: -7px; right: -7px; width: 22px; height: 22px; border-radius: 50%; background: #e0483e; color: #fff; border: 1.5px solid #fff; font-size: 15px; line-height: 1; display: none; align-items: center; justify-content: center; z-index: 6; padding: 0; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,.2); }
     .mp-item.jiggle .mp-del { display: flex; }
+    .mp-resize { position: absolute; right: -6px; bottom: -6px; width: 22px; height: 22px; border-radius: 8px; background: var(--primary); color: #fff; border: 1.5px solid #fff; display: none; align-items: center; justify-content: center; z-index: 6; padding: 0; cursor: nwse-resize; box-shadow: 0 2px 6px rgba(0,0,0,.22); }
+    .mp-resize svg { width: 11px; height: 11px; display: block; }
+    .mp-item.jiggle .mp-resize { display: flex; }
+    .mp-item-ghost .mp-resize { display: none; }
+    .mp-item.mpp-card.size-1 .mp-widget { padding: 9px 8px; border-radius: 14px; }
+    .mp-item.mpp-card.size-1 .w-time { font-size: 15px; }
+    .mp-item.mpp-card.size-1 .w-date { margin-top: 3px; font-size: 8px; }
+    .mp-item.mpp-card.size-1 .w-emoji { font-size: 15px; }
+    .mp-item.mpp-card.size-1 .w-quote { font-size: 9px; line-height: 1.4; }
+    .mp-item.mpp-card.size-1 .mp-widget-quote { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .mp-item.mpp-card.size-1 .w-label, .mp-item.mpp-card.size-1 .a-label, .mp-item.mpp-card.size-1 .m-label { font-size: 8px; }
+    .mp-item.mpp-card.size-1 .w-num, .mp-item.mpp-card.size-1 .m-num { font-size: 15px; }
+    .mp-item.mpp-card.size-1 .w-text, .mp-item.mpp-card.size-1 .m-text { margin-top: 2px; font-size: 8px; }
+    .mp-item.mpp-card.size-1 .a-name { font-size: 10px; }
+    .mp-item.mpp-card.size-1 .a-days { font-size: 9px; }
+    .mp-item.mpp-card.size-1 .p-caption { font-size: 8px; }
+    .mp-item.mpp-card.size-1 .w-dots { margin-top: 4px; }
+    .mp-item.mpp-card.size-4 .w-time { font-size: 42px; }
+    .mp-item.mpp-card.size-4 .w-num, .mp-item.mpp-card.size-4 .m-num { font-size: 30px; }
+    .mp-item.mpp-card.size-4 .w-quote { font-size: 16px; }
+    .mp-item.mpp-card.size-4 .a-name { font-size: 18px; }
     .mp-item.jiggle { animation: mpJiggle .28s ease-in-out infinite alternate; }
     @keyframes mpJiggle { from { transform: rotate(-1.2deg); } to { transform: rotate(1.2deg); } }
     .mp-page-dots { margin-top: auto; display: flex; justify-content: center; gap: 6px; padding: 10px 0 2px; }
@@ -21435,11 +21459,27 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         function saveDesktop() { try { localStorage.setItem('zk_phone_desktop', JSON.stringify(desktopOrder)); } catch (e) {} }
         function isAppItem(id) { return (id || '').indexOf('app:') === 0; }
-        function itemSlots(id) { return isAppItem(id) ? 1 : 2; }
+        function getCardSize(id) {
+          try {
+            var s = JSON.parse(localStorage.getItem('zk_phone_sizes') || '{}') || {};
+            var w = s[id];
+            if (w === 1 || w === 4) return w;
+            return 2;
+          } catch (e) { return 2; }
+        }
+        function setCardSize(id, w) {
+          try {
+            var s = JSON.parse(localStorage.getItem('zk_phone_sizes') || '{}') || {};
+            s[id] = w;
+            localStorage.setItem('zk_phone_sizes', JSON.stringify(s));
+          } catch (e) {}
+        }
+        function itemCols(id) { return isAppItem(id) ? 1 : getCardSize(id); }
 
         var editing = false;
         var currentPage = 0;
         var drag = null, ghost = null;
+        var resizing = null;
         var dragTriggered = false;
         var longPressTriggered = false;
         var autoScrollTimer = null;
@@ -21475,18 +21515,23 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var nm = APP_NAMES[act] || act;
             return '<div class="mp-item mpp-app" data-item="' + id + '"><button class="mp-del" type="button">×</button><span class="mp-ico">' + (IC[act] || '') + '</span><span class="mp-name">' + nm + '</span></div>';
           }
-          return '<div class="mp-item mpp-card" data-item="' + id + '"><button class="mp-del" type="button">×</button>' + cardInnerHtml(id) + '</div>';
+          var w = getCardSize(id);
+          return '<div class="mp-item mpp-card size-' + w + '" data-item="' + id + '"><button class="mp-del" type="button">×</button><button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' + cardInnerHtml(id) + '</div>';
         }
 
         function paginateItems(items) {
           var pages = [[]];
-          var slots = 0;
+          var col = 0, row = 0;
           for (var i = 0; i < items.length; i++) {
-            var w = itemSlots(items[i]);
-            if (w === 2 && slots % 2 === 1) slots++;
-            if (slots + w > PAGE_SLOTS) { pages.push([]); slots = 0; }
+            var w = itemCols(items[i]);
+            if (w === 2 && col % 2 === 1) col++;
+            if (col + w > PAGE_COLS || (w === 4 && col > 0)) {
+              row++;
+              col = 0;
+              if (row >= PAGE_ROWS) { pages.push([]); row = 0; }
+            }
             pages[pages.length - 1].push(items[i]);
-            slots += w;
+            col += w;
           }
           return pages;
         }
@@ -21747,6 +21792,48 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           else tEl.parentNode.insertBefore(el, tEl);
         }
 
+        function resizeColW() {
+          if (!pagerEl) return 0;
+          var page = pagerEl.querySelector('.mp-page');
+          if (!page) return 0;
+          var style = getComputedStyle(page);
+          var padL = parseFloat(style.paddingLeft) || 16;
+          var padR = parseFloat(style.paddingRight) || 16;
+          var gap = parseFloat(style.columnGap) || 10;
+          var inner = page.clientWidth - padL - padR;
+          var colW = (inner - gap * 3) / 4;
+          return colW > 0 ? colW : 0;
+        }
+        function applyResizeClass(id, w) {
+          if (!pagerEl) return;
+          var el = pagerEl.querySelector('.mp-item[data-item="' + id + '"]');
+          if (!el) return;
+          el.classList.remove('size-1', 'size-2', 'size-4');
+          el.classList.add('size-' + w);
+        }
+        function startResize(id) {
+          resizing = id;
+          if (navigator.vibrate) { try { navigator.vibrate(8); } catch (e) {} }
+        }
+        function moveResize(dx) {
+          if (!resizing) return;
+          var colW = resizeColW();
+          if (!colW) return;
+          var levels = [1, 2, 4];
+          var curIdx = levels.indexOf(getCardSize(resizing));
+          var delta = Math.round(dx / colW);
+          var nextIdx = Math.max(0, Math.min(levels.length - 1, curIdx + delta));
+          var next = levels[nextIdx];
+          if (next !== getCardSize(resizing)) {
+            setCardSize(resizing, next);
+            applyResizeClass(resizing, next);
+          }
+        }
+        function endResize() {
+          resizing = null;
+          renderDesktop();
+        }
+
         function bindSwipes() {
           var pairs = [['mpWPhoto', 'mpWPhotoDots'], ['mpWAnnSwipe', 'mpWAnnDots'], ['mpWMetSwipe', 'mpWMetDots']];
           for (var i = 0; i < pairs.length; i++) {
@@ -21994,6 +22081,26 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             pagerEl.addEventListener('pointerdown', function (e) {
               var delBtn = e.target.closest('.mp-del');
               if (delBtn) return;
+              var rsBtn = e.target.closest('.mp-resize');
+              if (rsBtn) {
+                var rsItem = rsBtn.closest('.mp-item');
+                var rsId = rsItem ? rsItem.getAttribute('data-item') : null;
+                if (rsId && editing && !isAppItem(rsId)) {
+                  startResize(rsId);
+                  var rsStartX = e.clientX;
+                  var onRMove = function (ev) { moveResize(ev.clientX - rsStartX); };
+                  var onRUp = function () {
+                    document.removeEventListener('pointermove', onRMove);
+                    document.removeEventListener('pointerup', onRUp);
+                    document.removeEventListener('pointercancel', onRUp);
+                    endResize();
+                  };
+                  document.addEventListener('pointermove', onRMove);
+                  document.addEventListener('pointerup', onRUp);
+                  document.addEventListener('pointercancel', onRUp);
+                }
+                return;
+              }
               var item = e.target.closest('.mp-item');
               var id = item ? item.getAttribute('data-item') : null;
               var sx = e.clientX, sy = e.clientY;
