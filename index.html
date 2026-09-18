@@ -668,7 +668,7 @@
     .mp-widget-photo { display: flex; flex-direction: column; }
     .mp-widget-photo .p-photo { border-radius: 12px; overflow: hidden; aspect-ratio: 1 / 1; background: var(--bg-soft2); display: flex; align-items: center; justify-content: center; }
     .mp-widget-photo .p-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .mp-widget-photo .p-empty { text-align: center; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .mp-widget-photo .p-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-size: 12px; color: var(--text-muted); line-height: 1.6; }
     .mp-widget-photo .p-caption { margin-top: 7px; font-size: 10px; color: var(--text-muted); }
     .mp-widget-ann { display: flex; flex-direction: column; justify-content: center; }
     .mp-widget-ann .a-label { font-size: 11px; color: var(--text-muted); }
@@ -678,6 +678,25 @@
     .mp-widget-met .m-label { font-size: 11px; color: var(--text-muted); }
     .mp-widget-met .m-num { margin-top: 4px; font-size: 22px; font-weight: 800; color: var(--primary); line-height: 1.15; }
     .mp-widget-met .m-text { margin-top: 4px; font-size: 11px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* 卡片内横向滑动（照片 / 纪念日 / 相识） */
+    .w-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+    .w-swipe::-webkit-scrollbar { display: none; }
+    .w-slide { flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
+    .w-dots { display: flex; justify-content: center; gap: 4px; margin-top: 6px; }
+    .w-dots .w-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(var(--primary-rgba), .25); transition: all .18s; }
+    .w-dots .w-dot.on { width: 12px; border-radius: 3px; background: var(--primary); }
+    .mp-widget-photo .p-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+    .mp-widget-photo .p-swipe::-webkit-scrollbar { display: none; }
+    .mp-widget-photo .p-slide { flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--bg-soft2); }
+    .mp-widget-photo .p-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mp-widget-ann .a-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+    .mp-widget-ann .a-swipe::-webkit-scrollbar { display: none; }
+    .mp-widget-ann .a-slide { flex: 0 0 100%; scroll-snap-align: start; }
+    .mp-widget-ann .a-empty { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+    .mp-widget-met .m-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+    .mp-widget-met .m-swipe::-webkit-scrollbar { display: none; }
+    .mp-widget-met .m-slide { flex: 0 0 100%; scroll-snap-align: start; }
+    .mp-widget-met .m-empty { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
     .mp-widget-app { display: flex; align-items: center; gap: 10px; }
     .mp-widget-app .wa-ico { width: 38px; height: 38px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 12px; box-shadow: 0 2px 8px rgba(var(--primary-rgba), .16); }
     .mp-widget-app .wa-ico svg { width: 20px; height: 20px; color: var(--primary); display: block; }
@@ -701,6 +720,13 @@
     .mpm-switch .mpm-knob { position: absolute; top: 3px; left: 3px; width: 21px; height: 21px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.22); transition: left .18s; }
     .mpm-switch.on { background: var(--primary); }
     .mpm-switch.on .mpm-knob { left: 22px; }
+    /* 照片管理面板 */
+    .mp-photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; overflow-y: auto; padding: 8px 0; }
+    .mp-photo-cell { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 1; background: var(--bg-soft2); }
+    .mp-photo-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .mp-photo-cell-del { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; border: none; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
+    .mp-photo-empty { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--text-muted); padding: 20px 0; }
+    .mp-photo-add { margin-top: 10px; width: 100%; border: none; background: var(--primary); color: #fff; font-size: 14px; font-weight: 600; padding: 12px; border-radius: 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .mp-grid { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 20px; padding: 4px 12px 20px; }
     .mp-app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: none; }
     .mp-app:active .mp-ico { transform: scale(.88); }
@@ -12717,6 +12743,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
       <input type="file" id="mpPhotoInput" accept="image/*" style="display:none;">
+      <div class="mp-manager" id="mpPhotoManager">
+        <div class="mp-manager-mask" id="mpPhotoManagerMask"></div>
+        <div class="mp-manager-sheet">
+          <div class="mp-manager-head">
+            <div class="mp-manager-title">照片卡片</div>
+            <div class="mp-manager-sub">可在桌面照片卡上左右滑动查看</div>
+            <button class="mp-manager-close" id="mpPhotoManagerClose" type="button">✕</button>
+          </div>
+          <div class="mp-photo-grid" id="mpPhotoGrid"></div>
+          <button class="mp-photo-add" id="mpPhotoAddBtn" type="button">＋ 添加照片</button>
+        </div>
+      </div>
 
       <!-- 朋友圈视图 -->
       <div id="momentsView" class="moments-view hidden">
@@ -21364,13 +21402,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             return '<div class="mp-widget mp-widget-quote"><span class="w-emoji">☁️</span><span class="w-quote" id="mpWQuote">慢慢来，比较快。</span></div>';
           }
           if (kind === 'photo') {
-            return '<div class="mp-widget mp-widget-photo"><div class="p-photo" id="mpWPhoto"></div><div class="p-caption">点击换照片</div></div>';
+            return '<div class="mp-widget mp-widget-photo"><div class="p-swipe" id="mpWPhoto"></div><div class="w-dots" id="mpWPhotoDots"></div><div class="p-caption">点击管理照片</div></div>';
           }
           if (kind === 'anniversary') {
-            return '<div class="mp-widget mp-widget-ann"><div class="a-label">纪念日</div><div class="a-name" id="mpWAnnName">-</div><div class="a-days" id="mpWAnnDays">-</div></div>';
+            return '<div class="mp-widget mp-widget-ann"><div class="a-label">纪念日</div><div class="a-swipe" id="mpWAnnSwipe"></div><div class="w-dots" id="mpWAnnDots"></div></div>';
           }
           if (kind === 'met') {
-            return '<div class="mp-widget mp-widget-met"><div class="m-label">相识</div><div class="m-num" id="mpWMetNum">-</div><div class="m-text" id="mpWMetText">-</div></div>';
+            return '<div class="mp-widget mp-widget-met"><div class="m-label">相识</div><div class="m-swipe" id="mpWMetSwipe"></div><div class="w-dots" id="mpWMetDots"></div></div>';
           }
           return '';
         }
@@ -21397,7 +21435,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return pages;
         }
 
-        function renderDesktop() {
+        function renderDesktop(skipFill) {
           if (!pagerEl) return;
           var pages = paginateItems(desktopOrder);
           var html = '';
@@ -21412,10 +21450,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (cur) cur.classList.add('dragging');
           }
           applyEditing();
-          fillWidgetContents();
+          if (!skipFill) fillWidgetContents();
           if (currentPage > pages.length - 1) currentPage = pages.length - 1;
           if (currentPage > 0) { pagerEl.scrollLeft = currentPage * pagerEl.clientWidth; }
           renderDots();
+          bindSwipes();
         }
 
         function fillWidgetContents() {
@@ -21465,22 +21504,49 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return { daysLeft: Math.round((t - today.getTime()) / 86400000) };
         }
 
+        function zkEscHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+        function getPhotos() {
+          var arr = null;
+          try { arr = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
+          if (Array.isArray(arr)) return arr.filter(function (p) { return p && p.src; });
+          if (arr && arr.src) return [{ src: arr.src }];
+          return [];
+        }
+        function setPhotos(list) {
+          try { localStorage.setItem('zk_photo_widget', JSON.stringify(list || [])); } catch (e) {}
+        }
         function renderPhotoWidget() {
           var el = document.getElementById('mpWPhoto');
+          var dots = document.getElementById('mpWPhotoDots');
+          var cap = document.querySelector('.mp-widget-photo .p-caption');
           if (!el) return;
-          var data = null;
-          try { data = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
-          if (data && data.src) {
-            el.innerHTML = '<img src="' + data.src + '" alt="">';
-          } else {
-            el.innerHTML = '<div class="p-empty">＋<br>放张照片</div>';
+          var list = getPhotos();
+          if (!list.length) {
+            el.innerHTML = '<div class="p-slide p-empty">＋<br>放张照片</div>';
+            if (dots) dots.innerHTML = '';
+            if (cap) cap.textContent = '点击添加照片';
+            return;
           }
+          var html = '';
+          for (var i = 0; i < list.length; i++) {
+            html += '<div class="p-slide"><img src="' + list[i].src + '" alt=""></div>';
+          }
+          el.innerHTML = html;
+          renderDotsFor(dots, list.length);
+          if (cap) cap.textContent = list.length > 1 ? ('点击管理 · ' + list.length + ' 张') : '点击换照片';
         }
 
+        function renderDotsFor(dots, count) {
+          if (!dots) return;
+          if (count <= 1) { dots.innerHTML = ''; return; }
+          var html = '';
+          for (var i = 0; i < count; i++) html += '<span class="w-dot' + (i === 0 ? ' on' : '') + '"></span>';
+          dots.innerHTML = html;
+        }
         function renderAnnWidget() {
-          var nameEl = document.getElementById('mpWAnnName');
-          var daysEl = document.getElementById('mpWAnnDays');
-          if (!nameEl || !daysEl) return;
+          var swipe = document.getElementById('mpWAnnSwipe');
+          var dots = document.getElementById('mpWAnnDots');
+          if (!swipe || !dots) return;
           var items = [];
           try {
             var anns = JSON.parse(localStorage.getItem('anniversaries') || '[]');
@@ -21497,23 +21563,25 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             });
           } catch (e) {}
           if (!items.length) {
-            nameEl.textContent = '还没有纪念日';
-            daysEl.textContent = '去「数据」里添加';
+            swipe.innerHTML = '<div class="a-slide"><div class="a-empty">还没有纪念日<br>去「数据」里添加</div></div>';
+            dots.innerHTML = '';
             return;
           }
-          var best = null;
-          items.forEach(function (it) {
-            var ni = wkNextInfo(it.date);
-            if (!best || ni.daysLeft < best.daysLeft) best = { name: it.name, daysLeft: ni.daysLeft };
-          });
-          nameEl.textContent = best.name;
-          daysEl.textContent = best.daysLeft === 0 ? '就是今天' : '还有 ' + best.daysLeft + ' 天';
+          items.sort(function (a, b) { return wkNextInfo(a.date).daysLeft - wkNextInfo(b.date).daysLeft; });
+          var html = '';
+          for (var i = 0; i < items.length; i++) {
+            var dl = wkNextInfo(items[i].date).daysLeft;
+            html += '<div class="a-slide"><div class="a-name">' + zkEscHtml(items[i].name) + '</div><div class="a-days">' + (dl === 0 ? '就是今天' : '还有 ' + dl + ' 天') + '</div></div>';
+          }
+          swipe.innerHTML = html;
+          renderDotsFor(dots, items.length);
         }
 
         function renderMetWidget() {
-          var numEl = document.getElementById('mpWMetNum');
-          var txtEl = document.getElementById('mpWMetText');
-          if (!numEl || !txtEl) return;
+          var swipe = document.getElementById('mpWMetSwipe');
+          var dots = document.getElementById('mpWMetDots');
+          if (!swipe || !dots) return;
+          var items = [];
           try {
             var met = JSON.parse(localStorage.getItem('contactMetDates') || '{}');
             var cs = JSON.parse(localStorage.getItem('zk_contacts') || '[]');
@@ -21524,14 +21592,23 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 var a = new Date(); a.setHours(0, 0, 0, 0);
                 var b = new Date(met[c.id]); b.setHours(0, 0, 0, 0);
                 var days = Math.round((a - b) / 86400000);
-                numEl.textContent = (days >= 0 ? days : -days) + ' 天';
-                txtEl.textContent = days >= 0 ? ('和 ' + c.name + ' 相识') : ('和 ' + c.name + ' 相遇倒计时');
-                return;
+                items.push({ name: c.name, days: days });
               }
             }
           } catch (e) {}
-          numEl.textContent = '—';
-          txtEl.textContent = '还没记录相识那天';
+          if (!items.length) {
+            swipe.innerHTML = '<div class="m-slide"><div class="m-empty">还没记录相识那天<br>在联系人里补一下日期吧</div></div>';
+            dots.innerHTML = '';
+            return;
+          }
+          var html = '';
+          for (var j = 0; j < items.length; j++) {
+            var days = items[j].days;
+            var label = days >= 0 ? ('和 ' + items[j].name + ' 相识') : ('和 ' + items[j].name + ' 相遇倒计时');
+            html += '<div class="m-slide"><div class="m-num">' + (days >= 0 ? days : -days) + ' 天</div><div class="m-text">' + zkEscHtml(label) + '</div></div>';
+          }
+          swipe.innerHTML = html;
+          renderDotsFor(dots, items.length);
         }
 
         function renderDock() {
@@ -21596,6 +21673,40 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var page = pagerEl.querySelector('.mp-page[data-page="' + currentPage + '"]');
           if (!page) return [];
           return page.querySelectorAll('.mp-item');
+        }
+
+        function reorderWithinPage(targetId) {
+          if (!drag || !pagerEl) return;
+          var el = pagerEl.querySelector('.mp-item[data-item="' + drag.id + '"]');
+          var tEl = pagerEl.querySelector('.mp-item[data-item="' + targetId + '"]');
+          if (!el || !tEl || el === tEl) return;
+          if (el.closest('.mp-page') !== tEl.closest('.mp-page')) return;
+          var from = desktopOrder.indexOf(drag.id);
+          var to = desktopOrder.indexOf(targetId);
+          if (from < 0 || to < 0 || from === to) return;
+          desktopOrder.splice(from, 1);
+          desktopOrder.splice(to, 0, drag.id);
+          saveDesktop();
+          if (from < to) tEl.parentNode.insertBefore(el, tEl.nextSibling);
+          else tEl.parentNode.insertBefore(el, tEl);
+        }
+
+        function bindSwipes() {
+          var pairs = [['mpWPhoto', 'mpWPhotoDots'], ['mpWAnnSwipe', 'mpWAnnDots'], ['mpWMetSwipe', 'mpWMetDots']];
+          for (var i = 0; i < pairs.length; i++) {
+            (function (sid, did) {
+              var s = document.getElementById(sid);
+              var d = document.getElementById(did);
+              if (!s || !d) return;
+              s.addEventListener('scroll', function () {
+                var w = s.clientWidth;
+                if (!w) return;
+                var idx = Math.round(s.scrollLeft / w);
+                var ds = d.querySelectorAll('.w-dot');
+                for (var j = 0; j < ds.length; j++) ds[j].classList.toggle('on', j === idx);
+              }, { passive: true });
+            })(pairs[i][0], pairs[i][1]);
+          }
         }
 
         function itemAtPoint(cx, cy) {
@@ -21667,7 +21778,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           autoScrollTimer = setInterval(function () {
             if (!drag) { stopAutoScroll(); return; }
             shiftToPage(dir);
-          }, 430);
+          }, 360);
         }
 
         function moveDrag(ev) {
@@ -21676,7 +21787,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           ghost.style.left = (ev.clientX - gw.width / 2) + 'px';
           ghost.style.top = (ev.clientY - 24) + 'px';
           var pr = pagerEl.getBoundingClientRect();
-          var edge = 40;
+          var edge = 44;
           if (ev.clientX < pr.left + edge && currentPage > 0) {
             startAutoScroll(-1);
             return;
@@ -21689,14 +21800,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var hit = itemAtPoint(ev.clientX, ev.clientY);
           if (hit && hit !== drag.lastHit) {
             drag.lastHit = hit;
-            var from = desktopOrder.indexOf(drag.id);
-            var to = desktopOrder.indexOf(hit);
-            if (from >= 0 && to >= 0 && from !== to) {
-              desktopOrder.splice(from, 1);
-              desktopOrder.splice(to, 0, drag.id);
-              saveDesktop();
-              renderDesktop();
-            }
+            reorderWithinPage(hit);
           }
         }
 
@@ -21717,7 +21821,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         function handleItemTap(id) {
           if (id === 'todo') { openTodoFromWidget(); }
-          else if (id === 'photo') { triggerPhotoUpload(); }
+          else if (id === 'photo') { openPhotoManager(); }
           else if (id.indexOf('app:') === 0) { zkOpenApp(id.slice(4)); }
         }
 
@@ -21742,12 +21846,38 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               cv.width = w; cv.height = h;
               cv.getContext('2d').drawImage(img, 0, 0, w, h);
               var dataUrl = cv.toDataURL('image/jpeg', 0.72);
-              try { localStorage.setItem('zk_photo_widget', JSON.stringify({ src: dataUrl })); } catch (e) {}
-              renderDesktop();
+              var list = getPhotos();
+              list.push({ src: dataUrl });
+              setPhotos(list);
+              renderPhotoWidget();
+              renderPhotoManager();
             };
             img.src = reader.result;
           };
           reader.readAsDataURL(file);
+        }
+
+        function openPhotoManager() {
+          var m = document.getElementById('mpPhotoManager');
+          if (m) { m.classList.add('show'); renderPhotoManager(); }
+        }
+        function closePhotoManager() {
+          var m = document.getElementById('mpPhotoManager');
+          if (m) m.classList.remove('show');
+        }
+        function renderPhotoManager() {
+          var grid = document.getElementById('mpPhotoGrid');
+          if (!grid) return;
+          var list = getPhotos();
+          if (!list.length) {
+            grid.innerHTML = '<div class="mp-photo-empty">还没有照片<br>点下面按钮添加第一张</div>';
+            return;
+          }
+          var html = '';
+          for (var i = 0; i < list.length; i++) {
+            html += '<div class="mp-photo-cell"><img src="' + list[i].src + '" alt=""><button class="mp-photo-cell-del" data-del="' + i + '" type="button">×</button></div>';
+          }
+          grid.innerHTML = html;
         }
 
         function renderWidgetManager() {
@@ -21869,6 +21999,26 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               saveDesktop();
               renderWidgetManager();
               renderDesktop();
+            });
+          }
+
+          var phMask = document.getElementById('mpPhotoManagerMask');
+          var phClose = document.getElementById('mpPhotoManagerClose');
+          var phGrid = document.getElementById('mpPhotoGrid');
+          var phAdd = document.getElementById('mpPhotoAddBtn');
+          if (phMask) phMask.addEventListener('click', closePhotoManager);
+          if (phClose) phClose.addEventListener('click', closePhotoManager);
+          if (phAdd) phAdd.addEventListener('click', function () { triggerPhotoUpload(); });
+          if (phGrid) {
+            phGrid.addEventListener('click', function (e) {
+              var delBtn = e.target.closest('.mp-photo-cell-del');
+              if (!delBtn) return;
+              var idx = parseInt(delBtn.getAttribute('data-del'), 10);
+              var list = getPhotos();
+              if (idx >= 0 && idx < list.length) list.splice(idx, 1);
+              setPhotos(list);
+              renderPhotoManager();
+              renderPhotoWidget();
             });
           }
 
