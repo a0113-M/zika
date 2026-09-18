@@ -652,7 +652,7 @@
     .mp-item.jiggle .mp-del { display: flex; }
     .mp-item.jiggle { animation: mpJiggle .28s ease-in-out infinite alternate; }
     @keyframes mpJiggle { from { transform: rotate(-1.2deg); } to { transform: rotate(1.2deg); } }
-    .mp-page-dots { display: flex; justify-content: center; gap: 6px; padding: 2px 0 4px; }
+    .mp-page-dots { margin-top: auto; display: flex; justify-content: center; gap: 6px; padding: 10px 0 2px; }
     .mp-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(var(--primary-rgba), .25); transition: all .18s; }
     .mp-dot.on { width: 16px; border-radius: 3px; background: var(--primary); }
     .mp-widget-clock { display: flex; flex-direction: column; justify-content: center; }
@@ -710,7 +710,7 @@
     .mp-name { font-size: 12px; color: var(--text-secondary); }
     .mp-ghost { position: fixed; z-index: 5000; pointer-events: none; }
     .mp-ghost .mp-ico { width: 62px; height: 62px; font-size: 32px; transform: scale(1.06); box-shadow: 0 12px 28px rgba(var(--primary-rgba), .35); }
-    .mp-dock { margin-top: auto; display: flex; justify-content: center; padding: 12px 16px 22px; }
+    .mp-dock { display: flex; justify-content: center; padding: 12px 16px 22px; }
     .mp-dock-box { display: flex; gap: 26px; padding: 10px 26px; background: rgba(255,255,255,.7); border-radius: 24px; box-shadow: 0 8px 24px rgba(var(--primary-rgba), .2); backdrop-filter: blur(8px); }
     .mp-dock .mp-ico { background: rgba(255,255,255,.92); }
 
@@ -21348,6 +21348,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var drag = null, ghost = null;
         var dragTriggered = false;
         var longPressTriggered = false;
+        var autoScrollTimer = null;
+        var autoScrollDir = 0;
 
         function pad2(n) { return (n < 10 ? '0' : '') + n; }
 
@@ -21626,11 +21628,64 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (navigator.vibrate) { try { navigator.vibrate(15); } catch (e) {} }
         }
 
+        function totalPages() {
+          return pagerEl ? pagerEl.querySelectorAll('.mp-page').length : 0;
+        }
+
+        function stopAutoScroll() {
+          if (autoScrollTimer) { clearInterval(autoScrollTimer); autoScrollTimer = null; }
+          autoScrollDir = 0;
+        }
+
+        function shiftToPage(dir) {
+          if (!drag) return;
+          var target = currentPage + dir;
+          var pages = paginateItems(desktopOrder);
+          if (target < 0 || target >= pages.length) { stopAutoScroll(); return; }
+          var idx = desktopOrder.indexOf(drag.id);
+          if (idx < 0) return;
+          var start = 0, end = 0;
+          for (var i = 0; i < target; i++) start += pages[i].length;
+          end = start + pages[target].length;
+          desktopOrder.splice(idx, 1);
+          var beforeTarget = idx < start;
+          var ns = beforeTarget ? start - 1 : start;
+          var ne = beforeTarget ? end - 1 : end;
+          var insertAt = dir < 0 ? (ne - 1) : ns;
+          desktopOrder.splice(insertAt, 0, drag.id);
+          saveDesktop();
+          currentPage = target;
+          renderDesktop();
+          drag.lastHit = null;
+        }
+
+        function startAutoScroll(dir) {
+          if (autoScrollTimer && autoScrollDir === dir) return;
+          stopAutoScroll();
+          autoScrollDir = dir;
+          shiftToPage(dir);
+          autoScrollTimer = setInterval(function () {
+            if (!drag) { stopAutoScroll(); return; }
+            shiftToPage(dir);
+          }, 430);
+        }
+
         function moveDrag(ev) {
           if (!drag || !ghost) return;
           var gw = ghost.getBoundingClientRect();
           ghost.style.left = (ev.clientX - gw.width / 2) + 'px';
           ghost.style.top = (ev.clientY - 24) + 'px';
+          var pr = pagerEl.getBoundingClientRect();
+          var edge = 40;
+          if (ev.clientX < pr.left + edge && currentPage > 0) {
+            startAutoScroll(-1);
+            return;
+          }
+          if (ev.clientX > pr.right - edge && currentPage < totalPages() - 1) {
+            startAutoScroll(1);
+            return;
+          }
+          stopAutoScroll();
           var hit = itemAtPoint(ev.clientX, ev.clientY);
           if (hit && hit !== drag.lastHit) {
             drag.lastHit = hit;
@@ -21646,6 +21701,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         function endDrag(ev) {
+          stopAutoScroll();
           if (ghost && ghost.parentNode) ghost.parentNode.removeChild(ghost);
           ghost = null;
           drag = null;
