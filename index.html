@@ -637,14 +637,11 @@
     .mp-editbar-add { border: none; background: var(--primary); color: #fff; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .mp-pager { display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; touch-action: pan-x pan-y; }
     .mp-pager::-webkit-scrollbar { display: none; }
-    .mp-page { flex: 0 0 100%; scroll-snap-align: start; display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: min-content; gap: 16px 10px; padding: 12px 16px 8px; align-content: start; }
+    .mp-page { flex: 0 0 100%; scroll-snap-align: start; display: grid; grid-template-columns: repeat(16, 1fr); grid-auto-rows: min-content; gap: 16px 10px; padding: 12px 16px 8px; align-content: start; }
     .mp-item { position: relative; -webkit-tap-highlight-color: transparent; }
     .mp-pager.editing .mp-item { touch-action: none; }
-    .mp-item.mpp-card { grid-column: span 2; }
-    .mp-item.mpp-card.size-1 { grid-column: span 1; }
-    .mp-item.mpp-card.size-2 { grid-column: span 2; }
-    .mp-item.mpp-card.size-4 { grid-column: span 4; }
-    .mp-item.mpp-app { grid-column: span 1; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+    .mp-item.mpp-card { grid-column: span 8; }
+    .mp-item.mpp-app { grid-column: span 4; display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
     .mp-item.mpp-app:active .mp-ico { transform: scale(.88); }
     .mp-item.mpp-card .mp-widget { height: 100%; }
     .mp-widget { background: rgba(255,255,255,.66); border-radius: 18px; padding: 12px 14px; box-shadow: 0 4px 14px rgba(var(--primary-rgba), .14); backdrop-filter: blur(8px); cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -657,23 +654,23 @@
     .mp-resize svg { width: 11px; height: 11px; display: block; }
     .mp-item.jiggle .mp-resize { display: flex; }
     .mp-item-ghost .mp-resize { display: none; }
-    .mp-item.mpp-card.size-1 .mp-widget { padding: 9px 8px; border-radius: 14px; }
-    .mp-item.mpp-card.size-1 .w-time { font-size: 15px; }
-    .mp-item.mpp-card.size-1 .w-date { margin-top: 3px; font-size: 8px; }
-    .mp-item.mpp-card.size-1 .w-emoji { font-size: 15px; }
-    .mp-item.mpp-card.size-1 .w-quote { font-size: 9px; line-height: 1.4; }
-    .mp-item.mpp-card.size-1 .mp-widget-quote { flex-direction: column; gap: 4px; align-items: flex-start; }
-    .mp-item.mpp-card.size-1 .w-label, .mp-item.mpp-card.size-1 .a-label, .mp-item.mpp-card.size-1 .m-label { font-size: 8px; }
-    .mp-item.mpp-card.size-1 .w-num, .mp-item.mpp-card.size-1 .m-num { font-size: 15px; }
-    .mp-item.mpp-card.size-1 .w-text, .mp-item.mpp-card.size-1 .m-text { margin-top: 2px; font-size: 8px; }
-    .mp-item.mpp-card.size-1 .a-name { font-size: 10px; }
-    .mp-item.mpp-card.size-1 .a-days { font-size: 9px; }
-    .mp-item.mpp-card.size-1 .p-caption { font-size: 8px; }
-    .mp-item.mpp-card.size-1 .w-dots { margin-top: 4px; }
-    .mp-item.mpp-card.size-4 .w-time { font-size: 42px; }
-    .mp-item.mpp-card.size-4 .w-num, .mp-item.mpp-card.size-4 .m-num { font-size: 30px; }
-    .mp-item.mpp-card.size-4 .w-quote { font-size: 16px; }
-    .mp-item.mpp-card.size-4 .a-name { font-size: 18px; }
+    .mp-item.mpp-card.size-sm .mp-widget { padding: 9px 8px; border-radius: 14px; }
+    .mp-item.mpp-card.size-sm .w-time { font-size: 15px; }
+    .mp-item.mpp-card.size-sm .w-date { margin-top: 3px; font-size: 8px; }
+    .mp-item.mpp-card.size-sm .w-emoji { font-size: 15px; }
+    .mp-item.mpp-card.size-sm .w-quote { font-size: 9px; line-height: 1.4; }
+    .mp-item.mpp-card.size-sm .mp-widget-quote { flex-direction: column; gap: 4px; align-items: flex-start; }
+    .mp-item.mpp-card.size-sm .w-label, .mp-item.mpp-card.size-sm .a-label, .mp-item.mpp-card.size-sm .m-label { font-size: 8px; }
+    .mp-item.mpp-card.size-sm .w-num, .mp-item.mpp-card.size-sm .m-num { font-size: 15px; }
+    .mp-item.mpp-card.size-sm .w-text, .mp-item.mpp-card.size-sm .m-text { margin-top: 2px; font-size: 8px; }
+    .mp-item.mpp-card.size-sm .a-name { font-size: 10px; }
+    .mp-item.mpp-card.size-sm .a-days { font-size: 9px; }
+    .mp-item.mpp-card.size-sm .p-caption { font-size: 8px; }
+    .mp-item.mpp-card.size-sm .w-dots { margin-top: 4px; }
+    .mp-item.mpp-card.size-lg .w-time { font-size: 42px; }
+    .mp-item.mpp-card.size-lg .w-num, .mp-item.mpp-card.size-lg .m-num { font-size: 30px; }
+    .mp-item.mpp-card.size-lg .w-quote { font-size: 16px; }
+    .mp-item.mpp-card.size-lg .a-name { font-size: 18px; }
     .mp-item.jiggle { animation: mpJiggle .28s ease-in-out infinite alternate; }
     @keyframes mpJiggle { from { transform: rotate(-1.2deg); } to { transform: rotate(1.2deg); } }
     .mp-page-dots { margin-top: auto; display: flex; justify-content: center; gap: 6px; padding: 10px 0 2px; }
@@ -21422,7 +21419,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           todo: '把要做的事理一理', activity: '一起做过的事', ledger: '今天花了多少', divine: '今天运气怎么样',
           theme: '换个喜欢的颜色', data: '看看陪伴了多少天', api: '连接 AI 伙伴', settings: '调整小手机的细节'
         };
-        var PAGE_COLS = 4, PAGE_ROWS = 4;
+        var PAGE_COLS = 16, PAGE_ROWS = 4;
         var PAGE_SLOTS = PAGE_COLS * PAGE_ROWS;
 
         var desktopOrder = (function () {
@@ -21463,23 +21460,28 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           try {
             var s = JSON.parse(localStorage.getItem('zk_phone_sizes') || '{}') || {};
             var w = s[id];
-            if (w === 1 || w === 4) return w;
-            return 2;
-          } catch (e) { return 2; }
+            if (w === 1) return 4;
+            if (w === 2) return 8;
+            if (w === 4) return 16;
+            if (typeof w === 'number' && isFinite(w) && w >= 4 && w <= 16) return Math.round(w);
+            return 8;
+          } catch (e) { return 8; }
         }
         function setCardSize(id, w) {
           try {
             var s = JSON.parse(localStorage.getItem('zk_phone_sizes') || '{}') || {};
-            s[id] = w;
+            s[id] = Math.round(w);
             localStorage.setItem('zk_phone_sizes', JSON.stringify(s));
           } catch (e) {}
         }
-        function itemCols(id) { return isAppItem(id) ? 1 : getCardSize(id); }
+        function itemCols(id) { return isAppItem(id) ? 4 : getCardSize(id); }
 
         var editing = false;
         var currentPage = 0;
         var drag = null, ghost = null;
         var resizing = null;
+        var resizeStartSize = 8;
+        var resizeLastSize = 8;
         var dragTriggered = false;
         var longPressTriggered = false;
         var autoScrollTimer = null;
@@ -21516,7 +21518,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             return '<div class="mp-item mpp-app" data-item="' + id + '"><button class="mp-del" type="button">×</button><span class="mp-ico">' + (IC[act] || '') + '</span><span class="mp-name">' + nm + '</span></div>';
           }
           var w = getCardSize(id);
-          return '<div class="mp-item mpp-card size-' + w + '" data-item="' + id + '"><button class="mp-del" type="button">×</button><button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' + cardInnerHtml(id) + '</div>';
+          var sizeCls = w <= 5 ? 'size-sm' : (w >= 14 ? 'size-lg' : '');
+          return '<div class="mp-item mpp-card' + (sizeCls ? ' ' + sizeCls : '') + '" data-item="' + id + '" style="grid-column: span ' + w + '"><button class="mp-del" type="button">×</button><button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' + cardInnerHtml(id) + '</div>';
         }
 
         function paginateItems(items) {
@@ -21524,8 +21527,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var col = 0, row = 0;
           for (var i = 0; i < items.length; i++) {
             var w = itemCols(items[i]);
-            if (w === 2 && col % 2 === 1) col++;
-            if (col + w > PAGE_COLS || (w === 4 && col > 0)) {
+            if (col + w > PAGE_COLS) {
               row++;
               col = 0;
               if (row >= PAGE_ROWS) { pages.push([]); row = 0; }
@@ -21801,36 +21803,43 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var padR = parseFloat(style.paddingRight) || 16;
           var gap = parseFloat(style.columnGap) || 10;
           var inner = page.clientWidth - padL - padR;
-          var colW = (inner - gap * 3) / 4;
+          var colW = (inner - gap * 15) / 16;
           return colW > 0 ? colW : 0;
         }
-        function applyResizeClass(id, w) {
+        function applySizeClass(el) {
+          if (!el) return;
+          el.classList.remove('size-sm', 'size-lg');
+          var w = parseInt(el.style.gridColumn.replace(/\D/g, ''), 10) || 8;
+          if (w <= 5) el.classList.add('size-sm');
+          else if (w >= 14) el.classList.add('size-lg');
+        }
+        function setResizePreview(id, w) {
           if (!pagerEl) return;
           var el = pagerEl.querySelector('.mp-item[data-item="' + id + '"]');
           if (!el) return;
-          el.classList.remove('size-1', 'size-2', 'size-4');
-          el.classList.add('size-' + w);
+          el.style.gridColumn = 'span ' + w;
+          applySizeClass(el);
+          resizeLastSize = w;
         }
         function startResize(id) {
           resizing = id;
+          resizeStartSize = getCardSize(id);
+          resizeLastSize = resizeStartSize;
           if (navigator.vibrate) { try { navigator.vibrate(8); } catch (e) {} }
         }
         function moveResize(dx) {
           if (!resizing) return;
           var colW = resizeColW();
           if (!colW) return;
-          var levels = [1, 2, 4];
-          var curIdx = levels.indexOf(getCardSize(resizing));
-          var delta = Math.round(dx / colW);
-          var nextIdx = Math.max(0, Math.min(levels.length - 1, curIdx + delta));
-          var next = levels[nextIdx];
-          if (next !== getCardSize(resizing)) {
-            setCardSize(resizing, next);
-            applyResizeClass(resizing, next);
-          }
+          var target = Math.round(resizeStartSize + dx / colW);
+          target = Math.max(4, Math.min(16, target));
+          setResizePreview(resizing, target);
         }
         function endResize() {
+          if (resizing && resizeLastSize) setCardSize(resizing, resizeLastSize);
           resizing = null;
+          resizeStartSize = 8;
+          resizeLastSize = 8;
           renderDesktop();
         }
 
