@@ -12701,8 +12701,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="add-menu" id="addMenu">
             <div class="add-menu-item" data-action="contact">添加联系人</div>
             <div class="add-menu-item" data-action="group">创建群聊</div>
-            <div class="add-menu-item" data-action="zika">字卡</div>
-            <div class="add-menu-item" data-action="mini-phone">小手机</div>
           </div>
         </div>
         <div class="contact-list" id="contactList">
@@ -16013,6 +16011,20 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <span class="settings-item-hint">退出小手机桌面，回到字卡首页</span>
               </div>
               <button id="mpExitBtn" type="button" style="padding:8px 18px;border-radius:20px;border:none;background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">切换</button>
+            </div>
+            <div class="settings-item" id="mpEnterSetting">
+              <div class="settings-item-left">
+                <span class="settings-item-label">进入小手机</span>
+                <span class="settings-item-hint">打开小手机桌面</span>
+              </div>
+              <button id="mpEnterBtn" type="button" style="padding:8px 18px;border-radius:20px;border:none;background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">进入</button>
+            </div>
+            <div class="settings-item" id="quickSwitchSetting">
+              <div class="settings-item-left">
+                <span class="settings-item-label">聊天页快速切换</span>
+                <span class="settings-item-hint">打开后，「字卡 / 小手机」会出现在聊天列表右上角菜单</span>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" id="quickSwitchToggle"><span class="toggle-slider"></span></label>
             </div>
           </div>
           <div class="settings-section">
@@ -21060,28 +21072,72 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       // ----- 添加菜单 -----
       circleAddBtn.addEventListener('click', function (e) { e.stopPropagation(); addMenu.classList.toggle('show'); });
       document.addEventListener('click', function (e) { if (!e.target.closest('.search-bar')) addMenu.classList.remove('show'); });
-      document.querySelectorAll('.add-menu-item').forEach(item => {
-        item.addEventListener('click', function (e) {
-          e.stopPropagation();
-          const action = this.dataset.action;
-          if (action === 'contact') openModal('contact');
-          else if (action === 'group') openModal('group');
-          else if (action === 'zika') {
-            window.__zkPhoneSession = false;
-            if (window.__zkClosePhone) window.__zkClosePhone();
+      addMenu.addEventListener('click', function (e) {
+        var item = e.target.closest('.add-menu-item');
+        if (!item) return;
+        e.stopPropagation();
+        const action = item.dataset.action;
+        if (action === 'contact') openModal('contact');
+        else if (action === 'group') openModal('group');
+        else if (action === 'zika') {
+          window.__zkPhoneSession = false;
+          if (window.__zkClosePhone) window.__zkClosePhone();
+        }
+        else if (action === 'mini-phone') {
+          if (window.__zkEnterPhone) { window.__zkEnterPhone(); }
+          else {
+            cardView.classList.add('hidden');
+            if (momentsView) momentsView.classList.add('hidden');
+            phoneView.classList.remove('hidden');
+            navItems.forEach(b => b.classList.remove('active'));
           }
-          else if (action === 'mini-phone') {
-            if (window.__zkEnterPhone) { window.__zkEnterPhone(); }
-            else {
-              cardView.classList.add('hidden');
-              if (momentsView) momentsView.classList.add('hidden');
-              phoneView.classList.remove('hidden');
-              navItems.forEach(b => b.classList.remove('active'));
-            }
-          }
-          addMenu.classList.remove('show');
-        });
+        }
+        addMenu.classList.remove('show');
       });
+
+      // ----- 字卡/小手机快速切换入口（由设置开关控制） -----
+      function getQuickSwitch() { try { return localStorage.getItem('zk_quick_switch') === '1'; } catch (e) { return false; } }
+      function setQuickSwitch(on) { try { localStorage.setItem('zk_quick_switch', on ? '1' : '0'); } catch (e) {} }
+      function renderQuickSwitchMenu() {
+        var olds = addMenu.querySelectorAll('.add-menu-item.dynamic-switch');
+        for (var i = 0; i < olds.length; i++) olds[i].parentNode.removeChild(olds[i]);
+        if (!getQuickSwitch()) return;
+        var zk = document.createElement('div');
+        zk.className = 'add-menu-item dynamic-switch';
+        zk.setAttribute('data-action', 'zika');
+        zk.textContent = '字卡';
+        addMenu.appendChild(zk);
+        var ph = document.createElement('div');
+        ph.className = 'add-menu-item dynamic-switch';
+        ph.setAttribute('data-action', 'mini-phone');
+        ph.textContent = '小手机';
+        addMenu.appendChild(ph);
+      }
+      renderQuickSwitchMenu();
+
+      var mpEnterBtn = document.getElementById('mpEnterBtn');
+      if (mpEnterBtn) {
+        mpEnterBtn.addEventListener('click', function () {
+          var sp = document.getElementById('settingsPage');
+          if (sp) sp.classList.remove('show');
+          if (window.__zkEnterPhone) window.__zkEnterPhone();
+        });
+      }
+      var quickToggle = document.getElementById('quickSwitchToggle');
+      if (quickToggle) {
+        quickToggle.checked = getQuickSwitch();
+        quickToggle.addEventListener('change', function () {
+          setQuickSwitch(this.checked);
+          renderQuickSwitchMenu();
+        });
+      }
+      var mpExitForSettings = document.getElementById('mpExitBtn');
+      if (mpExitForSettings) {
+        mpExitForSettings.addEventListener('click', function () {
+          var sp = document.getElementById('settingsPage');
+          if (sp) sp.classList.remove('show');
+        });
+      }
       modalCancel.addEventListener('click', closeModal);
       modalOverlay.addEventListener('click', function (e) { if (e.target === this) closeModal(); });
       modalConfirm.addEventListener('click', handleConfirm);
