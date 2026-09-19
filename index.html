@@ -33469,8 +33469,14 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
           histDetail: document.getElementById('dvdHistDetailView')
         };
         var currentDvdView = 'home';
+        var chatDirectEntry = false;
         function dvdGoBack() {
           var back = { home: null, draw: 'home', daily: 'home', ask: 'home', chat: 'home', hist: 'home', histDetail: 'hist' };
+          if (currentDvdView === 'chat' && chatDirectEntry) {
+            chatDirectEntry = false;
+            page.classList.remove('show');
+            return;
+          }
           var target = back[currentDvdView];
           if (target === null) { page.classList.remove('show'); }
           else { showView(target); }
@@ -33485,11 +33491,13 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
 
         // 打开模块
         window.openDivineModule = function () {
+          chatDirectEntry = false;
           page.classList.add('show');
           renderTargets();
           showView('home');
         };
         window.openDivineChat = function () {
+          chatDirectEntry = true;
           page.classList.add('show');
           renderTargets();
           renderChat();
@@ -33503,7 +33511,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             var go = el.getAttribute('data-go');
             if (go === 'draw') { renderTargets(); showView('draw'); }
             else if (go === 'daily') { renderDailyDate(); showView('daily'); }
-            else if (go === 'chat') { renderChat(); showView('chat'); }
+            else if (go === 'chat') { chatDirectEntry = false; renderChat(); showView('chat'); }
             else if (go === 'ask') { renderAskPrev(); showView('ask'); }
             else if (go === 'hist') { renderHistory(); showView('hist'); }
           });
