@@ -21486,8 +21486,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (w === 1) w = 4; else if (w === 2) w = 8;
             w = clampInt(w, 4, 16);
             h = clampInt(h, 1, 4);
+            if (isPhotoItem(id)) h = clampInt(w / 4, 1, 4);
             return { w: w, h: h };
-          } catch (e) { return { w: 8, h: 1 }; }
+          } catch (e) { return isPhotoItem(id) ? { w: 8, h: 2 } : { w: 8, h: 1 }; }
         }
         function migrateCardSizes() {
           try {
