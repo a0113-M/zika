@@ -705,7 +705,7 @@
     .w-dots { display: flex; justify-content: center; gap: 4px; margin-top: 6px; }
     .w-dots .w-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(var(--primary-rgba), .25); transition: all .18s; }
     .w-dots .w-dot.on { width: 12px; border-radius: 3px; background: var(--primary); }
-    .mp-widget-photo .p-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+    .mp-widget-photo .p-swipe { display: flex; }
     .mp-widget-photo .p-swipe::-webkit-scrollbar { display: none; }
     .mp-widget-photo .p-slide { flex: 0 0 100%; scroll-snap-align: start; aspect-ratio: 1; border-radius: 12px; overflow: hidden; background: var(--bg-soft2); }
     .mp-widget-photo .p-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -21546,7 +21546,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           if (isPhotoItem(kind)) {
             var pid = photoIdOf(kind);
-            return '<div class="mp-widget mp-widget-photo"><div class="p-swipe" id="mpWPhoto_' + pid + '"></div><div class="w-dots" id="mpWPhotoDots_' + pid + '"></div><div class="p-caption">相册</div></div>';
+            return '<div class="mp-widget mp-widget-photo"><div class="p-swipe" id="mpWPhoto_' + pid + '"></div><div class="w-dots" id="mpWPhotoDots_' + pid + '"></div></div>';
           }
           if (kind === 'anniversary') {
             return '<div class="mp-widget mp-widget-ann"><div class="a-label">纪念日</div><div class="a-swipe" id="mpWAnnSwipe"></div><div class="w-dots" id="mpWAnnDots"></div></div>';
@@ -21766,23 +21766,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           pid = pid || 'default';
           var el = document.getElementById('mpWPhoto_' + pid);
           var dots = document.getElementById('mpWPhotoDots_' + pid);
-          var cap = el && el.parentElement ? el.parentElement.querySelector('.p-caption') : null;
           if (!el) return;
           var list = getAlbumPhotos(pid);
           if (!list.length) {
-            el.innerHTML = '<div class="p-slide p-empty">＋<br>放张照片</div>';
+            el.innerHTML = '<div class="p-slide p-empty">＋<br>添加图片</div>';
             if (dots) dots.innerHTML = '';
-            if (cap) cap.textContent = '添加照片';
             return;
           }
-          var html = '';
-          for (var i = 0; i < list.length; i++) {
-            html += '<div class="p-slide"><img src="' + list[i].src + '" alt=""></div>';
-          }
-          el.innerHTML = html;
+          el.innerHTML = '<div class="p-slide"><img src="' + list[0].src + '" alt=""></div>';
           renderDotsFor(dots, list.length);
-          if (cap) cap.textContent = list.length + ' 张';
-          bindPhotoSwipe(el, dots);
         }
         function bindPhotoSwipe(s, d) {
           if (!s || !d) return;
