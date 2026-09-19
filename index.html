@@ -12760,7 +12760,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="mp-manager-body" id="mpManagerBody"></div>
         </div>
       </div>
-      <input type="file" id="mpPhotoInput" accept="image/*" style="display:none;">
+      <input type="file" id="mpPhotoInput" accept="image/*" multiple style="display:none;">
       <div class="mp-manager" id="mpPhotoManager">
         <div class="mp-manager-mask" id="mpPhotoManagerMask"></div>
         <div class="mp-manager-sheet">
@@ -21632,7 +21632,47 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         function zkEscHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+        var _photoCache = null;
+        var _photoDB = null;
+        function photoOpenDB() {
+          if (typeof indexedDB === 'undefined') return Promise.resolve(null);
+          return new Promise(function (resolve) {
+            var req;
+            try { req = indexedDB.open('zk_widget_photos', 1); } catch (e) { return resolve(null); }
+            req.onupgradeneeded = function () {
+              var db = req.result;
+              if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos');
+            };
+            req.onsuccess = function () { resolve(req.result); };
+            req.onerror = function () { resolve(null); };
+          });
+        }
+        function photoDBGet(key) {
+          if (!_photoDB) return Promise.resolve(null);
+          return new Promise(function (resolve) {
+            var rq;
+            try {
+              var tx = _photoDB.transaction('photos', 'readonly');
+              rq = tx.objectStore('photos').get(key);
+            } catch (e) { return resolve(null); }
+            rq.onsuccess = function () { resolve(rq.result); };
+            rq.onerror = function () { resolve(null); };
+          });
+        }
+        function photoDBSet(key, val) {
+          if (!_photoDB) return Promise.resolve(false);
+          return new Promise(function (resolve) {
+            var tx;
+            try {
+              tx = _photoDB.transaction('photos', 'readwrite');
+              tx.objectStore('photos').put(val, key);
+            } catch (e) { return resolve(false); }
+            tx.oncomplete = function () { resolve(true); };
+            tx.onerror = function () { resolve(false); };
+          });
+        }
         function getPhotos() {
+          if (_photoCache) return _photoCache.slice();
           var arr = null;
           try { arr = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
           if (Array.isArray(arr)) return arr.filter(function (p) { return p && p.src; });
@@ -21640,7 +21680,39 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           return [];
         }
         function setPhotos(list) {
-          try { localStorage.setItem('zk_photo_widget', JSON.stringify(list || [])); } catch (e) {}
+          _photoCache = (list || []).slice();
+          if (_photoDB) {
+            photoDBSet('list', _photoCache);
+            try { localStorage.removeItem('zk_photo_widget'); } catch (e) {}
+          } else {
+            try { localStorage.setItem('zk_photo_widget', JSON.stringify(_photoCache)); } catch (e) {}
+          }
+        }
+        function initPhotoStore() {
+          photoOpenDB().then(function (db) {
+            if (!db) { return; }
+            _photoDB = db;
+            if (_photoCache && _photoCache.length) {
+              photoDBSet('list', _photoCache);
+              try { localStorage.removeItem('zk_photo_widget'); } catch (e) {}
+              renderPhotoWidget();
+              return;
+            }
+            photoDBGet('list').then(function (data) {
+              if (Array.isArray(data) && data.length) {
+                _photoCache = data;
+              } else {
+                var arr = null;
+                try { arr = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
+                var migrated = [];
+                if (Array.isArray(arr)) migrated = arr.filter(function (p) { return p && p.src; });
+                else if (arr && arr.src) migrated = [{ src: arr.src }];
+                _photoCache = migrated;
+                if (migrated.length) { photoDBSet('list', migrated); try { localStorage.removeItem('zk_photo_widget'); } catch (e) {} }
+              }
+              renderPhotoWidget();
+            });
+          });
         }
         function renderPhotoWidget() {
           var el = document.getElementById('mpWPhoto');
@@ -22017,31 +22089,44 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (input) input.click();
         }
 
-        function handlePhotoFile(file) {
-          if (!file) return;
-          var reader = new FileReader();
-          reader.onload = function () {
-            var img = new Image();
-            img.onload = function () {
-              var max = 640;
-              var w = img.width, h = img.height;
-              if (w > max || h > max) {
-                var s = Math.min(max / w, max / h);
-                w = Math.round(w * s); h = Math.round(h * s);
-              }
-              var cv = document.createElement('canvas');
-              cv.width = w; cv.height = h;
-              cv.getContext('2d').drawImage(img, 0, 0, w, h);
-              var dataUrl = cv.toDataURL('image/jpeg', 0.72);
-              var list = getPhotos();
-              list.push({ src: dataUrl });
-              setPhotos(list);
-              renderPhotoWidget();
-              renderPhotoManager();
+        function readPhotoFile(file) {
+          return new Promise(function (resolve) {
+            var reader = new FileReader();
+            reader.onload = function () {
+              var img = new Image();
+              img.onload = function () {
+                var max = 640;
+                var w = img.width, h = img.height;
+                if (w > max || h > max) {
+                  var s = Math.min(max / w, max / h);
+                  w = Math.round(w * s); h = Math.round(h * s);
+                }
+                var cv = document.createElement('canvas');
+                cv.width = w; cv.height = h;
+                cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                resolve(cv.toDataURL('image/jpeg', 0.72));
+              };
+              img.onerror = function () { resolve(null); };
+              img.src = reader.result;
             };
-            img.src = reader.result;
-          };
-          reader.readAsDataURL(file);
+            reader.onerror = function () { resolve(null); };
+            reader.readAsDataURL(file);
+          });
+        }
+        function handlePhotoFiles(files) {
+          if (!files || !files.length) return;
+          var tasks = [];
+          for (var i = 0; i < files.length; i++) tasks.push(readPhotoFile(files[i]));
+          Promise.all(tasks).then(function (results) {
+            var valid = [];
+            for (var j = 0; j < results.length; j++) if (results[j]) valid.push(results[j]);
+            if (!valid.length) return;
+            var list = getPhotos();
+            for (var k = 0; k < valid.length; k++) list.push({ src: valid[k] });
+            setPhotos(list);
+            renderPhotoWidget();
+            renderPhotoManager();
+          });
         }
 
         function openPhotoManager() {
@@ -22233,13 +22318,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var photoInput = document.getElementById('mpPhotoInput');
           if (photoInput) {
             photoInput.addEventListener('change', function () {
-              if (photoInput.files && photoInput.files[0]) handlePhotoFile(photoInput.files[0]);
+              if (photoInput.files && photoInput.files.length) handlePhotoFiles(photoInput.files);
               photoInput.value = '';
             });
           }
         })();
 
         initBattery();
+        initPhotoStore();
 
         function zkOpenApp(action) {
           if (action === 'card') { document.getElementById('cardFeaturePage').classList.add('show'); return; }
