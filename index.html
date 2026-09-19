@@ -747,6 +747,14 @@
     .mp-photo-cell-del { position: absolute; top: 5px; right: 5px; width: 22px; height: 22px; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; border: none; font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; }
     .mp-photo-empty { grid-column: 1 / -1; text-align: center; font-size: 13px; color: var(--text-muted); padding: 20px 0; }
     .mp-photo-add { margin-top: 10px; width: 100%; border: none; background: var(--primary); color: #fff; font-size: 14px; font-weight: 600; padding: 12px; border-radius: 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mp-album-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0 10px; -webkit-overflow-scrolling: touch; }
+    .mp-album-tab { flex: none; padding: 7px 14px; border-radius: 18px; background: var(--bg-soft2); font-size: 13px; color: var(--text-secondary); cursor: pointer; -webkit-tap-highlight-color: transparent; white-space: nowrap; }
+    .mp-album-tab.on { background: var(--primary); color: #fff; font-weight: 600; }
+    .mp-album-tab.mp-album-add { background: var(--bg-card); border: 1px dashed rgba(0,0,0,.16); color: var(--text-muted); padding: 6px 12px; font-size: 16px; line-height: 1; }
+    .mp-photo-actions { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+    .mp-photo-actions .mp-photo-add { margin-top: 0; flex: 1; width: auto; }
+    .mp-album-del { flex: none; border: none; background: transparent; color: #e5484d; font-size: 13px; padding: 0 4px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mpm-addtag { flex: none; font-size: 12px; color: var(--primary); font-weight: 600; }
     .mp-grid { display: grid; grid-template-columns: repeat(4, 1fr); row-gap: 20px; padding: 4px 12px 20px; }
     .mp-app { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: none; }
     .mp-app:active .mp-ico { transform: scale(.88); }
@@ -12765,12 +12773,16 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="mp-manager-mask" id="mpPhotoManagerMask"></div>
         <div class="mp-manager-sheet">
           <div class="mp-manager-head">
-            <div class="mp-manager-title">照片卡片</div>
-            <div class="mp-manager-sub">可在桌面照片卡上左右滑动查看</div>
+            <div class="mp-manager-title">相册</div>
+            <div class="mp-manager-sub">桌面可放多个相册卡，左右滑动查看</div>
             <button class="mp-manager-close" id="mpPhotoManagerClose" type="button">✕</button>
           </div>
+          <div class="mp-album-tabs" id="mpAlbumTabs"></div>
           <div class="mp-photo-grid" id="mpPhotoGrid"></div>
-          <button class="mp-photo-add" id="mpPhotoAddBtn" type="button">＋ 添加照片</button>
+          <div class="mp-photo-actions">
+            <button class="mp-photo-add" id="mpPhotoAddBtn" type="button">＋ 添加照片</button>
+            <button class="mp-album-del" id="mpAlbumDel" type="button">删除相册</button>
+          </div>
         </div>
       </div>
 
@@ -21397,7 +21409,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           clock: { name: '时钟', group: '实用' },
           todo: { name: '待办', group: '实用' },
           quote: { name: '每日一句', group: '实用' },
-          photo: { name: '照片', group: '实用' },
+          photo: { name: '相册', group: '实用' },
           anniversary: { name: '纪念日', group: '纪念' },
           met: { name: '相识天数', group: '纪念' },
           'app:letters': { name: '信件', group: '应用' },
@@ -21413,6 +21425,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           'app:api': { name: 'API', group: '应用' },
           'app:settings': { name: '设置', group: '应用' }
         };
+        function isPhotoItem(id) { return (id || '') === 'photo' || (id || '').indexOf('photo:') === 0; }
+        function photoIdOf(id) { return (id === 'photo') ? 'default' : ((id || '').slice(6) || 'default'); }
+        function isKnownItem(id) { return isPhotoItem(id) ? true : !!WIDGET_META[id]; }
+
         var APP_DESC = {
           letters: '给想念的人写封信', diary: '记下今天的小心情', card: '收下这份祝福', together: '两个人的小日子',
           todo: '把要做的事理一理', activity: '一起做过的事', ledger: '今天花了多少', divine: '今天运气怎么样',
@@ -21427,7 +21443,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (Array.isArray(d)) {
               var out = [], seen = {};
               for (var i = 0; i < d.length; i++) {
-                if (WIDGET_META[d[i]] && !seen[d[i]]) { seen[d[i]] = true; out.push(d[i]); }
+                var key = d[i] === 'photo' ? 'photo:default' : d[i];
+                if (isKnownItem(key) && !seen[key]) { seen[key] = true; out.push(key); }
               }
               if (out.length) return out;
             }
@@ -21527,8 +21544,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (kind === 'quote') {
             return '<div class="mp-widget mp-widget-quote"><span class="w-emoji">☁️</span><span class="w-quote" id="mpWQuote">慢慢来，比较快。</span></div>';
           }
-          if (kind === 'photo') {
-            return '<div class="mp-widget mp-widget-photo"><div class="p-swipe" id="mpWPhoto"></div><div class="w-dots" id="mpWPhotoDots"></div><div class="p-caption">点击管理照片</div></div>';
+          if (isPhotoItem(kind)) {
+            var pid = photoIdOf(kind);
+            return '<div class="mp-widget mp-widget-photo"><div class="p-swipe" id="mpWPhoto_' + pid + '"></div><div class="w-dots" id="mpWPhotoDots_' + pid + '"></div><div class="p-caption">相册</div></div>';
           }
           if (kind === 'anniversary') {
             return '<div class="mp-widget mp-widget-ann"><div class="a-label">纪念日</div><div class="a-swipe" id="mpWAnnSwipe"></div><div class="w-dots" id="mpWAnnDots"></div></div>';
@@ -21606,7 +21624,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         function fillWidgetContents() {
           renderWidgetsContent();
           renderTodoWidget();
-          renderPhotoWidget();
+          renderAllPhotoWidgets();
           renderAnnWidget();
           renderMetWidget();
         }
@@ -21651,94 +21669,110 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         function zkEscHtml(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
-        var _photoCache = null;
-        var _photoDB = null;
-        function photoOpenDB() {
-          if (typeof indexedDB === 'undefined') return Promise.resolve(null);
-          return new Promise(function (resolve) {
-            var req;
-            try { req = indexedDB.open('zk_widget_photos', 1); } catch (e) { return resolve(null); }
-            req.onupgradeneeded = function () {
-              var db = req.result;
-              if (!db.objectStoreNames.contains('photos')) db.createObjectStore('photos');
-            };
-            req.onsuccess = function () { resolve(req.result); };
-            req.onerror = function () { resolve(null); };
-          });
+        var _albumPhotoCache = {};
+        function getAlbums() {
+          try {
+            var a = JSON.parse(localStorage.getItem('zk_albums') || 'null');
+            if (Array.isArray(a) && a.length) {
+              var out = [];
+              for (var i = 0; i < a.length; i++) if (a[i] && a[i].id) out.push(a[i]);
+              if (out.length) return out;
+            }
+          } catch (e) {}
+          return [{ id: 'default', name: '相册' }];
         }
-        function photoDBGet(key) {
-          if (!_photoDB) return Promise.resolve(null);
-          return new Promise(function (resolve) {
-            var rq;
-            try {
-              var tx = _photoDB.transaction('photos', 'readonly');
-              rq = tx.objectStore('photos').get(key);
-            } catch (e) { return resolve(null); }
-            rq.onsuccess = function () { resolve(rq.result); };
-            rq.onerror = function () { resolve(null); };
-          });
+        function setAlbums(list) { try { localStorage.setItem('zk_albums', JSON.stringify(list || [])); } catch (e) {} }
+        function albumName(id) {
+          var a = getAlbums();
+          for (var i = 0; i < a.length; i++) if (a[i].id === id) return a[i].name;
+          return '相册';
         }
-        function photoDBSet(key, val) {
-          if (!_photoDB) return Promise.resolve(false);
-          return new Promise(function (resolve) {
-            var tx;
-            try {
-              tx = _photoDB.transaction('photos', 'readwrite');
-              tx.objectStore('photos').put(val, key);
-            } catch (e) { return resolve(false); }
-            tx.oncomplete = function () { resolve(true); };
-            tx.onerror = function () { resolve(false); };
-          });
-        }
-        function getPhotos() {
-          if (_photoCache) return _photoCache.slice();
-          var arr = null;
-          try { arr = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
-          if (Array.isArray(arr)) return arr.filter(function (p) { return p && p.src; });
-          if (arr && arr.src) return [{ src: arr.src }];
+        function newAlbumId() { return 'a' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); }
+        function getAlbumPhotos(id) {
+          id = id || 'default';
+          if (_albumPhotoCache[id]) return _albumPhotoCache[id].slice();
+          try {
+            var m = JSON.parse(localStorage.getItem('zk_album_photos') || '{}') || {};
+            var v = m[id];
+            if (Array.isArray(v)) return v.filter(function (p) { return p && p.src; });
+          } catch (e) {}
           return [];
         }
-        function setPhotos(list) {
-          _photoCache = (list || []).slice();
-          try { localStorage.setItem('zk_photo_widget', JSON.stringify(_photoCache)); } catch (e) {}
-          if (_photoDB) photoDBSet('list', _photoCache);
+        function setAlbumPhotos(id, list) {
+          id = id || 'default';
+          _albumPhotoCache[id] = (list || []).slice();
+          try {
+            var m = JSON.parse(localStorage.getItem('zk_album_photos') || '{}') || {};
+            m[id] = _albumPhotoCache[id];
+            localStorage.setItem('zk_album_photos', JSON.stringify(m));
+          } catch (e) {}
+        }
+        function deleteAlbum(id) {
+          var albums = getAlbums().filter(function (x) { return x.id !== id; });
+          if (!albums.length) albums = [{ id: 'default', name: '相册' }];
+          setAlbums(albums);
+          var m = {};
+          try { m = JSON.parse(localStorage.getItem('zk_album_photos') || '{}') || {}; } catch (e) {}
+          delete m[id];
+          delete _albumPhotoCache[id];
+          try { localStorage.setItem('zk_album_photos', JSON.stringify(m)); } catch (e) {}
+        }
+        function migrateLegacyPhotos() {
+          try {
+            var m = JSON.parse(localStorage.getItem('zk_album_photos') || '{}') || {};
+            if (m['default'] && Array.isArray(m['default']) && m['default'].length) return;
+            var arr = null;
+            try { arr = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
+            var migrated = [];
+            if (Array.isArray(arr)) migrated = arr.filter(function (p) { return p && p.src; });
+            else if (arr && arr.src) migrated = [{ src: arr.src }];
+            if (migrated.length) {
+              m['default'] = migrated;
+              localStorage.setItem('zk_album_photos', JSON.stringify(m));
+            }
+            try { localStorage.removeItem('zk_photo_widget'); } catch (e) {}
+          } catch (e) {}
         }
         function initPhotoStore() {
-          photoOpenDB().then(function (db) {
-            if (!db) { renderPhotoWidget(); return; }
-            _photoDB = db;
-            if (_photoCache && _photoCache.length) {
-              photoDBSet('list', _photoCache);
-              try { localStorage.removeItem('zk_photo_widget'); } catch (e) {}
-              renderPhotoWidget();
-              return;
-            }
-            photoDBGet('list').then(function (data) {
-              if (Array.isArray(data) && data.length) {
-                _photoCache = data;
-              } else {
-                var arr = null;
-                try { arr = JSON.parse(localStorage.getItem('zk_photo_widget') || 'null'); } catch (e) {}
-                var migrated = [];
-                if (Array.isArray(arr)) migrated = arr.filter(function (p) { return p && p.src; });
-                else if (arr && arr.src) migrated = [{ src: arr.src }];
-                _photoCache = migrated;
-                if (migrated.length) { photoDBSet('list', migrated); try { localStorage.removeItem('zk_photo_widget'); } catch (e) {} }
-              }
-              renderPhotoWidget();
-            });
-          });
+          migrateLegacyPhotos();
+          renderAllPhotoWidgets();
+          if (typeof indexedDB === 'undefined') return;
+          try {
+            var req = indexedDB.open('zk_widget_photos', 1);
+            req.onsuccess = function () {
+              var db = req.result;
+              try {
+                var tx = db.transaction('photos', 'readonly');
+                var g = tx.objectStore('photos').get('list');
+                g.onsuccess = function () {
+                  try {
+                    if (Array.isArray(g.result) && g.result.length && !getAlbumPhotos('default').length) {
+                      setAlbumPhotos('default', g.result.filter(function (p) { return p && p.src; }));
+                      renderAllPhotoWidgets();
+                    }
+                  } catch (e) {}
+                  try { db.close(); } catch (e) {}
+                };
+              } catch (e) {}
+            };
+          } catch (e) {}
         }
-        function renderPhotoWidget() {
-          var el = document.getElementById('mpWPhoto');
-          var dots = document.getElementById('mpWPhotoDots');
-          var cap = document.querySelector('.mp-widget-photo .p-caption');
+        function renderAllPhotoWidgets() {
+          for (var i = 0; i < desktopOrder.length; i++) {
+            if (isPhotoItem(desktopOrder[i])) renderPhotoWidget(photoIdOf(desktopOrder[i]));
+          }
+        }
+        function renderPhotoWidget(pid) {
+          pid = pid || 'default';
+          var el = document.getElementById('mpWPhoto_' + pid);
+          var dots = document.getElementById('mpWPhotoDots_' + pid);
+          var cap = el && el.parentElement ? el.parentElement.querySelector('.p-caption') : null;
           if (!el) return;
-          var list = getPhotos();
+          var list = getAlbumPhotos(pid);
           if (!list.length) {
             el.innerHTML = '<div class="p-slide p-empty">＋<br>放张照片</div>';
             if (dots) dots.innerHTML = '';
-            if (cap) cap.textContent = '点击添加照片';
+            if (cap) cap.textContent = '添加照片';
             return;
           }
           var html = '';
@@ -21747,7 +21781,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           el.innerHTML = html;
           renderDotsFor(dots, list.length);
-          if (cap) cap.textContent = list.length > 1 ? ('点击管理 · ' + list.length + ' 张') : '点击换照片';
+          if (cap) cap.textContent = list.length + ' 张';
+          bindPhotoSwipe(el, dots);
+        }
+        function bindPhotoSwipe(s, d) {
+          if (!s || !d) return;
+          s.addEventListener('scroll', function () {
+            var w = s.clientWidth;
+            if (!w) return;
+            var idx = Math.round(s.scrollLeft / w);
+            var ds = d.querySelectorAll('.w-dot');
+            for (var j = 0; j < ds.length; j++) ds[j].classList.toggle('on', j === idx);
+          }, { passive: true });
         }
 
         function renderDotsFor(dots, count) {
@@ -21966,7 +22011,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         function bindSwipes() {
-          var pairs = [['mpWPhoto', 'mpWPhotoDots'], ['mpWAnnSwipe', 'mpWAnnDots'], ['mpWMetSwipe', 'mpWMetDots']];
+          var pairs = [['mpWAnnSwipe', 'mpWAnnDots'], ['mpWMetSwipe', 'mpWMetDots']];
           for (var i = 0; i < pairs.length; i++) {
             (function (sid, did) {
               var s = document.getElementById(sid);
@@ -22095,7 +22140,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         function handleItemTap(id) {
           if (id === 'todo') { openTodoFromWidget(); }
-          else if (id === 'photo') { openPhotoManager(); }
+          else if (isPhotoItem(id)) { openPhotoManager(photoIdOf(id)); }
           else if (id.indexOf('app:') === 0) { zkOpenApp(id.slice(4)); }
         }
 
@@ -22138,16 +22183,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var valid = [];
             for (var j = 0; j < results.length; j++) if (results[j]) valid.push(results[j]);
             if (!valid.length) return;
-            var list = getPhotos();
-            if (list.length >= 30) { alert('照片最多放 30 张'); return; }
+            var list = getAlbumPhotos(currentAlbumId);
+            if (list.length >= 30) { alert('一个相册最多放 30 张'); return; }
             for (var k = 0; k < valid.length && list.length < 30; k++) list.push({ src: valid[k] });
-            setPhotos(list);
-            renderPhotoWidget();
+            setAlbumPhotos(currentAlbumId, list);
+            renderPhotoWidget(currentAlbumId);
             renderPhotoManager();
           });
         }
 
-        function openPhotoManager() {
+        var currentAlbumId = 'default';
+        function openPhotoManager(pid) {
+          currentAlbumId = pid || 'default';
           var m = document.getElementById('mpPhotoManager');
           if (m) { m.classList.add('show'); renderPhotoManager(); }
         }
@@ -22156,16 +22203,28 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (m) m.classList.remove('show');
         }
         function renderPhotoManager() {
+          var tabs = document.getElementById('mpAlbumTabs');
+          if (tabs) {
+            var albums = getAlbums();
+            var thtml = '';
+            for (var i = 0; i < albums.length; i++) {
+              thtml += '<span class="mp-album-tab' + (albums[i].id === currentAlbumId ? ' on' : '') + '" data-album="' + albums[i].id + '">' + albums[i].name + '</span>';
+            }
+            thtml += '<span class="mp-album-tab mp-album-add" data-add="1">＋</span>';
+            tabs.innerHTML = thtml;
+          }
+          var delBtn = document.getElementById('mpAlbumDel');
+          if (delBtn) delBtn.style.display = (getAlbums().length > 1) ? '' : 'none';
           var grid = document.getElementById('mpPhotoGrid');
           if (!grid) return;
-          var list = getPhotos();
+          var list = getAlbumPhotos(currentAlbumId);
           if (!list.length) {
             grid.innerHTML = '<div class="mp-photo-empty">还没有照片<br>点下面按钮添加第一张</div>';
             return;
           }
           var html = '';
-          for (var i = 0; i < list.length; i++) {
-            html += '<div class="mp-photo-cell"><img src="' + list[i].src + '" alt=""><button class="mp-photo-cell-del" data-del="' + i + '" type="button">×</button></div>';
+          for (var j = 0; j < list.length; j++) {
+            html += '<div class="mp-photo-cell"><img src="' + list[j].src + '" alt=""><button class="mp-photo-cell-del" data-del="' + j + '" type="button">×</button></div>';
           }
           grid.innerHTML = html;
         }
@@ -22185,6 +22244,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (!groupMap[g]) return;
             html += '<div class="mpm-group">' + g + '</div>';
             groupMap[g].forEach(function (k) {
+              if (k === 'photo') {
+                html += '<div class="mpm-item" data-kind="photo">'
+                  + '<span class="mpm-name">相册</span>'
+                  + '<span class="mpm-addtag">＋ 新建相册卡</span>'
+                  + '</div>';
+                return;
+              }
               var on = desktopOrder.indexOf(k) >= 0;
               html += '<div class="mpm-item" data-kind="' + k + '">'
                 + '<span class="mpm-name">' + WIDGET_META[k].name + '</span>'
@@ -22212,6 +22278,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 var it = delBtn.closest('.mp-item');
                 var id = it ? it.getAttribute('data-item') : null;
                 if (id) {
+                  if (isPhotoItem(id)) {
+                    var pid3 = photoIdOf(id);
+                    if (!confirm('删除相册「' + albumName(pid3) + '」？里面的照片会一起删除')) return;
+                    deleteAlbum(pid3);
+                  }
                   var idx = desktopOrder.indexOf(id);
                   if (idx >= 0) desktopOrder.splice(idx, 1);
                   saveDesktop();
@@ -22304,11 +22375,61 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               var item = e.target.closest('.mpm-item');
               if (!item) return;
               var kind = item.getAttribute('data-kind');
+              if (kind === 'photo') {
+                var aid = newAlbumId();
+                var albums = getAlbums();
+                albums.push({ id: aid, name: '相册' + (albums.length + 1) });
+                setAlbums(albums);
+                desktopOrder.push('photo:' + aid);
+                saveDesktop();
+                renderWidgetManager();
+                renderDesktop();
+                openPhotoManager(aid);
+                return;
+              }
               var idx = desktopOrder.indexOf(kind);
               if (idx >= 0) { desktopOrder.splice(idx, 1); }
               else { desktopOrder.push(kind); }
               saveDesktop();
               renderWidgetManager();
+              renderDesktop();
+            });
+          }
+
+          var albumTabs = document.getElementById('mpAlbumTabs');
+          if (albumTabs) {
+            albumTabs.addEventListener('click', function (e) {
+              var addTab = e.target.closest('[data-add]');
+              if (addTab) {
+                var aid2 = newAlbumId();
+                var albums2 = getAlbums();
+                albums2.push({ id: aid2, name: '相册' + (albums2.length + 1) });
+                setAlbums(albums2);
+                desktopOrder.push('photo:' + aid2);
+                saveDesktop();
+                currentAlbumId = aid2;
+                renderPhotoManager();
+                renderDesktop();
+                return;
+              }
+              var tab = e.target.closest('[data-album]');
+              if (!tab) return;
+              var aid3 = tab.getAttribute('data-album');
+              if (aid3) { currentAlbumId = aid3; renderPhotoManager(); }
+            });
+          }
+          var albumDelBtn = document.getElementById('mpAlbumDel');
+          if (albumDelBtn) {
+            albumDelBtn.addEventListener('click', function () {
+              var albums = getAlbums();
+              if (albums.length <= 1) { alert('至少保留一个相册'); return; }
+              if (!confirm('删除相册「' + albumName(currentAlbumId) + '」？里面的照片会一起删除')) return;
+              deleteAlbum(currentAlbumId);
+              var i2 = desktopOrder.indexOf('photo:' + currentAlbumId);
+              if (i2 >= 0) desktopOrder.splice(i2, 1);
+              saveDesktop();
+              currentAlbumId = 'default';
+              renderPhotoManager();
               renderDesktop();
             });
           }
@@ -22325,11 +22446,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               var delBtn = e.target.closest('.mp-photo-cell-del');
               if (!delBtn) return;
               var idx = parseInt(delBtn.getAttribute('data-del'), 10);
-              var list = getPhotos();
+              var list = getAlbumPhotos(currentAlbumId);
               if (idx >= 0 && idx < list.length) list.splice(idx, 1);
-              setPhotos(list);
+              setAlbumPhotos(currentAlbumId, list);
               renderPhotoManager();
-              renderPhotoWidget();
+              renderPhotoWidget(currentAlbumId);
             });
           }
 
