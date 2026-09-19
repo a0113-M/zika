@@ -21466,12 +21466,31 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               if (typeof v.w === 'number') w = v.w;
               if (typeof v.h === 'number') h = v.h;
             }
-            if (w === 1) w = 4; else if (w === 2) w = 8; else if (w === 4) w = 16;
+            if (w === 1) w = 4; else if (w === 2) w = 8;
             w = clampInt(w, 4, 16);
             h = clampInt(h, 1, 4);
             return { w: w, h: h };
           } catch (e) { return { w: 8, h: 1 }; }
         }
+        function migrateCardSizes() {
+          try {
+            var raw = localStorage.getItem('zk_phone_sizes');
+            if (!raw) return;
+            var s = JSON.parse(raw);
+            if (!s || typeof s !== 'object') return;
+            var changed = false;
+            for (var k in s) {
+              var v = s[k];
+              if (typeof v === 'number') {
+                if (v === 1) { s[k] = { w: 4, h: 1 }; changed = true; }
+                else if (v === 2) { s[k] = { w: 8, h: 1 }; changed = true; }
+                else if (v === 4 || v < 4 || v > 16) { s[k] = { w: 8, h: 1 }; changed = true; }
+              }
+            }
+            if (changed) localStorage.setItem('zk_phone_sizes', JSON.stringify(s));
+          } catch (e) {}
+        }
+        migrateCardSizes();
         function setCardSize(id, w, h) {
           try {
             var s = JSON.parse(localStorage.getItem('zk_phone_sizes') || '{}') || {};
