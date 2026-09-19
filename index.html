@@ -12760,7 +12760,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           <div class="mp-manager-body" id="mpManagerBody"></div>
         </div>
       </div>
-      <input type="file" id="mpPhotoInput" accept="image/*" multiple style="display:none;">
+      <input type="file" id="mpPhotoInput" accept="image/*" style="display:none;">
       <div class="mp-manager" id="mpPhotoManager">
         <div class="mp-manager-mask" id="mpPhotoManagerMask"></div>
         <div class="mp-manager-sheet">
@@ -21700,16 +21700,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
         function setPhotos(list) {
           _photoCache = (list || []).slice();
-          if (_photoDB) {
-            photoDBSet('list', _photoCache);
-            try { localStorage.removeItem('zk_photo_widget'); } catch (e) {}
-          } else {
-            try { localStorage.setItem('zk_photo_widget', JSON.stringify(_photoCache)); } catch (e) {}
-          }
+          try { localStorage.setItem('zk_photo_widget', JSON.stringify(_photoCache)); } catch (e) {}
+          if (_photoDB) photoDBSet('list', _photoCache);
         }
         function initPhotoStore() {
           photoOpenDB().then(function (db) {
-            if (!db) { return; }
+            if (!db) { renderPhotoWidget(); return; }
             _photoDB = db;
             if (_photoCache && _photoCache.length) {
               photoDBSet('list', _photoCache);
@@ -22114,16 +22110,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             reader.onload = function () {
               var img = new Image();
               img.onload = function () {
-                var max = 640;
-                var w = img.width, h = img.height;
-                if (w > max || h > max) {
-                  var s = Math.min(max / w, max / h);
-                  w = Math.round(w * s); h = Math.round(h * s);
-                }
-                var cv = document.createElement('canvas');
-                cv.width = w; cv.height = h;
-                cv.getContext('2d').drawImage(img, 0, 0, w, h);
-                resolve(cv.toDataURL('image/jpeg', 0.72));
+                try {
+                  var max = 480;
+                  var w = img.width, h = img.height;
+                  if (w > max || h > max) {
+                    var s = Math.min(max / w, max / h);
+                    w = Math.round(w * s); h = Math.round(h * s);
+                  }
+                  var cv = document.createElement('canvas');
+                  cv.width = w; cv.height = h;
+                  cv.getContext('2d').drawImage(img, 0, 0, w, h);
+                  resolve(cv.toDataURL('image/jpeg', 0.62));
+                } catch (e) { resolve(null); }
               };
               img.onerror = function () { resolve(null); };
               img.src = reader.result;
@@ -22141,7 +22139,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             for (var j = 0; j < results.length; j++) if (results[j]) valid.push(results[j]);
             if (!valid.length) return;
             var list = getPhotos();
-            for (var k = 0; k < valid.length; k++) list.push({ src: valid[k] });
+            if (list.length >= 30) { alert('照片最多放 30 张'); return; }
+            for (var k = 0; k < valid.length && list.length < 30; k++) list.push({ src: valid[k] });
             setPhotos(list);
             renderPhotoWidget();
             renderPhotoManager();
