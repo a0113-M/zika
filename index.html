@@ -731,9 +731,15 @@
     .mp-widget-say .s-title { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
     .mp-widget-say .s-text { font-size: 15px; font-weight: 600; color: var(--text-main); line-height: 1.4; }
     .mp-widget-say .s-empty { color: var(--text-muted); font-weight: 400; }
-    .mp-say-list { overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 6px; max-height: 56vh; }
-    .mp-say-opt { padding: 12px 14px; background: var(--bg-card); border-radius: 12px; font-size: 14px; color: var(--text-main); cursor: pointer; text-align: left; border: none; -webkit-tap-highlight-color: transparent; }
+    .mp-say-list { overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 6px; max-height: 50vh; }
+    .mp-say-add { display: flex; gap: 8px; }
+    .mp-say-add input { flex: 1; min-width: 0; border: 1px solid #e8e4f0; border-radius: 12px; padding: 10px 12px; font-size: 13px; background: var(--bg-card); color: var(--text-main); outline: none; }
+    .mp-say-add input::placeholder { color: var(--text-muted); }
+    .mp-say-add button { flex: none; border: none; background: var(--primary); color: #fff; border-radius: 12px; padding: 0 16px; font-size: 13px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .mp-say-row { display: flex; gap: 6px; align-items: center; }
+    .mp-say-opt { flex: 1; min-width: 0; padding: 12px 14px; background: var(--bg-card); border-radius: 12px; font-size: 14px; color: var(--text-main); cursor: pointer; text-align: left; border: none; -webkit-tap-highlight-color: transparent; }
     .mp-say-opt.on { background: rgba(var(--primary-rgba), .12); color: var(--primary-deep); font-weight: 600; }
+    .mp-say-del { flex: none; width: 30px; height: 30px; border-radius: 50%; border: none; background: #fdecef; color: #d96c6c; font-size: 16px; line-height: 1; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .mp-say-empty { padding: 16px; text-align: center; font-size: 13px; color: var(--text-muted); }
     /* 桌面背景选择弹窗 */
     .mp-bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30,25,50,.55); display: none; align-items: center; justify-content: center; z-index: 400; backdrop-filter: blur(2px); }
@@ -12825,6 +12831,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div class="mp-manager-sub" id="mpSaySub">选一条字卡作为 TA 今天想说的话</div>
             <button class="mp-manager-close" id="mpSayManagerClose" type="button">✕</button>
           </div>
+          <div class="mp-say-add">
+            <input type="text" id="mpSayInput" placeholder="写一句新的留言字卡" maxlength="60">
+            <button type="button" id="mpSayAddBtn">添加</button>
+          </div>
           <div class="mp-say-list" id="mpSayList"></div>
         </div>
       </div>
@@ -21005,19 +21015,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
       function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } return array; }
-      window.__zkSayCardPool = function () {
-        try {
-          var all = [];
-          Object.keys(cardData.general || {}).forEach(function (type) {
-            if (type === '拍一拍' || type === '数字') return;
-            (cardData.general[type] || []).forEach(function (item) { if (item && (item.name || item)) all.push(item.name || item); });
-          });
-          Object.keys(cardData.role || {}).forEach(function (type) {
-            (cardData.role[type] || []).forEach(function (item) { if (item && (item.name || item)) all.push(item.name || item); });
-          });
-          return all;
-        } catch (e) { return []; }
-      };
       var _zkCardSaveTimer = null;
       function _zkScheduleCardSave() {
         if (_zkCardSaveTimer) return;
@@ -21996,12 +21993,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         // ===== 留言卡（TA今天想说） =====
         var _sayOrder = [];
         var _sayEditingId = null;
+        var SAY_LIB_DEFAULT = ['今天也要开心呀', '记得早点休息', '世界很大，先照顾好自己', '我在偷偷想着你', '做一个温柔的人', '慢慢来，比较快', '今天也要元气满满', '把日子过成喜欢的样子', '你值得被好好对待', '偶尔发发呆也挺好的'];
+        function getSayLib() { try { var a = JSON.parse(localStorage.getItem('zk_say_lib')); if (Array.isArray(a)) return a; } catch (e) {} return SAY_LIB_DEFAULT.slice(); }
+        function setSayLib(a) { try { localStorage.setItem('zk_say_lib', JSON.stringify(a || [])); } catch (e) {} }
         function getSayCards() { try { return JSON.parse(localStorage.getItem('zk_say_cards') || '{}') || {}; } catch (e) { return {}; } }
         function setSayCards(o) { try { localStorage.setItem('zk_say_cards', JSON.stringify(o || {})); } catch (e) {} }
-        function _sayCardPool() {
-          if (typeof window.__zkSayCardPool === 'function') { try { return window.__zkSayCardPool() || []; } catch (e) {} }
-          return [];
-        }
         function _sayPick(pool, seed) {
           if (!pool || !pool.length) return '';
           var h = 0, s = String(seed);
@@ -22012,7 +22008,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var swipe = document.getElementById('mpWSaySwipe');
           var dots = document.getElementById('mpWSayDots');
           if (!swipe || !dots) return;
-          var pool = _sayCardPool();
+          var pool = getSayLib();
           var say = getSayCards();
           var items = [];
           _sayOrder = [];
@@ -22041,22 +22037,35 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           swipe.innerHTML = html;
           renderDotsFor(dots, items.length);
         }
-        function renderSaySetup(cid) {
-          _sayEditingId = cid;
+        function renderSaySetup() {
           var list = document.getElementById('mpSayList');
           if (!list) return;
-          var pool = _sayCardPool();
-          var cur = getSayCards()[cid] || '';
+          var pool = getSayLib();
+          var cur = getSayCards()[_sayEditingId] || '';
           if (!pool.length) {
-            list.innerHTML = '<div class="mp-say-empty">还没有字卡，先去「字卡」里添加一些吧</div>';
+            list.innerHTML = '<div class="mp-say-empty">还没有留言字卡，在上方输入一句并点「添加」</div>';
             return;
           }
           var html = '';
           for (var i = 0; i < pool.length; i++) {
             var on = pool[i] === cur;
-            html += '<button type="button" class="mp-say-opt' + (on ? ' on' : '') + '" data-text="' + zkEscHtml(pool[i]) + '">' + zkEscHtml(pool[i]) + '</button>';
+            html += '<div class="mp-say-row">' +
+              '<button type="button" class="mp-say-opt' + (on ? ' on' : '') + '" data-text="' + zkEscHtml(pool[i]) + '">' + zkEscHtml(pool[i]) + '</button>' +
+              '<button type="button" class="mp-say-del" data-text="' + zkEscHtml(pool[i]) + '" title="删除">×</button>' +
+              '</div>';
           }
           list.innerHTML = html;
+        }
+        function addSayItem() {
+          var inp = document.getElementById('mpSayInput');
+          if (!inp) return;
+          var v = (inp.value || '').trim();
+          if (!v) return;
+          var pool = getSayLib();
+          if (pool.indexOf(v) < 0) { pool.push(v); setSayLib(pool); }
+          inp.value = '';
+          renderSaySetup();
+          renderSayWidget();
         }
         function openSaySetup() {
           var swipe = document.getElementById('mpWSaySwipe');
@@ -22067,6 +22076,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           var cid = _sayOrder[idx];
           if (cid === undefined || cid === null) return;
+          _sayEditingId = cid;
           var name = '';
           try {
             var cs = JSON.parse(localStorage.getItem('zk_contacts') || '[]');
@@ -22075,7 +22085,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           } catch (e) {}
           var sub = document.getElementById('mpSaySub');
           if (sub) sub.textContent = '选一条字卡作为 TA 今天想说的话' + (name ? '（当前：' + name + '）' : '');
-          renderSaySetup(cid);
+          var inp = document.getElementById('mpSayInput');
+          if (inp) inp.value = '';
+          renderSaySetup();
           var m = document.getElementById('mpSayManager');
           if (m) m.classList.add('show');
         }
@@ -22086,6 +22098,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         (function initSay() {
           var list = document.getElementById('mpSayList');
           if (list) list.addEventListener('click', function (e) {
+            var del = e.target.closest('.mp-say-del');
+            if (del) {
+              var dt = del.getAttribute('data-text');
+              var pool = getSayLib();
+              var di = pool.indexOf(dt);
+              if (di >= 0) { pool.splice(di, 1); setSayLib(pool); }
+              var cards = getSayCards();
+              if (cards[_sayEditingId] === dt) { delete cards[_sayEditingId]; setSayCards(cards); }
+              renderSaySetup();
+              renderSayWidget();
+              return;
+            }
             var b = e.target.closest('.mp-say-opt');
             if (!b) return;
             var text = b.getAttribute('data-text');
@@ -22096,6 +22120,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             renderSayWidget();
             closeSaySetup();
           });
+          var addBtn = document.getElementById('mpSayAddBtn');
+          if (addBtn) addBtn.addEventListener('click', addSayItem);
+          var input = document.getElementById('mpSayInput');
+          if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); addSayItem(); } });
           var close = document.getElementById('mpSayManagerClose');
           if (close) close.addEventListener('click', closeSaySetup);
           var mask = document.getElementById('mpSayManagerMask');
