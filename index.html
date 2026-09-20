@@ -715,16 +715,26 @@
     .mp-widget-ann .a-empty { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
     .mp-widget-met .m-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
     .mp-widget-met .m-swipe::-webkit-scrollbar { display: none; }
-    .mp-widget-met .m-slide { flex: 0 0 100%; scroll-snap-align: start; }
+    .mp-widget-met .m-slide { flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
     .mp-widget-met .m-empty { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
     .mp-widget-met .m-met-top { display: flex; align-items: center; gap: 5px; }
-    .mp-widget-met .m-met-avatar { width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; overflow: hidden; }
+    .mp-widget-met .m-met-avatar { width: 44px; height: 44px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; font-size: 22px; font-weight: 600; overflow: hidden; }
     .mp-widget-met .m-met-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
     .mp-widget-met .m-met-ecg { flex: 1 1 auto; height: 16px; min-width: 0; fill: none; stroke: var(--primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
     .mp-widget-met .m-met-heart { flex: 0 0 auto; width: 20px; height: 18px; fill: none; stroke: var(--primary); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
     .mp-widget-met .m-met-days { margin-top: 7px; font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.5; text-align: center; }
     .mp-widget-met .m-met-num { font-size: 20px; font-weight: 700; color: var(--primary); margin: 0 2px; }
     .mp-widget-met .m-met-date { margin-top: 3px; font-size: 11px; color: var(--text-muted); text-align: center; }
+    .mp-widget-say .s-swipe { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -webkit-overflow-scrolling: touch; touch-action: pan-x; }
+    .mp-widget-say .s-swipe::-webkit-scrollbar { display: none; }
+    .mp-widget-say .s-slide { flex: 0 0 100%; scroll-snap-align: start; min-width: 0; }
+    .mp-widget-say .s-title { font-size: 11px; color: var(--text-muted); margin-bottom: 6px; }
+    .mp-widget-say .s-text { font-size: 15px; font-weight: 600; color: var(--text-main); line-height: 1.4; }
+    .mp-widget-say .s-empty { color: var(--text-muted); font-weight: 400; }
+    .mp-say-list { overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-top: 6px; max-height: 56vh; }
+    .mp-say-opt { padding: 12px 14px; background: var(--bg-card); border-radius: 12px; font-size: 14px; color: var(--text-main); cursor: pointer; text-align: left; border: none; -webkit-tap-highlight-color: transparent; }
+    .mp-say-opt.on { background: rgba(var(--primary-rgba), .12); color: var(--primary-deep); font-weight: 600; }
+    .mp-say-empty { padding: 16px; text-align: center; font-size: 13px; color: var(--text-muted); }
     /* 桌面背景选择弹窗 */
     .mp-bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30,25,50,.55); display: none; align-items: center; justify-content: center; z-index: 400; backdrop-filter: blur(2px); }
     .mp-bg-overlay.show { display: flex; }
@@ -12807,6 +12817,18 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
 
+      <div class="mp-manager" id="mpSayManager">
+        <div class="mp-manager-mask" id="mpSayManagerMask"></div>
+        <div class="mp-manager-sheet">
+          <div class="mp-manager-head">
+            <div class="mp-manager-title">设置留言字卡</div>
+            <div class="mp-manager-sub" id="mpSaySub">选一条字卡作为 TA 今天想说的话</div>
+            <button class="mp-manager-close" id="mpSayManagerClose" type="button">✕</button>
+          </div>
+          <div class="mp-say-list" id="mpSayList"></div>
+        </div>
+      </div>
+
       <!-- 朋友圈视图 -->
       <div id="momentsView" class="moments-view hidden">
         <div class="moments-scroll" id="momentsScroll">
@@ -20983,6 +21005,19 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
       }
       function shuffleArray(array) { for (let i = array.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[array[i], array[j]] = [array[j], array[i]]; } return array; }
+      window.__zkSayCardPool = function () {
+        try {
+          var all = [];
+          Object.keys(cardData.general || {}).forEach(function (type) {
+            if (type === '拍一拍' || type === '数字') return;
+            (cardData.general[type] || []).forEach(function (item) { if (item && (item.name || item)) all.push(item.name || item); });
+          });
+          Object.keys(cardData.role || {}).forEach(function (type) {
+            (cardData.role[type] || []).forEach(function (item) { if (item && (item.name || item)) all.push(item.name || item); });
+          });
+          return all;
+        } catch (e) { return []; }
+      };
       var _zkCardSaveTimer = null;
       function _zkScheduleCardSave() {
         if (_zkCardSaveTimer) return;
@@ -21453,6 +21488,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           photo: { name: '相册', group: '实用' },
           anniversary: { name: '纪念日', group: '纪念' },
           met: { name: '相识天数', group: '纪念' },
+          say: { name: 'TA今天想说', group: '纪念' },
           'app:letters': { name: '信件', group: '应用' },
           'app:diary': { name: '日记', group: '应用' },
           'app:card': { name: '字卡', group: '应用' },
@@ -21556,6 +21592,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             h = clampInt(h, 1, 4);
             if (isPhotoItem(id)) h = clampInt(w / 4, 1, 4);
             if (id === 'met') { w = 16; h = 2; }
+            if (id === 'say') { w = 16; h = 2; }
             return { w: w, h: h };
           } catch (e) { return isPhotoItem(id) ? { w: 8, h: 2 } : { w: 8, h: 1 }; }
         }
@@ -21622,7 +21659,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             return '<div class="mp-widget mp-widget-ann"><div class="a-label">纪念日</div><div class="a-swipe" id="mpWAnnSwipe"></div><div class="w-dots" id="mpWAnnDots"></div></div>';
           }
           if (kind === 'met') {
-            return '<div class="mp-widget mp-widget-met"><div class="m-label">相识</div><div class="m-swipe" id="mpWMetSwipe"></div><div class="w-dots" id="mpWMetDots"></div></div>';
+            return '<div class="mp-widget mp-widget-met"><div class="m-swipe" id="mpWMetSwipe"></div><div class="w-dots" id="mpWMetDots"></div></div>';
+          }
+          if (kind === 'say') {
+            return '<div class="mp-widget mp-widget-say"><div class="s-swipe" id="mpWSaySwipe"></div><div class="w-dots" id="mpWSayDots"></div></div>';
           }
           return '';
         }
@@ -21636,7 +21676,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var sz = getCardSize(id);
           var w = sz.w, h = sz.h;
           var sizeCls = w <= 5 ? 'size-sm' : (w >= 14 ? 'size-lg' : '');
-          var resizeBtn = (id === 'met') ? '' : '<button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+          var resizeBtn = (id === 'met' || id === 'say') ? '' : '<button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
           return '<div class="mp-item mpp-card' + (sizeCls ? ' ' + sizeCls : '') + '" data-item="' + id + '" style="grid-column: span ' + w + '; grid-row: span ' + h + '"><button class="mp-del" type="button">×</button>' + resizeBtn + cardInnerHtml(id) + '</div>';
         }
 
@@ -21698,6 +21738,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           renderAllPhotoWidgets();
           renderAnnWidget();
           renderMetWidget();
+          renderSayWidget();
         }
 
         function renderWidgetsContent() {
@@ -21915,14 +21956,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var list = (cs || []).filter(function (c) { return !c.isGroup; });
             for (var i = 0; i < list.length; i++) {
               var c = list[i];
+              var it = { name: c.name, avatarImage: c.avatarImage || '' };
               if (met[c.id]) {
                 var a = new Date(); a.setHours(0, 0, 0, 0);
                 var b = new Date(met[c.id]); b.setHours(0, 0, 0, 0);
                 var days = Math.round((a - b) / 86400000);
                 var dstr = '';
                 try { var dd = new Date(met[c.id]); dstr = dd.getFullYear() + '.' + String(dd.getMonth() + 1).padStart(2, '0') + '.' + String(dd.getDate()).padStart(2, '0'); } catch (e2) {}
-                items.push({ name: c.name, days: days, avatarImage: c.avatarImage || '', dateStr: dstr });
+                it.days = days; it.dateStr = dstr; it.hasMet = true;
+              } else {
+                it.days = null; it.dateStr = ''; it.hasMet = false;
               }
+              items.push(it);
             }
           } catch (e) {}
           if (!items.length) {
@@ -21937,15 +21982,125 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var selfHtml = selfAv ? '<span class="m-met-avatar"><img src="' + selfAv + '"></span>' : '<span class="m-met-avatar m-met-av-txt">我</span>';
             var taHtml = it.avatarImage ? '<span class="m-met-avatar"><img src="' + it.avatarImage + '"></span>' : '<span class="m-met-avatar m-met-av-txt">' + zkEscHtml((it.name || '?').charAt(0)) + '</span>';
             var daysHtml;
-            if (days === 0) daysHtml = '今天，是我们相识的日子';
+            if (!it.hasMet) daysHtml = '还没记录相识那天';
+            else if (days === 0) daysHtml = '今天，是我们相识的日子';
             else if (days > 0) daysHtml = '已经相识 <b class="m-met-num">' + days + '</b> 天';
             else daysHtml = '还有 <b class="m-met-num">' + (-days) + '</b> 天相遇';
-            var dateHtml = it.dateStr ? ('相识于 ' + it.dateStr) : '';
+            var dateHtml = it.dateStr ? ('相识于 ' + it.dateStr) : (it.hasMet ? '' : '在联系人里补一下日期吧');
             html += '<div class="m-slide"><div class="m-met-top">' + selfHtml + '<svg class="m-met-ecg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16"/></svg><svg class="m-met-heart" viewBox="0 0 40 36"><path d="M20 34 C8 26 0 20 0 12 C0 6 5 2 11 2 C15 2 18 5 20 9 C22 5 25 2 29 2 C35 2 40 6 40 12 C40 20 32 26 20 34 Z"/></svg><svg class="m-met-ecg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16"/></svg>' + taHtml + '</div><div class="m-met-days">' + daysHtml + '</div><div class="m-met-date">' + zkEscHtml(dateHtml) + '</div></div>';
           }
           swipe.innerHTML = html;
           renderDotsFor(dots, items.length);
         }
+
+        // ===== 留言卡（TA今天想说） =====
+        var _sayOrder = [];
+        var _sayEditingId = null;
+        function getSayCards() { try { return JSON.parse(localStorage.getItem('zk_say_cards') || '{}') || {}; } catch (e) { return {}; } }
+        function setSayCards(o) { try { localStorage.setItem('zk_say_cards', JSON.stringify(o || {})); } catch (e) {} }
+        function _sayCardPool() {
+          if (typeof window.__zkSayCardPool === 'function') { try { return window.__zkSayCardPool() || []; } catch (e) {} }
+          return [];
+        }
+        function _sayPick(pool, seed) {
+          if (!pool || !pool.length) return '';
+          var h = 0, s = String(seed);
+          for (var i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 2147483647;
+          return pool[h % pool.length];
+        }
+        function renderSayWidget() {
+          var swipe = document.getElementById('mpWSaySwipe');
+          var dots = document.getElementById('mpWSayDots');
+          if (!swipe || !dots) return;
+          var pool = _sayCardPool();
+          var say = getSayCards();
+          var items = [];
+          _sayOrder = [];
+          try {
+            var cs = JSON.parse(localStorage.getItem('zk_contacts') || '[]');
+            var list = (cs || []).filter(function (c) { return !c.isGroup; });
+            var day = Math.floor(Date.now() / 86400000);
+            for (var i = 0; i < list.length; i++) {
+              var c = list[i];
+              _sayOrder.push(c.id);
+              var seed = day + '_' + c.id;
+              var text = say[c.id] || _sayPick(pool, seed);
+              items.push({ name: c.name, text: text });
+            }
+          } catch (e) {}
+          if (!items.length) {
+            swipe.innerHTML = '<div class="s-slide"><div class="s-title">TA今天想说</div><div class="s-text s-empty">还没有联系人</div></div>';
+            dots.innerHTML = '';
+            return;
+          }
+          var html = '';
+          for (var j = 0; j < items.length; j++) {
+            var txt = items[j].text ? ('<span class="s-quote">' + zkEscHtml(items[j].text) + '</span>') : '<span class="s-empty">双击设置字卡</span>';
+            html += '<div class="s-slide"><div class="s-title">TA今天想说</div><div class="s-text">' + txt + '</div></div>';
+          }
+          swipe.innerHTML = html;
+          renderDotsFor(dots, items.length);
+        }
+        function renderSaySetup(cid) {
+          _sayEditingId = cid;
+          var list = document.getElementById('mpSayList');
+          if (!list) return;
+          var pool = _sayCardPool();
+          var cur = getSayCards()[cid] || '';
+          if (!pool.length) {
+            list.innerHTML = '<div class="mp-say-empty">还没有字卡，先去「字卡」里添加一些吧</div>';
+            return;
+          }
+          var html = '';
+          for (var i = 0; i < pool.length; i++) {
+            var on = pool[i] === cur;
+            html += '<button type="button" class="mp-say-opt' + (on ? ' on' : '') + '" data-text="' + zkEscHtml(pool[i]) + '">' + zkEscHtml(pool[i]) + '</button>';
+          }
+          list.innerHTML = html;
+        }
+        function openSaySetup() {
+          var swipe = document.getElementById('mpWSaySwipe');
+          var idx = 0;
+          if (swipe && _sayOrder.length) {
+            var w = swipe.clientWidth;
+            if (w) idx = Math.max(0, Math.min(_sayOrder.length - 1, Math.round(swipe.scrollLeft / w)));
+          }
+          var cid = _sayOrder[idx];
+          if (cid === undefined || cid === null) return;
+          var name = '';
+          try {
+            var cs = JSON.parse(localStorage.getItem('zk_contacts') || '[]');
+            var c = (cs || []).filter(function (x) { return !x.isGroup; })[idx];
+            if (c) name = c.name;
+          } catch (e) {}
+          var sub = document.getElementById('mpSaySub');
+          if (sub) sub.textContent = '选一条字卡作为 TA 今天想说的话' + (name ? '（当前：' + name + '）' : '');
+          renderSaySetup(cid);
+          var m = document.getElementById('mpSayManager');
+          if (m) m.classList.add('show');
+        }
+        function closeSaySetup() {
+          var m = document.getElementById('mpSayManager');
+          if (m) m.classList.remove('show');
+        }
+        (function initSay() {
+          var list = document.getElementById('mpSayList');
+          if (list) list.addEventListener('click', function (e) {
+            var b = e.target.closest('.mp-say-opt');
+            if (!b) return;
+            var text = b.getAttribute('data-text');
+            if (text == null) return;
+            var o = getSayCards();
+            o[_sayEditingId] = text;
+            setSayCards(o);
+            renderSayWidget();
+            closeSaySetup();
+          });
+          var close = document.getElementById('mpSayManagerClose');
+          if (close) close.addEventListener('click', closeSaySetup);
+          var mask = document.getElementById('mpSayManagerMask');
+          if (mask) mask.addEventListener('click', closeSaySetup);
+        })();
 
         function renderDock() {
           if (!dock) return;
@@ -21985,7 +22140,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var c = MP_BG_PRESETS[i];
             html += '<button type="button" class="mp-bg-sw' + (cur && cur.type === 'color' && cur.value === c ? ' sel' : '') + '" data-bg="' + c + '" style="background:' + c + '"></button>';
           }
-          html += '<button type="button" class="mp-bg-sw' + (cur && cur.type === 'image' ? ' sel' : '') + '" id="mpBgImgBtn" title="选择图片">📷</button>';
+          html += '<button type="button" class="mp-bg-sw' + (cur && cur.type === 'image' ? ' sel' : '') + '" id="mpBgImgBtn" title="选择图片"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>';
           box.innerHTML = html;
           var imgBtn = document.getElementById('mpBgImgBtn');
           if (imgBtn) imgBtn.addEventListener('click', function () { var f = document.getElementById('mpBgFile'); if (f) f.click(); });
@@ -22174,7 +22329,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         function bindSwipes() {
-          var pairs = [['mpWAnnSwipe', 'mpWAnnDots'], ['mpWMetSwipe', 'mpWMetDots']];
+          var pairs = [['mpWAnnSwipe', 'mpWAnnDots'], ['mpWMetSwipe', 'mpWMetDots'], ['mpWSaySwipe', 'mpWSayDots']];
           for (var i = 0; i < pairs.length; i++) {
             (function (sid, did) {
               var s = document.getElementById(sid);
@@ -22301,7 +22456,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (typeof renderTodoList === 'function') renderTodoList();
         }
 
+        var _sayLastTap = 0;
         function handleItemTap(id) {
+          if (id === 'say') {
+            var _now = Date.now();
+            if (_now - _sayLastTap < 400) { _sayLastTap = 0; openSaySetup(); }
+            else { _sayLastTap = _now; }
+            return;
+          }
           if (id === 'todo') { openTodoFromWidget(); }
           else if (isPhotoItem(id)) { openPhotoManager(photoIdOf(id)); }
           else if (id.indexOf('app:') === 0) { zkOpenApp(id.slice(4)); }
