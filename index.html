@@ -21469,6 +21469,15 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                   if (appended) { try { localStorage.setItem('zk_phone_desktop', JSON.stringify(out)); } catch (e2) {} }
                 }
               } catch (e3) {}
+              try {
+                if (localStorage.getItem('zk_layout_tidy_441') !== '1') {
+                  var nonP = [], ph = [];
+                  for (var ti = 0; ti < out.length; ti++) { if (isPhotoItem(out[ti])) ph.push(out[ti]); else nonP.push(out[ti]); }
+                  out = nonP.concat(ph);
+                  localStorage.setItem('zk_layout_tidy_441', '1');
+                  try { localStorage.setItem('zk_phone_desktop', JSON.stringify(out)); } catch (e4) {}
+                }
+              } catch (e5) {}
               if (out.length) return out;
             }
           } catch (e) {}
