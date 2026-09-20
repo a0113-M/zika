@@ -21394,11 +21394,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>',
           divineChat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><polygon points="12 5 13.4 8.6 17 9.3 14.5 11.6 15.2 15 12 13.4 8.8 15 9.5 11.6 7 9.3 10.6 8.6 12 5"/></svg>',
           persona: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+          movie: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.5"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>',
+          book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg>',
+          music: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',
           home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
           chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>'
         };
-        var APP_NAMES = { letters:'信件', diary:'日记', persona:'人物档案', card:'字卡', together:'一起', todo:'待办', activity:'活动', ledger:'记账', divine:'占卜', divineChat:'占卜聊天', theme:'装扮', data:'数据', api:'API', settings:'设置' };
-        var APP_ORDER_DEFAULT = ['letters','diary','persona','card','together','todo','activity','ledger','divine','divineChat','theme','data','api','settings'];
+        var APP_NAMES = { letters:'信件', diary:'日记', persona:'人物档案', card:'字卡', together:'一起', movie:'看电影', book:'看书', music:'听歌', todo:'待办', activity:'活动', ledger:'记账', divine:'占卜', divineChat:'占卜聊天', theme:'装扮', data:'数据', api:'API', settings:'设置' };
+        var APP_ORDER_DEFAULT = ['letters','diary','persona','card','together','movie','book','music','todo','activity','ledger','divine','divineChat','theme','data','api','settings'];
         var QUOTES = ['慢慢来，比较快。','今天也要对自己温柔一点。','云朵飘过来，把烦恼都带走啦。','你值得被好好对待。','把日子过成喜欢的样子。','偶尔发发呆，也挺好的。','世界很大，先照顾好自己。','下一次会更好。','保持可爱，保持热爱。','今天也是元气满满的一天。'];
         var DOCK = [['home','主页'],['chat','聊天'],['settings','设置']];
         function appHtml(action, name) {
@@ -21427,7 +21430,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           'app:api': { name: 'API', group: '应用' },
           'app:settings': { name: '设置', group: '应用' },
           'app:divineChat': { name: '占卜聊天', group: '应用' },
-          'app:persona': { name: '人物档案', group: '应用' }
+          'app:persona': { name: '人物档案', group: '应用' },
+          'app:movie': { name: '看电影', group: '应用' },
+          'app:book': { name: '看书', group: '应用' },
+          'app:music': { name: '听歌', group: '应用' }
         };
         function isPhotoItem(id) { return (id || '') === 'photo' || (id || '').indexOf('photo:') === 0; }
         function photoIdOf(id) { return (id === 'photo') ? 'default' : ((id || '').slice(6) || 'default'); }
@@ -21435,6 +21441,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         var APP_DESC = {
           letters: '给想念的人写封信', diary: '记下今天的小心情', persona: '记录 TA 的点滴档案', card: '收下这份祝福', together: '两个人的小日子',
+          movie: '一起看部电影', book: '一起读本书', music: '一起听听歌',
           todo: '把要做的事理一理', activity: '一起做过的事', ledger: '今天花了多少', divine: '今天运气怎么样', divineChat: '和 TA 聊聊天意',
           theme: '换个喜欢的颜色', data: '看看陪伴了多少天', api: '连接 AI 伙伴', settings: '调整小手机的细节'
         };
@@ -21451,14 +21458,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 if (isKnownItem(key) && !seen[key]) { seen[key] = true; out.push(key); }
               }
               try {
-                if (localStorage.getItem('zk_app_migrate_438') !== '1') {
+                if (localStorage.getItem('zk_app_migrate_440') !== '1') {
                   var appended = false;
                   for (var ai = 0; ai < APP_ORDER_DEFAULT.length; ai++) {
                     var akey = 'app:' + APP_ORDER_DEFAULT[ai];
                     if (seen[akey]) continue;
                     seen[akey] = true; out.push(akey); appended = true;
                   }
-                  localStorage.setItem('zk_app_migrate_438', '1');
+                  localStorage.setItem('zk_app_migrate_440', '1');
                   if (appended) { try { localStorage.setItem('zk_phone_desktop', JSON.stringify(out)); } catch (e2) {} }
                 }
               } catch (e3) {}
@@ -22489,6 +22496,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (action === 'divine') { if (typeof openDivineModule === 'function') openDivineModule(); return; }
           if (action === 'divineChat') { if (typeof openDivineChat === 'function') openDivineChat(); return; }
           if (action === 'persona') { if (typeof openPersona === 'function') openPersona(); return; }
+          if (action === 'movie') { if (typeof openTogetherSolo === 'function') openTogetherSolo('movie'); return; }
+          if (action === 'book') { if (typeof openTogetherSolo === 'function') openTogetherSolo('book'); return; }
+          if (action === 'music') { if (typeof openTogetherSolo === 'function') openTogetherSolo('music'); return; }
           if (action === 'together') { if (typeof openTogetherPage === 'function') openTogetherPage(); return; }
         }
 
@@ -25268,6 +25278,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         else { _tgSoloRenderInput(); _tgSoloRenderHist(); }
         document.getElementById('tgSoloPick').classList.add('show');
       }
+      window.openTogetherSolo = function (key) { if (TG_HERO_KEYS.indexOf(key) >= 0) _tgSoloOpen(key); };
       function _tgSoloRenderBook() {
         var inputEl = document.getElementById('tgSoloInput');
         var histEl = document.getElementById('tgSoloHist');
