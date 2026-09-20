@@ -739,6 +739,7 @@
     .mp-say-row { display: flex; gap: 6px; align-items: center; }
     .mp-say-opt { flex: 1; min-width: 0; padding: 12px 14px; background: var(--bg-card); border-radius: 12px; font-size: 14px; color: var(--text-main); cursor: pointer; text-align: left; border: none; -webkit-tap-highlight-color: transparent; }
     .mp-say-opt.on { background: rgba(var(--primary-rgba), .12); color: var(--primary-deep); font-weight: 600; }
+    .mp-say-opt.read { cursor: default; }
     .mp-say-del { flex: none; width: 30px; height: 30px; border-radius: 50%; border: none; background: #fdecef; color: #d96c6c; font-size: 16px; line-height: 1; cursor: pointer; -webkit-tap-highlight-color: transparent; }
     .mp-say-empty { padding: 16px; text-align: center; font-size: 13px; color: var(--text-muted); }
     /* 桌面背景选择弹窗 */
@@ -12828,7 +12829,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="mp-manager-sheet">
           <div class="mp-manager-head">
             <div class="mp-manager-title">设置留言字卡</div>
-            <div class="mp-manager-sub" id="mpSaySub">选一条字卡作为 TA 今天想说的话</div>
+            <div class="mp-manager-sub" id="mpSaySub">TA 每天会从这些字卡里随机说一句</div>
             <button class="mp-manager-close" id="mpSayManagerClose" type="button">✕</button>
           </div>
           <div class="mp-say-add">
@@ -12836,6 +12837,22 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <button type="button" id="mpSayAddBtn">添加</button>
           </div>
           <div class="mp-say-list" id="mpSayList"></div>
+        </div>
+      </div>
+
+      <div class="mp-manager" id="mpQuoteManager">
+        <div class="mp-manager-mask" id="mpQuoteManagerMask"></div>
+        <div class="mp-manager-sheet">
+          <div class="mp-manager-head">
+            <div class="mp-manager-title">设置每日一句</div>
+            <div class="mp-manager-sub" id="mpQuoteSub">点一条作为今天的每日一句，或增删字卡</div>
+            <button class="mp-manager-close" id="mpQuoteManagerClose" type="button">✕</button>
+          </div>
+          <div class="mp-say-add">
+            <input type="text" id="mpQuoteInput" placeholder="写一句新的每日一句" maxlength="60">
+            <button type="button" id="mpQuoteAddBtn">添加</button>
+          </div>
+          <div class="mp-say-list" id="mpQuoteList"></div>
         </div>
       </div>
 
@@ -21747,11 +21764,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             var week = ['日','一','二','三','四','五','六'][now.getDay()];
             wd.textContent = (now.getMonth() + 1) + '月' + now.getDate() + '日 星期' + week;
           }
-          var q = document.getElementById('mpWQuote');
-          if (q) {
-            var day = Math.floor(now.getTime() / 86400000);
-            q.textContent = QUOTES[((day % QUOTES.length) + QUOTES.length) % QUOTES.length];
-          }
+          renderQuoteWidget();
         }
 
         function renderTodoWidget() {
@@ -21996,8 +22009,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var SAY_LIB_DEFAULT = ['今天也要开心呀', '记得早点休息', '世界很大，先照顾好自己', '我在偷偷想着你', '做一个温柔的人', '慢慢来，比较快', '今天也要元气满满', '把日子过成喜欢的样子', '你值得被好好对待', '偶尔发发呆也挺好的'];
         function getSayLib() { try { var a = JSON.parse(localStorage.getItem('zk_say_lib')); if (Array.isArray(a)) return a; } catch (e) {} return SAY_LIB_DEFAULT.slice(); }
         function setSayLib(a) { try { localStorage.setItem('zk_say_lib', JSON.stringify(a || [])); } catch (e) {} }
-        function getSayCards() { try { return JSON.parse(localStorage.getItem('zk_say_cards') || '{}') || {}; } catch (e) { return {}; } }
-        function setSayCards(o) { try { localStorage.setItem('zk_say_cards', JSON.stringify(o || {})); } catch (e) {} }
         function _sayPick(pool, seed) {
           if (!pool || !pool.length) return '';
           var h = 0, s = String(seed);
@@ -22009,7 +22020,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var dots = document.getElementById('mpWSayDots');
           if (!swipe || !dots) return;
           var pool = getSayLib();
-          var say = getSayCards();
           var items = [];
           _sayOrder = [];
           try {
@@ -22019,8 +22029,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             for (var i = 0; i < list.length; i++) {
               var c = list[i];
               _sayOrder.push(c.id);
-              var seed = day + '_' + c.id;
-              var text = say[c.id] || _sayPick(pool, seed);
+              var text = _sayPick(pool, day + '_' + c.id);
               items.push({ name: c.name, text: text });
             }
           } catch (e) {}
@@ -22041,16 +22050,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var list = document.getElementById('mpSayList');
           if (!list) return;
           var pool = getSayLib();
-          var cur = getSayCards()[_sayEditingId] || '';
           if (!pool.length) {
             list.innerHTML = '<div class="mp-say-empty">还没有留言字卡，在上方输入一句并点「添加」</div>';
             return;
           }
           var html = '';
           for (var i = 0; i < pool.length; i++) {
-            var on = pool[i] === cur;
             html += '<div class="mp-say-row">' +
-              '<button type="button" class="mp-say-opt' + (on ? ' on' : '') + '" data-text="' + zkEscHtml(pool[i]) + '">' + zkEscHtml(pool[i]) + '</button>' +
+              '<div class="mp-say-opt read">' + zkEscHtml(pool[i]) + '</div>' +
               '<button type="button" class="mp-say-del" data-text="' + zkEscHtml(pool[i]) + '" title="删除">×</button>' +
               '</div>';
           }
@@ -22084,7 +22091,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             if (c) name = c.name;
           } catch (e) {}
           var sub = document.getElementById('mpSaySub');
-          if (sub) sub.textContent = '选一条字卡作为 TA 今天想说的话' + (name ? '（当前：' + name + '）' : '');
+          if (sub) sub.textContent = 'TA 每天会从这些字卡里随机说一句' + (name ? '（当前：' + name + '）' : '');
           var inp = document.getElementById('mpSayInput');
           if (inp) inp.value = '';
           renderSaySetup();
@@ -22099,26 +22106,13 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var list = document.getElementById('mpSayList');
           if (list) list.addEventListener('click', function (e) {
             var del = e.target.closest('.mp-say-del');
-            if (del) {
-              var dt = del.getAttribute('data-text');
-              var pool = getSayLib();
-              var di = pool.indexOf(dt);
-              if (di >= 0) { pool.splice(di, 1); setSayLib(pool); }
-              var cards = getSayCards();
-              if (cards[_sayEditingId] === dt) { delete cards[_sayEditingId]; setSayCards(cards); }
-              renderSaySetup();
-              renderSayWidget();
-              return;
-            }
-            var b = e.target.closest('.mp-say-opt');
-            if (!b) return;
-            var text = b.getAttribute('data-text');
-            if (text == null) return;
-            var o = getSayCards();
-            o[_sayEditingId] = text;
-            setSayCards(o);
+            if (!del) return;
+            var dt = del.getAttribute('data-text');
+            var pool = getSayLib();
+            var di = pool.indexOf(dt);
+            if (di >= 0) { pool.splice(di, 1); setSayLib(pool); }
+            renderSaySetup();
             renderSayWidget();
-            closeSaySetup();
           });
           var addBtn = document.getElementById('mpSayAddBtn');
           if (addBtn) addBtn.addEventListener('click', addSayItem);
@@ -22128,6 +22122,98 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (close) close.addEventListener('click', closeSaySetup);
           var mask = document.getElementById('mpSayManagerMask');
           if (mask) mask.addEventListener('click', closeSaySetup);
+        })();
+
+        // ===== 每日一句（quote） =====
+        function getQuoteLib() { try { var a = JSON.parse(localStorage.getItem('zk_quote_lib')); if (Array.isArray(a)) return a; } catch (e) {} return QUOTES.slice(); }
+        function setQuoteLib(a) { try { localStorage.setItem('zk_quote_lib', JSON.stringify(a || [])); } catch (e) {} }
+        function getQuotePick() { try { var p = JSON.parse(localStorage.getItem('zk_quote_pick') || 'null'); return (p && typeof p === 'object') ? p : null; } catch (e) { return null; } }
+        function setQuotePick(p) { try { localStorage.setItem('zk_quote_pick', JSON.stringify(p || null)); } catch (e) {} }
+        function renderQuoteWidget() {
+          var q = document.getElementById('mpWQuote');
+          if (!q) return;
+          var day = Math.floor(Date.now() / 86400000);
+          var lib = getQuoteLib();
+          var pick = getQuotePick();
+          var text = (pick && pick.day === day && pick.text) ? pick.text : '';
+          if (!text && lib.length) text = lib[((day % lib.length) + lib.length) % lib.length];
+          q.textContent = text || '写一句今天的话';
+        }
+        function renderQuoteSetup() {
+          var list = document.getElementById('mpQuoteList');
+          if (!list) return;
+          var pool = getQuoteLib();
+          var pick = getQuotePick();
+          var day = Math.floor(Date.now() / 86400000);
+          var cur = (pick && pick.day === day) ? pick.text : '';
+          if (!pool.length) {
+            list.innerHTML = '<div class="mp-say-empty">还没有每日一句，在上方输入一句并点「添加」</div>';
+            return;
+          }
+          var html = '';
+          for (var i = 0; i < pool.length; i++) {
+            var on = pool[i] === cur;
+            html += '<div class="mp-say-row">' +
+              '<button type="button" class="mp-say-opt' + (on ? ' on' : '') + '" data-text="' + zkEscHtml(pool[i]) + '">' + zkEscHtml(pool[i]) + '</button>' +
+              '<button type="button" class="mp-say-del" data-text="' + zkEscHtml(pool[i]) + '" title="删除">×</button>' +
+              '</div>';
+          }
+          list.innerHTML = html;
+        }
+        function addQuoteItem() {
+          var inp = document.getElementById('mpQuoteInput');
+          if (!inp) return;
+          var v = (inp.value || '').trim();
+          if (!v) return;
+          var pool = getQuoteLib();
+          if (pool.indexOf(v) < 0) { pool.push(v); setQuoteLib(pool); }
+          inp.value = '';
+          renderQuoteSetup();
+          renderQuoteWidget();
+        }
+        function openQuoteSetup() {
+          var inp = document.getElementById('mpQuoteInput');
+          if (inp) inp.value = '';
+          renderQuoteSetup();
+          var m = document.getElementById('mpQuoteManager');
+          if (m) m.classList.add('show');
+        }
+        function closeQuoteSetup() {
+          var m = document.getElementById('mpQuoteManager');
+          if (m) m.classList.remove('show');
+        }
+        (function initQuote() {
+          var list = document.getElementById('mpQuoteList');
+          if (list) list.addEventListener('click', function (e) {
+            var del = e.target.closest('.mp-say-del');
+            if (del) {
+              var dt = del.getAttribute('data-text');
+              var pool = getQuoteLib();
+              var di = pool.indexOf(dt);
+              if (di >= 0) { pool.splice(di, 1); setQuoteLib(pool); }
+              var pick = getQuotePick();
+              if (pick && pick.text === dt) { setQuotePick(null); }
+              renderQuoteSetup();
+              renderQuoteWidget();
+              return;
+            }
+            var b = e.target.closest('.mp-say-opt');
+            if (!b) return;
+            var text = b.getAttribute('data-text');
+            if (text == null) return;
+            setQuotePick({ day: Math.floor(Date.now() / 86400000), text: text });
+            renderQuoteSetup();
+            renderQuoteWidget();
+            closeQuoteSetup();
+          });
+          var addBtn = document.getElementById('mpQuoteAddBtn');
+          if (addBtn) addBtn.addEventListener('click', addQuoteItem);
+          var input = document.getElementById('mpQuoteInput');
+          if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.keyCode === 13) { e.preventDefault(); addQuoteItem(); } });
+          var close = document.getElementById('mpQuoteManagerClose');
+          if (close) close.addEventListener('click', closeQuoteSetup);
+          var mask = document.getElementById('mpQuoteManagerMask');
+          if (mask) mask.addEventListener('click', closeQuoteSetup);
         })();
 
         function renderDock() {
@@ -22485,11 +22571,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }
 
         var _sayLastTap = 0;
+        var _quoteLastTap = 0;
         function handleItemTap(id) {
           if (id === 'say') {
             var _now = Date.now();
             if (_now - _sayLastTap < 400) { _sayLastTap = 0; openSaySetup(); }
             else { _sayLastTap = _now; }
+            return;
+          }
+          if (id === 'quote') {
+            var _n2 = Date.now();
+            if (_n2 - _quoteLastTap < 400) { _quoteLastTap = 0; openQuoteSetup(); }
+            else { _quoteLastTap = _n2; }
             return;
           }
           if (id === 'todo') { openTodoFromWidget(); }
