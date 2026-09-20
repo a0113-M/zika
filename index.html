@@ -717,6 +717,27 @@
     .mp-widget-met .m-swipe::-webkit-scrollbar { display: none; }
     .mp-widget-met .m-slide { flex: 0 0 100%; scroll-snap-align: start; }
     .mp-widget-met .m-empty { color: var(--text-muted); font-size: 12px; line-height: 1.6; }
+    .mp-widget-met .m-met-top { display: flex; align-items: center; gap: 5px; }
+    .mp-widget-met .m-met-avatar { width: 30px; height: 30px; border-radius: 50%; flex: 0 0 auto; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #fff; font-size: 15px; font-weight: 600; overflow: hidden; }
+    .mp-widget-met .m-met-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+    .mp-widget-met .m-met-ecg { flex: 1 1 auto; height: 16px; min-width: 0; fill: none; stroke: var(--primary); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .mp-widget-met .m-met-heart { flex: 0 0 auto; width: 20px; height: 18px; fill: none; stroke: var(--primary); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+    .mp-widget-met .m-met-days { margin-top: 7px; font-size: 13px; font-weight: 500; color: var(--text-main); line-height: 1.5; text-align: center; }
+    .mp-widget-met .m-met-num { font-size: 20px; font-weight: 700; color: var(--primary); margin: 0 2px; }
+    .mp-widget-met .m-met-date { margin-top: 3px; font-size: 11px; color: var(--text-muted); text-align: center; }
+    /* 桌面背景选择弹窗 */
+    .mp-bg-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(30,25,50,.55); display: none; align-items: center; justify-content: center; z-index: 400; backdrop-filter: blur(2px); }
+    .mp-bg-overlay.show { display: flex; }
+    .mp-bg-box { width: 290px; background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 20px 40px rgba(46,42,66,.4); }
+    .mp-bg-title { font-size: 16px; font-weight: 600; text-align: center; margin-bottom: 14px; color: #1a1a1a; }
+    .mp-bg-swatches { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .mp-bg-sw { width: 44px; height: 44px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; box-shadow: 0 1px 4px rgba(0,0,0,.12); font-size: 10px; color: #999; display: inline-flex; align-items: center; justify-content: center; transition: transform .15s, border-color .15s; }
+    .mp-bg-sw:active { transform: scale(.92); }
+    .mp-bg-sw.sel { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(155,142,196,.2), 0 2px 8px rgba(0,0,0,.15); }
+    .mp-bg-actions { display: flex; justify-content: space-between; margin-top: 16px; gap: 10px; }
+    .mp-bg-actions button { flex: 1; padding: 9px; border-radius: 16px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; }
+    #mpBgCancel { background: #f0eef5; color: #666; }
+    #mpBgReset { background: #fdeef0; color: #d77474; }
     .mp-widget-app { display: flex; align-items: center; gap: 10px; }
     .mp-widget-app .wa-ico { width: 38px; height: 38px; flex: none; display: flex; align-items: center; justify-content: center; background: var(--bg-card); border-radius: 12px; box-shadow: 0 2px 8px rgba(var(--primary-rgba), .16); }
     .mp-widget-app .wa-ico svg { width: 20px; height: 20px; color: var(--primary); display: block; }
@@ -16058,6 +16079,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               </div>
               <label class="toggle-switch"><input type="checkbox" id="quickSwitchToggle"><span class="toggle-slider"></span></label>
             </div>
+            <div class="settings-item" id="mpBgSetting">
+              <div class="settings-item-left">
+                <span class="settings-item-label">桌面背景</span>
+                <span class="settings-item-hint">换一张小手机桌面的背景</span>
+              </div>
+              <button id="mpBgSettingBtn" type="button" style="padding:8px 18px;border-radius:20px;border:none;background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">设置</button>
+            </div>
           </div>
           <div class="settings-section">
             <div class="settings-section-title">概率事件</div>
@@ -16304,6 +16332,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           </div>
           <div class="settings-save-hint">修改后自动保存，刷新页面立即生效</div>
                   </div>
+      <div class="mp-bg-overlay" id="mpBgOverlay">
+        <div class="mp-bg-box">
+          <div class="mp-bg-title">桌面背景</div>
+          <div class="mp-bg-swatches" id="mpBgSwatches"></div>
+          <div class="mp-bg-actions"><button type="button" id="mpBgCancel">取消</button><button type="button" id="mpBgReset">恢复默认</button></div>
+        </div>
+      </div>
+      <input type="file" id="mpBgFile" accept="image/*" style="display:none;">
       </div>
         </div>
       </div>
@@ -21519,6 +21555,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             w = clampInt(w, 4, 16);
             h = clampInt(h, 1, 4);
             if (isPhotoItem(id)) h = clampInt(w / 4, 1, 4);
+            if (id === 'met') { w = 16; h = 2; }
             return { w: w, h: h };
           } catch (e) { return isPhotoItem(id) ? { w: 8, h: 2 } : { w: 8, h: 1 }; }
         }
@@ -21599,7 +21636,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var sz = getCardSize(id);
           var w = sz.w, h = sz.h;
           var sizeCls = w <= 5 ? 'size-sm' : (w >= 14 ? 'size-lg' : '');
-          return '<div class="mp-item mpp-card' + (sizeCls ? ' ' + sizeCls : '') + '" data-item="' + id + '" style="grid-column: span ' + w + '; grid-row: span ' + h + '"><button class="mp-del" type="button">×</button><button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' + cardInnerHtml(id) + '</div>';
+          var resizeBtn = (id === 'met') ? '' : '<button class="mp-resize" type="button" title="缩放"><svg viewBox="0 0 12 12"><path d="M11 1 L11 11 L1 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>';
+          return '<div class="mp-item mpp-card' + (sizeCls ? ' ' + sizeCls : '') + '" data-item="' + id + '" style="grid-column: span ' + w + '; grid-row: span ' + h + '"><button class="mp-del" type="button">×</button>' + resizeBtn + cardInnerHtml(id) + '</div>';
         }
 
         function paginateItems(items) {
@@ -21866,6 +21904,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var dots = document.getElementById('mpWMetDots');
           if (!swipe || !dots) return;
           var items = [];
+          var selfAv = '';
+          try {
+            var up = JSON.parse(localStorage.getItem('zk_userProfile') || 'null') || {};
+            selfAv = up.avatarImage || '';
+          } catch (e) {}
           try {
             var met = JSON.parse(localStorage.getItem('contactMetDates') || '{}');
             var cs = JSON.parse(localStorage.getItem('zk_contacts') || '[]');
@@ -21876,7 +21919,9 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 var a = new Date(); a.setHours(0, 0, 0, 0);
                 var b = new Date(met[c.id]); b.setHours(0, 0, 0, 0);
                 var days = Math.round((a - b) / 86400000);
-                items.push({ name: c.name, days: days });
+                var dstr = '';
+                try { var dd = new Date(met[c.id]); dstr = dd.getFullYear() + '.' + String(dd.getMonth() + 1).padStart(2, '0') + '.' + String(dd.getDate()).padStart(2, '0'); } catch (e2) {}
+                items.push({ name: c.name, days: days, avatarImage: c.avatarImage || '', dateStr: dstr });
               }
             }
           } catch (e) {}
@@ -21887,9 +21932,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           var html = '';
           for (var j = 0; j < items.length; j++) {
-            var days = items[j].days;
-            var label = days >= 0 ? ('和 ' + items[j].name + ' 相识') : ('和 ' + items[j].name + ' 相遇倒计时');
-            html += '<div class="m-slide"><div class="m-num">' + (days >= 0 ? days : -days) + ' 天</div><div class="m-text">' + zkEscHtml(label) + '</div></div>';
+            var it = items[j];
+            var days = it.days;
+            var selfHtml = selfAv ? '<span class="m-met-avatar"><img src="' + selfAv + '"></span>' : '<span class="m-met-avatar m-met-av-txt">我</span>';
+            var taHtml = it.avatarImage ? '<span class="m-met-avatar"><img src="' + it.avatarImage + '"></span>' : '<span class="m-met-avatar m-met-av-txt">' + zkEscHtml((it.name || '?').charAt(0)) + '</span>';
+            var daysHtml;
+            if (days === 0) daysHtml = '今天，是我们相识的日子';
+            else if (days > 0) daysHtml = '已经相识 <b class="m-met-num">' + days + '</b> 天';
+            else daysHtml = '还有 <b class="m-met-num">' + (-days) + '</b> 天相遇';
+            var dateHtml = it.dateStr ? ('相识于 ' + it.dateStr) : '';
+            html += '<div class="m-slide"><div class="m-met-top">' + selfHtml + '<svg class="m-met-ecg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16"/></svg><svg class="m-met-heart" viewBox="0 0 40 36"><path d="M20 34 C8 26 0 20 0 12 C0 6 5 2 11 2 C15 2 18 5 20 9 C22 5 25 2 29 2 C35 2 40 6 40 12 C40 20 32 26 20 34 Z"/></svg><svg class="m-met-ecg" viewBox="0 0 100 32" preserveAspectRatio="none"><polyline points="0,16 30,16 40,15 46,5 52,27 58,15 70,16 100,16"/></svg>' + taHtml + '</div><div class="m-met-days">' + daysHtml + '</div><div class="m-met-date">' + zkEscHtml(dateHtml) + '</div></div>';
           }
           swipe.innerHTML = html;
           renderDotsFor(dots, items.length);
@@ -21902,6 +21954,92 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           dh += '</div>';
           dock.innerHTML = dh;
         }
+        // ===== 桌面背景 =====
+        function readDesktopBg() { try { var b = JSON.parse(localStorage.getItem('zk_phone_bg') || 'null'); return b || null; } catch (e) { return null; } }
+        function saveDesktopBg(bg) { try { localStorage.setItem('zk_phone_bg', JSON.stringify(bg || null)); } catch (e) {} }
+        function applyDesktopBg() {
+          var pv = document.getElementById('phoneView');
+          if (!pv) return;
+          pv.style.backgroundImage = '';
+          pv.style.backgroundSize = '';
+          pv.style.backgroundPosition = '';
+          pv.style.backgroundRepeat = '';
+          pv.style.background = '';
+          var bg = readDesktopBg();
+          if (bg && bg.type === 'color') {
+            pv.style.background = bg.value;
+          } else if (bg && bg.type === 'image') {
+            pv.style.backgroundImage = 'url("' + bg.value + '")';
+            pv.style.backgroundSize = 'cover';
+            pv.style.backgroundPosition = 'center';
+            pv.style.backgroundRepeat = 'no-repeat';
+          }
+        }
+        var MP_BG_PRESETS = ['#f6f7fb', '#fdeef0', '#fdf3e3', '#e8f4ec', '#e9f0f9', '#f1ebf8', '#fdeee4'];
+        function buildMpBgSwatches() {
+          var box = document.getElementById('mpBgSwatches');
+          if (!box) return;
+          var cur = readDesktopBg();
+          var html = '<button type="button" class="mp-bg-sw' + ((!cur || cur.type === 'default') ? ' sel' : '') + '" data-bg="">默认</button>';
+          for (var i = 0; i < MP_BG_PRESETS.length; i++) {
+            var c = MP_BG_PRESETS[i];
+            html += '<button type="button" class="mp-bg-sw' + (cur && cur.type === 'color' && cur.value === c ? ' sel' : '') + '" data-bg="' + c + '" style="background:' + c + '"></button>';
+          }
+          html += '<button type="button" class="mp-bg-sw' + (cur && cur.type === 'image' ? ' sel' : '') + '" id="mpBgImgBtn" title="选择图片">📷</button>';
+          box.innerHTML = html;
+          var imgBtn = document.getElementById('mpBgImgBtn');
+          if (imgBtn) imgBtn.addEventListener('click', function () { var f = document.getElementById('mpBgFile'); if (f) f.click(); });
+        }
+        function openMpBg() { var o = document.getElementById('mpBgOverlay'); if (!o) return; buildMpBgSwatches(); o.classList.add('show'); }
+        function closeMpBg() { var o = document.getElementById('mpBgOverlay'); if (o) o.classList.remove('show'); }
+        (function initMpBg() {
+          var sw = document.getElementById('mpBgSwatches');
+          if (sw) sw.addEventListener('click', function (e) {
+            var b = e.target.closest('.mp-bg-sw');
+            if (!b) return;
+            if (b.id === 'mpBgImgBtn') return;
+            var v = b.getAttribute('data-bg');
+            if (v === '' || v == null) { saveDesktopBg({ type: 'default' }); }
+            else { saveDesktopBg({ type: 'color', value: v }); }
+            applyDesktopBg();
+            buildMpBgSwatches();
+          });
+          var reset = document.getElementById('mpBgReset');
+          if (reset) reset.addEventListener('click', function () { saveDesktopBg({ type: 'default' }); applyDesktopBg(); buildMpBgSwatches(); });
+          var cancel = document.getElementById('mpBgCancel');
+          if (cancel) cancel.addEventListener('click', closeMpBg);
+          var overlay = document.getElementById('mpBgOverlay');
+          if (overlay) overlay.addEventListener('click', function (e) { if (e.target === overlay) closeMpBg(); });
+          var file = document.getElementById('mpBgFile');
+          if (file) file.addEventListener('change', function (e) {
+            var f = e.target.files && e.target.files[0];
+            if (!f) return;
+            var rd = new FileReader();
+            rd.onload = function () {
+              var img = new Image();
+              img.onload = function () {
+                var maxW = 560, w = img.width, h = img.height;
+                var scale = Math.min(1, maxW / w);
+                var cw = Math.round(w * scale), ch = Math.round(h * scale);
+                var cv = document.createElement('canvas');
+                cv.width = cw; cv.height = ch;
+                var cx = cv.getContext('2d');
+                cx.drawImage(img, 0, 0, cw, ch);
+                var out;
+                try { out = cv.toDataURL('image/jpeg', 0.85); } catch (e2) { out = rd.result; }
+                saveDesktopBg({ type: 'image', value: out });
+                applyDesktopBg();
+                buildMpBgSwatches();
+              };
+              img.onerror = function () { saveDesktopBg({ type: 'image', value: rd.result }); applyDesktopBg(); buildMpBgSwatches(); };
+              img.src = rd.result;
+            };
+            rd.readAsDataURL(f);
+            file.value = '';
+          });
+          var btn = document.getElementById('mpBgSettingBtn');
+          if (btn) btn.addEventListener('click', openMpBg);
+        })();
 
         function renderDots() {
           var dots = document.getElementById('mpPageDots');
@@ -22583,6 +22721,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           renderWidgetsContent();
         }
 
+        applyDesktopBg();
         renderDesktop();
         renderDock();
         tickClock();
