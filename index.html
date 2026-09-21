@@ -16136,6 +16136,13 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               </div>
               <label class="toggle-switch"><input type="checkbox" id="divineChatInContactsToggle"><span class="toggle-slider"></span></label>
             </div>
+            <div class="settings-item" id="interpretBallSetting">
+              <div class="settings-item-left">
+                <span class="settings-item-label">显示解读悬浮球</span>
+                <span class="settings-item-hint">开启后，收起解读面板会在聊天右下角留一个悬浮球，点它重新解读；关闭后只能从底部工具栏的「解读」进入</span>
+              </div>
+              <label class="toggle-switch"><input type="checkbox" id="interpretBallToggle"><span class="toggle-slider"></span></label>
+            </div>
           </div>
           <div class="settings-section">
             <div class="settings-section-title">概率事件</div>
@@ -20399,7 +20406,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var w = document.getElementById('zkiWrap');
         var b = document.getElementById('zkiBall');
         if (w) w.classList.remove('active');
-        if (b) b.style.display = 'flex';
+        if (b) b.style.display = getInterpretBall() ? 'flex' : 'none';
       }
 
       function _zkInterpretClose(reset) {
@@ -21259,6 +21266,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function setQuickSwitch(on) { try { localStorage.setItem('zk_quick_switch', on ? '1' : '0'); } catch (e) {} }
       function getDivineChatInContacts() { try { return localStorage.getItem('zk_divine_chat_in_contacts') === '1'; } catch (e) { return false; } }
       function setDivineChatInContacts(on) { try { localStorage.setItem('zk_divine_chat_in_contacts', on ? '1' : '0'); } catch (e) {} }
+      function getInterpretBall() { try { return localStorage.getItem('zk_interpret_ball') !== '0'; } catch (e) { return true; } }
+      function setInterpretBall(on) { try { localStorage.setItem('zk_interpret_ball', on ? '1' : '0'); } catch (e) {} }
       function renderQuickSwitchMenu() {
         var olds = addMenu.querySelectorAll('.add-menu-item.dynamic-switch');
         for (var i = 0; i < olds.length; i++) olds[i].parentNode.removeChild(olds[i]);
@@ -21298,6 +21307,17 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         dcicToggle.addEventListener('change', function () {
           setDivineChatInContacts(this.checked);
           renderContacts(searchInput.value);
+        });
+      }
+      var interpBallToggle = document.getElementById('interpretBallToggle');
+      if (interpBallToggle) {
+        interpBallToggle.checked = getInterpretBall();
+        interpBallToggle.addEventListener('change', function () {
+          setInterpretBall(this.checked);
+          if (!this.checked) {
+            var b = document.getElementById('zkiBall');
+            if (b) b.style.display = 'none';
+          }
         });
       }
       var mpExitForSettings = document.getElementById('mpExitBtn');
