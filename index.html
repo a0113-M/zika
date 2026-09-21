@@ -8267,6 +8267,7 @@
     .dvd-entry-ico { color: var(--primary); margin-bottom: 8px; display: flex; justify-content: center; }
     .dvd-entry-name { font-size: 15px; font-weight: 600; color: var(--text-main); }
     .dvd-entry-desc { font-size: 11.5px; color: var(--text-secondary); margin-top: 4px; }
+    .dvd-entry-wide { grid-column: span 2; }
     .dvd-copyright { text-align: center; font-size: 11px; color: var(--text-secondary); margin-top: 18px; opacity: 0.7; }
     .dvd-subback {
       background: none; border: none; color: var(--primary);
@@ -15500,7 +15501,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <div class="dvd-entry-name">占卜聊天</div>
               <div class="dvd-entry-desc">抽张牌说说话</div>
             </div>
-            <div class="dvd-entry" data-go="hist">
+            <div class="dvd-entry dvd-entry-wide" data-go="hist">
               <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></div>
               <div class="dvd-entry-name">历史记录</div>
               <div class="dvd-entry-desc">回看抽过的牌</div>
@@ -16128,12 +16129,12 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               </div>
               <label class="toggle-switch"><input type="checkbox" id="quickSwitchToggle"><span class="toggle-slider"></span></label>
             </div>
-            <div class="settings-item" id="mpBgSetting">
+            <div class="settings-item" id="divineChatInContactsSetting">
               <div class="settings-item-left">
-                <span class="settings-item-label">桌面背景</span>
-                <span class="settings-item-hint">换一张小手机桌面的背景</span>
+                <span class="settings-item-label">占卜聊天放到联系人列表</span>
+                <span class="settings-item-hint">开启后，占卜聊天置顶在联系人列表，侧边栏「占卜」不再显示占卜聊天入口</span>
               </div>
-              <button id="mpBgSettingBtn" type="button" style="padding:8px 18px;border-radius:20px;border:none;background:var(--primary);color:#fff;font-size:13px;font-weight:600;cursor:pointer;">设置</button>
+              <label class="toggle-switch"><input type="checkbox" id="divineChatInContactsToggle"><span class="toggle-slider"></span></label>
             </div>
           </div>
           <div class="settings-section">
@@ -17580,6 +17581,43 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           list = contacts.filter(c => c.name.toLowerCase().includes(keyword));
         }
         contactListEl.innerHTML = '';
+        if (getDivineChatInContacts() && filter.trim() === '') {
+          const dcWrap = document.createElement('div');
+          dcWrap.className = 'contact-item-wrap';
+          const dcDiv = document.createElement('div');
+          dcDiv.className = 'contact-item';
+          dcDiv.dataset.id = '__divine_chat__';
+          const dcAvatar = document.createElement('div');
+          dcAvatar.className = 'contact-avatar';
+          dcAvatar.style.background = 'var(--primary)';
+          dcAvatar.style.color = '#fff';
+          dcAvatar.style.display = 'flex';
+          dcAvatar.style.alignItems = 'center';
+          dcAvatar.style.justifyContent = 'center';
+          dcAvatar.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><polygon points="12 5 13.4 8.6 17 9.3 14.5 11.6 15.2 15 12 13.4 8.8 15 9.5 11.6 7 9.3 10.6 8.6 12 5"/></svg>';
+          const dcInfo = document.createElement('div');
+          dcInfo.className = 'contact-info';
+          const dcName = document.createElement('div');
+          dcName.className = 'contact-name';
+          dcName.textContent = '占卜聊天';
+          const dcTag = document.createElement('span');
+          dcTag.className = 'group-tag';
+          dcTag.textContent = '占卜';
+          dcName.appendChild(dcTag);
+          const dcLast = document.createElement('div');
+          dcLast.className = 'contact-lastmsg';
+          dcLast.textContent = '抽张牌说说话';
+          dcInfo.appendChild(dcName);
+          dcInfo.appendChild(dcLast);
+          const dcTime = document.createElement('div');
+          dcTime.className = 'contact-time';
+          dcTime.textContent = '';
+          dcDiv.appendChild(dcAvatar);
+          dcDiv.appendChild(dcInfo);
+          dcDiv.appendChild(dcTime);
+          dcWrap.appendChild(dcDiv);
+          contactListEl.appendChild(dcWrap);
+        }
         if (list.length === 0) {
           const empty = document.createElement('div');
           empty.className = 'empty-tip';
@@ -21065,6 +21103,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (e.target.closest('.delete-btn')) return;
         const item = e.target.closest('.contact-item');
         if (!item) return;
+        if (item.dataset.id === '__divine_chat__') {
+          if (typeof window.openDivineChat === 'function') window.openDivineChat();
+          return;
+        }
         const id = parseInt(item.dataset.id);
         if (!id) return;
         if (item.classList.contains('swiped')) { resetAllItems(); return; }
@@ -21215,6 +21257,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       // ----- 字卡/小手机快速切换入口（由设置开关控制） -----
       function getQuickSwitch() { try { return localStorage.getItem('zk_quick_switch') === '1'; } catch (e) { return false; } }
       function setQuickSwitch(on) { try { localStorage.setItem('zk_quick_switch', on ? '1' : '0'); } catch (e) {} }
+      function getDivineChatInContacts() { try { return localStorage.getItem('zk_divine_chat_in_contacts') === '1'; } catch (e) { return false; } }
+      function setDivineChatInContacts(on) { try { localStorage.setItem('zk_divine_chat_in_contacts', on ? '1' : '0'); } catch (e) {} }
       function renderQuickSwitchMenu() {
         var olds = addMenu.querySelectorAll('.add-menu-item.dynamic-switch');
         for (var i = 0; i < olds.length; i++) olds[i].parentNode.removeChild(olds[i]);
@@ -21246,6 +21290,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         quickToggle.addEventListener('change', function () {
           setQuickSwitch(this.checked);
           renderQuickSwitchMenu();
+        });
+      }
+      var dcicToggle = document.getElementById('divineChatInContactsToggle');
+      if (dcicToggle) {
+        dcicToggle.checked = getDivineChatInContacts();
+        dcicToggle.addEventListener('change', function () {
+          setDivineChatInContacts(this.checked);
+          renderContacts(searchInput.value);
         });
       }
       var mpExitForSettings = document.getElementById('mpExitBtn');
@@ -22704,6 +22756,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 + '</div>';
             });
           });
+          html += '<div class="mpm-item" data-kind="bg">'
+            + '<span class="mpm-name">桌面背景</span>'
+            + '<span class="mpm-addtag">设置</span>'
+            + '</div>';
           body.innerHTML = html;
         }
 
@@ -22821,6 +22877,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               var item = e.target.closest('.mpm-item');
               if (!item) return;
               var kind = item.getAttribute('data-kind');
+              if (kind === 'bg') { closeManager(); openMpBg(); return; }
               if (kind === 'photo') {
                 var aid = newAlbumId();
                 var albums = getAlbums();
@@ -33932,16 +33989,25 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         function loadHistory() { try { return JSON.parse(localStorage.getItem('divineHistory') || '[]'); } catch (e) { return []; } }
 
         // 打开模块
+        function syncDivineChatEntry() {
+          var ce = page.querySelector('.dvd-entry[data-go="chat"]');
+          if (!ce) return;
+          var on = false;
+          try { on = localStorage.getItem('zk_divine_chat_in_contacts') === '1'; } catch (e) {}
+          ce.style.display = on ? 'none' : '';
+        }
         window.openDivineModule = function () {
           chatDirectEntry = false;
           page.classList.add('show');
           renderTargets();
+          syncDivineChatEntry();
           showView('home');
         };
         window.openDivineChat = function () {
           chatDirectEntry = true;
           page.classList.add('show');
           renderTargets();
+          syncDivineChatEntry();
           renderChat();
           showView('chat');
         };
