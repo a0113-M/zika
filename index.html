@@ -17189,11 +17189,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         _zkSelectedChatBg = contact.chatBg || '';
         _zkHighlightChatBg();
         _zkUpdateReplyRange();
+        var _zkBall = document.getElementById('zkiBall');
+        if (_zkBall) _zkBall.style.display = 'none';
         _zkContactModal.classList.add('show');
       }
       function closeContactModal() {
         _zkContactModal.classList.remove('show');
         contactModalEditId = null;
+        _zkSyncInterpretBall();
       }
       function _zkBindAvatarClick(el, id) {
         if (!el || id === null || id === undefined) return;
