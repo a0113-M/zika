@@ -35749,17 +35749,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             var url = canvas.toDataURL('image/png');
             var filename = '占卜对话_' + now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate() + '.png';
             openImagePreview(url, filename);
-            try {
-              var a = document.createElement('a');
-              a.href = url;
-              a.download = filename;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              if (typeof showToast === 'function') showToast('图片已生成，请保存到相册');
-            } catch (e) {
-              if (typeof showToast === 'function') showToast('图片已生成，请长按图片保存');
-            }
+            saveImageDataUrl(url, filename, '图片已生成，请保存到相册');
           }
           var _previewUrl = '';
           var _previewFilename = '';
@@ -35774,14 +35764,23 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           function closeImagePreview() { var m = document.getElementById('dvdImagePreviewModal'); if (m) m.style.display = 'none'; }
           function savePreviewImage() {
             if (!_previewUrl) return;
+            saveImageDataUrl(_previewUrl, _previewFilename || '占卜对话.png', null);
+          }
+          function saveImageDataUrl(dataUrl, filename, doneMsg) {
+            try {
+              if (typeof window.ZkSaveImage === 'object' && window.ZkSaveImage && typeof window.ZkSaveImage.saveImage === 'function') {
+                var ok = window.ZkSaveImage.saveImage(dataUrl);
+                if (ok) { if (typeof showToast === 'function') showToast('已保存到相册'); return; }
+              }
+            } catch (e) {}
             try {
               var a = document.createElement('a');
-              a.href = _previewUrl;
-              a.download = _previewFilename || '占卜对话.png';
+              a.href = dataUrl;
+              a.download = filename || '占卜对话.png';
               document.body.appendChild(a);
               a.click();
               document.body.removeChild(a);
-              if (typeof showToast === 'function') showToast('若无反应，请长按图片保存到相册');
+              if (typeof showToast === 'function') showToast(doneMsg || '图片已生成，请长按图片保存到相册');
             } catch (e) {
               if (typeof showToast === 'function') showToast('请长按图片保存到相册');
             }
