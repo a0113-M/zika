@@ -8633,10 +8633,10 @@
       padding: 48px 12px; line-height: 1.9; white-space: pre-line;
     }
     .dvd-chat-bar {
-      position: sticky; bottom: 0; z-index: 5; display: flex; gap: 8px; align-items: center;
+      position: sticky; bottom: 0; z-index: 5; display: flex; gap: 8px; align-items: flex-end;
       margin-top: 12px; padding-top: 10px; background: var(--bg-main);
     }
-    .dvd-chat-input { flex: 1; }
+    .dvd-chat-input { flex: 1; resize: none; max-height: 116px; overflow-y: auto; line-height: 20px; font-family: inherit; }
 
     /* v340: 占卜聊天改 flex 铺满，键盘弹出随容器压缩，避免最新消息被输入栏遮挡 */
     #dvdChatView { display: flex; flex-direction: column; height: 100%; }
@@ -15664,7 +15664,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
           </div>
           <div class="dvd-chat-list" id="dvdChatList"></div>
           <div class="dvd-chat-bar">
-            <input class="dvd-input dvd-chat-input" id="dvdChatInput" placeholder="想说点什么呢？" maxlength="200">
+            <textarea class="dvd-input dvd-chat-input" id="dvdChatInput" placeholder="想说点什么呢？" maxlength="200" rows="1"></textarea>
             <button class="dvd-chat-send" id="dvdChatSend" aria-label="发送"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 9 13 2 9 22 2"/></svg></button>
           </div>
         </div>
@@ -35040,11 +35040,19 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           list.innerHTML = h.map(chatMsgHtml).join('');
           list.scrollTop = list.scrollHeight;
         }
+        function _zkAutoGrowDivineInput() {
+          var _el = document.getElementById('dvdChatInput');
+          if (!_el) return;
+          _el.style.height = 'auto';
+          var _maxH = 116;
+          _el.style.height = Math.min(_el.scrollHeight, _maxH) + 'px';
+        }
         function sendChat() {
           var input = document.getElementById('dvdChatInput');
           var q = (input.value || '').trim();
           if (!q) { if (typeof showToast === 'function') showToast('先写下你想说的'); return; }
           input.value = '';
+          _zkAutoGrowDivineInput();
           var h = loadChat();
           h.push({ role: 'user', text: q, t: new Date().getTime() });
           h.push({ role: 'bot', text: '', cards: [], loading: true, t: new Date().getTime() });
@@ -35786,9 +35794,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           })();
         })();
 
-        document.getElementById('dvdChatInput').addEventListener('keydown', function (e) {
-          if (e.key === 'Enter') { e.preventDefault(); sendChat(); }
-        });
+        document.getElementById('dvdChatInput').addEventListener('input', _zkAutoGrowDivineInput);
 
       })();
 
