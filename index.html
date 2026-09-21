@@ -16559,23 +16559,43 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         if (!LN) return;
         try { LN.createChannel({ id: 'zk_high', name: '小手机提醒', description: '陪伴、来信与待办提醒', importance: 4, visibility: 1, lights: true, lightColor: '#B8D4EE', vibration: true }).catch(function () {}); } catch (e) {}
         LN.requestPermissions().then(function (p) { window._zkNotifReady = !!(p && p.display === 'granted'); }).catch(function () {});
+        try {
+          LN.addListener('localNotificationActionPerformed', function (action) {
+            try {
+              var extra = (action && action.notification && action.notification.extra) || {};
+              var target = String(extra.target || '');
+              if (target === 'chat' && extra.contactId != null) {
+                var cid = extra.contactId;
+                var go = function () {
+                  try {
+                    var c = (typeof contacts !== 'undefined' && Array.isArray(contacts)) ? contacts.find(function (cc) { return String(cc.id) === String(cid); }) : null;
+                    if (c && typeof openChat === 'function') openChat(c.id);
+                  } catch (e) {}
+                };
+                if (document.readyState === 'loading') { window.addEventListener('load', go); } else { go(); }
+              }
+            } catch (e) {}
+          });
+        } catch (e) {}
       } catch (e) {}
     };
-    window._zkLocalNotify = function (title, body, at) {
+    window._zkLocalNotify = function (title, body, at, extra) {
       try {
         var LN = window._zkGetLN();
         if (!LN) return;
-        var n = { id: Math.floor(Math.random() * 2147480000) + 1, title: String(title || '小手机'), body: String(body || ''), importance: 4, channelId: 'zk_high' };
+        var n = { id: Math.floor(Math.random() * 2147480000) + 1, title: String(title || '小手机'), body: String(body || ''), importance: 4, channelId: 'zk_high', smallIcon: 'ic_stat_icon' };
+        if (extra) n.extra = extra;
         if (at) n.schedule = { at: new Date(at), allowWhileIdle: true };
         LN.schedule({ notifications: [n] }).catch(function () {});
       } catch (e) {}
     };
-    window._zkMsgNotify = function (name, text) {
+    window._zkMsgNotify = function (name, text, contactId) {
       try {
         var t = String(text == null ? '' : text);
-        if (t.indexOf('[语音]') === 0) { window._zkLocalNotify((name || 'TA') + ' 发来消息', '给你发了一条语音'); return; }
+        var _x = (contactId != null) ? { target: 'chat', contactId: contactId } : { target: 'chat' };
+        if (t.indexOf('[语音]') === 0) { window._zkLocalNotify((name || 'TA') + ' 发来消息', '给你发了一条语音', null, _x); return; }
         if (t.length > 40) t = t.slice(0, 40) + '…';
-        window._zkLocalNotify((name || 'TA') + ' 发来消息', t);
+        window._zkLocalNotify((name || 'TA') + ' 发来消息', t, null, _x);
       } catch (e) {}
     };
     window._zkScheduleCompanion = function () {
@@ -16586,7 +16606,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         var now = new Date();
         var at = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hh, mm, 0, 0);
         if (at.getTime() <= Date.now()) at.setDate(at.getDate() + 1);
-        LN.schedule({ notifications: [{ id: 99001, title: '该陪陪 TA 啦', body: 'TA 在等你，去说说话吧～', importance: 4, channelId: 'zk_high', schedule: { at: at, allowWhileIdle: true, repeats: true, every: 'day' } }] }).catch(function () {});
+        LN.schedule({ notifications: [{ id: 99001, title: '该陪陪 TA 啦', body: 'TA 在等你，去说说话吧～', importance: 4, channelId: 'zk_high', smallIcon: 'ic_stat_icon', extra: { target: 'companion' }, schedule: { at: at, allowWhileIdle: true, repeats: true, every: 'day' } }] }).catch(function () {});
       } catch (e) {}
     };
     window._zkNotifInit();
@@ -20086,7 +20106,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               const _nowV = new Date();
               const _timeV = _nowV.getHours().toString().padStart(2, '0') + ':' + _nowV.getMinutes().toString().padStart(2, '0');
               chatHistories[_cid].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: _timeV });
-              try { window._zkMsgNotify(senderName, '[语音]'); } catch (e) {}
+              try { window._zkMsgNotify(senderName, '[语音]', _cid); } catch (e) {}
               renderMessages(_cid);
               _zkHideTyping(_cid);
               if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
@@ -20175,7 +20195,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
               const _nowV = new Date();
               const _timeV = _nowV.getHours().toString().padStart(2, '0') + ':' + _nowV.getMinutes().toString().padStart(2, '0');
               chatHistories[currentChatId].push({ voice: _voiceRoll.audio, voiceName: _voiceRoll.name, voiceDuration: _voiceRoll.duration || 0, from: senderName, time: _timeV });
-              try { window._zkMsgNotify(senderName, '[语音]'); } catch (e) {}
+              try { window._zkMsgNotify(senderName, '[语音]', currentChatId); } catch (e) {}
               renderMessages(currentChatId);
               if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV; if (!cardView.classList.contains('hidden')) refreshList(); }
               return;
@@ -20219,7 +20239,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
             chatHistories[currentChatId].push(msgData);
             renderMessages(currentChatId);
-            try { window._zkMsgNotify(senderName, reply); } catch (e) {}
+            try { window._zkMsgNotify(senderName, reply, currentChatId); } catch (e) {}
             if (contact) { contact.lastMsg = reply; contact.time = timeStr2; if (!cardView.classList.contains('hidden')) refreshList(); }
             if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(currentChatId, senderName);
           }
@@ -20375,7 +20395,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           var _now = new Date();
           var _ts = _now.getHours().toString().padStart(2, '0') + ':' + _now.getMinutes().toString().padStart(2, '0');
           chatHistories[cid].push({ text: text, from: senderName, time: _ts, ai: true });
-          try { window._zkMsgNotify(senderName, text); } catch (e) {}
+          try { window._zkMsgNotify(senderName, text, cid); } catch (e) {}
           renderMessages(cid);
           if (contact) { contact.lastMsg = text; contact.time = _ts; if (!cardView.classList.contains('hidden')) refreshList(); }
           if (typeof window.__hbContactMaybeSend === 'function') window.__hbContactMaybeSend(cid, senderName);
@@ -20834,7 +20854,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             const _nowV2 = new Date();
             const _timeV2 = _nowV2.getHours().toString().padStart(2, '0') + ':' + _nowV2.getMinutes().toString().padStart(2, '0');
             chatHistories[_cid].push({ voice: _voiceRoll2.audio, voiceName: _voiceRoll2.name, voiceDuration: _voiceRoll2.duration || 0, from: senderName, time: _timeV2 });
-            try { window._zkMsgNotify(senderName, '[语音]'); } catch (e) {}
+            try { window._zkMsgNotify(senderName, '[语音]', _cid); } catch (e) {}
             renderMessages(_cid);
             _zkHideTyping(_cid);
             if (contact) { contact.lastMsg = '[语音]'; contact.time = _timeV2; if (!cardView.classList.contains('hidden')) refreshList(); }
@@ -29678,7 +29698,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         var now2 = new Date();
         var timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
         chatHistories[id].push({ text: reply, from: senderName, time: timeStr2 });
-        try { window._zkMsgNotify(senderName, reply); } catch (e) {}
+        try { window._zkMsgNotify(senderName, reply, id); } catch (e) {}
         contact.lastMsg = reply; contact.time = timeStr2;
         if (currentChatId === id) renderMessages(id);
         if (cardView && cardView.classList && !cardView.classList.contains('hidden')) refreshList();
@@ -29856,7 +29876,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
                 isPat: true,
                 isPatMessage: true
               });
-              try { window._zkMsgNotify(senderName, '拍了拍你'); } catch (e) {}
+              try { window._zkMsgNotify(senderName, '拍了拍你', _cid); } catch (e) {}
               renderMessages(_cid);
               _zkHideTyping(_cid);
               if (contact) {
@@ -29870,7 +29890,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               const now2 = new Date();
               const timeStr2 = now2.getHours().toString().padStart(2, '0') + ':' + now2.getMinutes().toString().padStart(2, '0');
               chatHistories[_cid].push({ text: reply, from: senderName, time: timeStr2 });
-              try { window._zkMsgNotify(senderName, reply); } catch (e) {}
+              try { window._zkMsgNotify(senderName, reply, _cid); } catch (e) {}
               renderMessages(_cid);
               _zkHideTyping(_cid);
               if (contact) {
@@ -40767,7 +40787,7 @@ function addToCart(goodId) {
           if ((_zkAway || _zkMini || document.hidden) && callContact) {
             var _nt = String(text == null ? '' : text);
             try { var _cd2 = JSON.parse(text); if (_cd2 && _cd2.type) _nt = (_cd2.type === '文字') ? String(_cd2.name || _cd2.text || '') : ('[' + _cd2.type + ']'); } catch (e) {}
-            try { window._zkMsgNotify(callContact.name, _nt); } catch (e) {}
+            try { window._zkMsgNotify(callContact.name, _nt, callContactId); } catch (e) {}
           }
         }
 
