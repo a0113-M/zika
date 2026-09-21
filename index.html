@@ -8542,7 +8542,7 @@
     .zki-btn.collapse { background: var(--bg-soft2); color: var(--text-secondary); flex: 0 0 28%; }
     .zki-btn:active { transform: scale(0.97); }
 
-    .zki-ball { position: fixed; right: 14px; bottom: 116px; width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 21px; display: none; align-items: center; justify-content: center; border: none; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24); z-index: 1900; cursor: pointer; }
+    .zki-ball { position: fixed; right: 14px; bottom: 116px; width: 48px; height: 48px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 21px; display: none; align-items: center; justify-content: center; border: none; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24); z-index: 1900; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
     .zki-ball:active { transform: scale(0.9); }
     .zki-records-btn { display: inline-flex; align-items: center; gap: 5px; padding: 7px 13px; border-radius: 999px; border: 1px solid rgba(var(--primary-rgba), 0.5); background: rgba(var(--primary-rgba), 0.07); color: var(--primary); font-size: 12.5px; font-weight: 600; cursor: pointer; }
     .zki-records-btn:active { transform: scale(0.97); }
@@ -17540,6 +17540,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (currentChatId === contact.id) {
           chatTitle.textContent = contact.name;
           _zkApplyChatBg(contact);
+          _zkSyncInterpretBall();
         }
         showToast('已保存');
         closeContactModal();
@@ -20390,12 +20391,43 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       var _zkiRunning = false;
       var _zkiSelected = [];
 
+      function _zkBallPosKey() { return 'zk_interpret_ball_pos'; }
+      function _zkLoadBallPos(contactId) {
+        try {
+          var raw = localStorage.getItem(_zkBallPosKey());
+          var obj = raw ? JSON.parse(raw) : {};
+          var p = obj && obj[contactId];
+          if (p && typeof p.left === 'number' && typeof p.top === 'number') return p;
+        } catch (e) {}
+        return null;
+      }
+      function _zkSaveBallPos(contactId, left, top) {
+        try {
+          var raw = localStorage.getItem(_zkBallPosKey());
+          var obj = raw ? JSON.parse(raw) : {};
+          obj[contactId] = { left: left, top: top };
+          localStorage.setItem(_zkBallPosKey(), JSON.stringify(obj));
+        } catch (e) {}
+      }
       function _zkSyncInterpretBall() {
         var b = document.getElementById('zkiBall');
         if (!b) return;
         var contact = (currentChatId != null) ? contacts.find(function (c) { return c.id === currentChatId; }) : null;
         var show = contact ? (contact.interpretBall !== false) : false;
-        b.style.display = show ? 'flex' : 'none';
+        if (!show) { b.style.display = 'none'; return; }
+        var p = _zkLoadBallPos(contact.id);
+        if (p) {
+          b.style.left = p.left + 'px';
+          b.style.top = p.top + 'px';
+          b.style.right = 'auto';
+          b.style.bottom = 'auto';
+        } else {
+          b.style.left = '';
+          b.style.top = '';
+          b.style.right = '14px';
+          b.style.bottom = '116px';
+        }
+        b.style.display = 'flex';
       }
 
       function _zkInterpretOpen() {
@@ -20704,7 +20736,45 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       document.getElementById('zkiCollapse').addEventListener('click', function () { _zkInterpretCollapse(); });
       document.getElementById('zkiDrawBtn').addEventListener('click', function () { _zkInterpretDraw(); });
       document.getElementById('zkiRunBtn').addEventListener('click', function () { _zkInterpretRun(); });
-      document.getElementById('zkiBall').addEventListener('click', function () { _zkInterpretOpen(); });
+      (function () {
+        var ball = document.getElementById('zkiBall');
+        if (!ball) return;
+        var _bsx = 0, _bsy = 0, _bsl = 0, _bst = 0, _bmoved = false, _bdragging = false;
+        ball.addEventListener('pointerdown', function (e) {
+          _bmoved = false;
+          _bdragging = true;
+          var rect = ball.getBoundingClientRect();
+          _bsx = e.clientX; _bsy = e.clientY;
+          _bsl = rect.left; _bst = rect.top;
+          if (ball.setPointerCapture) { try { ball.setPointerCapture(e.pointerId); } catch (e2) {} }
+        });
+        ball.addEventListener('pointermove', function (e) {
+          if (!_bdragging) return;
+          var dx = e.clientX - _bsx, dy = e.clientY - _bsy;
+          if (!_bmoved && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+          _bmoved = true;
+          var nl = Math.max(0, Math.min(window.innerWidth - ball.offsetWidth, _bsl + dx));
+          var nt = Math.max(0, Math.min(window.innerHeight - ball.offsetHeight, _bst + dy));
+          ball.style.left = nl + 'px';
+          ball.style.top = nt + 'px';
+          ball.style.right = 'auto';
+          ball.style.bottom = 'auto';
+        });
+        function _endBallDrag() {
+          if (_bmoved) {
+            var l = parseFloat(ball.style.left); var t = parseFloat(ball.style.top);
+            if (!isNaN(l) && !isNaN(t) && currentChatId != null) _zkSaveBallPos(currentChatId, l, t);
+            ball._justDragged = true;
+          }
+          _bdragging = false;
+        }
+        ball.addEventListener('pointerup', _endBallDrag);
+        ball.addEventListener('pointercancel', _endBallDrag);
+        ball.addEventListener('click', function () {
+          if (ball._justDragged) { ball._justDragged = false; return; }
+          _zkInterpretOpen();
+        });
+      })();
       document.getElementById('zkiPickBtn').addEventListener('click', function () { _zkInterpretOpenPick(); });
       document.getElementById('zkiPickBackdrop').addEventListener('click', function () { _zkInterpretClosePick(); });
       document.getElementById('zkiPickClose').addEventListener('click', function () { _zkInterpretClosePick(); });
