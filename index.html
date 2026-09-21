@@ -1318,7 +1318,7 @@
 
     .chat-input-bar {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       padding: 4px 12px;
       background: var(--bg-card);
       gap: 8px;
@@ -1353,7 +1353,7 @@
       stroke: var(--primary);
     }
 
-    .chat-input-bar input {
+    .chat-input-bar textarea {
       flex: 1;
       min-width: 0;
       padding: 8px 16px;
@@ -1361,10 +1361,17 @@
       border-radius: 18px;
       background: var(--bg-soft);
       font-size: 14px;
+      line-height: 20px;
       outline: none;
+      resize: none;
+      max-height: 116px;
+      overflow-y: auto;
+      font-family: inherit;
+      box-sizing: border-box;
+      display: block;
     }
 
-    .chat-input-bar input:focus {
+    .chat-input-bar textarea:focus {
       background: var(--bg-soft);
     }
 
@@ -13414,7 +13421,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
           </button>
-          <input type="text" id="chatInput" placeholder="输入消息..." />
+          <textarea id="chatInput" placeholder="输入消息..." rows="1"></textarea>
           <button class="chat-draw-btn" id="chatDrawBtn"
             style="background: transparent; border: none; width: auto; padding: 0 10px;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style="color: #555;">
@@ -17695,6 +17702,14 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       const chatToolbar = document.getElementById('chatToolbar');
       let isToolbarOpen = false;
 
+      // 输入框自适应高度（最多 5 行，超过内部滚动）
+      function _zkAutoGrowInput() {
+        chatInput.style.height = 'auto';
+        var maxH = 116;
+        chatInput.style.height = Math.min(chatInput.scrollHeight, maxH) + 'px';
+      }
+      chatInput.addEventListener('input', _zkAutoGrowInput);
+
       // 点击输入框：收起工具栏/表情/信件面板，让输入框紧贴键盘
       chatInput.addEventListener('focus', function () {
         if (isToolbarOpen) { isToolbarOpen = false; chatToolbar.classList.remove('open'); }
@@ -20043,6 +20058,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
         chatHistories[currentChatId].push(msgData);
         chatInput.value = '';
+        _zkAutoGrowInput();
 
         // 清除引用指示器
         clearQuote();
@@ -20142,6 +20158,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
         chatHistories[currentChatId].push({ text: text, from: 'me', time: timeStr, sentAt: Date.now() });
         chatInput.value = '';
+        _zkAutoGrowInput();
         renderMessages(currentChatId);
         setTimeout(() => {
           if (currentChatId !== null && chatHistories[currentChatId]) {
@@ -21203,7 +21220,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       });
       chatBack.addEventListener('click', closeChat);
       chatSendBtn.addEventListener('click', sendMessage);
-      chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); sendMessage(); } });
+      chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
       // ----- 添加联系人 / 群聊 -----
       function addContact(name, chatType) {
