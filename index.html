@@ -21220,7 +21220,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       });
       chatBack.addEventListener('click', closeChat);
       chatSendBtn.addEventListener('click', sendMessage);
-      chatInput.addEventListener('keydown', function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
 
       // ----- 添加联系人 / 群聊 -----
       function addContact(name, chatType) {
