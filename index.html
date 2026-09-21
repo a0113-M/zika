@@ -34978,6 +34978,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         }
         function loadChat() { try { return JSON.parse(localStorage.getItem('divineChat') || '[]'); } catch (e) { return []; } }
         function saveChat(h) { try { localStorage.setItem('divineChat', JSON.stringify(h)); } catch (e) {} }
+        function _divineCurArchiveId() { try { return localStorage.getItem('zk_divine_cur_archive_id') || null; } catch (e) { return null; } }
+        function _setDivineCurArchiveId(id) { try { if (id) { localStorage.setItem('zk_divine_cur_archive_id', id); } else { localStorage.removeItem('zk_divine_cur_archive_id'); } } catch (e) {} }
         function chatDraw(n) {
           n = n || 3;
           var idx = [];
@@ -35017,6 +35019,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           if (!h.length) {
             h.push({ role: 'bot', text: getChatCfg().greeting, cards: [], t: new Date().getTime() });
             saveChat(h);
+            _setDivineCurArchiveId(null);
           }
           list.innerHTML = h.map(chatMsgHtml).join('');
           list.scrollTop = list.scrollHeight;
@@ -35425,26 +35428,38 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
           function getArchive() { try { return JSON.parse(localStorage.getItem('zk_divine_archive') || '[]'); } catch (e) { return []; } }
           function saveArchive(a) { try { localStorage.setItem('zk_divine_archive', JSON.stringify(a)); } catch (e) {} }
-
-          function newDivineChat() {
+          function _archiveDivineChat() {
             var h = loadChat();
             var hasContent = false;
             for (var i = 0; i < h.length; i++) {
               var m = h[i];
               if (m && !m.loading && ((m.role === 'user') || (m.role === 'bot' && m.text))) { hasContent = true; break; }
             }
-            if (hasContent) {
-              var title = '';
-              for (var j = 0; j < h.length; j++) { if (h[j].role === 'user' && h[j].text) { title = h[j].text; break; } }
-              title = (title || '').slice(0, 16) || '未命名对话';
-              var a = getArchive();
+            if (!hasContent) return;
+            var title = '';
+            for (var j = 0; j < h.length; j++) { if (h[j].role === 'user' && h[j].text) { title = h[j].text; break; } }
+            title = (title || '').slice(0, 16) || '未命名对话';
+            var a = getArchive();
+            var aid = _divineCurArchiveId();
+            var idx = -1;
+            if (aid) { for (var k = 0; k < a.length; k++) { if (a[k].id === aid) { idx = k; break; } } }
+            if (idx >= 0) {
+              a[idx].msgs = h;
+              a[idx].title = title;
+              a[idx].t = new Date().getTime();
+            } else {
               a.push({ id: 'dv' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), t: new Date().getTime(), title: title, msgs: h });
-              saveArchive(a);
             }
+            saveArchive(a);
+          }
+
+          function newDivineChat() {
+            _archiveDivineChat();
+            _setDivineCurArchiveId(null);
             localStorage.removeItem('divineChat');
             localStorage.removeItem('divineChatStage');
             renderChat();
-            if (typeof showToast === 'function') showToast(hasContent ? '已新建对话，旧的存进历史' : '已新建对话');
+            if (typeof showToast === 'function') showToast('已新建对话');
           }
 
           function openChatHist() {
@@ -35487,19 +35502,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             var arr = getArchive();
             var sItem = arr[ix];
             if (!sItem) return;
-            var _curMsgs = loadChat();
-            var _curHas = false;
-            for (var _ci = 0; _ci < _curMsgs.length; _ci++) {
-              var _cm = _curMsgs[_ci];
-              if (_cm && !_cm.loading && ((_cm.role === 'user') || (_cm.role === 'bot' && _cm.text))) { _curHas = true; break; }
-            }
-            if (_curHas) {
-              var _curTitle = '';
-              for (var _cj = 0; _cj < _curMsgs.length; _cj++) { if (_curMsgs[_cj].role === 'user' && _curMsgs[_cj].text) { _curTitle = _curMsgs[_cj].text; break; } }
-              _curTitle = (_curTitle || '').slice(0, 16) || '未命名对话';
-              arr.push({ id: 'dv' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), t: new Date().getTime(), title: _curTitle, msgs: _curMsgs });
-              saveArchive(arr);
-            }
+            _archiveDivineChat();
+            _setDivineCurArchiveId(sItem.id);
             saveChat((sItem.msgs || []).slice());
             renderChat();
             closeChatHist();
