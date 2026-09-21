@@ -15501,7 +15501,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               <div class="dvd-entry-name">占卜聊天</div>
               <div class="dvd-entry-desc">抽张牌说说话</div>
             </div>
-            <div class="dvd-entry dvd-entry-wide" data-go="hist">
+            <div class="dvd-entry" data-go="hist">
               <div class="dvd-entry-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg></div>
               <div class="dvd-entry-name">历史记录</div>
               <div class="dvd-entry-desc">回看抽过的牌</div>
@@ -22738,6 +22738,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           }
           var order = ['实用', '纪念', '应用'];
           var html = '';
+          html += '<div class="mpm-item" data-kind="bg">'
+            + '<span class="mpm-name">桌面背景</span>'
+            + '<span class="mpm-addtag">设置</span>'
+            + '</div>';
           order.forEach(function (g) {
             if (!groupMap[g]) return;
             html += '<div class="mpm-group">' + g + '</div>';
@@ -22756,10 +22760,6 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 + '</div>';
             });
           });
-          html += '<div class="mpm-item" data-kind="bg">'
-            + '<span class="mpm-name">桌面背景</span>'
-            + '<span class="mpm-addtag">设置</span>'
-            + '</div>';
           body.innerHTML = html;
         }
 
@@ -33991,10 +33991,14 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         // 打开模块
         function syncDivineChatEntry() {
           var ce = page.querySelector('.dvd-entry[data-go="chat"]');
-          if (!ce) return;
+          var he = page.querySelector('.dvd-entry[data-go="hist"]');
           var on = false;
           try { on = localStorage.getItem('zk_divine_chat_in_contacts') === '1'; } catch (e) {}
-          ce.style.display = on ? 'none' : '';
+          if (ce) ce.style.display = on ? 'none' : '';
+          if (he) {
+            if (on) { he.classList.add('dvd-entry-wide'); }
+            else { he.classList.remove('dvd-entry-wide'); }
+          }
         }
         window.openDivineModule = function () {
           chatDirectEntry = false;
