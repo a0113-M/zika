@@ -8607,9 +8607,9 @@
       display: flex; flex-direction: column; gap: 12px;
       min-height: 320px; max-height: 52vh; overflow-y: auto; padding: 4px 2px;
     }
-    .dvd-chat-msg { display: flex; }
-    .dvd-chat-msg.me { justify-content: flex-end; }
-    .dvd-chat-msg.bot { justify-content: flex-start; }
+    .dvd-chat-msg { display: flex; flex-direction: column; }
+    .dvd-chat-msg.me { align-items: flex-end; }
+    .dvd-chat-msg.bot { align-items: flex-start; }
     .dvd-chat-bubble {
       max-width: 82%; padding: 10px 13px; border-radius: 14px;
       font-size: 13.5px; line-height: 1.65; word-break: break-word;
@@ -8628,9 +8628,7 @@
       background: rgba(var(--primary-rgba), 0.10); color: var(--primary);
     }
     .dvd-chat-loading { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 12.5px; }
-    .dvd-chat-time { font-size: 10px; line-height: 1.1; margin-top: 4px; text-align: right; opacity: 0.62; }
-    .dvd-chat-msg.me .dvd-chat-time { color: rgba(255,255,255,0.82); }
-    .dvd-chat-msg.bot .dvd-chat-time { color: var(--text-secondary); }
+    .dvd-chat-time { font-size: 10px; line-height: 1; margin-top: 5px; padding: 0 2px; color: var(--text-secondary); opacity: 0.95; user-select: none; }
     .dvd-chat-empty {
       text-align: center; color: var(--text-secondary); font-size: 13px;
       padding: 48px 12px; line-height: 1.9; white-space: pre-line;
@@ -35056,7 +35054,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         }
         function chatMsgHtml(m) {
           if (m.role === 'user') {
-            return '<div class="dvd-chat-msg me"><div class="dvd-chat-bubble">' + escHtml(m.text || '').replace(/\n/g, '<br>') + chatTimeHtml(m.t) + '</div></div>';
+            return '<div class="dvd-chat-msg me"><div class="dvd-chat-bubble">' + escHtml(m.text || '').replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
           }
           if (m.loading) {
             return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble"><div class="dvd-chat-loading"><div class="dvd-spinner"></div><span>正在抽牌…</span></div></div></div>';
@@ -35064,7 +35062,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var cardsHtml = (m.cards && m.cards.length)
             ? '<div class="dvd-chat-cards">' + m.cards.map(function (c) { return '<span class="dvd-chat-cardchip">' + escHtml(c) + '</span>'; }).join('') + '</div>'
             : '';
-          return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble">' + cardsHtml + escHtml(m.text || '').replace(/\n/g, '<br>') + chatTimeHtml(m.t) + '</div></div>';
+          return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble">' + cardsHtml + escHtml(m.text || '').replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
         }
         function renderChat() {
           var list = document.getElementById('dvdChatList');
