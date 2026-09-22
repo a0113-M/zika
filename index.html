@@ -21757,6 +21757,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       };
       document.querySelectorAll('.sidebar-menu-item').forEach(item => {
         item.addEventListener('click', function () {
+          if (Date.now() - _lastSidebarOrderTs < 500) return;
           const action = this.dataset.action;
           if (action === 'card') {
             document.getElementById('cardFeaturePage').classList.add('show');
@@ -21837,6 +21838,61 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           sidebarOverlay.classList.remove('show');
         });
       });
+
+      // ----- 侧边栏菜单长按排序 -----
+      var _lastSidebarOrderTs = 0;
+      var SIDEBAR_ORDER_KEY = 'zk_sidebar_order';
+      var _sidebarMenuEl = document.querySelector('.sidebar-menu');
+      function sidebarOrder() {
+        try { var v = JSON.parse(localStorage.getItem(SIDEBAR_ORDER_KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+      }
+      function saveSidebarOrder(order) { try { localStorage.setItem(SIDEBAR_ORDER_KEY, JSON.stringify(order)); } catch (e) {} }
+      function applySidebarOrder() {
+        if (!_sidebarMenuEl) return;
+        var order = sidebarOrder();
+        if (!order.length) return;
+        var items = Array.prototype.slice.call(_sidebarMenuEl.querySelectorAll('.sidebar-menu-item'));
+        var map = {};
+        items.forEach(function (it) { map[it.dataset.action] = it; });
+        var seen = {};
+        var frag = document.createDocumentFragment();
+        order.forEach(function (a) {
+          var el = map[a];
+          if (el && !seen[a]) { seen[a] = true; frag.appendChild(el); }
+        });
+        items.forEach(function (el) {
+          if (!seen[el.dataset.action]) { seen[el.dataset.action] = true; frag.appendChild(el); }
+        });
+        _sidebarMenuEl.appendChild(frag);
+      }
+      function commitSidebarOrder() {
+        var order = Array.prototype.slice.call(_sidebarMenuEl.querySelectorAll('.sidebar-menu-item')).map(function (el) { return el.dataset.action; });
+        saveSidebarOrder(order);
+        _lastSidebarOrderTs = Date.now();
+      }
+      function attachSidebarSort() {
+        if (!_sidebarMenuEl) return;
+        _sidebarMenuEl.querySelectorAll('.sidebar-menu-item').forEach(function (item) {
+          var dragging = false, timer = null, startY = 0, startX = 0;
+          function begin() { if (dragging) return; dragging = true; item.classList.add('dragging'); if (typeof showToast === 'function') showToast('拖动可调整菜单顺序'); }
+          function doMove(y) {
+            if (!dragging) return;
+            var els = Array.prototype.slice.call(_sidebarMenuEl.querySelectorAll('.sidebar-menu-item'));
+            var idx = els.indexOf(item);
+            if (idx < 0) return;
+            if (idx > 0) { var prev = els[idx - 1]; var r = prev.getBoundingClientRect(); if (y < r.top + r.height / 2) { _sidebarMenuEl.insertBefore(item, prev); return; } }
+            if (idx < els.length - 1) { var nxt = els[idx + 1]; var r2 = nxt.getBoundingClientRect(); if (y > r2.top + r2.height / 2) { _sidebarMenuEl.insertBefore(nxt, item); return; } }
+          }
+          function finish() { clearTimeout(timer); if (!dragging) return; dragging = false; item.classList.remove('dragging'); commitSidebarOrder(); }
+          item.addEventListener('touchstart', function (e) { var t = e.touches[0]; startY = t.clientY; startX = t.clientX; timer = setTimeout(begin, 450); }, { passive: true });
+          item.addEventListener('touchmove', function (e) { var t = e.touches[0]; if (!dragging) { if (Math.abs(t.clientY - startY) > 10 || Math.abs(t.clientX - startX) > 10) clearTimeout(timer); return; } e.preventDefault(); doMove(t.clientY); }, { passive: false });
+          item.addEventListener('touchend', finish);
+          item.addEventListener('touchcancel', finish);
+          item.addEventListener('mousedown', function (e) { startY = e.clientY; startX = e.clientX; timer = setTimeout(begin, 350); function onMM(ev) { if (!dragging) { if (Math.abs(ev.clientY - startY) > 10 || Math.abs(ev.clientX - startX) > 10) clearTimeout(timer); return; } ev.preventDefault(); doMove(ev.clientY); } function onMU() { document.removeEventListener('mousemove', onMM); document.removeEventListener('mouseup', onMU); finish(); } document.addEventListener('mousemove', onMM); document.addEventListener('mouseup', onMU); });
+        });
+      }
+      applySidebarOrder();
+      attachSidebarSort();
 
       // ===== 小手机桌面 =====
       (function () {
