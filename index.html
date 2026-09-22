@@ -39617,6 +39617,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         if (dp.length === 3) { _viewYM = { y: +dp[0], m: +dp[1] }; }
         renderLedger();
         renderBookView();
+        if (typeof window.syncNativeWidget === 'function') window.syncNativeWidget();
       }
 
       var backBtn = document.getElementById('ledgerBackBtn');
@@ -42655,6 +42656,59 @@ function addToCart(goodId) {
   window.applyTheme = applyTheme;
 })();
 
+</script>
+
+<script>
+  // ===== 桌面小组件数据同步 =====
+  (function () {
+    function currentQuote() {
+      var DEFAULTS = ['慢慢来，比较快。', '今天也要对自己温柔一点。', '云朵飘过来，把烦恼都带走啦。', '你值得被好好对待。', '把日子过成喜欢的样子。', '偶尔发发呆，也挺好的。', '世界很大，先照顾好自己。', '下一次会更好。', '保持可爱，保持热爱。', '今天也是元气满满的一天。'];
+      var lib = null;
+      try { var a = JSON.parse(localStorage.getItem('zk_quote_lib')); if (Array.isArray(a) && a.length) lib = a; } catch (e) {}
+      if (!lib) lib = DEFAULTS;
+      var day = Math.floor(Date.now() / 86400000);
+      var pick = null;
+      try { pick = JSON.parse(localStorage.getItem('zk_quote_pick') || 'null'); } catch (e) {}
+      if (pick && pick.day === day && pick.text) return pick.text;
+      return lib[((day % lib.length) + lib.length) % lib.length];
+    }
+    function fmt(n) { n = Number(n) || 0; return n.toFixed(2); }
+    function currentLedger() {
+      try {
+        var arr = JSON.parse(localStorage.getItem('zk_ledger') || '[]');
+        if (!Array.isArray(arr) || !arr.length) return null;
+        var now = new Date(); var y = now.getFullYear(), m = now.getMonth() + 1;
+        var expense = 0, income = 0, n = 0;
+        arr.forEach(function (x) {
+          var d = null;
+          if (x.date) d = new Date(x.date + 'T12:00:00');
+          else if (x.ts) d = new Date(x.ts);
+          if (!d || isNaN(d.getTime())) return;
+          if (d.getFullYear() === y && (d.getMonth() + 1) === m) {
+            var amt = Number(x.amount) || 0;
+            if (x.type === 'income') income += amt; else expense += amt;
+            n++;
+          }
+        });
+        if (!n) return null;
+        return { expense: fmt(expense), balance: fmt(income - expense) };
+      } catch (e) { return null; }
+    }
+    window.syncNativeWidget = function () {
+      try {
+        if (!window.ZkWidget || typeof window.ZkWidget.update !== 'function') return;
+        var payload = { quote: currentQuote() };
+        var lg = currentLedger();
+        if (lg) { payload.expense = lg.expense; payload.balance = lg.balance; }
+        window.ZkWidget.update(JSON.stringify(payload));
+      } catch (e) {}
+    };
+    function boot() {
+      setTimeout(function () { window.syncNativeWidget(); }, 800);
+    }
+    if (document.readyState === 'complete' || document.readyState === 'interactive') boot();
+    else document.addEventListener('DOMContentLoaded', boot);
+  })();
 </script>
 
 </body>
