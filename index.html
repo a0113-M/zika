@@ -9198,11 +9198,11 @@
 }
 .ledger-summary { display: flex; gap: 10px; padding: 12px 16px 4px; }
 .ledger-sum-item {
-  flex: 1; background: #fff; border-radius: 12px;
+  flex: 1; min-width: 0; background: #fff; border-radius: 12px;
   padding: 12px 14px; display: flex; flex-direction: column; gap: 4px;
 }
 .ledger-sum-label { font-size: 12px; color: #999; }
-.ledger-sum-amount { font-size: 20px; font-weight: 700; }
+.ledger-sum-amount { font-size: 20px; font-weight: 700; white-space: nowrap; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .ledger-sum-amount.expense { color: #e05555; }
 .ledger-sum-amount.income { color: #3aa876; }
 .ledger-month-bar {
@@ -39429,6 +39429,26 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       function genId() { return 'lg_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6); }
       function esc(x) { x = String(x == null ? '' : x); return x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
       function fmtMoney(n) { n = Number(n) || 0; return n.toFixed(2); }
+      var _amtFitCanvas = null;
+      function _amtTextWidth(text, px) {
+        try {
+          if (!_amtFitCanvas) _amtFitCanvas = document.createElement('canvas');
+          var ctx = _amtFitCanvas.getContext('2d');
+          ctx.font = '700 ' + px + 'px -apple-system,BlinkMacSystemFont,"PingFang SC","Segoe UI",sans-serif';
+          return ctx.measureText(text).width;
+        } catch (e) { return text.length * px * 0.56; }
+      }
+      // 金额太长时自动缩字号，避免超出卡片（极端情况由 CSS ellipsis 兜底）
+      function fitMoneySize(el) {
+        if (!el) return;
+        var text = el.textContent || '';
+        var item = el.closest('.ledger-sum-item');
+        var avail = item ? (item.clientWidth - 24) : 0;
+        if (!avail || avail < 30) avail = Math.max(60, (window.innerWidth || 360) / 3 - 20);
+        var size = 20;
+        while (size > 11 && _amtTextWidth(text, size) > avail) size -= 1;
+        el.style.fontSize = size + 'px';
+      }
       function catColor(type, name) {
         var list = CATS[type] || [];
         for (var i = 0; i < list.length; i++) if (list[i].n === name) return list[i].c;
@@ -39450,9 +39470,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         });
         var expense = 0, income = 0;
         items.forEach(function(x) { var v = Number(x.amount) || 0; if (x.type === 'income') income += v; else expense += v; });
-        document.getElementById('ledgerExpense').textContent = '¥' + fmtMoney(expense);
-        document.getElementById('ledgerIncome').textContent = '¥' + fmtMoney(income);
-        document.getElementById('ledgerBalance').textContent = '结余 ¥' + fmtMoney(income - expense);
+        var _expEl = document.getElementById('ledgerExpense'); _expEl.textContent = '¥' + fmtMoney(expense); fitMoneySize(_expEl);
+        var _incEl = document.getElementById('ledgerIncome'); _incEl.textContent = '¥' + fmtMoney(income); fitMoneySize(_incEl);
+        var _balEl = document.getElementById('ledgerBalance'); _balEl.textContent = '结余 ¥' + fmtMoney(income - expense); fitMoneySize(_balEl);
         document.getElementById('ledgerMonthLabel').textContent = _viewYM.y + '年' + _viewYM.m + '月';
         renderBookTotal();
         renderBudgetBar();
