@@ -8661,6 +8661,11 @@
     }
     .dvd-chat-send:active { opacity: 0.9; transform: scale(0.95); }
     .dvd-hist-search { margin-bottom: 10px; }
+    .dvd-chat-search { flex: none; display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+    .dvd-chat-search .dvd-input { flex: 1; padding: 9px 13px; font-size: 13px; }
+    .dvd-chat-search-clear { flex: none; width: 38px; height: 38px; border: 1px solid rgba(var(--primary-rgba), 0.3); border-radius: 12px; background: var(--bg-card); color: var(--text-secondary); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+    .dvd-chat-search-clear:active { background: rgba(var(--primary-rgba), 0.10); }
+    mark.dvd-kw { background: #ffe58f; color: #5c4600; padding: 0 2px; border-radius: 3px; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
     .dvd-hlist { display: flex; flex-direction: column; gap: 10px; }
@@ -15842,6 +15847,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <div class="dvd-view" id="dvdChatView" style="display:none;">
           <div class="dvd-hist-top">
             <div class="dvd-top-actions">
+                <button class="dvd-callcfg-btn" id="dvdChatSearchBtn" aria-label="搜索聊天记录"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>搜索</button>
                 <button class="dvd-callcfg-btn" id="dvdChatSettings"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>设置<svg class="dvd-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
                 <button class="dvd-callcfg-btn" id="dvdChatCallCfg" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>判定设置</button>
                 <button class="dvd-callcfg-btn" id="dvdChatPersonaBtn" style="display:none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg>人设</button>
@@ -15860,6 +15866,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             <div class="dvd-chat-meta">
               <div class="dvd-chat-status">抽张牌，慢慢聊</div>
             </div>
+          </div>
+          <div class="dvd-chat-search" id="dvdChatSearchBar" style="display:none;">
+            <input class="dvd-input" id="dvdChatSearch" placeholder="搜索聊天记录（问题 / 回复 / 牌面）" autocomplete="off">
+            <button class="dvd-chat-search-clear" id="dvdChatSearchClose" aria-label="关闭搜索">✕</button>
           </div>
           <div class="dvd-chat-list" id="dvdChatList"></div>
           <div class="dvd-chat-bar">
@@ -34362,6 +34372,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         }
         function showView(k) {
           currentDvdView = k;
+          if (k !== 'chat' && typeof _dvdResetChatSearch === 'function') _dvdResetChatSearch();
           Object.keys(views).forEach(function (v) { views[v].style.display = (v === k) ? '' : 'none'; });
         }
 
@@ -35306,17 +35317,38 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var s = chatTimeText(t);
           return s ? '<div class="dvd-chat-time">' + s + '</div>' : '';
         }
-        function chatMsgHtml(m) {
+        function _dvdHighlight(text, kw) {
+          var s = escHtml(text == null ? '' : String(text));
+          if (!kw) return s;
+          var esc = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          try { return s.replace(new RegExp('(' + esc + ')', 'gi'), '<mark class="dvd-kw">$1</mark>'); }
+          catch (e) { return s; }
+        }
+        function _dvdSearchKeyword() {
+          var bar = document.getElementById('dvdChatSearchBar');
+          if (!bar || bar.style.display === 'none') return '';
+          var el = document.getElementById('dvdChatSearch');
+          var v = (el && el.value) ? el.value.trim() : '';
+          return v ? v.toLowerCase() : '';
+        }
+        function chatMsgHtml(m, kw) {
           if (m.role === 'user') {
-            return '<div class="dvd-chat-msg me"><div class="dvd-chat-bubble">' + escHtml(m.text || '').replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
+            return '<div class="dvd-chat-msg me"><div class="dvd-chat-bubble">' + _dvdHighlight(m.text || '', kw).replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
           }
           if (m.loading) {
             return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble"><div class="dvd-chat-loading"><div class="dvd-spinner"></div><span>正在抽牌…</span></div></div></div>';
           }
           var cardsHtml = (m.cards && m.cards.length)
-            ? '<div class="dvd-chat-cards">' + m.cards.map(function (c) { return '<span class="dvd-chat-cardchip">' + escHtml(c) + '</span>'; }).join('') + '</div>'
+            ? '<div class="dvd-chat-cards">' + m.cards.map(function (c) { return '<span class="dvd-chat-cardchip">' + _dvdHighlight(c, kw) + '</span>'; }).join('') + '</div>'
             : '';
-          return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble">' + cardsHtml + escHtml(m.text || '').replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
+          return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble">' + cardsHtml + _dvdHighlight(m.text || '', kw).replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
+        }
+        function _dvdChatMatches(m, kw) {
+          if (!kw) return true;
+          var hay = '';
+          if (m.text) hay += m.text;
+          if (m.cards && m.cards.length) hay += '\n' + m.cards.join('\n');
+          return hay.toLowerCase().indexOf(kw) >= 0;
         }
         function renderChat() {
           var list = document.getElementById('dvdChatList');
@@ -35326,9 +35358,47 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             saveChat(h);
             _setDivineCurArchiveId(null);
           }
-          list.innerHTML = h.map(chatMsgHtml).join('');
+          var kw = _dvdSearchKeyword();
+          var shown = kw ? h.filter(function (m) { return _dvdChatMatches(m, kw); }) : h;
+          if (!shown.length) {
+            list.innerHTML = '<div class="dvd-chat-empty">没有找到相关内容<br>换个关键词试试吧</div>';
+          } else {
+            list.innerHTML = shown.map(function (m) { return chatMsgHtml(m, kw); }).join('');
+          }
           list.scrollTop = list.scrollHeight;
         }
+        function _dvdResetChatSearch() {
+          var bar = document.getElementById('dvdChatSearchBar');
+          var inp = document.getElementById('dvdChatSearch');
+          if (bar) bar.style.display = 'none';
+          if (inp) inp.value = '';
+        }
+        function _dvdOpenChatSearch() {
+          var bar = document.getElementById('dvdChatSearchBar');
+          var inp = document.getElementById('dvdChatSearch');
+          if (!bar) return;
+          var opening = bar.style.display === 'none';
+          if (opening) {
+            bar.style.display = 'flex';
+            if (inp) { inp.value = ''; setTimeout(function () { try { inp.focus(); } catch (e) {} }, 50); }
+            renderChat();
+          } else {
+            _dvdResetChatSearch();
+            renderChat();
+          }
+        }
+        (function () {
+          function bind() {
+            var btn = document.getElementById('dvdChatSearchBtn');
+            var inp = document.getElementById('dvdChatSearch');
+            var cls = document.getElementById('dvdChatSearchClose');
+            if (btn && !btn._dvdBound) { btn._dvdBound = true; btn.addEventListener('click', _dvdOpenChatSearch); }
+            if (inp && !inp._dvdBound) { inp._dvdBound = true; inp.addEventListener('input', renderChat); }
+            if (cls && !cls._dvdBound) { cls._dvdBound = true; cls.addEventListener('click', function () { _dvdResetChatSearch(); renderChat(); }); }
+          }
+          if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', bind); }
+          else { bind(); }
+        })();
         function _zkAutoGrowDivineInput() {
           var _el = document.getElementById('dvdChatInput');
           if (!_el) return;
