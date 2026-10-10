@@ -15855,7 +15855,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <div class="dvd-chat-menu" id="dvdChatMenu" style="display:none;">
                   <button class="dvd-menu-item" data-act="callcfg">判定设置</button>
                   <button class="dvd-menu-item" data-act="persona">人设</button>
-                  <button class="dvd-menu-item" data-act="new">新建对话</button>
+                  <button class="dvd-menu-item" data-act="new">开启新对话</button>
                   <button class="dvd-menu-item" data-act="history">历史对话</button>
                   <button class="dvd-menu-item" data-act="export">导出对话</button>
                   <button class="dvd-menu-item danger" data-act="clear">清空对话</button>
@@ -35841,8 +35841,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             _setDivineCurArchiveId(null);
             localStorage.removeItem('divineChat');
             localStorage.removeItem('divineChatStage');
+            if (typeof _dvdResetChatSearch === 'function') _dvdResetChatSearch();
             renderChat();
-            if (typeof showToast === 'function') showToast('已新建对话');
+            if (typeof showToast === 'function') showToast('已开启新对话');
           }
 
           function openChatHist() {
