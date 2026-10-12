@@ -8665,6 +8665,9 @@
     .dvd-chat-search .dvd-input { flex: 1; padding: 9px 13px; font-size: 13px; }
     .dvd-chat-search-clear { flex: none; width: 38px; height: 38px; border: 1px solid rgba(var(--primary-rgba), 0.3); border-radius: 12px; background: var(--bg-card); color: var(--text-secondary); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
     .dvd-chat-search-clear:active { background: rgba(var(--primary-rgba), 0.10); }
+    .dvd-chat-topic { display: flex; align-items: center; gap: 10px; margin: 6px 0; font-size: 11.5px; }
+    .dvd-chat-topic::before, .dvd-chat-topic::after { content: ''; flex: 1; height: 1px; background: rgba(var(--primary-rgba), 0.18); }
+    .dvd-chat-topic span { padding: 3px 12px; border-radius: 20px; background: rgba(var(--primary-rgba), 0.08); color: var(--primary); }
     mark.dvd-kw { background: #ffe58f; color: #5c4600; padding: 0 2px; border-radius: 3px; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
@@ -15855,7 +15858,8 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <div class="dvd-chat-menu" id="dvdChatMenu" style="display:none;">
                   <button class="dvd-menu-item" data-act="callcfg">判定设置</button>
                   <button class="dvd-menu-item" data-act="persona">人设</button>
-                  <button class="dvd-menu-item" data-act="new">开启新对话</button>
+                  <button class="dvd-menu-item" data-act="newTopic">开始新话题</button>
+                  <button class="dvd-menu-item" data-act="new">新建对话</button>
                   <button class="dvd-menu-item" data-act="history">历史对话</button>
                   <button class="dvd-menu-item" data-act="export">导出对话</button>
                   <button class="dvd-menu-item danger" data-act="clear">清空对话</button>
@@ -35332,6 +35336,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           return v ? v.toLowerCase() : '';
         }
         function chatMsgHtml(m, kw) {
+          if (m.role === 'topic') {
+            return '<div class="dvd-chat-topic"><span>新话题</span></div>';
+          }
           if (m.role === 'user') {
             return '<div class="dvd-chat-msg me"><div class="dvd-chat-bubble">' + _dvdHighlight(m.text || '', kw).replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
           }
@@ -35799,6 +35806,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             else if (act === 'persona') { var b2 = document.getElementById('dvdChatPersonaBtn'); if (b2) b2.click(); }
             else if (act === 'clear') { openClearConfirm(); }
             else if (act === 'new') { newDivineChat(); }
+            else if (act === 'newTopic') { startNewTopic(); }
             else if (act === 'history') { openChatHist(); }
             else if (act === 'export') { openExportModal(); }
           });
@@ -35843,7 +35851,20 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             localStorage.removeItem('divineChatStage');
             if (typeof _dvdResetChatSearch === 'function') _dvdResetChatSearch();
             renderChat();
-            if (typeof showToast === 'function') showToast('已开启新对话');
+            if (typeof showToast === 'function') showToast('已新建对话');
+          }
+          function startNewTopic() {
+            var h = loadChat();
+            var last = h.length ? h[h.length - 1] : null;
+            if (last && last.role === 'topic') {
+              if (typeof showToast === 'function') showToast('已经是新话题了');
+              return;
+            }
+            if (typeof _dvdResetChatSearch === 'function') _dvdResetChatSearch();
+            h.push({ role: 'topic', text: '', cards: [], t: new Date().getTime() });
+            saveChat(h);
+            renderChat();
+            if (typeof showToast === 'function') showToast('已开始新话题');
           }
 
           function openChatHist() {
@@ -35923,6 +35944,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               var t = '';
               if (m.t) { var d = new Date(m.t); t = '[' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' + d.getHours() + ':' + ('0' + d.getMinutes()).slice(-2) + '] '; }
               if (m.role === 'user') lines.push(t + '我：' + (m.text || ''));
+              else if (m.role === 'topic') lines.push('——— 新话题 ———');
               else lines.push(t + '：' + (m.text || ''));
             }
             return lines;
@@ -35986,6 +36008,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             var items = [];
             for (var i = 0; i < msgs.length; i++) {
               var m = msgs[i];
+              if (m.role === 'topic') continue;
               var rows = [];
               if (m.cards && m.cards.length) {
                 var cardLines = wrap(tc, m.cards.join('  ·  '), contentW - gapPadX - bubblePadX * 2, cardFont);
