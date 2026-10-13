@@ -35428,11 +35428,12 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           detectPersona(q);
           var sys = chatSystemPrompt(ccfg);
 
-          // 历史（不含本轮刚加的 user 与 loading）
+          // 历史（不含本轮刚加的 user 与 loading；自最后一个「新话题」分隔之后才纳入，之前的话题对 AI 透明）
           var hist = [];
           var lastUserIdx = -1;
-          for (var i = 0; i < h.length; i++) { if (h[i].role === 'user') lastUserIdx = i; }
-          for (var j = 0; j < h.length; j++) {
+          var topicCut = -1;
+          for (var i = 0; i < h.length; i++) { if (h[i].role === 'user') lastUserIdx = i; else if (h[i].role === 'topic') topicCut = i; }
+          for (var j = topicCut + 1; j < h.length; j++) {
             var m = h[j];
             if (m.loading) continue;
             if (j === lastUserIdx) continue;
@@ -35462,7 +35463,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           // 开场词 / 确认重抽：直接锁格式解读梦角基础信息（抽固定牌数，不带旧历史）
           var isOpen = /^(开始|准备好了|准备好|开始吧|可以开始|开始占卜)/.test(q);
           var lastBotText = '';
-          for (var bi = h.length - 1; bi >= 0; bi--) {
+          for (var bi = h.length - 1; bi > topicCut; bi--) {
             if (h[bi].role === 'bot' && h[bi].text) { lastBotText = h[bi].text; break; }
           }
           var isRedraw = /^(重新抽|重抽|重新抽牌|再抽|再抽一次|重新来|重新解读|重来|重新开始)/.test(q)
