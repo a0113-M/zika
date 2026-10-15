@@ -37866,8 +37866,18 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       }
 
       window._openDiaryImage = function(src) {
-        var w = window.open('', '_blank');
-        if (w) { w.document.write('<img src="' + src + '" style="max-width:100%">'); }
+        if (!src) return;
+        var overlay = document.createElement('div');
+        overlay.setAttribute('data-diary-preview', '1');
+        overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);z-index:99999;display:flex;align-items:center;justify-content:center;';
+        var img = document.createElement('img');
+        img.src = src;
+        img.style.cssText = 'max-width:94%;max-height:94%;object-fit:contain;border-radius:8px;background:#fff;';
+        overlay.appendChild(img);
+        var close = function() { if (overlay.parentNode) overlay.parentNode.removeChild(overlay); };
+        overlay.addEventListener('click', close);
+        overlay.addEventListener('touchend', function(e) { e.preventDefault(); close(); });
+        document.body.appendChild(overlay);
       };
 
       function bindDiaryEvents() {
