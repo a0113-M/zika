@@ -1972,7 +1972,7 @@
       align-items: center;
       vertical-align: middle;
       transition: all 0.15s ease;
-      margin-right: 6px;
+      margin-right: 3px;
       margin-bottom: 4px;
       height: 24px;
     }
@@ -1980,7 +1980,7 @@
       display: inline-block;
       padding: 2px 4px;
       font-size: 14px;
-      line-height: 1;
+      line-height: 1.5;
     }
     /* 表情包字卡：图片缩小，与文字同行并排 */
     .word-chip-wrap.img-word {
@@ -30931,6 +30931,16 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         }
       }
 
+      function addLetterPunct(word) {
+        var name = String(word && word.name || '');
+        if (!name) return name;
+        name = name.split('//').join('');
+        var last = name.charAt(name.length - 1);
+        if (/[，。！？…～、；：""''）】》?！.!？,;：)]$/.test(last)) return name;
+        if (word && word.category === '表情') return name + '，';
+        return name + '。';
+      }
+
       function openLetterDetail(id) {
         const letter = letterList.find(l => l.id === id);
         if (!letter) return;
@@ -31058,7 +31068,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               const chip = document.createElement('span');
               chip.className = 'letter-word';
               chip.style.color = cc[1];
-              if (gw.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.className = 'letter-emoji-img'; chip.appendChild(_imgA); } else { chip.textContent = String(gw.name || '').split('//').join(''); }
+              if (gw.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.className = 'letter-emoji-img'; chip.appendChild(_imgA); } else { chip.textContent = addLetterPunct(gw); }
               chipWrap.appendChild(chip);
               if (annotationMode) {
                 chipWrap.classList.add('selectable');
@@ -31088,7 +31098,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             const chip = document.createElement('span');
             chip.className = 'letter-word';
             chip.style.color = cc[1];
-            if (w.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.className = 'letter-emoji-img'; chip.appendChild(_imgB); } else { chip.textContent = String(w.name || '').split('//').join(''); }
+            if (w.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.className = 'letter-emoji-img'; chip.appendChild(_imgB); } else { chip.textContent = addLetterPunct(w); }
             chipWrap.appendChild(chip);
             if (annotationMode) {
               chipWrap.classList.add('selectable');
@@ -31150,7 +31160,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               replyHeader.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg> 我的回信';
             }
             replyEl.appendChild(replyHeader);
-            const replyText = reply.text || (reply.words ? reply.words.map(w => String(w.name || '').split('//').join('')).join(' ') : '');
+            const replyText = reply.text || (reply.words ? reply.words.map(w => addLetterPunct(w)).join('') : '');
             const replyContent = document.createElement('div');
             replyContent.className = 'letter-reply-content';
             // 保留换行符，让信件格式的称呼/署名/日期分行显示
@@ -36403,7 +36413,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         var chip = document.createElement('span');
         chip.className = 'letter-word';
         chip.style.color = cc[1];
-        chip.textContent = String(w.name || '').split('//').join('');
+        chip.textContent = addLetterPunct(w);
         chipWrap.appendChild(chip);
         (function (idx, annotated) {
           chipWrap.addEventListener('click', function (e) {
