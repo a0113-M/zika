@@ -28444,7 +28444,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             imagesHtml = '<div class="moment-images ' + gridClass + '">';
             var isChatCard = !!(m.chatCard || (m.isContactPost && m.images.length === 1 && !m.text));
             m.images.slice(0, 9).forEach(function(img) {
-              imagesHtml += '<img src="' + img + '"' + (isChatCard ? ' class="moment-chatimg"' : '') + '>';
+              if (isDiaryImgKey(img)) {
+                imagesHtml += '<img data-dimg="' + img + '"' + (isChatCard ? ' class="moment-chatimg"' : '') + '>';
+              } else {
+                imagesHtml += '<img src="' + img + '"' + (isChatCard ? ' class="moment-chatimg"' : '') + '>';
+              }
             });
             imagesHtml += '</div>';
           }
@@ -28505,6 +28509,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
           momentsFeed.appendChild(item);
         });
+        _diaryHydrateImages(momentsFeed);
       }
 
       function saveMoments() {
@@ -37650,6 +37655,115 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         });
       }
 
+      // === 日记图片 IndexedDB 存储（保留原分辨率，摆脱 localStorage 5MB 上限）===
+      var _zkDiaryImgDbPromise = null;
+      function _zkDiaryImgDB() {
+        if (_zkDiaryImgDbPromise) return _zkDiaryImgDbPromise;
+        _zkDiaryImgDbPromise = new Promise(function(resolve, reject) {
+          try {
+            if (!window.indexedDB) { reject(new Error('no-idb')); return; }
+            var req = indexedDB.open('zk_diary_img_db', 1);
+            req.onupgradeneeded = function(e) {
+              var db = e.target.result;
+              if (!db.objectStoreNames.contains('imgs')) db.createObjectStore('imgs');
+            };
+            req.onsuccess = function(e) { resolve(e.target.result); };
+            req.onerror = function(e) { _zkDiaryImgDbPromise = null; reject(e); };
+          } catch (e) { _zkDiaryImgDbPromise = null; reject(e); }
+        });
+        return _zkDiaryImgDbPromise;
+      }
+      function _zkDiaryImgPut(key, dataUrl) {
+        return _zkDiaryImgDB().then(function(db) {
+          return new Promise(function(resolve, reject) {
+            try {
+              var tx = db.transaction('imgs', 'readwrite');
+              tx.objectStore('imgs').put(dataUrl, key);
+              tx.oncomplete = function() { resolve(true); };
+              tx.onerror = function() { reject(tx.error); };
+            } catch (e) { reject(e); }
+          });
+        });
+      }
+      function _zkDiaryImgGet(key) {
+        return _zkDiaryImgDB().then(function(db) {
+          return new Promise(function(resolve) {
+            try {
+              var req = db.transaction('imgs', 'readonly').objectStore('imgs').get(key);
+              req.onsuccess = function() { resolve(req.result || ''); };
+              req.onerror = function() { resolve(''); };
+            } catch (e) { resolve(''); }
+          });
+        });
+      }
+      function _zkDiaryImgDel(key) {
+        return _zkDiaryImgDB().then(function(db) {
+          return new Promise(function(resolve) {
+            try {
+              var tx = db.transaction('imgs', 'readwrite');
+              tx.objectStore('imgs').delete(key);
+              tx.oncomplete = function() { resolve(true); };
+              tx.onerror = function() { resolve(false); };
+            } catch (e) { resolve(false); }
+          });
+        });
+      }
+      function isDiaryImgKey(s) {
+        return typeof s === 'string' && s.indexOf('dimg_') === 0;
+      }
+      // 日记图片转 dataURL：保留原分辨率，仅超大图转高质量 JPEG（0.92），逼近原图
+      function diaryImgToDataUrl(file) {
+        return new Promise(function(resolve) {
+          var reader = new FileReader();
+          reader.onload = function() {
+            var raw = reader.result;
+            if (!raw || typeof raw !== 'string') { resolve(''); return; }
+            if (raw.length <= 3000000) { resolve(raw); return; }
+            var img = new Image();
+            var settled = false;
+            var timer = setTimeout(function() { if (!settled) { settled = true; resolve(raw); } }, 5000);
+            img.onload = function() {
+              if (settled) return;
+              try {
+                var w = img.width, h = img.height;
+                var canvas = document.createElement('canvas');
+                canvas.width = w; canvas.height = h;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, w, h);
+                var out = canvas.toDataURL('image/jpeg', 0.92);
+                settled = true;
+                clearTimeout(timer);
+                resolve(out && out.length > 0 ? out : raw);
+              } catch (err) {
+                settled = true;
+                clearTimeout(timer);
+                resolve(raw);
+              }
+            };
+            img.onerror = function() { if (!settled) { settled = true; clearTimeout(timer); resolve(raw); } };
+            img.src = raw;
+          };
+          reader.onerror = function() { resolve(''); };
+          try { reader.readAsDataURL(file); } catch (e) { resolve(''); }
+        });
+      }
+      // 把 root 内 img[data-dimg] 从 IndexedDB 取图补上 src
+      function _diaryHydrateImages(root) {
+        if (!root) return;
+        var imgs = root.querySelectorAll('img[data-dimg]');
+        for (var i = 0; i < imgs.length; i++) {
+          (function(im) {
+            var key = im.getAttribute('data-dimg');
+            _zkDiaryImgGet(key).then(function(dataUrl) {
+              if (dataUrl && im.parentNode) {
+                im.src = dataUrl;
+                im.removeAttribute('data-dimg');
+              }
+            });
+          })(imgs[i]);
+        }
+      }
+
             function renderWriteImagePreview() {
         if (!diaryWriteImagePreview) return;
         diaryWriteImagePreview.innerHTML = '';
@@ -37675,7 +37789,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       }
       function finalizeDiaryImages(items) {
         return Promise.all((items || []).map(function(it) {
-          if (it && it.file) { return fileToBase64(it.file).then(function(b64) { return b64 || ''; }); }
+          if (it && it.file) {
+            return diaryImgToDataUrl(it.file).then(function(dataUrl) {
+              if (!dataUrl) return '';
+              var key = 'dimg_' + Date.now() + '_' + Math.floor(Math.random() * 100000);
+              return _zkDiaryImgPut(key, dataUrl).then(function() { return key; }).catch(function() { return dataUrl; });
+            });
+          }
           return Promise.resolve(it && it.src ? it.src : '');
         })).then(function(arr) { return arr.filter(Boolean); });
       }
@@ -37692,9 +37812,14 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         _diaryEditPendingImages.forEach(function(item, idx) {
           var div = document.createElement('div');
           div.className = 'diary-img-cell';
-          div.innerHTML = '<img src="' + item.src + '"><button type="button" class="diary-img-del" onclick="window._removeEditImg(' + idx + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>';
+          if (isDiaryImgKey(item.src)) {
+            div.innerHTML = '<img data-dimg="' + item.src + '"><button type="button" class="diary-img-del" onclick="window._removeEditImg(' + idx + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>';
+          } else {
+            div.innerHTML = '<img src="' + item.src + '"><button type="button" class="diary-img-del" onclick="window._removeEditImg(' + idx + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg></button>';
+          }
           diaryEditImagePreview.appendChild(div);
         });
+        _diaryHydrateImages(diaryEditImagePreview);
         if (_diaryEditPendingImages.length < 9) {
           var addE = document.createElement('label');
           addE.className = 'diary-img-add';
@@ -37782,7 +37907,11 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
             imageHtml = '<div class="' + gridClass + '">';
             images.forEach(function(img) {
-              imageHtml += '<img src="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+              if (isDiaryImgKey(img)) {
+                imageHtml += '<img data-dimg="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+              } else {
+                imageHtml += '<img src="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+              }
             });
             imageHtml += '</div>';
           }
@@ -37829,6 +37958,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             '</div>';
           diaryFeed.appendChild(item);
         });
+
+        _diaryHydrateImages(diaryFeed);
 
         bindDiaryEvents();
 
@@ -38167,7 +38298,11 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var gridClass = 'diary-image-grid grid-' + Math.min(images.length, 9);
           imageHtml = '<div class="' + gridClass + '">';
           images.forEach(function(img) {
-            imageHtml += '<img src="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+            if (isDiaryImgKey(img)) {
+              imageHtml += '<img data-dimg="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+            } else {
+              imageHtml += '<img src="' + img + '" onclick="event.stopPropagation(); window._openDiaryImage(this.src)">';
+            }
           });
           imageHtml += '</div>';
         }
@@ -38219,6 +38354,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         if (_lkBtn) _lkBtn.onclick = function() { toggleDiaryDetailLike(); };
         if (_edBtn) _edBtn.onclick = function() { var _id = _diaryDetailId; closeDiaryDetail(); openDiaryEdit(_id); };
         if (_deBtn) _deBtn.onclick = function() { var _id = _diaryDetailId; closeDiaryDetail(); openDiaryDelete(_id); };
+        _diaryHydrateImages(diaryDetailScroll);
       }
       function toggleDiaryDetailLike() {
         var entries = getDiaryEntries();
@@ -38479,8 +38615,12 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         if (_diaryDeleteId === null) return;
         _removeDiaryFromMoments(_diaryDeleteId);
         var entries = getDiaryEntries();
+        var _delEntry = entries.find(function(e) { return e.id === _diaryDeleteId; });
         entries = entries.filter(function(e) { return e.id !== _diaryDeleteId; });
         saveDiaryEntries(entries);
+        if (_delEntry && _delEntry.images) {
+          _delEntry.images.forEach(function(im) { if (isDiaryImgKey(im)) _zkDiaryImgDel(im); });
+        }
         diaryDeleteOverlay.classList.remove('show');
         _diaryDeleteId = null;
         renderDiary();
