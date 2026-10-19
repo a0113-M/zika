@@ -30807,7 +30807,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
 
           const preview = document.createElement('div');
           preview.className = 'letter-preview';
-          const previewText = letter.words.slice(0, 5).map(w => w.name).join('、');
+          const previewText = letter.words.slice(0, 5).map(w => String(w.name || '').split('//').join('')).join('、');
           let previewStr = (letter.words.length > 5 ? previewText + '...' : previewText) + ` (${letter.words.length}张字卡)`;
           // 回信状态提示
           const hasReplies = letter.replies && letter.replies.length > 0;
@@ -31058,7 +31058,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               const chip = document.createElement('span');
               chip.className = 'letter-word';
               chip.style.color = cc[1];
-              if (gw.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.className = 'letter-emoji-img'; chip.appendChild(_imgA); } else { chip.textContent = gw.name; }
+              if (gw.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgA = document.createElement('img'); _imgA.src = gw.img; _imgA.className = 'letter-emoji-img'; chip.appendChild(_imgA); } else { chip.textContent = String(gw.name || '').split('//').join(''); }
               chipWrap.appendChild(chip);
               if (annotationMode) {
                 chipWrap.classList.add('selectable');
@@ -31088,7 +31088,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             const chip = document.createElement('span');
             chip.className = 'letter-word';
             chip.style.color = cc[1];
-            if (w.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.className = 'letter-emoji-img'; chip.appendChild(_imgB); } else { chip.textContent = w.name; }
+            if (w.img) { chipWrap.classList.add('img-word'); chip.style.color = ''; const _imgB = document.createElement('img'); _imgB.src = w.img; _imgB.className = 'letter-emoji-img'; chip.appendChild(_imgB); } else { chip.textContent = String(w.name || '').split('//').join(''); }
             chipWrap.appendChild(chip);
             if (annotationMode) {
               chipWrap.classList.add('selectable');
@@ -31150,7 +31150,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
               replyHeader.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg> 我的回信';
             }
             replyEl.appendChild(replyHeader);
-            const replyText = reply.text || (reply.words ? reply.words.map(w => w.name).join(' ') : '');
+            const replyText = reply.text || (reply.words ? reply.words.map(w => String(w.name || '').split('//').join('')).join(' ') : '');
             const replyContent = document.createElement('div');
             replyContent.className = 'letter-reply-content';
             // 保留换行符，让信件格式的称呼/署名/日期分行显示
@@ -31783,7 +31783,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             html += '<div class="chat-letter-time">' + dateStr + '</div>';
             lastDate = dateStr;
           }
-          const preview = letter.words.slice(0, 10).map(w => w.name).join(' ');
+          const preview = letter.words.slice(0, 10).map(w => String(w.name || '').split('//').join('')).join(' ');
           const dirClass = letter.isOutgoing ? 'outgoing' : 'incoming';
           const timeStr = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
           html += '<div class="chat-letter-bubble ' + dirClass + '" data-id="' + letter.id + '">';
@@ -36347,7 +36347,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var previewEl = document.createElement('div');
           previewEl.className = 'clp-letter-preview';
           if (letter.words && letter.words.length > 0) {
-            previewEl.textContent = letter.words.slice(0, 5).map(function (w) { return w.name; }).join('、') + (letter.words.length > 5 ? '...' : '') + ' (' + letter.words.length + '张字卡)';
+            previewEl.textContent = letter.words.slice(0, 5).map(function (w) { return String(w.name || '').split('//').join(''); }).join('、') + (letter.words.length > 5 ? '...' : '') + ' (' + letter.words.length + '张字卡)';
           } else {
             previewEl.textContent = '(无内容)';
           }
@@ -36403,7 +36403,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         var chip = document.createElement('span');
         chip.className = 'letter-word';
         chip.style.color = cc[1];
-        chip.textContent = w.name || '';
+        chip.textContent = String(w.name || '').split('//').join('');
         chipWrap.appendChild(chip);
         (function (idx, annotated) {
           chipWrap.addEventListener('click', function (e) {
@@ -38063,20 +38063,17 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
           closeTimer = setTimeout(function() {
             closeTimer = null;
-            closeOverlay(false);
+            closeOverlay();
           }, 320);
         }
 
-        var _previewClosed = false, _pushedHistory = false;
-        function closeOverlay(fromBack) {
+        var _previewClosed = false;
+        function closeOverlay() {
           if (_previewClosed) return;
           _previewClosed = true;
           if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
-          var _wasConnected = !!overlay.parentNode;
-          if (_wasConnected) overlay.parentNode.removeChild(overlay);
-          if (!fromBack && _pushedHistory && _wasConnected) { _pushedHistory = false; try { history.back(); } catch (e) {} }
+          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
         }
-        try { history.pushState({ _zkPreview: 1 }, ''); _pushedHistory = true; } catch (e) { _pushedHistory = false; }
 
         img.onload = fitInit;
         if (img.complete && img.naturalWidth) { fitInit(); }
@@ -38144,14 +38141,20 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
         overlay.addEventListener('click', function() {
           if (touchFlag) { touchFlag = false; return; }
-          closeOverlay(false);
+          closeOverlay();
         });
       };
 
-      window.addEventListener('popstate', function() {
-        var _ovs = document.querySelectorAll('[data-diary-preview]');
-        for (var i = 0; i < _ovs.length; i++) { if (_ovs[i].parentNode) _ovs[i].parentNode.removeChild(_ovs[i]); }
-      });
+      window.__zkBackPressed = function() {
+        try {
+          var _ovs = document.querySelectorAll('[data-diary-preview]');
+          if (_ovs.length > 0) {
+            for (var i = 0; i < _ovs.length; i++) { if (_ovs[i].parentNode) _ovs[i].parentNode.removeChild(_ovs[i]); }
+            return 'true';
+          }
+        } catch (e) {}
+        return 'false';
+      };
 
       function bindDiaryEvents() {
 
