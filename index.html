@@ -38063,9 +38063,20 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
           closeTimer = setTimeout(function() {
             closeTimer = null;
-            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            closeOverlay(false);
           }, 320);
         }
+
+        var _previewClosed = false, _pushedHistory = false;
+        function closeOverlay(fromBack) {
+          if (_previewClosed) return;
+          _previewClosed = true;
+          if (closeTimer) { clearTimeout(closeTimer); closeTimer = null; }
+          var _wasConnected = !!overlay.parentNode;
+          if (_wasConnected) overlay.parentNode.removeChild(overlay);
+          if (!fromBack && _pushedHistory && _wasConnected) { _pushedHistory = false; try { history.back(); } catch (e) {} }
+        }
+        try { history.pushState({ _zkPreview: 1 }, ''); _pushedHistory = true; } catch (e) { _pushedHistory = false; }
 
         img.onload = fitInit;
         if (img.complete && img.naturalWidth) { fitInit(); }
@@ -38133,9 +38144,14 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
         overlay.addEventListener('click', function() {
           if (touchFlag) { touchFlag = false; return; }
-          if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+          closeOverlay(false);
         });
       };
+
+      window.addEventListener('popstate', function() {
+        var _ovs = document.querySelectorAll('[data-diary-preview]');
+        for (var i = 0; i < _ovs.length; i++) { if (_ovs[i].parentNode) _ovs[i].parentNode.removeChild(_ovs[i]); }
+      });
 
       function bindDiaryEvents() {
 
