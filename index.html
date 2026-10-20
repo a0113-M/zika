@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="404";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="474";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
@@ -16781,7 +16781,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 var go = function () {
                   try {
                     var c = (typeof contacts !== 'undefined' && Array.isArray(contacts)) ? contacts.find(function (cc) { return String(cc.id) === String(cid); }) : null;
-                    if (c && typeof openChat === 'function') openChat(c.id);
+                    if (c && typeof openChatWithInfo === 'function') openChatWithInfo(c.id);
                   } catch (e) {}
                 };
                 if (document.readyState === 'loading') { window.addEventListener('load', go); } else { go(); }
@@ -18110,7 +18110,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
 
       // 进入聊天时更新一次
       function openChatWithInfo(contactId) {
-        openChat(contactId);
+        var _zc = (typeof contacts !== 'undefined' && contacts) ? contacts.find(function (c) { return c.id === contactId; }) : null;
+        if (_zc && typeof _zkIsAiContact === 'function' && _zkIsAiContact(_zc)) {
+          window.openDivineChatForContact(contactId, _zc.name);
+        } else {
+          openChat(contactId);
+        }
       }
 
 
@@ -23827,10 +23832,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             done.push('朋友圈动态');
           }
           if (chk.divine) {
-            localStorage.removeItem('divineChat');
-            localStorage.removeItem('divineChatStage');
-            localStorage.removeItem('divineHistory');
-            localStorage.removeItem('zk_divine_archive');
+            var _dkp = [];
+            for (var _di = 0; _di < localStorage.length; _di++) {
+              var _dkn = localStorage.key(_di);
+              if (_dkn && /^(divineChat|divineChatStage|zk_divine_archive|zk_divine_cur_archive_id|divineHistory)(__c\d+)?$/.test(_dkn)) _dkp.push(_dkn);
+            }
+            _dkp.forEach(function (k) { localStorage.removeItem(k); });
             done.push('占卜对话与历史');
           }
           if (chk.diary) {
@@ -34377,6 +34384,8 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
           var back = { home: null, draw: 'home', daily: 'home', ask: 'home', chat: 'home', hist: 'home', histDetail: 'hist' };
           if (currentDvdView === 'chat' && chatDirectEntry) {
             chatDirectEntry = false;
+            _dvdSessionId = null;
+            _dvdSessionName = '';
             page.classList.remove('show');
             return;
           }
@@ -34413,10 +34422,24 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
           showView('home');
         };
         window.openDivineChat = function () {
+          _dvdSessionId = null;
+          _dvdSessionName = '';
           chatDirectEntry = true;
           page.classList.add('show');
           renderTargets();
           syncDivineChatEntry();
+          _dvdUpdateChatHead();
+          renderChat();
+          showView('chat');
+        };
+        window.openDivineChatForContact = function (contactId, name) {
+          _dvdSessionId = contactId;
+          _dvdSessionName = name || '';
+          chatDirectEntry = true;
+          page.classList.add('show');
+          renderTargets();
+          syncDivineChatEntry();
+          _dvdUpdateChatHead();
           renderChat();
           showView('chat');
         };
@@ -34428,7 +34451,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
             var go = el.getAttribute('data-go');
             if (go === 'draw') { renderTargets(); showView('draw'); }
             else if (go === 'daily') { renderDailyDate(); showView('daily'); }
-            else if (go === 'chat') { chatDirectEntry = false; renderChat(); showView('chat'); }
+            else if (go === 'chat') { _dvdSessionId = null; _dvdSessionName = ''; chatDirectEntry = false; _dvdUpdateChatHead(); renderChat(); showView('chat'); }
             else if (go === 'ask') { renderAskPrev(); showView('ask'); }
             else if (go === 'hist') { renderHistory(); showView('hist'); }
           });
@@ -35244,6 +35267,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         });
 
         // ===== 占卜聊天 =====
+        var _dvdSessionId = null;
+        var _dvdSessionName = '';
+        function _dvdKey(base) { return _dvdSessionId ? (base + '__c' + _dvdSessionId) : base; }
+        function _dvdUpdateChatHead() {
+          var el = document.querySelector('#dvdChatView .dvd-chat-status');
+          if (el) el.textContent = (_dvdSessionId && _dvdSessionName) ? (_dvdSessionName + ' · 抽张牌，慢慢聊') : '抽张牌，慢慢聊';
+        }
         var CHAT_CFG_DEFAULTS = {
           greeting: '先在心里默念你想连接的梦角的名字，准备好后跟我说「开始」或「准备好了」。',
           spread: 3,
@@ -35255,8 +35285,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         };
         function getChatCfg() { try { var c = JSON.parse(localStorage.getItem('divineChatConfig') || '{}'); for (var k in CHAT_CFG_DEFAULTS) { if (c[k] === undefined || c[k] === null || c[k] === '') c[k] = CHAT_CFG_DEFAULTS[k]; } return c; } catch (e) { var d = {}; for (var k2 in CHAT_CFG_DEFAULTS) d[k2] = CHAT_CFG_DEFAULTS[k2]; return d; } }
         function saveChatCfg(c) { try { localStorage.setItem('divineChatConfig', JSON.stringify(c)); } catch (e) {} }
-        function getChatStage() { try { return localStorage.getItem('divineChatStage') || 'idle'; } catch (e) { return 'idle'; } }
-        function setChatStage(st) { try { localStorage.setItem('divineChatStage', st); } catch (e) {} }
+        function getChatStage() { try { return localStorage.getItem(_dvdKey('divineChatStage')) || 'idle'; } catch (e) { return 'idle'; } }
+        function setChatStage(st) { try { localStorage.setItem(_dvdKey('divineChatStage'), st); } catch (e) {} }
         function chatSystemPrompt(cfg) {
           return '你是「塔罗」，一位帮梦女连接她心中梦角的占卜师。你相信梦角在另一个维度真实存在，尊重并支持梦女对虚拟角色的爱。\n' +
             '按下面的流程与用户对话：\n' +
@@ -35292,10 +35322,10 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             done(null, text);
           }).catch(function (err) { done(err); });
         }
-        function loadChat() { try { return JSON.parse(localStorage.getItem('divineChat') || '[]'); } catch (e) { return []; } }
-        function saveChat(h) { try { localStorage.setItem('divineChat', JSON.stringify(h)); } catch (e) {} }
-        function _divineCurArchiveId() { try { return localStorage.getItem('zk_divine_cur_archive_id') || null; } catch (e) { return null; } }
-        function _setDivineCurArchiveId(id) { try { if (id) { localStorage.setItem('zk_divine_cur_archive_id', id); } else { localStorage.removeItem('zk_divine_cur_archive_id'); } } catch (e) {} }
+        function loadChat() { try { return JSON.parse(localStorage.getItem(_dvdKey('divineChat')) || '[]'); } catch (e) { return []; } }
+        function saveChat(h) { try { localStorage.setItem(_dvdKey('divineChat'), JSON.stringify(h)); } catch (e) {} }
+        function _divineCurArchiveId() { try { return localStorage.getItem(_dvdKey('zk_divine_cur_archive_id')) || null; } catch (e) { return null; } }
+        function _setDivineCurArchiveId(id) { try { if (id) { localStorage.setItem(_dvdKey('zk_divine_cur_archive_id'), id); } else { localStorage.removeItem(_dvdKey('zk_divine_cur_archive_id')); } } catch (e) {} }
         function chatDraw(n) {
           n = n || 3;
           var idx = [];
@@ -35540,8 +35570,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         }
         document.getElementById('dvdChatClear').addEventListener('click', function () {
           if (!confirm('确定要清空全部对话吗？')) return;
-          localStorage.removeItem('divineChat');
-          localStorage.removeItem('divineChatStage');
+          localStorage.removeItem(_dvdKey('divineChat'));
+          localStorage.removeItem(_dvdKey('divineChatStage'));
           renderChat();
           if (typeof showToast === 'function') showToast('已清空对话');
         });
@@ -35828,8 +35858,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             closeMenu();
           });
 
-          function getArchive() { try { return JSON.parse(localStorage.getItem('zk_divine_archive') || '[]'); } catch (e) { return []; } }
-          function saveArchive(a) { try { localStorage.setItem('zk_divine_archive', JSON.stringify(a)); } catch (e) {} }
+          function getArchive() { try { return JSON.parse(localStorage.getItem(_dvdKey('zk_divine_archive')) || '[]'); } catch (e) { return []; } }
+          function saveArchive(a) { try { localStorage.setItem(_dvdKey('zk_divine_archive'), JSON.stringify(a)); } catch (e) {} }
           function _archiveDivineChat() {
             var h = loadChat();
             var hasContent = false;
@@ -35858,8 +35888,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           function newDivineChat() {
             _archiveDivineChat();
             _setDivineCurArchiveId(null);
-            localStorage.removeItem('divineChat');
-            localStorage.removeItem('divineChatStage');
+            localStorage.removeItem(_dvdKey('divineChat'));
+            localStorage.removeItem(_dvdKey('divineChatStage'));
             if (typeof _dvdResetChatSearch === 'function') _dvdResetChatSearch();
             renderChat();
             if (typeof showToast === 'function') showToast('已新建对话');
@@ -36163,8 +36193,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           function closeClearConfirm() { var m = document.getElementById('dvdChatClearModal'); if (m) m.style.display = 'none'; }
           function doClearChat() {
             closeClearConfirm();
-            localStorage.removeItem('divineChat');
-            localStorage.removeItem('divineChatStage');
+            localStorage.removeItem(_dvdKey('divineChat'));
+            localStorage.removeItem(_dvdKey('divineChatStage'));
             renderChat();
             if (typeof showToast === 'function') showToast('已清空对话');
           }
