@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="476";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="477";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
@@ -17268,112 +17268,6 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         星币: { element: '土', direction: '正北', domain: '住宅小区、商铺、停车场、一楼地面、餐厅、工地，稳定固定场所' }
       };
 
-      // v476: 塔罗牌面查看（点击占卜聊天里的牌名，弹出牌面卡片；逆位旋转 180°）
-      var _TGC_MAJOR = ['愚者', '魔术师', '女祭司', '女皇', '皇帝', '教皇', '恋人', '战车', '力量', '隐士', '命运之轮', '正义', '倒吊人', '死神', '节制', '恶魔', '高塔', '星星', '月亮', '太阳', '审判', '世界'];
-      var _TGC_MAJOR_EN = ['The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor', 'The Hierophant', 'The Lovers', 'The Chariot', 'Strength', 'The Hermit', 'Wheel of Fortune', 'Justice', 'The Hanged Man', 'Death', 'Temperance', 'The Devil', 'The Tower', 'The Star', 'The Moon', 'The Sun', 'Judgement', 'The World'];
-      var _TGC_ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
-      var _TGC_SUIT_EN = { '权杖': 'Wands', '圣杯': 'Cups', '宝剑': 'Swords', '星币': 'Pentacles' };
-      var _TGC_NUM_EN = { '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine', '10': 'Ten' };
-      var _TGC_COURT_EN = { '侍从': 'Page', '骑士': 'Knight', '王后': 'Queen', '国王': 'King' };
-      function _tgcFind(name) {
-        for (var i = 0; i < _ZK_TAROT.length; i++) { if (_ZK_TAROT[i].name === name) return _ZK_TAROT[i]; }
-        return null;
-      }
-      function _tgcParse(chip) {
-        if (!chip) return null;
-        var upright = true, name = String(chip);
-        if (/（逆）$/.test(name)) { upright = false; name = name.slice(0, -3); }
-        else if (/（正）$/.test(name)) { name = name.slice(0, -3); }
-        else if (/\(逆\)$/.test(name)) { upright = false; name = name.slice(0, -3); }
-        else if (/\(正\)$/.test(name)) { name = name.slice(0, -3); }
-        return { name: name, upright: upright };
-      }
-      function _tgcRank(card) {
-        if (!card.suit) return '';
-        for (var s in _TGC_SUIT_EN) { if (card.name.indexOf(s) === 0) return card.name.slice(s.length); }
-        return '';
-      }
-      function _tgcEnglish(card) {
-        if (!card.suit) {
-          var i = _TGC_MAJOR.indexOf(card.name);
-          return i >= 0 ? _TGC_MAJOR_EN[i] : '';
-        }
-        var suitEn = _TGC_SUIT_EN[card.suit] || card.suit;
-        var rank = _tgcRank(card);
-        if (rank === 'ACE') return 'Ace of ' + suitEn;
-        if (_TGC_NUM_EN[rank]) return _TGC_NUM_EN[rank] + ' of ' + suitEn;
-        if (_TGC_COURT_EN[rank]) return _TGC_COURT_EN[rank] + ' of ' + suitEn;
-        return suitEn;
-      }
-      function _tgcRoman(card) {
-        if (card.suit) return card.suit;
-        var i = _TGC_MAJOR.indexOf(card.name);
-        return i >= 0 ? _TGC_ROMAN[i] : '';
-      }
-      function _tgcArt(card) {
-        var rank = card.suit ? _tgcRank(card) : '';
-        if (rank && _TGC_NUM_EN[rank]) {
-          var n = parseInt(rank, 10), pips = [];
-          for (var i = 0; i < n; i++) pips.push('<span>' + card.emoji + '</span>');
-          return { cls: 'tgc-face-pips', html: pips.join('') };
-        }
-        return { cls: 'tgc-face-art', html: card.emoji };
-      }
-      function _tgcMeaning(card, upright) {
-        var d = upright ? card.up : card.rev;
-        if (!d) return '';
-        var html = '';
-        if (d.loc && d.loc.length) html += '<div class="tgc-meaning-row"><b>所处</b>' + d.loc.join('、') + '</div>';
-        if (d.act) html += '<div class="tgc-meaning-row"><b>行动</b>' + d.act + '</div>';
-        if (d.state) html += '<div class="tgc-meaning-row"><b>心境</b>' + d.state + '</div>';
-        if (card.suit && _ZK_ELEMENTS[card.suit]) {
-          var el = _ZK_ELEMENTS[card.suit];
-          html += '<div class="tgc-suit">' + card.suit + ' · ' + el.element + ' · 方位' + el.direction + ' · ' + el.domain + '</div>';
-        }
-        return html;
-      }
-      function _tgcOpen(name, upright) {
-        var card = _tgcFind(name);
-        var modal = document.getElementById('tgcModal');
-        if (!card || !modal) return;
-        var el = {
-          name: document.getElementById('tgcName'),
-          en: document.getElementById('tgcEn'),
-          art: document.getElementById('tgcArt'),
-          face: document.getElementById('tgcFace'),
-          foot: document.getElementById('tgcFoot'),
-          title: document.getElementById('tgcTitle'),
-          badge: document.getElementById('tgcBadge'),
-          meaning: document.getElementById('tgcMeaning')
-        };
-        var art = _tgcArt(card);
-        if (el.name) el.name.textContent = card.name;
-        if (el.en) el.en.textContent = _tgcEnglish(card);
-        if (el.art) { el.art.className = art.cls; el.art.innerHTML = art.html; }
-        if (el.face) el.face.className = 'tgc-face' + (upright ? '' : ' rev');
-        if (el.foot) el.foot.textContent = _tgcRoman(card);
-        if (el.title) el.title.textContent = card.name + (upright ? ' · 正位' : ' · 逆位');
-        if (el.badge) { el.badge.textContent = upright ? '正位' : '逆位'; el.badge.className = 'tgc-badge ' + (upright ? 'up' : 'rev'); }
-        if (el.meaning) el.meaning.innerHTML = _tgcMeaning(card, upright);
-        modal.classList.add('show');
-      }
-      function _tgcClose() {
-        var modal = document.getElementById('tgcModal');
-        if (modal) modal.classList.remove('show');
-      }
-      document.addEventListener('click', function (e) {
-        var chip = (e.target && e.target.closest) ? e.target.closest('.dvd-chat-cardchip') : null;
-        if (!chip) return;
-        var parsed = _tgcParse(chip.getAttribute('data-tarot'));
-        if (parsed && _tgcFind(parsed.name)) _tgcOpen(parsed.name, parsed.upright);
-      });
-      (function () {
-        var c = document.getElementById('tgcClose');
-        var m = document.getElementById('tgcMask');
-        if (c) c.addEventListener('click', _tgcClose);
-        if (m) m.addEventListener('click', _tgcClose);
-      })();
-
       var _ZK_DISTANCES = [
         { v: '远', t: '他在他的世界里做自己的事情' },
         { v: '中', t: '他在你的不远处' },
@@ -33922,7 +33816,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         var MINORS = [];
         SUITS.forEach(function (su) {
           for (var i = 0; i < 10; i++) {
-            MINORS.push({ n: i === 0 ? 'A' : String(i + 1), name: su.s + (i === 0 ? 'A' : (i < 9 ? ['二','三','四','五','六','七','八','九','十'][i] : '十')), up: su.kws[i], rev: su.kws[i] + '受阻', upT: su.theme + '领域的「' + su.kws[i] + '」正在发生', revT: su.theme + '的能量暂时停滞，别急，会回来的' });
+            MINORS.push({ n: i === 0 ? 'A' : String(i + 1), name: su.s + (i === 0 ? 'A' : ['二','三','四','五','六','七','八','九','十'][i - 1]), up: su.kws[i], rev: su.kws[i] + '受阻', upT: su.theme + '领域的「' + su.kws[i] + '」正在发生', revT: su.theme + '的能量暂时停滞，别急，会回来的' });
           }
           COURTS.forEach(function (c, ci) {
             MINORS.push({ n: c, name: su.s + c, up: COURTS_KW[su.s][ci], rev: COURTS_KW[su.s][ci] + '受阻', upT: su.theme + '的「' + COURTS_KW[su.s][ci] + '」出现在身边', revT: su.theme + '的能量需要一点引导' });
@@ -34509,7 +34403,7 @@ let patText2 = String(randomPat.name || randomPat).replace(/你/g, '我');
         var MINORS = [];
         SUITS.forEach(function (su) {
           for (var i = 0; i < 10; i++) {
-            MINORS.push({ n: i === 0 ? 'A' : String(i + 1), name: su.s + (i === 0 ? 'A' : (i < 9 ? ['二','三','四','五','六','七','八','九','十'][i] : '十')), up: su.kws[i], rev: su.kws[i] + '受阻', upT: su.theme + '领域的「' + su.kws[i] + '」正在发生', revT: su.theme + '的能量暂时停滞，别急，会回来的' });
+            MINORS.push({ n: i === 0 ? 'A' : String(i + 1), name: su.s + (i === 0 ? 'A' : ['二','三','四','五','六','七','八','九','十'][i - 1]), up: su.kws[i], rev: su.kws[i] + '受阻', upT: su.theme + '领域的「' + su.kws[i] + '」正在发生', revT: su.theme + '的能量暂时停滞，别急，会回来的' });
           }
           COURTS.forEach(function (c, ci) {
             MINORS.push({ n: c, name: su.s + c, up: COURTS_KW[su.s][ci], rev: COURTS_KW[su.s][ci] + '受阻', upT: su.theme + '的「' + COURTS_KW[su.s][ci] + '」出现在身边', revT: su.theme + '的能量需要一点引导' });
@@ -35513,6 +35407,108 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             return (d.major ? '大阿卡纳' : '小阿卡纳') + ' · ' + d.c.name + (d.r ? '（逆位）' : '（正位）') + ' —— ' + (d.r ? d.c.rev : d.c.up);
           }).join('\n');
         }
+        // v476: 塔罗牌面查看（点击占卜聊天里的牌名，弹出牌面卡片；逆位旋转 180°）
+        var _TGC_MAJOR_EN = ['The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor', 'The Hierophant', 'The Lovers', 'The Chariot', 'Strength', 'The Hermit', 'Wheel of Fortune', 'Justice', 'The Hanged Man', 'Death', 'Temperance', 'The Devil', 'The Tower', 'The Star', 'The Moon', 'The Sun', 'Judgement', 'The World'];
+        var _TGC_MAJOR_EMOJI = ['🃏', '✨', '🌙', '👑', '🏰', '📜', '💞', '⚔️', '🦁', '🏮', '🎡', '⚖️', '🙃', '🍂', '⚗️', '🔗', '⚡', '🌟', '🌙', '☀️', '📯', '🌍'];
+        var _TGC_SUIT_EN = { '权杖': 'Wands', '圣杯': 'Cups', '宝剑': 'Swords', '星币': 'Pentacles' };
+        var _TGC_SUIT_SYM = { '权杖': '🔥', '圣杯': '🏆', '宝剑': '⚔️', '星币': '🪙' };
+        var _TGC_NUM_EN = { '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine', '10': 'Ten' };
+        var _TGC_COURT_EN = { '侍从': 'Page', '骑士': 'Knight', '王后': 'Queen', '国王': 'King' };
+        var _TGC_COURTS = ['侍从', '骑士', '王后', '国王'];
+        function _tgcFind(name) {
+          for (var i = 0; i < TAROT.length; i++) { if (TAROT[i].name === name) return TAROT[i]; }
+          return null;
+        }
+        function _tgcParse(chip) {
+          if (!chip) return null;
+          var upright = true, name = String(chip);
+          if (/（逆）$/.test(name)) { upright = false; name = name.slice(0, -3); }
+          else if (/（正）$/.test(name)) { name = name.slice(0, -3); }
+          else if (/\(逆\)$/.test(name)) { upright = false; name = name.slice(0, -3); }
+          else if (/\(正\)$/.test(name)) { name = name.slice(0, -3); }
+          return { name: name, upright: upright };
+        }
+        function _tgcSuit(card) {
+          for (var s in _TGC_SUIT_EN) { if (card.name.indexOf(s) === 0) return s; }
+          return '';
+        }
+        function _tgcEnglish(card) {
+          var mi = MAJORS.indexOf(card);
+          if (mi >= 0) return _TGC_MAJOR_EN[mi];
+          var suit = _tgcSuit(card);
+          if (!suit) return '';
+          if (card.n === 'A') return 'Ace of ' + _TGC_SUIT_EN[suit];
+          if (_TGC_NUM_EN[card.n]) return _TGC_NUM_EN[card.n] + ' of ' + _TGC_SUIT_EN[suit];
+          if (_TGC_COURT_EN[card.n]) return _TGC_COURT_EN[card.n] + ' of ' + _TGC_SUIT_EN[suit];
+          return _TGC_SUIT_EN[suit];
+        }
+        function _tgcFoot(card) {
+          var mi = MAJORS.indexOf(card);
+          if (mi >= 0) return card.n;
+          var suit = _tgcSuit(card);
+          if (!suit) return '';
+          if (_TGC_COURTS.indexOf(card.n) >= 0) return card.n;
+          return suit + ' · ' + _TGC_SUIT_EN[suit];
+        }
+        function _tgcArt(card) {
+          var mi = MAJORS.indexOf(card);
+          if (mi >= 0) return { cls: 'tgc-face-art', html: _TGC_MAJOR_EMOJI[mi] };
+          var suit = _tgcSuit(card);
+          var sym = _TGC_SUIT_SYM[suit] || '🃏';
+          if (_TGC_COURTS.indexOf(card.n) >= 0) return { cls: 'tgc-face-art', html: sym };
+          var count = card.n === 'A' ? 1 : (parseInt(card.n, 10) || 1);
+          var pips = '';
+          for (var i = 0; i < count; i++) pips += '<span>' + sym + '</span>';
+          return { cls: 'tgc-face-pips', html: pips };
+        }
+        function _tgcMeaning(card, upright) {
+          var html = '<div class="tgc-meaning-row"><b>牌意</b>' + escHtml(upright ? card.up : card.rev) + '</div>';
+          html += '<div class="tgc-meaning-row"><b>解读</b>' + escHtml(upright ? card.upT : card.revT) + '</div>';
+          var suit = _tgcSuit(card);
+          if (suit) html += '<div class="tgc-suit">' + suit + ' · ' + _TGC_SUIT_EN[suit] + '</div>';
+          return html;
+        }
+        function _tgcOpen(name, upright) {
+          var card = _tgcFind(name);
+          var modal = document.getElementById('tgcModal');
+          if (!card || !modal) return;
+          var el = {
+            name: document.getElementById('tgcName'),
+            en: document.getElementById('tgcEn'),
+            art: document.getElementById('tgcArt'),
+            face: document.getElementById('tgcFace'),
+            foot: document.getElementById('tgcFoot'),
+            title: document.getElementById('tgcTitle'),
+            badge: document.getElementById('tgcBadge'),
+            meaning: document.getElementById('tgcMeaning')
+          };
+          var art = _tgcArt(card);
+          if (el.name) el.name.textContent = card.name;
+          if (el.en) el.en.textContent = _tgcEnglish(card);
+          if (el.art) { el.art.className = art.cls; el.art.innerHTML = art.html; }
+          if (el.face) el.face.className = 'tgc-face' + (upright ? '' : ' rev');
+          if (el.foot) el.foot.textContent = _tgcFoot(card);
+          if (el.title) el.title.textContent = card.name + (upright ? ' · 正位' : ' · 逆位');
+          if (el.badge) { el.badge.textContent = upright ? '正位' : '逆位'; el.badge.className = 'tgc-badge ' + (upright ? 'up' : 'rev'); }
+          if (el.meaning) el.meaning.innerHTML = _tgcMeaning(card, upright);
+          modal.classList.add('show');
+        }
+        function _tgcClose() {
+          var modal = document.getElementById('tgcModal');
+          if (modal) modal.classList.remove('show');
+        }
+        document.addEventListener('click', function (e) {
+          var chip = (e.target && e.target.closest) ? e.target.closest('.dvd-chat-cardchip') : null;
+          if (!chip) return;
+          var parsed = _tgcParse(chip.getAttribute('data-tarot'));
+          if (parsed && _tgcFind(parsed.name)) _tgcOpen(parsed.name, parsed.upright);
+        });
+        (function () {
+          var c = document.getElementById('tgcClose');
+          var m = document.getElementById('tgcMask');
+          if (c) c.addEventListener('click', _tgcClose);
+          if (m) m.addEventListener('click', _tgcClose);
+        })();
         function chatTimeText(t) {
           if (!t) return '';
           var d = new Date(t);
