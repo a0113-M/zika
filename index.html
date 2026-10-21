@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="475";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="476";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
@@ -8668,6 +8668,39 @@
     .dvd-chat-topic::before, .dvd-chat-topic::after { content: ''; flex: 1; height: 1px; background: rgba(var(--primary-rgba), 0.18); }
     .dvd-chat-topic span { padding: 3px 12px; border-radius: 20px; background: rgba(var(--primary-rgba), 0.08); color: var(--primary); }
     mark.dvd-kw { background: #ffe58f; color: #5c4600; padding: 0 2px; border-radius: 3px; }
+
+    /* v476: 塔罗牌面弹窗（点击牌名查看） */
+    .dvd-chat-cardchip { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .dvd-chat-cardchip:active { opacity: 0.65; }
+    .tgc-modal { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 800; display: none; align-items: center; justify-content: center; }
+    .tgc-modal.show { display: flex; }
+    .tgc-mask { position: absolute; inset: 0; background: rgba(18, 14, 28, 0.62); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+    .tgc-close { position: absolute; top: 18px; right: 20px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.22); color: #fff; font-size: 16px; cursor: pointer; z-index: 6; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+    .tgc-close:active { background: rgba(255,255,255,0.24); }
+    .tgc-box { position: relative; width: 88%; max-width: 360px; max-height: 90%; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding: 30px 0 16px; -webkit-overflow-scrolling: touch; }
+    .tgc-box::-webkit-scrollbar { display: none; }
+    .tgc-face { position: relative; width: 164px; height: 278px; flex: none; background: linear-gradient(165deg, #f9eed7 0%, #efdfbd 50%, #e6d1a4 100%); border: 2px solid #4a3f72; border-radius: 14px; box-shadow: 0 12px 34px rgba(0,0,0,0.40); overflow: hidden; margin-bottom: 16px; }
+    .tgc-face::after { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(74,63,114,0.32); border-radius: 9px; pointer-events: none; z-index: 2; }
+    .tgc-face-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 15px 12px 16px; transition: transform 0.3s ease; }
+    .tgc-face.rev .tgc-face-inner { transform: rotate(180deg); }
+    .tgc-face-halo { position: absolute; inset: 12px; border-radius: 10px; background: radial-gradient(circle at 50% 42%, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 70%); z-index: 1; pointer-events: none; }
+    .tgc-face-top { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 3; }
+    .tgc-face-name { font-size: 17px; font-weight: 700; color: #4a3f72; letter-spacing: 0.02em; }
+    .tgc-face-en { font-size: 8.5px; color: #8a78b0; letter-spacing: 0.10em; text-transform: uppercase; margin-top: 3px; text-align: center; }
+    .tgc-face-art { font-size: 64px; line-height: 1; display: flex; align-items: center; justify-content: center; position: relative; z-index: 3; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.18)); }
+    .tgc-face-pips { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; max-width: 112px; font-size: 15px; line-height: 1.05; position: relative; z-index: 3; }
+    .tgc-face-pips span { filter: drop-shadow(0 2px 3px rgba(0,0,0,0.15)); }
+    .tgc-face-foot { font-size: 11px; color: #4a3f72; letter-spacing: 0.18em; font-weight: 600; position: relative; z-index: 3; }
+    .tgc-info { width: 100%; background: var(--bg-card); border-radius: 16px; padding: 16px 16px 18px; box-shadow: 0 12px 34px rgba(0,0,0,0.26); }
+    .tgc-info-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+    .tgc-info-title { font-size: 16px; font-weight: 700; color: var(--text-main); }
+    .tgc-badge { flex: none; display: inline-block; padding: 3px 10px; border-radius: 11px; font-size: 12px; font-weight: 600; }
+    .tgc-badge.up { background: rgba(46,139,87,0.14); color: #2e8b57; }
+    .tgc-badge.rev { background: rgba(190,80,90,0.15); color: #be505a; }
+    .tgc-meaning { display: flex; flex-direction: column; gap: 9px; }
+    .tgc-meaning-row { font-size: 13px; line-height: 1.6; color: var(--text-main); }
+    .tgc-meaning-row b { color: var(--primary); font-weight: 600; margin-right: 4px; }
+    .tgc-suit { margin-top: 11px; padding-top: 11px; border-top: 1px solid rgba(0,0,0,0.05); font-size: 11.5px; color: var(--text-secondary); line-height: 1.6; }
     .dvd-ask-extra { background: var(--bg-soft2); border-radius: 12px; padding: 12px 13px; font-size: 12.5px; line-height: 1.6; color: var(--primary); margin-bottom: 4px; }
     .dvd-hitem.act { border-color: var(--primary); background: rgba(var(--primary-rgba), 0.06); }
     .dvd-hlist { display: flex; flex-direction: column; gap: 10px; }
@@ -15896,6 +15929,32 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
       </div>
     </div>
 
+    <!-- v476: 塔罗牌面查看弹窗 -->
+    <div class="tgc-modal" id="tgcModal">
+      <div class="tgc-mask" id="tgcMask"></div>
+      <button class="tgc-close" id="tgcClose" aria-label="关闭">✕</button>
+      <div class="tgc-box">
+        <div class="tgc-face" id="tgcFace">
+          <div class="tgc-face-halo"></div>
+          <div class="tgc-face-inner">
+            <div class="tgc-face-top">
+              <div class="tgc-face-name" id="tgcName"></div>
+              <div class="tgc-face-en" id="tgcEn"></div>
+            </div>
+            <div class="tgc-face-art" id="tgcArt"></div>
+            <div class="tgc-face-foot" id="tgcFoot"></div>
+          </div>
+        </div>
+        <div class="tgc-info">
+          <div class="tgc-info-head">
+            <span class="tgc-info-title" id="tgcTitle"></span>
+            <span class="tgc-badge" id="tgcBadge"></span>
+          </div>
+          <div class="tgc-meaning" id="tgcMeaning"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- 删除追问记录确认弹窗 -->
     <div class="dvd-confirm-modal" id="dvdConfirmModal" style="display:none;">
       <div class="dvd-confirm-mask"></div>
@@ -17208,6 +17267,113 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         宝剑: { element: '风', direction: '正东', domain: '高楼写字楼、窗边、高铁站、图书馆、通风开阔、交通枢纽' },
         星币: { element: '土', direction: '正北', domain: '住宅小区、商铺、停车场、一楼地面、餐厅、工地，稳定固定场所' }
       };
+
+      // v476: 塔罗牌面查看（点击占卜聊天里的牌名，弹出牌面卡片；逆位旋转 180°）
+      var _TGC_MAJOR = ['愚者', '魔术师', '女祭司', '女皇', '皇帝', '教皇', '恋人', '战车', '力量', '隐士', '命运之轮', '正义', '倒吊人', '死神', '节制', '恶魔', '高塔', '星星', '月亮', '太阳', '审判', '世界'];
+      var _TGC_MAJOR_EN = ['The Fool', 'The Magician', 'The High Priestess', 'The Empress', 'The Emperor', 'The Hierophant', 'The Lovers', 'The Chariot', 'Strength', 'The Hermit', 'Wheel of Fortune', 'Justice', 'The Hanged Man', 'Death', 'Temperance', 'The Devil', 'The Tower', 'The Star', 'The Moon', 'The Sun', 'Judgement', 'The World'];
+      var _TGC_ROMAN = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI'];
+      var _TGC_SUIT_EN = { '权杖': 'Wands', '圣杯': 'Cups', '宝剑': 'Swords', '星币': 'Pentacles' };
+      var _TGC_NUM_EN = { '2': 'Two', '3': 'Three', '4': 'Four', '5': 'Five', '6': 'Six', '7': 'Seven', '8': 'Eight', '9': 'Nine', '10': 'Ten' };
+      var _TGC_COURT_EN = { '侍从': 'Page', '骑士': 'Knight', '王后': 'Queen', '国王': 'King' };
+      function _tgcFind(name) {
+        for (var i = 0; i < _ZK_TAROT.length; i++) { if (_ZK_TAROT[i].name === name) return _ZK_TAROT[i]; }
+        return null;
+      }
+      function _tgcParse(chip) {
+        if (!chip) return null;
+        var upright = true, name = String(chip);
+        if (/（逆）$/.test(name)) { upright = false; name = name.slice(0, -3); }
+        else if (/（正）$/.test(name)) { name = name.slice(0, -3); }
+        else if (/\(逆\)$/.test(name)) { upright = false; name = name.slice(0, -3); }
+        else if (/\(正\)$/.test(name)) { name = name.slice(0, -3); }
+        return { name: name, upright: upright };
+      }
+      function _tgcRank(card) {
+        if (!card.suit) return '';
+        for (var s in _TGC_SUIT_EN) { if (card.name.indexOf(s) === 0) return card.name.slice(s.length); }
+        return '';
+      }
+      function _tgcEnglish(card) {
+        if (!card.suit) {
+          var i = _TGC_MAJOR.indexOf(card.name);
+          return i >= 0 ? _TGC_MAJOR_EN[i] : '';
+        }
+        var suitEn = _TGC_SUIT_EN[card.suit] || card.suit;
+        var rank = _tgcRank(card);
+        if (rank === 'ACE') return 'Ace of ' + suitEn;
+        if (_TGC_NUM_EN[rank]) return _TGC_NUM_EN[rank] + ' of ' + suitEn;
+        if (_TGC_COURT_EN[rank]) return _TGC_COURT_EN[rank] + ' of ' + suitEn;
+        return suitEn;
+      }
+      function _tgcRoman(card) {
+        if (card.suit) return card.suit;
+        var i = _TGC_MAJOR.indexOf(card.name);
+        return i >= 0 ? _TGC_ROMAN[i] : '';
+      }
+      function _tgcArt(card) {
+        var rank = card.suit ? _tgcRank(card) : '';
+        if (rank && _TGC_NUM_EN[rank]) {
+          var n = parseInt(rank, 10), pips = [];
+          for (var i = 0; i < n; i++) pips.push('<span>' + card.emoji + '</span>');
+          return { cls: 'tgc-face-pips', html: pips.join('') };
+        }
+        return { cls: 'tgc-face-art', html: card.emoji };
+      }
+      function _tgcMeaning(card, upright) {
+        var d = upright ? card.up : card.rev;
+        if (!d) return '';
+        var html = '';
+        if (d.loc && d.loc.length) html += '<div class="tgc-meaning-row"><b>所处</b>' + d.loc.join('、') + '</div>';
+        if (d.act) html += '<div class="tgc-meaning-row"><b>行动</b>' + d.act + '</div>';
+        if (d.state) html += '<div class="tgc-meaning-row"><b>心境</b>' + d.state + '</div>';
+        if (card.suit && _ZK_ELEMENTS[card.suit]) {
+          var el = _ZK_ELEMENTS[card.suit];
+          html += '<div class="tgc-suit">' + card.suit + ' · ' + el.element + ' · 方位' + el.direction + ' · ' + el.domain + '</div>';
+        }
+        return html;
+      }
+      function _tgcOpen(name, upright) {
+        var card = _tgcFind(name);
+        var modal = document.getElementById('tgcModal');
+        if (!card || !modal) return;
+        var el = {
+          name: document.getElementById('tgcName'),
+          en: document.getElementById('tgcEn'),
+          art: document.getElementById('tgcArt'),
+          face: document.getElementById('tgcFace'),
+          foot: document.getElementById('tgcFoot'),
+          title: document.getElementById('tgcTitle'),
+          badge: document.getElementById('tgcBadge'),
+          meaning: document.getElementById('tgcMeaning')
+        };
+        var art = _tgcArt(card);
+        if (el.name) el.name.textContent = card.name;
+        if (el.en) el.en.textContent = _tgcEnglish(card);
+        if (el.art) { el.art.className = art.cls; el.art.innerHTML = art.html; }
+        if (el.face) el.face.className = 'tgc-face' + (upright ? '' : ' rev');
+        if (el.foot) el.foot.textContent = _tgcRoman(card);
+        if (el.title) el.title.textContent = card.name + (upright ? ' · 正位' : ' · 逆位');
+        if (el.badge) { el.badge.textContent = upright ? '正位' : '逆位'; el.badge.className = 'tgc-badge ' + (upright ? 'up' : 'rev'); }
+        if (el.meaning) el.meaning.innerHTML = _tgcMeaning(card, upright);
+        modal.classList.add('show');
+      }
+      function _tgcClose() {
+        var modal = document.getElementById('tgcModal');
+        if (modal) modal.classList.remove('show');
+      }
+      document.addEventListener('click', function (e) {
+        var chip = (e.target && e.target.closest) ? e.target.closest('.dvd-chat-cardchip') : null;
+        if (!chip) return;
+        var parsed = _tgcParse(chip.getAttribute('data-tarot'));
+        if (parsed && _tgcFind(parsed.name)) _tgcOpen(parsed.name, parsed.upright);
+      });
+      (function () {
+        var c = document.getElementById('tgcClose');
+        var m = document.getElementById('tgcMask');
+        if (c) c.addEventListener('click', _tgcClose);
+        if (m) m.addEventListener('click', _tgcClose);
+      })();
+
       var _ZK_DISTANCES = [
         { v: '远', t: '他在他的世界里做自己的事情' },
         { v: '中', t: '他在你的不远处' },
@@ -35386,7 +35552,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble"><div class="dvd-chat-loading"><div class="dvd-spinner"></div><span>正在抽牌…</span></div></div></div>';
           }
           var cardsHtml = (m.cards && m.cards.length)
-            ? '<div class="dvd-chat-cards">' + m.cards.map(function (c) { return '<span class="dvd-chat-cardchip">' + _dvdHighlight(c, kw) + '</span>'; }).join('') + '</div>'
+            ? '<div class="dvd-chat-cards">' + m.cards.map(function (c) { return '<span class="dvd-chat-cardchip" data-tarot="' + escHtml(c) + '">' + _dvdHighlight(c, kw) + '</span>'; }).join('') + '</div>'
             : '';
           return '<div class="dvd-chat-msg bot"><div class="dvd-chat-bubble">' + cardsHtml + _dvdHighlight(m.text || '', kw).replace(/\n/g, '<br>') + '</div>' + chatTimeHtml(m.t) + '</div>';
         }
