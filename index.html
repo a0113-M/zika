@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 
 <head>
-  <script>try{if(/github\.io$/.test(location.hostname)){var _v="479";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
+  <script>try{if(/github\.io$/.test(location.hostname)){var _v="480";if(localStorage.getItem("zk_app_ver")!==_v){localStorage.setItem("zk_app_ver",_v);location.reload();}}}catch(e){}</script>
   <meta charset="UTF-8">
   <meta name="viewport"
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
@@ -7195,6 +7195,79 @@
     }
 
 /* --- 朋友圈 --- */
+.contact-moments-view {
+  position: fixed;
+  left: 0; top: 0; right: 0; bottom: 0;
+  z-index: 300;
+  background: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+}
+.cm-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 12px);
+  background: #fff;
+  border-bottom: 1px solid var(--border-light);
+  flex-shrink: 0;
+}
+.cm-back {
+  width: 36px; height: 36px;
+  border: none; background: transparent;
+  color: #333;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.cm-back:active { background: var(--bg-soft2); }
+.cm-avatar {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary));
+  color: #fff; font-size: 16px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
+}
+.cm-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.cm-title { flex: 1; min-width: 0; }
+.cm-name { font-size: 16px; font-weight: 600; color: #333; }
+.cm-sub { font-size: 12px; color: #999; margin-top: 1px; }
+.cm-clear {
+  border: none; background: transparent;
+  color: #999; font-size: 13px; cursor: pointer;
+  padding: 6px 10px; border-radius: 8px;
+  flex-shrink: 0;
+}
+.cm-clear:active { background: var(--bg-soft2); }
+.cm-feed { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding-bottom: 40px; }
+.cm-empty {
+  display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 60px 20px; color: #bbb; font-size: 14px;
+}
+.cm-empty.show { display: flex; }
+.cm-empty svg { width: 48px; height: 48px; }
+.cm-item {
+  position: relative;
+  display: flex; gap: 10px;
+  padding: 14px 14px 10px;
+  background: #fff;
+  border-bottom: 0.5px solid var(--border-light);
+}
+.cm-item:first-child { border-top: none; }
+.cm-del {
+  position: absolute; top: 10px; right: 10px;
+  border: none; background: rgba(0,0,0,0.04);
+  width: 28px; height: 28px; border-radius: 8px;
+  color: #c0392b; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+}
+.cm-del:active { background: rgba(0,0,0,0.1); }
+.cm-del svg { width: 16px; height: 16px; }
+
 .moments-view {
   flex: 1;
   display: flex;
@@ -13043,6 +13116,26 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         </div>
       </div>
 
+
+  <!-- 联系人朋友圈视图（点击联系人头像/名字进入，可删除TA的朋友圈） -->
+  <div class="contact-moments-view hidden" id="contactMomentsView">
+    <div class="cm-header">
+      <button class="cm-back" id="cmBackBtn" aria-label="返回">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
+      </button>
+      <div class="cm-avatar" id="cmAvatar">Ta</div>
+      <div class="cm-title">
+        <div class="cm-name" id="cmName">联系人</div>
+        <div class="cm-sub">TA 的朋友圈</div>
+      </div>
+      <button class="cm-clear" id="cmClearBtn">清空</button>
+    </div>
+    <div class="cm-feed" id="cmFeed"></div>
+    <div class="cm-empty" id="cmEmpty">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      <div>TA 还没有发布朋友圈</div>
+    </div>
+  </div>
 
   <!-- 待办视图（侧边栏进入，全屏覆盖） -->
   <div class="todo-view" id="todoView">
@@ -28492,9 +28585,11 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           item.className = 'moment-item';
 
           // Avatar
+          var isContact = !!(m.isContactPost);
+          var cmAttr = isContact ? ' data-cm-author="' + (m.author || '').replace(/"/g, '&quot;') + '" style="cursor:pointer"' : '';
           var avatarHtml = m.avatarImage
-            ? '<div class="moment-avatar"><img src="' + m.avatarImage + '"></div>'
-            : '<div class="moment-avatar">' + (m.author || '我').charAt(0) + '</div>';
+            ? '<div class="moment-avatar"' + cmAttr + '><img src="' + m.avatarImage + '"></div>'
+            : '<div class="moment-avatar"' + cmAttr + '>' + (m.author || '我').charAt(0) + '</div>';
 
           // Images
           var imagesHtml = '';
@@ -28552,7 +28647,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           menuHtml += '</div></div>';
           item.innerHTML = avatarHtml +
             '<div class="moment-body">' +
-              '<div class="moment-author">' + (m.author || '我') + '</div>' +
+              '<div class="moment-author"' + cmAttr + '>' + (m.author || '我') + '</div>' +
               '<div class="moment-text">' + escapeHtmlForMoments(m.text || '') + '</div>' +
               imagesHtml +
               '<div class="moment-footer">' +
@@ -28570,6 +28665,108 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
         _diaryHydrateImages(momentsFeed);
       }
+
+      // ===== 联系人朋友圈视图（点击联系人头像/名字进入，可删除TA的朋友圈）=====
+      var cmCurrentAuthor = null;
+      function openContactMoments(author) {
+        cmCurrentAuthor = author || null;
+        var cmView = document.getElementById('contactMomentsView');
+        var cmAvatar = document.getElementById('cmAvatar');
+        var cmName = document.getElementById('cmName');
+        var contact = null;
+        try { contact = contacts.find(function(c) { return c.name === author; }); } catch(e) {}
+        if (cmAvatar) {
+          if (contact && contact.avatarImage) cmAvatar.innerHTML = '<img src="' + contact.avatarImage + '">';
+          else cmAvatar.textContent = (author || 'Ta').charAt(0);
+        }
+        if (cmName) cmName.textContent = author || 'Ta';
+        renderContactMoments();
+        if (cmView) cmView.classList.remove('hidden');
+      }
+      function closeContactMoments() {
+        var cmView = document.getElementById('contactMomentsView');
+        if (cmView) cmView.classList.add('hidden');
+      }
+      function renderContactMoments() {
+        var cmFeed = document.getElementById('cmFeed');
+        var cmEmpty = document.getElementById('cmEmpty');
+        if (!cmFeed) return;
+        var list = moments.filter(function(m) {
+          return m.isContactPost && (m.author === cmCurrentAuthor);
+        }).sort(function(a, b) { return b.time - a.time; });
+        cmFeed.innerHTML = '';
+        if (cmEmpty) cmEmpty.classList.toggle('show', list.length === 0);
+        list.forEach(function(m) {
+          var item = document.createElement('div');
+          item.className = 'cm-item';
+          var avatarHtml = m.avatarImage
+            ? '<div class="moment-avatar"><img src="' + m.avatarImage + '"></div>'
+            : '<div class="moment-avatar">' + (m.author || 'Ta').charAt(0) + '</div>';
+          var imagesHtml = '';
+          if (m.images && m.images.length > 0) {
+            var gridClass = 'grid-' + Math.min(m.images.length, 9);
+            imagesHtml = '<div class="moment-images ' + gridClass + '">';
+            var isChatCard = !!(m.chatCard || (m.isContactPost && m.images.length === 1 && !m.text));
+            m.images.slice(0, 9).forEach(function(img) {
+              if (isDiaryImgKey(img)) {
+                imagesHtml += '<img data-dimg="' + img + '"' + (isChatCard ? ' class="moment-chatimg"' : '') + '>';
+              } else {
+                imagesHtml += '<img src="' + img + '"' + (isChatCard ? ' class="moment-chatimg"' : '') + '>';
+              }
+            });
+            imagesHtml += '</div>';
+          }
+          var timeStr = formatMomentTime(m.time);
+          item.innerHTML =
+            '<button class="cm-del" data-id="' + m.id + '" aria-label="删除"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>' +
+            avatarHtml +
+            '<div class="moment-body">' +
+              '<div class="moment-author">' + (m.author || 'Ta') + '</div>' +
+              '<div class="moment-text">' + escapeHtmlForMoments(m.text || '') + '</div>' +
+              imagesHtml +
+              '<div class="moment-footer"><span class="moment-time">' + timeStr + '</span></div>' +
+            '</div>';
+          cmFeed.appendChild(item);
+        });
+        if (typeof _diaryHydrateImages === 'function') _diaryHydrateImages(cmFeed);
+      }
+      function deleteContactMoment(id) {
+        var idx = moments.findIndex(function(m) { return m.id === id; });
+        if (idx >= 0) moments.splice(idx, 1);
+        saveMoments();
+        renderMoments();
+        renderContactMoments();
+        if (typeof showToast === 'function') showToast('已删除');
+      }
+      function clearContactMoments() {
+        if (!cmCurrentAuthor) return;
+        if (typeof window !== 'undefined' && window.confirm && !window.confirm('确定清空「' + cmCurrentAuthor + '」的所有朋友圈吗？')) return;
+        moments = moments.filter(function(m) { return !(m.isContactPost && m.author === cmCurrentAuthor); });
+        saveMoments();
+        renderMoments();
+        renderContactMoments();
+        if (typeof showToast === 'function') showToast('已清空 TA 的朋友圈');
+      }
+      (function() {
+        var cmBack = document.getElementById('cmBackBtn');
+        if (cmBack) cmBack.addEventListener('click', closeContactMoments);
+        var cmClear = document.getElementById('cmClearBtn');
+        if (cmClear) cmClear.addEventListener('click', clearContactMoments);
+        var cmFeed = document.getElementById('cmFeed');
+        if (cmFeed) {
+          cmFeed.addEventListener('click', function(e) {
+            var delBtn = e.target.closest('.cm-del');
+            if (delBtn) {
+              e.stopPropagation();
+              var id = parseInt(delBtn.dataset.id, 10);
+              if (!isNaN(id)) deleteContactMoment(id);
+              return;
+            }
+            var mvImg = e.target.closest('.moment-images img');
+            if (mvImg) { e.stopPropagation(); _openMomentImageViewer(mvImg.src); }
+          });
+        }
+      })();
 
       function saveMoments() {
         try {
@@ -28680,6 +28877,12 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         });
 
         momentsFeed.addEventListener('click', function(e) {
+          var _cmEntry = e.target.closest('[data-cm-author]');
+          if (_cmEntry) {
+            e.stopPropagation();
+            openContactMoments(_cmEntry.dataset.cmAuthor);
+            return;
+          }
           var _cmtEl = e.target.closest('.moment-comment');
           if (_cmtEl) {
             e.stopPropagation();
