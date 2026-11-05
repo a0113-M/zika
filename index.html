@@ -9,7 +9,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <title>雾屿 · 小手机 v424</title>
+  <title>雾屿 · 小手机 v481</title>
   <style>
 
 /* ===== Theme CSS Variables ===== */
@@ -28372,6 +28372,36 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         } catch(e) {}
       }
 
+      // 用户回复/评论联系人后，该联系人有概率回复用户（补上一来一往的互动闭环）
+      function _zkTryContactReplyToUser(moment, userName, replyToName) {
+        try {
+          if (!moment || !contacts) return;
+          var target = null;
+          if (replyToName) {
+            target = contacts.find(function(c) { return c.name === replyToName; });
+          } else if (moment.isContactPost && moment.author) {
+            target = contacts.find(function(c) { return c.name === moment.author; });
+          }
+          if (!target || target.isGroup) return;
+          var _rset = getContactProbSettings();
+          var _cs = (_rset && _rset[target.id]) || {};
+          var _prob = (_cs.replyMomentProb !== undefined ? _cs.replyMomentProb : 5) / 100;
+          if (_prob > 0 && Math.random() <= _prob) {
+            var _card = getRandomCard();
+            if (!_card) return;
+            var _m = moment, _cname = target.name, _myname = userName, _ccard = _card;
+            setTimeout(function() {
+              try {
+                if (!_m.comments) _m.comments = [];
+                _m.comments.push({ author: _cname, text: _ccard, replyTo: _myname });
+                saveMoments();
+                renderMoments();
+              } catch(e) {}
+            }, 1800 + Math.floor(Math.random() * 2800));
+          }
+        } catch(e) {}
+      }
+
       // 页面加载时启动
       startContactAutoLetter();
 
@@ -29077,6 +29107,7 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
             delete _momentReplyTarget[id];
             saveMoments();
             renderMoments();
+            _zkTryContactReplyToUser(moment, userName, _repToNow);
             return;
           }
         });
