@@ -9938,6 +9938,46 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   margin-bottom: 6px;
 }
 
+.diary-tag-row { align-items: flex-start; }
+.diary-tag-picker { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+.diary-tag-chip {
+  border: 1px solid #e0d8f0;
+  background: #faf8ff;
+  color: #666;
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.diary-tag-chip.on { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 500; }
+.diary-tag-empty { font-size: 12px; color: #aaa; }
+.diary-tag-badge { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.diary-tag-label {
+  display: inline-block;
+  font-size: 11px;
+  color: var(--primary);
+  background: rgba(var(--primary-rgba), 0.08);
+  border: 1px solid rgba(var(--primary-rgba), 0.25);
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.persona-related-empty { font-size: 13.5px; color: var(--text-secondary); text-align: center; padding: 28px 16px 6px; }
+.persona-related-hint { font-size: 12px; color: var(--text-secondary); text-align: center; opacity: 0.7; padding: 0 16px 20px; }
+.persona-related-item {
+  background: var(--bg-card);
+  border: 1px solid rgba(var(--primary-rgba), 0.15);
+  border-radius: 12px;
+  padding: 11px 12px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.persona-related-text { font-size: 13.5px; color: var(--text-main); line-height: 1.55; white-space: pre-wrap; word-break: break-word; }
+.persona-related-time { font-size: 11px; color: var(--text-secondary); margin-top: 6px; }
+
 .diary-cat-settings {
   flex-shrink: 0;
   width: 30px;
@@ -15586,6 +15626,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
               </span>
             </div>
           </div>
+          <div class="diary-meta-row diary-tag-row">
+            <label>关联人物</label>
+            <div class="diary-tag-picker" id="diaryWriteTagPicker"></div>
+          </div>
           <textarea class="diary-editor-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
           <div class="diary-img-grid" id="diaryWriteImagePreview"></div>
         </div>
@@ -15613,6 +15657,10 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
                 <button type="button" class="diary-vis-opt active" data-vis="private">私密</button>
               </span>
             </div>
+          </div>
+          <div class="diary-meta-row diary-tag-row">
+            <label>关联人物</label>
+            <div class="diary-tag-picker" id="diaryEditTagPicker"></div>
           </div>
           <textarea class="diary-editor-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
           <div class="diary-img-grid" id="diaryEditImagePreview"></div>
@@ -37613,45 +37661,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 ;(function(){
   var PKEY = 'wuyu_personas_v1', CURKEY = 'wuyu_persona_cur_v1';
   var SECTIONS = [
-    {id:'who', title:'TA是谁', sub:'基本资料 · 世界设定 · 存在方式', groups:[
+    {id:'who', title:'基本资料', sub:'TA的基本信息', groups:[
       {title:'基本资料', fields:[
-        ['who.nickname','昵称','例如：张三'],['who.call','称呼','例如：宝宝'],['who.birthday','生日','例如：10月16日'],['who.age','年龄','例如：未知（二十几岁吧）'],['who.identity','身份','例如：猎人'],['who.personality','性格','例如：安静、慢热，其实很温柔'],['who.look','外貌','头发、眼睛、常穿的衣服……'],['who.intro','自我介绍','如果TA要介绍自己，会怎么说？']]},
-      {title:'世界设定', fields:[
-        ['who.from','来自哪里','例如：梦的另一边'],['who.world','属于什么世界','例如：梦境 / 现实的倒影'],['who.relation','与现实世界的关系','例如：偶尔重叠，大多时候平行']]},
-      {title:'存在方式', hint:'不用写成绝对设定，「不固定」「说不好」也是答案。', fields:[
-        ['who.seen','能否被看见','例如：很少，但没有真切见过'],['who.touch','能否被触碰','例如：记忆里没有感觉'],['who.mode','存在方式','例如：通常在身边，但不一定能被直接观察'],['who.where','平时在哪里','例如：可能就在身边，感觉不到，不过应该不会很远'],['who.leave','是否会离开','例如：会离开一阵子，但总会回来'],['who.special','特殊能力 / 特殊设定','例如：能让房间变得安静']]}
-    ]},
-    {id:'like', title:'TA的喜好', sub:'喜欢 / 不喜欢 / 偏好', groups:[
-      {title:'喜好', fields:[
-        ['like.fav','喜欢','例如：雨天的窗边'],['like.dis','不喜欢','例如：吵闹的地方'],['like.prefer','小偏好','例如：泡面要泡满三分钟']]}
-    ]},
-    {id:'habit', title:'TA的习惯', sub:'日常 · 小动作 · 表达 · 陪伴', groups:[
-      {title:'习惯', fields:[
-        ['habit.daily','日常习惯','例如：睡前会看一会儿星星'],['habit.gesture','小动作','例如：思考时会摸耳垂'],['habit.express','表达方式','例如：话不多，但都会做到'],['habit.accompany','陪伴习惯','例如：安静地待在旁边']]}
-    ]},
-    {id:'along', title:'TA与我的相处', sub:'称呼 · 态度 · 亲密 · 陪伴的方式', groups:[
-      {title:'相处', fields:[
-        ['along.callme','怎么称呼我','例如：小家伙'],['along.attitude','对我的态度','例如：嘴上嫌弃，行动诚实'],['along.intimate','亲密程度','例如：灵魂伴侣'],['along.way','陪伴方式','例如：半夜也愿意陪我聊天']]}
-    ]},
-    {id:'place', title:'TA的位置感', sub:'TA常出现的位置与方位', groups:[
-      {title:'位置感', fields:[
-        ['place.often','常出现的位置','例如：窗边'],['place.dir','方位感','例如：总在身后半步的地方']]}
-    ]},
-    {id:'item', title:'TA的物品', sub:'常用 · 喜欢 · 互赠 · 共有', groups:[
-      {title:'物品', fields:[
-        ['item.common','常用物品','例如：一台旧相机'],['item.fav','喜欢的东西','例如：薄荷糖'],['item.gift','互赠的礼物','例如：你送的围巾'],['item.share','共有的东西','例如：一把伞的约定']]}
-    ]},
-    {id:'dream', title:'TA的梦境', sub:'TA做过的、愿意让你知道的梦', tabs:true, groups:[
-      {title:'TA说过的梦', type:'list', lkey:'dream.told', lph:'例如：一片会发光的海'},
-      {title:'我做的与TA有关的梦', type:'list', lkey:'dream.mine', lph:'例如：梦见和TA一起走了很远的路'}
-    ]},
-    {id:'common', title:'我们的共同记录', sub:'原作与现在 · 共同经历', tabs:true, groups:[
-      {title:'原作记录', offKey:'_co.off', hint:'原作里我们经历的事；没有原作设定可以隐藏', fields:[], lists:[{lkey:'common.o.exps',title:'共同经历',wfields:[['time','时间','例如：原作第几章'],['story','发生了什么','例如：那天发生了什么']]}]},
-      {title:'现在', fields:[], lists:[{lkey:'common.exps',title:'共同经历',wfields:[['time','时间','例如：2026年春天'],['story','发生了什么','例如：那天发生了什么']]}]}
-    ]},
-    {id:'ifw', title:'IF世界', sub:'原有的世界 · 现在的IF线', tabs:true, groups:[
-      {title:'原作世界', offKey:'_iw.off', hint:'TA在原作里的世界；与IF线无关可以隐藏', fields:[], lists:[{lkey:'ifw.o.worlds',title:'世界',wfields:[['ta','TA的身份','例如：猎人'],['me','我的身份','例如：同行的伙伴'],['bg','世界背景','例如：边境小镇'],['story','发生的故事','例如：一起猎过狼群']]}]},
-      {title:'现在的IF世界', fields:[], lists:[{lkey:'ifw.worlds',title:'世界',wfields:[['ta','TA的身份','例如：同班同学'],['me','我的身份','例如：普通学生'],['bg','世界背景','例如：平行的小镇'],['story','发生的故事','例如：没有了猎人的宿命']]}]}
+        ['who.nickname','昵称','例如：张三'],['who.call','称呼','例如：宝宝'],['who.birthday','生日','例如：10月16日'],['who.age','年龄','例如：未知（二十几岁吧）'],['who.identity','身份','例如：猎人'],['who.personality','性格','例如：安静、慢热，其实很温柔'],['who.look','外貌','头发、眼睛、常穿的衣服……'],['who.intro','自我介绍','如果TA要介绍自己，会怎么说？']]}
     ]}
   ];
   var $ = function(id){ return document.getElementById(id); };
@@ -37673,10 +37685,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   function renderSecList(){
     var p = curP(), h = '';
     $('personaEmpty').style.display = p ? 'none' : '';
-    if (p) for (var i=0;i<SECTIONS.length;i++){ var sec = SECTIONS[i]; h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="'+sec.id+'"><div class="persona-sec-info"><div class="persona-sec-title">'+sec.title+'</div><div class="persona-sec-sub">'+sec.sub+'</div></div><span class="persona-sec-arrow">›</span></div></div>'; }
+    if (p){
+      for (var i=0;i<SECTIONS.length;i++){ var sec = SECTIONS[i]; h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="'+sec.id+'"><div class="persona-sec-info"><div class="persona-sec-title">'+sec.title+'</div><div class="persona-sec-sub">'+sec.sub+'</div></div><span class="persona-sec-arrow">›</span></div></div>'; }
+      h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="__related"><div class="persona-sec-info"><div class="persona-sec-title">与他有关</div><div class="persona-sec-sub">标记了TA的所有日记</div></div><span class="persona-sec-arrow">›</span></div></div>';
+    }
     $('personaSecList').innerHTML = h;
     var items = $('personaSecList').querySelectorAll('.persona-sec-item');
-    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ showDetail(this.getAttribute('data-sid')); }; }
+    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var sid = this.getAttribute('data-sid'); if (sid==='__related') showRelated(); else showDetail(sid); }; }
   }
   var dreamTab = 0;
   function renderDetail(){
@@ -37797,6 +37812,32 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   }
   function showHome(){ $('personaHome').style.display=''; $('personaDetail').style.display='none'; renderSecList(); }
   function showDetail(sid){ curSec = sid; dreamTab = 0; $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderDetail(); }
+  function showRelated(){ $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderRelated(); }
+  function renderRelated(){
+    var p = curP(); if (!p) return;
+    $('personaDetailTitle').textContent = '与他有关';
+    $('personaDetailSub').textContent = '标记了「'+esc(pName(p))+'」的日记';
+    var entries = [];
+    try { entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch(e) {}
+    entries = entries.filter(function(e){ return e.tags && e.tags.indexOf(p.id) >= 0; });
+    entries.sort(function(a,b){ return new Date(b.date).getTime() - new Date(a.date).getTime(); });
+    var h = '';
+    if (!entries.length){
+      h = '<div class="persona-related-empty">还没有与「'+esc(pName(p))+'」有关的日记</div><div class="persona-related-hint">写日记时在「关联人物」里标记TA，就会出现在这里</div>';
+    } else {
+      for (var i=0;i<entries.length;i++){
+        var e = entries[i];
+        var txt = (e.content || '').trim();
+        if (!txt && (e.images||[]).length) txt = '[图片日记]';
+        if (!txt) txt = '(无内容)';
+        if (txt.length > 80) txt = txt.slice(0,80) + '…';
+        h += '<div class="persona-related-item" data-did="'+e.id+'"><div class="persona-related-text">'+esc(txt)+'</div><div class="persona-related-time">'+formatDiaryTime(e.date)+'</div></div>';
+      }
+    }
+    $('personaDetailGroups').innerHTML = h;
+    var items = $('personaDetailGroups').querySelectorAll('.persona-related-item');
+    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var did = parseInt(this.getAttribute('data-did'),10); page.classList.remove('show'); openDiaryDetail(did); }; }
+  }
   function openPersona(){
     load(); cur = localStorage.getItem(CURKEY) || null;
     if (!curP() && personas.length) cur = personas[0].id;
@@ -37960,6 +38001,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       var _diaryEditPendingImages = [];
       var _diaryWriteVis = 'private';
       var _diaryEditVis = 'private';
+      var _diaryWriteTags = [];
+      var _diaryEditTags = [];
 
       function setVisActive(segId, vis) {
         var seg = document.getElementById(segId);
@@ -37991,6 +38034,38 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       }
       function saveDiaryEntries(entries) {
         try { localStorage.setItem('diaryEntries', JSON.stringify(entries)); } catch(e) {}
+      }
+      function getDiaryTagPersonas() {
+        try { return JSON.parse(localStorage.getItem('wuyu_personas_v1') || '[]'); } catch(e) { return []; }
+      }
+      function _wuyuPersonaName(pid) {
+        var ps = getDiaryTagPersonas();
+        for (var i=0;i<ps.length;i++) if (ps[i].id===pid) return (ps[i].fields && (ps[i].fields['who.nickname'] || ps[i].fields['who.name'])) || '未命名';
+        return '未命名';
+      }
+      function renderDiaryTagPicker(containerId, selected) {
+        var box = document.getElementById(containerId);
+        if (!box) return;
+        var personas = getDiaryTagPersonas();
+        box.innerHTML = '';
+        if (!personas.length){
+          box.innerHTML = '<span class="diary-tag-empty">先在「人物档案」里创建人物</span>';
+          return;
+        }
+        personas.forEach(function(p){
+          var name = (p.fields && (p.fields['who.nickname'] || p.fields['who.name'])) || '未命名';
+          var chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'diary-tag-chip' + (selected.indexOf(p.id) >= 0 ? ' on' : '');
+          chip.setAttribute('data-pid', p.id);
+          chip.textContent = name;
+          chip.addEventListener('click', function(){
+            var idx = selected.indexOf(p.id);
+            if (idx >= 0) selected.splice(idx, 1); else selected.push(p.id);
+            chip.classList.toggle('on');
+          });
+          box.appendChild(chip);
+        });
       }
 
       // === 日记同步到朋友圈 ===
@@ -38331,6 +38406,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           item.setAttribute('data-diary-open', entry.id);
 
           var catBadge = (entry.category && entry.category !== '生活') ? '<div class="diary-cat-badge">' + escapeDiaryHtml(entry.category) + '</div>' : '';
+          var tagBadge = '';
+          var _tags = entry.tags || [];
+          if (_tags.length > 0){
+            tagBadge = '<div class="diary-tag-badge">';
+            _tags.forEach(function(pid){ tagBadge += '<span class="diary-tag-label">#' + escapeDiaryHtml(_wuyuPersonaName(pid)) + '</span>'; });
+            tagBadge += '</div>';
+          }
 
           var isPrivate = entry.visibility === 'private';
           var visibilityHtml = '<div class="diary-card-header"><button class="diary-visibility-btn' + (isPrivate ? ' private' : '') + '" data-vis-id="' + entry.id + '"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' + (isPrivate ? '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/>' : '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>') + '</svg>' + (isPrivate ? '私密' : '公开') + '</button></div>';
@@ -38374,6 +38456,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
           item.innerHTML =
             catBadge +
+            tagBadge +
             visibilityHtml +
             '<div class="diary-text" data-diary-open="' + entry.id + '">' + escapedText + '</div>' +
             imageHtml +
@@ -38961,6 +39044,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         populateCategorySelect('diaryWriteCategory', _diaryCurrentCategory !== 'all' ? _diaryCurrentCategory : '生活');
         _diaryWriteVis = 'private';
         setVisActive('diaryWriteVisSeg', 'private');
+        _diaryWriteTags = [];
+        renderDiaryTagPicker('diaryWriteTagPicker', _diaryWriteTags);
         diaryWriteOverlay.classList.add('show');
         setTimeout(function() { diaryWriteTextarea.focus(); }, 100);
       });
@@ -38991,7 +39076,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             likes: [],
             comments: [],
             visibility: _diaryWriteVis,
-            category: selCat ? selCat.value : '生活'
+            category: selCat ? selCat.value : '生活',
+            tags: _diaryWriteTags.slice()
           };
           entries.unshift(entry);
           saveDiaryEntries(entries);
@@ -39015,6 +39101,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         populateCategorySelect('diaryEditCategory', entry.category || '生活');
         _diaryEditVis = entry.visibility || 'private';
         setVisActive('diaryEditVisSeg', _diaryEditVis);
+        _diaryEditTags = (entry.tags || []).slice();
+        renderDiaryTagPicker('diaryEditTagPicker', _diaryEditTags);
         diaryEditOverlay.classList.add('show');
         setTimeout(function() { diaryEditTextarea.focus(); }, 100);
       }
@@ -39045,6 +39133,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             var editCat = document.getElementById('diaryEditCategory');
             if (editCat) entry.category = editCat.value;
             entry.visibility = _diaryEditVis;
+            entry.tags = _diaryEditTags.slice();
             saveDiaryEntries(entries);
             _syncDiaryToMoments(entry);
           }
