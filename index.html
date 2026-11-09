@@ -9953,7 +9953,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 }
 .diary-tag-chip.on { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 500; }
 .diary-tag-empty { font-size: 12px; color: #aaa; }
-.diary-tag-badge { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.diary-tag-badge { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0 6px; }
 .diary-tag-label {
   display: inline-block;
   font-size: 11px;
@@ -38456,9 +38456,9 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
 
           item.innerHTML =
             catBadge +
-            tagBadge +
             visibilityHtml +
             '<div class="diary-text" data-diary-open="' + entry.id + '">' + escapedText + '</div>' +
+            tagBadge +
             imageHtml +
             '<div class="diary-action-bar">' +
               '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
