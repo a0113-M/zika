@@ -38830,6 +38830,13 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         if (!entry) { closeDiaryDetail(); return; }
         var isPrivate = entry.visibility === 'private';
         var catBadge = (entry.category && entry.category !== '生活') ? '<span class="diary-detail-cat">' + escapeDiaryHtml(entry.category) + '</span>' : '';
+        var tagBadge = '';
+        var _tags = entry.tags || [];
+        if (_tags.length > 0){
+          tagBadge = '<div class="diary-tag-badge">';
+          _tags.forEach(function(pid){ tagBadge += '<span class="diary-tag-label">#' + escapeDiaryHtml(_wuyuPersonaName(pid)) + '</span>'; });
+          tagBadge += '</div>';
+        }
         var text = escapeDiaryHtml(entry.content || '').replace(/\n/g, '<br>');
         var images = entry.images || [];
         var imageHtml = '';
@@ -38873,6 +38880,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               catBadge +
             '</div>' +
             '<div class="diary-detail-body">' + text + '</div>' +
+            tagBadge +
             imageHtml +
             '<div class="diary-detail-actions">' +
               '<button class="diary-action-btn diary-action-like' + (likes.length > 0 ? ' liked' : '') + '" id="diaryDetailActionLike">' + _diaryIcLike + '</button>' +
