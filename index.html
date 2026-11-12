@@ -1158,6 +1158,38 @@
       border-radius: 12px 4px 12px 12px;
     }
 
+    /* AI 思考过程折叠块（DeepSeek 风格） */
+    .msg-think {
+      margin-bottom: 6px;
+      border-left: 3px solid var(--primary);
+      background: rgba(var(--primary-rgba), 0.05);
+      border-radius: 4px 8px 8px 4px;
+      overflow: hidden;
+    }
+    .msg-think-head {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .msg-think-ic { font-size: 12px; }
+    .msg-think-txt { font-weight: 500; }
+    .msg-think-arrow { margin-left: auto; font-size: 11px; color: var(--text-secondary); }
+    .msg-think-body {
+      padding: 6px 10px 8px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+      border-top: 1px dashed rgba(var(--primary-rgba), 0.18);
+    }
+
     /* 引用预览 - 宽度自适应，不撑满 */
     .quote-preview {
       font-size: 12px;
@@ -20043,7 +20075,27 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
                 bubble.appendChild(tNotes);
               }
             } else if (msg.ai) {
-              bubble.innerHTML = _zkEscHtml(msg.text).replace(/\n/g, '<br>');
+              var _aiHtml = '';
+              if (msg.reasoning) {
+                _aiHtml += '<div class="msg-think">'
+                  + '<div class="msg-think-head"><span class="msg-think-ic">💭</span><span class="msg-think-txt">思考过程</span><span class="msg-think-arrow">▾</span></div>'
+                  + '<div class="msg-think-body" style="display:none;">' + _zkEscHtml(msg.reasoning).replace(/\n/g, '<br>') + '</div>'
+                  + '</div>';
+              }
+              _aiHtml += _zkEscHtml(msg.text).replace(/\n/g, '<br>');
+              bubble.innerHTML = _aiHtml;
+              if (msg.reasoning) {
+                var _thHead = bubble.querySelector('.msg-think-head');
+                var _thBody = bubble.querySelector('.msg-think-body');
+                var _thArrow = bubble.querySelector('.msg-think-arrow');
+                if (_thHead && _thBody) {
+                  _thHead.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (_thBody.style.display === 'none') { _thBody.style.display = ''; if (_thArrow) _thArrow.textContent = '▴'; }
+                    else { _thBody.style.display = 'none'; if (_thArrow) _thArrow.textContent = '▾'; }
+                  });
+                }
+              }
             } else {
               bubble.textContent = msg.text;
             }
@@ -20797,15 +20849,20 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }).then(function (data) {
           if (_done) return;
           var text = '';
-          if (data && data.choices && data.choices[0] && data.choices[0].message) text = data.choices[0].message.content || '';
+          var _m0 = (data && data.choices && data.choices[0] && data.choices[0].message) ? data.choices[0].message : null;
+          if (_m0) text = _m0.content || '';
           else if (data && data.content) text = data.content;
           text = _zkCleanAi(text);
+          var reasoning = '';
+          if (_m0) reasoning = _m0.reasoning_content || _m0.reasoning || _m0.reasoningContent || '';
+          if (!reasoning && data && data.reasoning_content) reasoning = data.reasoning_content;
+          reasoning = String(reasoning || '').trim();
           if (!text) throw new Error('empty');
           clearTimeout(_timer); _done = true;
           _zkHideTyping(cid);
           var _now = new Date();
           var _ts = _now.getHours().toString().padStart(2, '0') + ':' + _now.getMinutes().toString().padStart(2, '0');
-          chatHistories[cid].push({ text: text, from: senderName, time: _ts, ai: true });
+          chatHistories[cid].push({ text: text, reasoning: reasoning, from: senderName, time: _ts, ai: true });
           try { window._zkMsgNotify(senderName, text, cid); } catch (e) {}
           renderMessages(cid);
           if (contact) { contact.lastMsg = text; contact.time = _ts; if (!cardView.classList.contains('hidden')) refreshList(); }
@@ -21012,10 +21069,33 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }).join('');
       }
 
-      function _zkInterpretShowResult(text) {
+      function _zkInterpretShowResult(text, reasoning) {
         var box = document.getElementById('zkiResult');
         if (!box) return;
-        if (text) { box.classList.add('show'); box.innerHTML = '<div class="zki-result-label">解读</div>' + _zkEscHtml(text); }
+        if (text) {
+          var _html = '<div class="zki-result-label">解读</div>';
+          if (reasoning) {
+            _html += '<div class="msg-think">'
+              + '<div class="msg-think-head"><span class="msg-think-ic">💭</span><span class="msg-think-txt">思考过程</span><span class="msg-think-arrow">▾</span></div>'
+              + '<div class="msg-think-body" style="display:none;">' + _zkEscHtml(reasoning).replace(/\n/g, '<br>') + '</div>'
+              + '</div>';
+          }
+          _html += _zkEscHtml(text).replace(/\n/g, '<br>');
+          box.classList.add('show');
+          box.innerHTML = _html;
+          if (reasoning) {
+            var _th2 = box.querySelector('.msg-think-head');
+            var _tb2 = box.querySelector('.msg-think-body');
+            var _ta2 = box.querySelector('.msg-think-arrow');
+            if (_th2 && _tb2) {
+              _th2.addEventListener('click', function (e) {
+                e.stopPropagation();
+                if (_tb2.style.display === 'none') { _tb2.style.display = ''; if (_ta2) _ta2.textContent = '▴'; }
+                else { _tb2.style.display = 'none'; if (_ta2) _ta2.textContent = '▾'; }
+              });
+            }
+          }
+        }
         else { box.classList.remove('show'); box.innerHTML = ''; }
       }
 
@@ -21152,13 +21232,18 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         }).then(function (data2) {
           if (!_zkiRunning) return;
           var text = '';
-          if (data2 && data2.choices && data2.choices[0] && data2.choices[0].message) text = data2.choices[0].message.content || '';
+          var _m1 = (data2 && data2.choices && data2.choices[0] && data2.choices[0].message) ? data2.choices[0].message : null;
+          if (_m1) text = _m1.content || '';
           else if (data2 && data2.content) text = data2.content;
           text = _zkCleanAi(text);
+          var reasoning2 = '';
+          if (_m1) reasoning2 = _m1.reasoning_content || _m1.reasoning || _m1.reasoningContent || '';
+          if (!reasoning2 && data2 && data2.reasoning_content) reasoning2 = data2.reasoning_content;
+          reasoning2 = String(reasoning2 || '').trim();
           clearTimeout(_timer); _zkiRunning = false;
           if (btn) { btn.disabled = false; btn.textContent = '解读'; }
           if (!text) { showToast('AI 没有返回内容'); return; }
-          _zkInterpretShowResult(text);
+          _zkInterpretShowResult(text, reasoning2);
           _zkAddInterpHistory({ question: q, records: recText, cards: _zkiDraw || null, answer: text, contactName: pname });
         }).catch(function (err) {
           if (!_zkiRunning) return;
