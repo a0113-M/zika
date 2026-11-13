@@ -20731,6 +20731,16 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
       function _zkCleanAi(text) {
         return String(text || '').replace(/\*\*/g, '').replace(/^[ \t]*\*+[ \t]?/gm, '').replace(/^[ \t]*#{1,6}[ \t]+/gm, '').replace(/\|/g, ' · ').trim();
       }
+      function _zkExtractThinking(raw) {
+        var text = String(raw || '');
+        var thinking = '';
+        var m = text.match(/<thinking>([\s\S]*?)<\/thinking>/i);
+        if (m) {
+          thinking = m[1].trim();
+          text = text.replace(/<thinking>[\s\S]*?<\/thinking>/i, '').trim();
+        }
+        return { thinking: thinking, text: text };
+      }
       function _zkPersonaPromptFor(contact) {
         var name = contact && contact.name ? contact.name : '';
         var ps = _zkGetPersonas();
@@ -20796,7 +20806,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           + '3. 塔罗是镜子：把牌面当作一种思考框架，用来帮用户看到被忽略的角度，而非铁口直断；\n'
           + '4. 落到现实：结合用户的问题和提供的材料，给出具体、可行动的分析与建议；\n'
           + '5. 诚实：不确定时如实说明，不编造必然的结局。\n'
-          + '回答结构：先点明问题核心，再分点展开分析，最后给 1~2 条务实的建议。';
+          + '回答结构：先点明问题核心，再分点展开分析，最后给 1~2 条务实的建议。\n'
+          + '输出格式：先用 <thinking>...</thinking> 标签写出你的解牌思考过程（牌面如何关联问题、你为什么这么判断），标签结束后另起一行，再输出正式回答。';
       }
       function _zkFallbackReply(cid, contact, senderName) {
         if (!chatHistories[cid]) chatHistories[cid] = [];
@@ -20826,7 +20837,8 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
         if (mode === 'divine') {
           draw = preDraw || _zkDrawCards(3);
           userLine = '（本轮用户对你说：「' + userText + '」）\n\n（你刚抽到 ' + draw.length + ' 张牌，作为此刻心境的气象参考，牌面如下）\n' + _zkCardText(draw)
-            + '\n\n请以这些牌为参考，用你自己（' + pname + '）的口吻自然回复用户：把牌带给你的那种心情、状态、想说的话自然地融进回复里，但不要报牌名、不要逐张解牌、不要显得像在占卜，就像你此刻的心情刚好被这些牌说中了一样随口道来。';
+            + '\n\n请以这些牌为参考，用你自己（' + pname + '）的口吻自然回复用户：把牌带给你的那种心情、状态、想说的话自然地融进回复里，但不要报牌名、不要逐张解牌、不要显得像在占卜，就像你此刻的心情刚好被这些牌说中了一样随口道来。'
+            + '\n\n【输出格式】回复前，请先用 <thinking>...</thinking> 标签简短写出你此刻的内心活动（这些牌带给你什么感觉、你打算怎么回应），标签结束后另起一行，再用你自己的口吻自然回复用户。不要把这段内心活动写进回复正文。';
         } else {
           userLine = '（本轮用户对你说：「' + userText + '」）请用你的口吻自然回复。';
         }
@@ -20857,6 +20869,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (_m0) reasoning = _m0.reasoning_content || _m0.reasoning || _m0.reasoningContent || '';
           if (!reasoning && data && data.reasoning_content) reasoning = data.reasoning_content;
           reasoning = String(reasoning || '').trim();
+          if (!reasoning) {
+            var _tk = _zkExtractThinking(text);
+            if (_tk.thinking) { reasoning = _tk.thinking; text = _tk.text; }
+          }
           if (!text) throw new Error('empty');
           clearTimeout(_timer); _done = true;
           _zkHideTyping(cid);
@@ -21240,6 +21256,10 @@ function _zkGetMetDates() { try { return JSON.parse(localStorage.getItem('contac
           if (_m1) reasoning2 = _m1.reasoning_content || _m1.reasoning || _m1.reasoningContent || '';
           if (!reasoning2 && data2 && data2.reasoning_content) reasoning2 = data2.reasoning_content;
           reasoning2 = String(reasoning2 || '').trim();
+          if (!reasoning2) {
+            var _tk2 = _zkExtractThinking(text);
+            if (_tk2.thinking) { reasoning2 = _tk2.thinking; text = _tk2.text; }
+          }
           clearTimeout(_timer); _zkiRunning = false;
           if (btn) { btn.disabled = false; btn.textContent = '解读'; }
           if (!text) { showToast('AI 没有返回内容'); return; }
