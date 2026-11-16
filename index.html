@@ -10458,6 +10458,15 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
 .persona-sec-title { font-size: 15px; font-weight: 600; color: #333; }
 .persona-sec-sub { font-size: 12px; color: #999; margin-top: 3px; }
 .persona-sec-arrow { flex-shrink: 0; color: #bbb; margin-left: 8px; font-size: 16px; }
+.persona-album-card { cursor: pointer; }
+.persona-album-card:active { opacity: .88; }
+.persona-album-head { display: flex; align-items: center; padding: 15px 14px 9px; }
+.persona-album-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 0 14px 14px; }
+.persona-album-cell { position: relative; width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: #f2eefb; cursor: pointer; }
+.persona-album-cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.persona-album-wall { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+.persona-album-empty { font-size: 13.5px; color: var(--text-secondary); text-align: center; padding: 28px 16px 6px; }
+.persona-album-hint { font-size: 12px; color: var(--text-secondary); opacity: .7; text-align: center; padding: 0 16px 20px; }
 .persona-back-overview { display: inline-flex; align-items: center; border: none; background: transparent; color: var(--primary); font-size: 13px; cursor: pointer; padding: 2px 0 10px; }
 .persona-detail-title { font-size: 19px; font-weight: 700; color: #333; margin-bottom: 4px; }
 .persona-detail-sub { font-size: 12px; color: #999; margin-bottom: 16px; }
@@ -37793,10 +37802,21 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     if (p){
       for (var i=0;i<SECTIONS.length;i++){ var sec = SECTIONS[i]; h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="'+sec.id+'"><div class="persona-sec-info"><div class="persona-sec-title">'+sec.title+'</div><div class="persona-sec-sub">'+sec.sub+'</div></div><span class="persona-sec-arrow">›</span></div></div>'; }
       h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="__related"><div class="persona-sec-info"><div class="persona-sec-title">与他有关</div><div class="persona-sec-sub">标记了TA的所有日记</div></div><span class="persona-sec-arrow">›</span></div></div>';
+      var _alb = _personaAlbumImgs(p);
+      if (_alb.length){
+        h += '<div class="persona-sec-card persona-album-card" data-sid="__album"><div class="persona-album-head"><div class="persona-sec-info"><div class="persona-sec-title">相册</div><div class="persona-sec-sub">'+_alb.length+' 张 · 标记了TA的日记图片</div></div><span class="persona-sec-arrow">›</span></div><div class="persona-album-grid">';
+        var _pre = _alb.slice(0, 6);
+        for (var a=0;a<_pre.length;a++){
+          if (isDiaryImgKey(_pre[a])) h += '<div class="persona-album-cell"><img data-dimg="'+_pre[a]+'"></div>';
+          else h += '<div class="persona-album-cell"><img src="'+_pre[a]+'"></div>';
+        }
+        h += '</div></div>';
+      }
     }
     $('personaSecList').innerHTML = h;
-    var items = $('personaSecList').querySelectorAll('.persona-sec-item');
-    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var sid = this.getAttribute('data-sid'); if (sid==='__related') showRelated(); else showDetail(sid); }; }
+    if (p) _personaHydrateImgs($('personaSecList'));
+    var items = $('personaSecList').querySelectorAll('[data-sid]');
+    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var sid = this.getAttribute('data-sid'); if (sid==='__related') showRelated(); else if (sid==='__album') showAlbum(); else showDetail(sid); }; }
   }
   var dreamTab = 0;
   function renderDetail(){
@@ -37942,6 +37962,85 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     $('personaDetailGroups').innerHTML = h;
     var items = $('personaDetailGroups').querySelectorAll('.persona-related-item');
     for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var did = parseInt(this.getAttribute('data-did'),10); page.classList.remove('show'); openDiaryDetail(did); }; }
+  }
+  // 相册：读取日记图片（IndexedDB zk_diary_img_db / imgs，key 形如 dimg_xxx）
+  var _personaImgDbPromise = null;
+  function _personaImgDb(){
+    if (_personaImgDbPromise) return _personaImgDbPromise;
+    _personaImgDbPromise = new Promise(function(resolve){
+      try {
+        if (!window.indexedDB) { resolve(null); return; }
+        var req = indexedDB.open('zk_diary_img_db', 1);
+        req.onupgradeneeded = function(e){ var db = e.target.result; if (!db.objectStoreNames.contains('imgs')) db.createObjectStore('imgs'); };
+        req.onsuccess = function(e){ resolve(e.target.result); };
+        req.onerror = function(){ _personaImgDbPromise = null; resolve(null); };
+      } catch(e){ _personaImgDbPromise = null; resolve(null); }
+    });
+    return _personaImgDbPromise;
+  }
+  function _personaImgGet(key){
+    return _personaImgDb().then(function(db){
+      return new Promise(function(resolve){
+        if (!db){ resolve(''); return; }
+        try {
+          var req = db.transaction('imgs','readonly').objectStore('imgs').get(key);
+          req.onsuccess = function(){ resolve(req.result || ''); };
+          req.onerror = function(){ resolve(''); };
+        } catch(e){ resolve(''); }
+      });
+    });
+  }
+  function _personaHydrateImgs(root){
+    if (!root) return;
+    var imgs = root.querySelectorAll('img[data-dimg]');
+    for (var i=0;i<imgs.length;i++){
+      (function(im){
+        var key = im.getAttribute('data-dimg');
+        _personaImgGet(key).then(function(u){ if (u && im.parentNode){ im.src = u; im.removeAttribute('data-dimg'); } });
+      })(imgs[i]);
+    }
+  }
+  function _personaAlbumImgs(p){
+    var out = [];
+    try {
+      var entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
+      entries.forEach(function(e){
+        if (e.tags && e.tags.indexOf(p.id) >= 0 && e.images && e.images.length){
+          e.images.forEach(function(s){ if (s) out.push(s); });
+        }
+      });
+    } catch(err) {}
+    return out;
+  }
+  function showAlbum(){ $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderAlbum(); }
+  function renderAlbum(){
+    var p = curP(); if (!p) return;
+    $('personaDetailTitle').textContent = '相册';
+    $('personaDetailSub').textContent = '标记了「'+esc(pName(p))+'」的日记图片';
+    var imgs = _personaAlbumImgs(p);
+    var h = '';
+    if (!imgs.length){
+      h = '<div class="persona-album-empty">还没有图片</div><div class="persona-album-hint">写日记时在「关联人物」里标记TA并附上图片，就会出现在这里</div>';
+    } else {
+      h = '<div class="persona-album-wall">';
+      for (var i=0;i<imgs.length;i++){
+        if (imgs[i].indexOf('dimg_') === 0) h += '<div class="persona-album-cell"><img data-dimg="'+imgs[i]+'"></div>';
+        else h += '<div class="persona-album-cell"><img src="'+imgs[i]+'"></div>';
+      }
+      h += '</div>';
+    }
+    $('personaDetailGroups').innerHTML = h;
+    _personaHydrateImgs($('personaDetailGroups'));
+    var cells = $('personaDetailGroups').querySelectorAll('.persona-album-cell');
+    for (var k=0;k<cells.length;k++){ cells[k].onclick = function(){ _personaAlbumOpen(this); }; }
+  }
+  function _personaAlbumOpen(cell){
+    var im = cell.querySelector('img');
+    if (!im) return;
+    var src = im.getAttribute('data-dimg') || im.src;
+    if (!src) return;
+    if (src.indexOf('dimg_') === 0){ _personaImgGet(src).then(function(u){ if (u) _openDiaryImage(u); }); }
+    else _openDiaryImage(src);
   }
   function openPersona(){
     load(); cur = localStorage.getItem(CURKEY) || null;
