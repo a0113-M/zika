@@ -9877,12 +9877,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   height: 36px;
   flex-shrink: 0;
   border: none;
-  background: none;
+  background: #f0f0f3;
+  border-radius: 50%;
   color: var(--primary);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-left: 4px;
 }
 .diary-fav-btn svg { width: 20px; height: 20px; }
 
@@ -9994,6 +9996,76 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
   border: 1px solid rgba(var(--primary-rgba), 0.25);
   border-radius: 10px;
   padding: 1px 8px;
+}
+.diary-tag-chip { display: inline-flex; align-items: center; gap: 3px; cursor: default; }
+.diary-tag-x {
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 15px;
+  line-height: 1;
+  padding: 0 1px;
+  cursor: pointer;
+  opacity: 0.75;
+}
+.diary-tag-input {
+  flex: 1;
+  min-width: 90px;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  color: #333;
+  padding: 5px 2px;
+}
+.diary-search-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border-bottom: 0.5px solid #e0e0e0;
+  flex-shrink: 0;
+}
+.diary-search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f2f2f5;
+  border-radius: 18px;
+  padding: 6px 12px;
+}
+.diary-search-box svg { width: 16px; height: 16px; color: #999; flex-shrink: 0; }
+.diary-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13.5px;
+  color: #333;
+}
+.diary-search-clear {
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 0 2px;
+  flex-shrink: 0;
+}
+.persona-linktag-card { cursor: pointer; }
+.persona-linktag-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.persona-linktag-val { font-size: 12.5px; color: var(--primary); font-weight: 500; }
+.persona-linktag-input {
+  flex: 1;
+  border: 1px solid #e0d8f0;
+  background: #faf8ff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 13.5px;
+  color: #333;
+  outline: none;
 }
 
 .persona-related-empty { font-size: 13.5px; color: var(--text-secondary); text-align: center; padding: 28px 16px 6px; }
@@ -15588,7 +15660,14 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15,18 9,12 15,6"/></svg>
       </button>
       <span class="diary-title">日记</span>
-      <button class="diary-fav-btn" id="diaryPersonaBtn" title="人物档案"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></button><button class="diary-fav-btn" id="diaryFavBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button>
+      <button class="diary-fav-btn" id="diarySearchBtn" title="搜索"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></button><button class="diary-fav-btn" id="diaryPersonaBtn" title="人物档案"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg></button><button class="diary-fav-btn" id="diaryFavBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></button>
+    </div>
+    <div class="diary-search-row" id="diarySearchRow" style="display:none;">
+      <div class="diary-search-box">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input class="diary-search-input" id="diarySearchInput" type="text" placeholder="搜索日记内容或 #标签">
+        <button class="diary-search-clear" id="diarySearchClear" type="button">×</button>
+      </div>
     </div>
     <div class="diary-category-bar" id="diaryCategoryBar"></div>
     <!-- 分类管理弹窗 -->
@@ -15668,7 +15747,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             </div>
           </div>
           <div class="diary-meta-row diary-tag-row">
-            <label>关联人物</label>
+            <label>标签</label>
             <div class="diary-tag-picker" id="diaryWriteTagPicker"></div>
           </div>
           <textarea class="diary-editor-textarea" id="diaryWriteTextarea" placeholder="记录此刻的心情..."></textarea>
@@ -15700,7 +15779,7 @@ input:checked + .book-switch-slider::before { transform: translateX(20px); }
             </div>
           </div>
           <div class="diary-meta-row diary-tag-row">
-            <label>关联人物</label>
+            <label>标签</label>
             <div class="diary-tag-picker" id="diaryEditTagPicker"></div>
           </div>
           <textarea class="diary-editor-textarea" id="diaryEditTextarea" placeholder="修改日记内容..."></textarea>
@@ -37528,6 +37607,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       // ===== 日记模块 =====
       // 分类管理
       var _diaryCurrentCategory = 'all';
+      var _diarySearchQuery = '';
       function getDiaryCategories() {
         try {
           var cats = JSON.parse(localStorage.getItem('diaryCategories') || 'null');
@@ -37781,12 +37861,25 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     ]}
   ];
   var $ = function(id){ return document.getElementById(id); };
-  var page = $('personaPage'), personas = [], cur = null, curSec = null, editKey = null, editList = null;
+  var page = $('personaPage'), personas = [], cur = null, curSec = null, editKey = null, editList = null, _linkTagEditing = false;
   function load(){ try { personas = JSON.parse(localStorage.getItem(PKEY) || '[]'); } catch(e){ personas = []; } }
   function save(){ localStorage.setItem(PKEY, JSON.stringify(personas)); }
   function curP(){ for (var i=0;i<personas.length;i++) if (personas[i].id===cur) return personas[i]; return null; }
   function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
   function pName(p){ return (p.fields && (p.fields['who.nickname'] || p.fields['who.name'])) || '未命名'; }
+  function _personaRelatedTag(p){
+    if (p && p.linkTag && String(p.linkTag).trim()) return String(p.linkTag).trim();
+    return pName(p);
+  }
+  function _entryMatchesPersona(e, p){
+    var tags = (e && e.tags) || [];
+    var linkTag = _personaRelatedTag(p);
+    for (var i=0;i<tags.length;i++){
+      if (String(tags[i]) === String(p.id)) return true;
+      if (tags[i] === linkTag) return true;
+    }
+    return false;
+  }
   function closeSheet(ov){ $(ov).classList.remove('show'); }
   function renderTabs(){
     var w = $('personaTabs'), h = '';
@@ -37802,6 +37895,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     if (p){
       for (var i=0;i<SECTIONS.length;i++){ var sec = SECTIONS[i]; h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="'+sec.id+'"><div class="persona-sec-info"><div class="persona-sec-title">'+sec.title+'</div><div class="persona-sec-sub">'+sec.sub+'</div></div><span class="persona-sec-arrow">›</span></div></div>'; }
       h += '<div class="persona-sec-card"><div class="persona-sec-item" data-sid="__related"><div class="persona-sec-info"><div class="persona-sec-title">与他有关</div><div class="persona-sec-sub">标记了TA的所有日记</div></div><span class="persona-sec-arrow">›</span></div></div>';
+      h += '<div class="persona-sec-card persona-linktag-card"><div class="persona-sec-item" data-sid="__linktag"><div class="persona-sec-info"><div class="persona-sec-title">关联标签</div><div class="persona-sec-sub">写日记打这个 #标签 就关联到TA</div></div><span class="persona-linktag-val">#'+esc(_personaRelatedTag(p))+'</span><span class="persona-sec-arrow">›</span></div></div>';
       var _alb = _personaAlbumImgs(p);
       if (_alb.length){
         h += '<div class="persona-sec-card persona-album-card" data-sid="__album"><div class="persona-album-head"><div class="persona-sec-info"><div class="persona-sec-title">相册</div><div class="persona-sec-sub">'+_alb.length+' 张 · 标记了TA的日记图片</div></div><span class="persona-sec-arrow">›</span></div><div class="persona-album-grid">';
@@ -37816,7 +37910,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     $('personaSecList').innerHTML = h;
     if (p) _personaHydrateImgs($('personaSecList'));
     var items = $('personaSecList').querySelectorAll('[data-sid]');
-    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var sid = this.getAttribute('data-sid'); if (sid==='__related') showRelated(); else if (sid==='__album') showAlbum(); else showDetail(sid); }; }
+    for (var k=0;k<items.length;k++){ items[k].onclick = function(){ var sid = this.getAttribute('data-sid'); if (sid==='__related') showRelated(); else if (sid==='__album') showAlbum(); else if (sid==='__linktag') openLinkTag(); else showDetail(sid); }; }
   }
   var dreamTab = 0;
   function renderDetail(){
@@ -37922,7 +38016,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     for (var r=0;r<offs.length;r++){ offs[r].onclick = function(){ var p2=curP(); if(!p2) return; var k2=this.getAttribute('data-offkey'); if (p2.fields[k2]) delete p2.fields[k2]; else p2.fields[k2]='1'; save(); renderDetail(); }; }
   }  function openEdit(key){
     var p = curP(); if (!p) return;
-    editKey = key; editList = null;
+    editKey = key; editList = null; _linkTagEditing = false;
     $('personaEditMulti').style.display = 'none';
     $('personaEditInput').style.display = '';
     $('personaEditDel').style.display = 'none';
@@ -37938,17 +38032,30 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
   function showHome(){ $('personaHome').style.display=''; $('personaDetail').style.display='none'; renderSecList(); }
   function showDetail(sid){ curSec = sid; dreamTab = 0; $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderDetail(); }
   function showRelated(){ $('personaHome').style.display='none'; $('personaDetail').style.display=''; renderRelated(); }
+  function openLinkTag(){
+    var p = curP(); if (!p) return;
+    editKey = null; editList = null; _linkTagEditing = true;
+    $('personaEditMulti').style.display = 'none';
+    $('personaEditInput').style.display = '';
+    $('personaEditDel').style.display = 'none';
+    $('personaEditLabel').textContent = '关联标签';
+    var inp = $('personaEditInput');
+    inp.value = (p.linkTag && String(p.linkTag).trim()) ? String(p.linkTag).trim() : '';
+    inp.placeholder = '例如：沈星回（默认用名字关联）';
+    $('personaEditOverlay').classList.add('show');
+    setTimeout(function(){ inp.focus(); },100);
+  }
   function renderRelated(){
     var p = curP(); if (!p) return;
     $('personaDetailTitle').textContent = '与他有关';
-    $('personaDetailSub').textContent = '标记了「'+esc(pName(p))+'」的日记';
+    $('personaDetailSub').textContent = '打了 #'+esc(_personaRelatedTag(p))+' 标签的日记';
     var entries = [];
     try { entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]'); } catch(e) {}
-    entries = entries.filter(function(e){ return e.tags && e.tags.indexOf(p.id) >= 0; });
+    entries = entries.filter(function(e){ return _entryMatchesPersona(e, p); });
     entries.sort(function(a,b){ return new Date(b.date).getTime() - new Date(a.date).getTime(); });
     var h = '';
     if (!entries.length){
-      h = '<div class="persona-related-empty">还没有与「'+esc(pName(p))+'」有关的日记</div><div class="persona-related-hint">写日记时在「关联人物」里标记TA，就会出现在这里</div>';
+      h = '<div class="persona-related-empty">还没有打 #'+esc(_personaRelatedTag(p))+' 标签的日记</div><div class="persona-related-hint">写日记时打 #'+esc(_personaRelatedTag(p))+' 标签，就会出现在这里</div>';
     } else {
       for (var i=0;i<entries.length;i++){
         var e = entries[i];
@@ -38005,7 +38112,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     try {
       var entries = JSON.parse(localStorage.getItem('diaryEntries') || '[]');
       entries.forEach(function(e){
-        if (e.tags && e.tags.indexOf(p.id) >= 0 && e.images && e.images.length){
+        if (_entryMatchesPersona(e, p) && e.images && e.images.length){
           e.images.forEach(function(s){ if (s) out.push(s); });
         }
       });
@@ -38085,7 +38192,12 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
     } else if (p && editKey){
       p.fields[editKey] = $('personaEditInput').value.trim(); save();
       renderDetail(); if (editKey==='who.nickname') renderTabs();
+    } else if (p && _linkTagEditing){
+      var lv = $('personaEditInput').value.trim();
+      if (lv) p.linkTag = lv; else delete p.linkTag;
+      save(); renderSecList();
     }
+    _linkTagEditing = false;
     closeSheet('personaEditOverlay');
   });
   function findListMeta(lkey){
@@ -38247,29 +38359,63 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         for (var i=0;i<ps.length;i++) if (ps[i].id===pid) return (ps[i].fields && (ps[i].fields['who.nickname'] || ps[i].fields['who.name'])) || '未命名';
         return '未命名';
       }
+      function _diaryTagLabel(tag) {
+        var s = String(tag);
+        var ps = getDiaryTagPersonas();
+        for (var i=0;i<ps.length;i++) if (String(ps[i].id) === s) {
+          return (ps[i].fields && (ps[i].fields['who.nickname'] || ps[i].fields['who.name'])) || '未命名';
+        }
+        return s;
+      }
       function renderDiaryTagPicker(containerId, selected) {
         var box = document.getElementById(containerId);
         if (!box) return;
-        var personas = getDiaryTagPersonas();
         box.innerHTML = '';
-        if (!personas.length){
-          box.innerHTML = '<span class="diary-tag-empty">先在「人物档案」里创建人物</span>';
-          return;
+        var input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'diary-tag-input';
+        input.placeholder = '输入标签，回车添加 #标签';
+        box.appendChild(input);
+        function refresh() {
+          var chips = box.querySelectorAll('.diary-tag-chip');
+          for (var i=0;i<chips.length;i++) chips[i].remove();
+          for (var k=0;k<selected.length;k++){
+            (function(tag){
+              var chip = document.createElement('span');
+              chip.className = 'diary-tag-chip on';
+              var lab = document.createElement('span');
+              lab.textContent = '#' + tag;
+              var x = document.createElement('button');
+              x.type = 'button';
+              x.className = 'diary-tag-x';
+              x.textContent = '×';
+              x.addEventListener('click', function(){
+                var idx = selected.indexOf(tag);
+                if (idx >= 0) selected.splice(idx, 1);
+                refresh();
+              });
+              chip.appendChild(lab);
+              chip.appendChild(x);
+              box.insertBefore(chip, input);
+            })(selected[k]);
+          }
         }
-        personas.forEach(function(p){
-          var name = (p.fields && (p.fields['who.nickname'] || p.fields['who.name'])) || '未命名';
-          var chip = document.createElement('button');
-          chip.type = 'button';
-          chip.className = 'diary-tag-chip' + (selected.indexOf(p.id) >= 0 ? ' on' : '');
-          chip.setAttribute('data-pid', p.id);
-          chip.textContent = name;
-          chip.addEventListener('click', function(){
-            var idx = selected.indexOf(p.id);
-            if (idx >= 0) selected.splice(idx, 1); else selected.push(p.id);
-            chip.classList.toggle('on');
-          });
-          box.appendChild(chip);
+        function commit(){
+          var v = input.value.trim().replace(/^#+/, '');
+          if (!v) return;
+          if (selected.indexOf(v) < 0) selected.push(v);
+          input.value = '';
+          refresh();
+        }
+        var _composing = false;
+        input.addEventListener('compositionstart', function(){ _composing = true; });
+        input.addEventListener('compositionend', function(){ _composing = false; });
+        input.addEventListener('keydown', function(e){
+          if (_composing) return;
+          if (e.key === 'Enter' || e.key === ' ' || e.key === ',' || e.key === '，') { e.preventDefault(); commit(); }
         });
+        input.addEventListener('blur', commit);
+        refresh();
       }
 
       // === 日记同步到朋友圈 ===
@@ -38592,6 +38738,16 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         if (_diaryCurrentCategory && _diaryCurrentCategory !== 'all') {
           entries = entries.filter(function(e) { return e.category === _diaryCurrentCategory; });
         }
+        if (_diarySearchQuery) {
+          var _q = _diarySearchQuery.toLowerCase();
+          entries = entries.filter(function(e) {
+            if ((e.title || '').toLowerCase().indexOf(_q) >= 0) return true;
+            if ((e.content || '').toLowerCase().indexOf(_q) >= 0) return true;
+            var _ts = e.tags || [];
+            for (var i=0;i<_ts.length;i++){ if (String(_diaryTagLabel(_ts[i])).toLowerCase().indexOf(_q) >= 0) return true; }
+            return false;
+          });
+        }
         diaryFeed.innerHTML = '';
 
         if (entries.length === 0) {
@@ -38614,7 +38770,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
           var _tags = entry.tags || [];
           if (_tags.length > 0){
             tagBadge = '<div class="diary-tag-badge">';
-            _tags.forEach(function(pid){ tagBadge += '<span class="diary-tag-label">#' + escapeDiaryHtml(_wuyuPersonaName(pid)) + '</span>'; });
+            _tags.forEach(function(t){ tagBadge += '<span class="diary-tag-label">#' + escapeDiaryHtml(_diaryTagLabel(t)) + '</span>'; });
             tagBadge += '</div>';
           }
 
@@ -38662,8 +38818,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
             catBadge +
             visibilityHtml +
             '<div class="diary-text" data-diary-open="' + entry.id + '">' + escapedText + '</div>' +
-            tagBadge +
             imageHtml +
+            tagBadge +
             '<div class="diary-action-bar">' +
               '<button class="diary-like-btn' + (isLiked ? ' liked' : '') + '" data-like-id="' + entry.id + '">' +
                 '<svg viewBox="0 0 24 24" fill="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'none') + '" stroke="' + (isLiked ? getComputedStyle(document.documentElement).getPropertyValue('--accent') : 'currentColor') + '" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' +
@@ -39038,7 +39194,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         var _tags = entry.tags || [];
         if (_tags.length > 0){
           tagBadge = '<div class="diary-tag-badge">';
-          _tags.forEach(function(pid){ tagBadge += '<span class="diary-tag-label">#' + escapeDiaryHtml(_wuyuPersonaName(pid)) + '</span>'; });
+          _tags.forEach(function(t){ tagBadge += '<span class="diary-tag-label">#' + escapeDiaryHtml(_diaryTagLabel(t)) + '</span>'; });
           tagBadge += '</div>';
         }
         var text = escapeDiaryHtml(entry.content || '').replace(/\n/g, '<br>');
@@ -39084,8 +39240,8 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
               catBadge +
             '</div>' +
             '<div class="diary-detail-body">' + text + '</div>' +
-            tagBadge +
             imageHtml +
+            tagBadge +
             '<div class="diary-detail-actions">' +
               '<button class="diary-action-btn diary-action-like' + (likes.length > 0 ? ' liked' : '') + '" id="diaryDetailActionLike">' + _diaryIcLike + '</button>' +
               '<button class="diary-action-btn" id="diaryDetailEditBtn">' + _diaryIcEdit + '</button>' +
@@ -39193,6 +39349,33 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
       if (diaryDetailCommentSend) diaryDetailCommentSend.addEventListener('click', sendDiaryDetailComment);
       if (diaryDetailCommentInput) diaryDetailCommentInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') sendDiaryDetailComment(); });
       if (diaryDetailOverlay) diaryDetailOverlay.addEventListener('click', function(e) { if (e.target === diaryDetailOverlay) closeDiaryDetail(); });
+
+      // 日记搜索
+      var diarySearchBtn = document.getElementById('diarySearchBtn');
+      var diarySearchRow = document.getElementById('diarySearchRow');
+      var diarySearchInput = document.getElementById('diarySearchInput');
+      var diarySearchClear = document.getElementById('diarySearchClear');
+      if (diarySearchBtn && diarySearchRow) {
+        diarySearchBtn.addEventListener('click', function() {
+          var hidden = (diarySearchRow.style.display === 'none');
+          diarySearchRow.style.display = hidden ? 'flex' : 'none';
+          if (hidden) setTimeout(function(){ if (diarySearchInput) diarySearchInput.focus(); }, 50);
+        });
+      }
+      if (diarySearchInput) {
+        diarySearchInput.addEventListener('input', function() {
+          _diarySearchQuery = diarySearchInput.value.trim();
+          renderDiary();
+        });
+      }
+      if (diarySearchClear) {
+        diarySearchClear.addEventListener('click', function() {
+          if (diarySearchInput) diarySearchInput.value = '';
+          _diarySearchQuery = '';
+          renderDiary();
+          if (diarySearchInput) diarySearchInput.focus();
+        });
+      }
 
       function toggleDiaryLike(id) {
         var entries = getDiaryEntries();
@@ -39313,7 +39496,7 @@ document.getElementById('dvdAskModeSeg').querySelectorAll('.dvd-seg-item').forEa
         populateCategorySelect('diaryEditCategory', entry.category || '生活');
         _diaryEditVis = entry.visibility || 'private';
         setVisActive('diaryEditVisSeg', _diaryEditVis);
-        _diaryEditTags = (entry.tags || []).slice();
+        _diaryEditTags = (entry.tags || []).map(function(t){ return _diaryTagLabel(t); }).slice();
         renderDiaryTagPicker('diaryEditTagPicker', _diaryEditTags);
         diaryEditOverlay.classList.add('show');
         setTimeout(function() { diaryEditTextarea.focus(); }, 100);
